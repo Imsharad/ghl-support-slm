@@ -37,7 +37,7 @@
   },
   "C3": {
     "state": "running",
-    "note": "built + ghl-base served 23:07 IST; parity table waits on C2"
+    "note": "1a6499d sources committed 23:10 IST; five-row docs/CONVERSION.md parity table pending C2 (Opus)"
   },
   "C4": {
     "state": "pending",
@@ -64,8 +64,8 @@
     "note": ""
   },
   "F1": {
-    "state": "running",
-    "note": "dispatched 23:15 IST against ghl-base; rerun bench on ghl-support after E1"
+    "state": "done",
+    "note": "5c8e52c verified 23:30 IST by Fable: ollama self-test PASS rerun, 5 tests pass, bench block 30/30"
   },
   "G1": {
     "state": "pending",
