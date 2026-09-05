@@ -141,7 +141,7 @@
   },
   "D2L": {
     "state": "running",
-    "note": "Opus relaunch 00:45:57 died again within 2 min (same shape); Fable launched detached via .scratch/d2l_run.sh at 00:57 IST"
+    "note": "Fable launched detached 00:55:37 IST via .scratch/d2l_run.sh (launcher pid 20389, train.py pid 20394); log_every 25 opt steps = 400 passes so first log line ~01:15-01:25; 500 opt steps total, finish ~06:45 IST; Opus owns monitoring + check_run + LOCAL_RUN.md"
   },
   "C1b": {
     "state": "done",
