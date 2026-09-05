@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import time
 import urllib.error
@@ -16,7 +17,7 @@ from zoneinfo import ZoneInfo
 
 import yaml
 
-from train.render import render_prompt
+from train.render import SYSTEM_PROMPT, render_prompt
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -54,7 +55,44 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", type=Path)
     parser.add_argument("--timeout", type=float, default=600.0)
     parser.add_argument("--device", choices=("auto", "cpu", "mps", "cuda"), default="auto")
+    parser.add_argument(
+        "--adapter",
+        type=Path,
+        default=None,
+        help="PEFT adapter directory. transformers backend only; loads the pinned base.",
+    )
     return parser.parse_args()
+
+
+def adapter_weights_sha256(adapter_dir: Path) -> str:
+    weights = adapter_dir / "adapter_model.safetensors"
+    if not weights.is_file():
+        raise FileNotFoundError(f"adapter_model.safetensors not found in {adapter_dir}")
+    digest = hashlib.sha256()
+    with weights.open("rb") as handle:
+        while True:
+            chunk = handle.read(1024 * 1024)
+            if not chunk:
+                break
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def validate_run_args(*, backend: str, model: str, adapter: Path | None) -> Path | None:
+    if adapter is None:
+        return None
+    if backend != "transformers":
+        raise ValueError("--adapter requires --backend transformers")
+    if model != "tuned":
+        raise ValueError("--adapter requires --model tuned")
+    adapter_dir = adapter.expanduser().resolve()
+    if not adapter_dir.is_dir():
+        raise FileNotFoundError(f"adapter directory not found: {adapter_dir}")
+    if not (adapter_dir / "adapter_config.json").is_file():
+        raise FileNotFoundError(f"adapter_config.json not found in {adapter_dir}")
+    if not (adapter_dir / "adapter_model.safetensors").is_file():
+        raise FileNotFoundError(f"adapter_model.safetensors not found in {adapter_dir}")
+    return adapter_dir
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -182,7 +220,13 @@ def optional_int(value: Any) -> int | None:
 class TransformersRunner:
     """Load the selected fp16 source once, then serve serial eval queries."""
 
-    def __init__(self, *, model: str, requested_device: str) -> None:
+    def __init__(
+        self,
+        *,
+        model: str,
+        requested_device: str,
+        adapter_dir: Path | None = None,
+    ) -> None:
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -190,21 +234,56 @@ class TransformersRunner:
         base = versions.get("base_model")
         if not isinstance(base, dict):
             raise ValueError("configs/versions.json has no base_model object")
-        if model == "base":
-            source: str | Path = str(base["repo_id"])
-            revision: str | None = str(base["revision"])
+        repo_id = str(base["repo_id"])
+        revision = str(base["revision"])
+        self.system_prompt = SYSTEM_PROMPT
+
+        common: dict[str, Any] = {"local_files_only": True, "dtype": "auto"}
+        if adapter_dir is not None:
+            from peft import PeftModel
+
+            tokenizer_source: str | Path = adapter_dir
+            tokenizer_kwargs: dict[str, Any] = {"local_files_only": True}
+            if not (
+                (adapter_dir / "tokenizer_config.json").is_file()
+                or (adapter_dir / "tokenizer.json").is_file()
+            ):
+                tokenizer_source = repo_id
+                tokenizer_kwargs["revision"] = revision
+            self.tokenizer = AutoTokenizer.from_pretrained(
+                tokenizer_source, **tokenizer_kwargs
+            )
+            prompt_file = adapter_dir / "prompt.txt"
+            if prompt_file.is_file():
+                self.system_prompt = prompt_file.read_text(encoding="utf-8").removesuffix(
+                    "\n"
+                )
+            self.device = self._select_device(requested_device, torch)
+            self.model = AutoModelForCausalLM.from_pretrained(
+                repo_id,
+                revision=revision,
+                local_files_only=True,
+                dtype="auto",
+            )
+            self.model = PeftModel.from_pretrained(
+                self.model, str(adapter_dir), is_trainable=False
+            )
+        elif model == "base":
+            self.tokenizer = AutoTokenizer.from_pretrained(
+                repo_id, revision=revision, local_files_only=True
+            )
+            self.device = self._select_device(requested_device, torch)
+            self.model = AutoModelForCausalLM.from_pretrained(
+                repo_id, revision=revision, **common
+            )
         else:
             source = ROOT / "artifacts" / "merged"
-            revision = None
             if not (source / "config.json").is_file():
                 raise FileNotFoundError(f"tuned merged model not found: {source}")
+            self.tokenizer = AutoTokenizer.from_pretrained(source, local_files_only=True)
+            self.device = self._select_device(requested_device, torch)
+            self.model = AutoModelForCausalLM.from_pretrained(source, **common)
 
-        common: dict[str, Any] = {"local_files_only": True}
-        if revision is not None:
-            common["revision"] = revision
-        self.tokenizer = AutoTokenizer.from_pretrained(source, **common)
-        self.device = self._select_device(requested_device, torch)
-        self.model = AutoModelForCausalLM.from_pretrained(source, dtype="auto", **common)
         self.model.to(self.device)
         self.model.eval()
         self.torch = torch
@@ -213,6 +292,21 @@ class TransformersRunner:
         self.eos_ids = [self.tokenizer.eos_token_id]
         if isinstance(end_id, int) and end_id >= 0 and end_id not in self.eos_ids:
             self.eos_ids.append(end_id)
+
+    def _render_prompt(self, instruction: str) -> str:
+        if self.system_prompt == SYSTEM_PROMPT:
+            return render_prompt(instruction, self.tokenizer)
+        rendered = self.tokenizer.apply_chat_template(
+            [
+                {"role": "system", "content": self.system_prompt},
+                {"role": "user", "content": instruction},
+            ],
+            tokenize=False,
+            add_generation_prompt=True,
+        )
+        if not isinstance(rendered, str):
+            raise TypeError("tokenizer.apply_chat_template did not return text")
+        return rendered
 
     @staticmethod
     def _select_device(requested: str, torch_module: Any) -> str:
@@ -229,7 +323,7 @@ class TransformersRunner:
         return "cpu"
 
     def __call__(self, query: str) -> Generation:
-        prompt = render_prompt(query, self.tokenizer)
+        prompt = self._render_prompt(query)
         encoded = self.tokenizer(
             prompt,
             return_tensors="pt",
@@ -271,7 +365,14 @@ class TransformersRunner:
         )
 
 
-def load_existing(path: Path, *, model: str, backend: str, all_ids: set[str]) -> dict[str, dict]:
+def load_existing(
+    path: Path,
+    *,
+    model: str,
+    backend: str,
+    all_ids: set[str],
+    adapter_sha256: str | None = None,
+) -> dict[str, dict]:
     if not path.exists():
         return {}
     rows = load_jsonl(path)
@@ -282,6 +383,10 @@ def load_existing(path: Path, *, model: str, backend: str, all_ids: set[str]) ->
             raise ValueError(f"existing output has stale id {item_id}: {path}")
         if row.get("model") != model or row.get("backend") != backend:
             raise ValueError(f"existing output metadata mismatch for {item_id}: {path}")
+        if adapter_sha256 is not None and row.get("adapter_sha256") != adapter_sha256:
+            raise ValueError(
+                f"existing output adapter hash mismatch for {item_id}: {path}"
+            )
         by_id[item_id] = row
     return by_id
 
@@ -300,9 +405,15 @@ def result_row(
     backend: str,
     tag: str,
     generate: Callable[[str], Generation],
+    adapter_dir: Path | None = None,
+    adapter_sha256: str | None = None,
 ) -> dict[str, Any]:
     item_id = str(item["id"])
     started = time.perf_counter()
+    extra: dict[str, Any] = {}
+    if adapter_dir is not None:
+        extra["adapter_dir"] = str(adapter_dir)
+        extra["adapter_sha256"] = adapter_sha256
     try:
         generated = generate(query_for(item))
         return {
@@ -322,6 +433,7 @@ def result_row(
             "truncated": generated.truncated,
             "error": None,
             "ts": ist_now(),
+            **extra,
         }
     except Exception as exc:
         return {
@@ -337,6 +449,7 @@ def result_row(
             "truncated": False,
             "error": f"{type(exc).__name__}: {exc}",
             "ts": ist_now(),
+            **extra,
         }
 
 
@@ -351,6 +464,10 @@ def main() -> int:
     args = parse_args()
     if args.limit is not None and args.limit < 1:
         raise ValueError("--limit must be at least 1")
+    adapter_dir = validate_run_args(
+        backend=args.backend, model=args.model, adapter=args.adapter
+    )
+    adapter_sha = adapter_weights_sha256(adapter_dir) if adapter_dir is not None else None
     config = load_config()
     all_items = load_jsonl(SPLIT_PATHS[args.split])
     selected = all_items[: args.limit] if args.limit is not None else all_items
@@ -368,6 +485,7 @@ def main() -> int:
         model=args.model,
         backend=args.backend,
         all_ids={str(item["id"]) for item in all_items},
+        adapter_sha256=adapter_sha,
     )
     if args.backend == "ollama":
         generate: Callable[[str], Generation] = OllamaRunner(
@@ -376,7 +494,11 @@ def main() -> int:
             timeout=args.timeout,
         )
     else:
-        generate = TransformersRunner(model=args.model, requested_device=args.device)
+        generate = TransformersRunner(
+            model=args.model,
+            requested_device=args.device,
+            adapter_dir=adapter_dir,
+        )
 
     written = 0
     for index, item in enumerate(selected, 1):
@@ -384,7 +506,15 @@ def main() -> int:
         if item_id in existing:
             print(f"SKIP {item_id} already present")
             continue
-        row = result_row(item, model=args.model, backend=args.backend, tag=tag, generate=generate)
+        row = result_row(
+            item,
+            model=args.model,
+            backend=args.backend,
+            tag=tag,
+            generate=generate,
+            adapter_dir=adapter_dir,
+            adapter_sha256=adapter_sha,
+        )
         append_jsonl(output, row)
         existing[item_id] = row
         written += 1

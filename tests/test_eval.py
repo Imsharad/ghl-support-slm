@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
@@ -201,3 +202,108 @@ def test_run_records_failure_then_resumes_by_id(tmp_path: Path) -> None:
         all_ids={"dv-001", "dv-002"},
     )
     assert set(resumed) == {"dv-001", "dv-002"}
+
+
+def test_adapter_argument_validation(tmp_path: Path) -> None:
+    with pytest.raises(ValueError, match="--adapter requires --backend transformers"):
+        eval_run.validate_run_args(
+            backend="ollama",
+            model="tuned",
+            adapter=tmp_path / "adapter",
+        )
+    with pytest.raises(ValueError, match="--adapter requires --model tuned"):
+        eval_run.validate_run_args(
+            backend="transformers",
+            model="base",
+            adapter=tmp_path / "adapter",
+        )
+    missing = tmp_path / "missing"
+    with pytest.raises(FileNotFoundError, match="adapter directory not found"):
+        eval_run.validate_run_args(
+            backend="transformers",
+            model="tuned",
+            adapter=missing,
+        )
+    empty = tmp_path / "empty"
+    empty.mkdir()
+    with pytest.raises(FileNotFoundError, match="adapter_config.json"):
+        eval_run.validate_run_args(
+            backend="transformers",
+            model="tuned",
+            adapter=empty,
+        )
+    (empty / "adapter_config.json").write_text("{}", encoding="utf-8")
+    with pytest.raises(FileNotFoundError, match="adapter_model.safetensors"):
+        eval_run.validate_run_args(
+            backend="transformers",
+            model="tuned",
+            adapter=empty,
+        )
+
+
+def _build_zero_effect_adapter(directory: Path) -> Path:
+    import torch
+    from peft import LoraConfig, get_peft_model
+    from transformers import AutoModelForCausalLM
+
+    from train.render import load_base_pin
+
+    repo_id, revision = load_base_pin()
+    model = AutoModelForCausalLM.from_pretrained(
+        repo_id,
+        revision=revision,
+        local_files_only=True,
+        dtype=torch.float16,
+        low_cpu_mem_usage=True,
+    )
+    config = LoraConfig(
+        r=1,
+        lora_alpha=1,
+        lora_dropout=0.0,
+        bias="none",
+        task_type="CAUSAL_LM",
+        target_modules=["q_proj"],
+        init_lora_weights=True,
+    )
+    adapted = get_peft_model(model, config)
+    for name, parameter in adapted.named_parameters():
+        if "lora_" in name:
+            parameter.data.zero_()
+    adapted.save_pretrained(directory)
+    return directory
+
+
+def test_zero_effect_adapter_matches_base_greedy_cpu(tmp_path: Path) -> None:
+    adapter_dir = _build_zero_effect_adapter(tmp_path / "zero-lora")
+    sha = eval_run.adapter_weights_sha256(adapter_dir)
+    assert len(sha) == 64
+    items = eval_run.load_jsonl(eval_run.SPLIT_PATHS["dev"])[:2]
+    assert len(items) == 2
+
+    base_runner = eval_run.TransformersRunner(model="base", requested_device="cpu")
+    adapter_runner = eval_run.TransformersRunner(
+        model="tuned",
+        requested_device="cpu",
+        adapter_dir=adapter_dir,
+    )
+    output = tmp_path / "tuned-dev-raw.jsonl"
+    for item in items:
+        base = base_runner(eval_run.query_for(item))
+        adapted = adapter_runner(eval_run.query_for(item))
+        assert adapted.answer == base.answer
+        eval_run.append_jsonl(
+            output,
+            eval_run.result_row(
+                item,
+                model="tuned",
+                backend="transformers",
+                tag="ghl-support",
+                generate=lambda _query, _gen=adapted: _gen,
+                adapter_dir=adapter_dir,
+                adapter_sha256=sha,
+            ),
+        )
+    rows = eval_run.load_jsonl(output)
+    assert rows[0]["adapter_dir"] == str(adapter_dir)
+    assert rows[0]["adapter_sha256"] == sha
+    print(json.dumps(rows[0], ensure_ascii=False)[:500])
