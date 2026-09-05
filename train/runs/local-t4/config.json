@@ -1,0 +1,197 @@
+{
+  "run_name": "local-t4",
+  "started_at": "2026-09-06 00:55:54 IST",
+  "device": "mps",
+  "git_sha": "ea665794329394bc36be8b31934011f661b2922f",
+  "versions": {
+    "python": "3.11.11",
+    "torch": "2.14.0",
+    "transformers": "5.16.1",
+    "peft": "0.20.0",
+    "bitsandbytes": "0.50.2",
+    "accelerate": "1.14.0",
+    "datasets": "5.0.1"
+  },
+  "base_model": {
+    "repo_id": "Qwen/Qwen2.5-1.5B-Instruct",
+    "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306"
+  },
+  "config": {
+    "run_name": "local-t4",
+    "seed": 42,
+    "device": "cuda",
+    "output_dir": "train/runs",
+    "data": {
+      "dir": "data/processed",
+      "train_file": "train.jsonl",
+      "val_file": "val.jsonl",
+      "cap_train": 8000,
+      "max_length": 512
+    },
+    "model": {
+      "load_in_4bit": true,
+      "quant_type": "nf4",
+      "double_quant": true,
+      "compute_dtype": "float16"
+    },
+    "lora": {
+      "r": 16,
+      "alpha": 32,
+      "dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ]
+    },
+    "optim": {
+      "lr": 0.0001,
+      "schedule": "cosine",
+      "warmup_ratio": 0.03,
+      "weight_decay": 0.0,
+      "max_grad_norm": 1.0
+    },
+    "train": {
+      "micro_batch_size": 1,
+      "grad_accum": 16,
+      "epochs": 1,
+      "max_steps": null,
+      "log_every": 25,
+      "save_every": 100,
+      "val_batches": 32,
+      "checkpoint_fractions": [
+        0.5,
+        1.0
+      ]
+    },
+    "hub": {
+      "repo_id": "sharadja/ghl-support-qlora-t4",
+      "private": true,
+      "push_checkpoints": true
+    },
+    "smoke": {
+      "rows": 64,
+      "steps": 20,
+      "grad_accum": 1,
+      "log_every": 5,
+      "save_every": 10,
+      "val_batches": 4,
+      "resume_from": 10,
+      "resume_tolerance": 0.05,
+      "data_dir": "tests/fixtures/train_smoke"
+    }
+  },
+  "data": {
+    "dir": "/Users/sharad/Projects/agents-hq/gohighlevel-assignement-1/data/processed",
+    "train_rows": 8000,
+    "train_rows_encoded": 8000,
+    "val_rows_encoded": 32,
+    "dropped_overlength": 0
+  },
+  "steps": {
+    "max_steps": 500,
+    "steps_per_epoch": 500,
+    "warmup_steps": 15,
+    "start_step": 0,
+    "checkpoint_steps": [
+      250,
+      500
+    ]
+  },
+  "trainable_params": 18464768,
+  "hub": {
+    "repo_id": "sharadja/ghl-support-qlora-t4",
+    "pushed": false,
+    "reason": "HF_TOKEN is not set; adapters stay local"
+  },
+  "finished_at": "2026-09-06 03:43:04 IST",
+  "wall_s": 10028.9,
+  "peak_memory_gb": 8.24,
+  "final_step": 500,
+  "logged": {
+    "25": {
+      "train_loss": 1.04698,
+      "val_loss": 1.09932
+    },
+    "50": {
+      "train_loss": 1.03037,
+      "val_loss": 0.91151
+    },
+    "75": {
+      "train_loss": 0.81327,
+      "val_loss": 0.8658
+    },
+    "100": {
+      "train_loss": 0.84883,
+      "val_loss": 0.79704
+    },
+    "125": {
+      "train_loss": 0.7924,
+      "val_loss": 0.75885
+    },
+    "150": {
+      "train_loss": 0.81476,
+      "val_loss": 0.75845
+    },
+    "175": {
+      "train_loss": 0.81444,
+      "val_loss": 0.72969
+    },
+    "200": {
+      "train_loss": 0.83459,
+      "val_loss": 0.71575
+    },
+    "225": {
+      "train_loss": 0.85512,
+      "val_loss": 0.70766
+    },
+    "250": {
+      "train_loss": 0.81033,
+      "val_loss": 0.69997
+    },
+    "275": {
+      "train_loss": 0.6431,
+      "val_loss": 0.68744
+    },
+    "300": {
+      "train_loss": 0.76525,
+      "val_loss": 0.67495
+    },
+    "325": {
+      "train_loss": 0.66678,
+      "val_loss": 0.66702
+    },
+    "350": {
+      "train_loss": 0.68445,
+      "val_loss": 0.66762
+    },
+    "375": {
+      "train_loss": 0.65227,
+      "val_loss": 0.65964
+    },
+    "400": {
+      "train_loss": 0.61863,
+      "val_loss": 0.65477
+    },
+    "425": {
+      "train_loss": 0.6933,
+      "val_loss": 0.65485
+    },
+    "450": {
+      "train_loss": 0.71277,
+      "val_loss": 0.65288
+    },
+    "475": {
+      "train_loss": 0.70209,
+      "val_loss": 0.65187
+    },
+    "500": {
+      "train_loss": 0.79433,
+      "val_loss": 0.6517
+    }
+  }
+}
