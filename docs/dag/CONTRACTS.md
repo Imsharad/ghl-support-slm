@@ -51,11 +51,11 @@ Processed row (`data/processed/*.jsonl`), one JSON object per line:
 
 Only `instruction` and `response` ever enter the model. `data/splits.json`: `{"seed": 42, "threshold": 0.87, "train": {"groups": [...], "rows": N, "sha256": "..."}, "val": {...}, "test": {...}}`.
 
-`configs/grouping.json` (task B2):
+`configs/grouping.json` (task B2; calibrated 0.86 on 2026-09-05 22:46 IST; `linkage` is how the cosine step clusters within intent, decided in B2's addendum because single-linkage chaining collapsed six intents):
 
 ```json
 {"embedding_model": "sentence-transformers/all-MiniLM-L6-v2", "normalize": "lower_strip_punct_keep_neg_num",
- "exact_match": true, "template_family": true, "cosine_threshold": 0.87, "labelled_pairs": 40, "report": "data/calibration/REPORT.md"}
+ "exact_match": true, "template_family": true, "cosine_threshold": 0.86, "linkage": "average", "labelled_pairs": 40, "report": "data/calibration/REPORT.md"}
 ```
 
 Scenario item (`eval/dev.jsonl`, `eval/challenge*.jsonl`):
