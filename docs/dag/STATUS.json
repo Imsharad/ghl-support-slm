@@ -1,7 +1,7 @@
 {
   "A1": {
-    "state": "running",
-    "note": "dispatched 2026-09-05 22:40 IST"
+    "state": "done",
+    "note": "a211c5e verified 22:40 IST; readme moved to docs/ASSIGNMENT.md"
   },
   "A2": {
     "state": "running",
@@ -122,5 +122,9 @@
   "R-G": {
     "state": "pending",
     "note": ""
+  },
+  "D0": {
+    "state": "running",
+    "note": "dispatched 22:45 IST, 30-min box"
   }
 }

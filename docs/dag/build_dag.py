@@ -295,6 +295,28 @@ Verify: 54 rows in the raw file; inspection file has 20 entries and the defect l
     ),
     # ---------------- Phase D: train and choose ----------------
     dict(
+        id="D0", worker="opus", phase="D", title="Local QLoRA timing probe on the M1 Pro (30-minute box)",
+        due="Sat 2026-09-05 23:59", est=0.5, deps=["A1"],
+        paths=["docs/LOCAL_QLORA_PROBE.md", ".scratch/"],
+        brief="""
+A1 found that bitsandbytes 0.50.2 installs and runs NF4 on this Mac, which contradicts the plan's "no local QLoRA" premise.
+Settle in 30 minutes whether local QLoRA is a real fallback for the cloud-GPU gate or too slow to matter.
+
+Do:
+- Download `Qwen/Qwen2.5-1.5B-Instruct` safetensors (latest revision is fine for a timing probe; note the revision) into the HF cache.
+  Sol's C3 will reuse the cache, so this is not wasted.
+- In `.scratch/qlora_probe.py`: load NF4 double-quant, fp16 compute, LoRA r16 alpha32 on q,k,v,o,gate,up,down via peft, on the best
+  available device (try mps, fall back to cpu), 8 synthetic 512-token sequences, micro-batch 1, gradient checkpointing on. Time 5
+  optimizer steps after 1 warmup step. Record peak memory (`torch.mps.driver_allocated_memory` or `resource`), seconds per step, and
+  whether loss is finite. If MPS refuses a kernel, record the exact error and try cpu once.
+- `docs/LOCAL_QLORA_PROBE.md`: device, versions, seconds per step, projected wall time for 2,000 rows x 1 epoch at accumulation 16
+  (= 2,000 forward/backward passes), memory, and a one-line verdict: "viable fallback under N hours" or "not viable, keep mlx-lm".
+  Stop at 30 minutes wall and write whatever you have.
+
+Verify: the probe file exists with a projected wall time or an exact failure message; nothing outside `.scratch/` and the doc touched.
+""",
+    ),
+    dict(
         id="D1", worker="opus", phase="D", title="train/train.py, configs, Colab notebook, check_run",
         due="Sun 2026-09-06 15:30", est=2.5, deps=["A1", "C2", "B1"],
         paths=["train/train.py", "configs/train.yaml", "configs/train-t4.yaml", "notebooks/train_colab.ipynb",

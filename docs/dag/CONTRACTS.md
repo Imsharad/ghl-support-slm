@@ -4,12 +4,14 @@ Every worker (Opus, Sol, Grok) reads this before its task brief. It fixes the th
 
 ## 1. Facts about this machine and the accounts
 
-- Mac: Apple M1 Pro, 16 GB unified memory, 230 GiB free. No CUDA. `bitsandbytes` does not install here; QLoRA runs on Colab Pro only.
+- Mac: Apple M1 Pro, 16 GB unified memory, 230 GiB free. No CUDA. Correction 2026-09-05 22:35 IST (A1): `bitsandbytes 0.50.2` does install here and an NF4 forward runs on cpu and mps; whether local QLoRA is a usable fallback is node D0's question. Real training still runs on Colab Pro.
 - System `python3` is 3.14; use the repo venv (`uv`, Python 3.11) via `uv run` for everything.
 - Installed: `uv 0.8.8`, `ollama` (binary present, no server running at 22:20 IST Sep 5, zero models pulled), `git`.
   `llama-server` and `llama-quantize` are absent; task C3 clones llama.cpp under `.scratch/`.
 - HF cache already has `sentence-transformers/all-MiniLM-L6-v2`. Hugging Face CLI is not logged in; `HF_TOKEN` comes from shark (node H0).
 - No Kaggle credentials on disk. The dataset comes from the HF mirror (section 3).
+- The assignment brief is `docs/ASSIGNMENT.md` (moved from `readme.md` by A1: this volume is case-insensitive, so `README.md` and `readme.md` were one file).
+- Locked versions (uv.lock at A1): python 3.11.11, torch 2.14.0, transformers 5.16.1, peft 0.20.0, trl 1.12.0, bitsandbytes 0.50.2, datasets 5.0.1, pandas 3.0.5. Consequences: write pandas with copy-on-write semantics (no chained assignment); QLoRA/SFTTrainer recipes for transformers 4.x and trl 0.x do not apply verbatim, read the trl 1.x API; the Colab notebook must `pip install` these exact versions, not Colab's preinstalled ones.
 - Deadlines (IST): Sun 2026-09-06 20:00 soft, Mon 2026-09-07 20:00 soft, Tue 2026-09-08 20:00 final.
 
 ## 2. Repository layout and ownership

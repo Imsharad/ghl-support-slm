@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-05 22:27 IST",
+  "generated_at": "2026-09-05 22:34 IST",
   "channel": "04861c85-e907-4639-9075-7c474cbd8b51",
   "thread": "1981860808e7d870aa450555e16a336f0c9d20b710a0fee98e401b96ebf5c593",
   "share_target": {
@@ -8,12 +8,12 @@
     "grok": 0.25
   },
   "share_actual": {
-    "opus": 0.5,
-    "sol": 0.25,
-    "grok": 0.25
+    "opus": 0.52,
+    "sol": 0.24,
+    "grok": 0.24
   },
   "counts": {
-    "opus": 10,
+    "opus": 11,
     "sol": 5,
     "grok": 5
   },
@@ -211,6 +211,21 @@
       "paths": [
         "eval/results/base-dev-raw.jsonl",
         "eval/results/BASE_DEV_INSPECTION.md"
+      ]
+    },
+    {
+      "id": "D0",
+      "worker": "opus",
+      "phase": "D",
+      "title": "Local QLoRA timing probe on the M1 Pro (30-minute box)",
+      "due": "Sat 2026-09-05 23:59",
+      "est": 0.5,
+      "deps": [
+        "A1"
+      ],
+      "paths": [
+        "docs/LOCAL_QLORA_PROBE.md",
+        ".scratch/"
       ]
     },
     {
