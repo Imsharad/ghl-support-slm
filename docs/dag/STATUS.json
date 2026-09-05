@@ -129,7 +129,7 @@
   },
   "C5": {
     "state": "running",
-    "note": "Sol process died at 535/2270 around 00:49 IST (10-min Bash cap shape); raw file intact; Sol told to relaunch detached and resume"
+    "note": "deferred 01:05 IST 2026-09-06: two detached launches died silently, root cause swap 15.4/16 GB used with training + Ollama + agents; 537/2270 rows preserved, resume after D2L finishes ~06:45 IST"
   },
   "B1b": {
     "state": "done",
