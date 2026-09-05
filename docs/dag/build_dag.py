@@ -144,7 +144,8 @@ Do:
 - Grouping: exact normalized match, then response-template family, then embedding cosine >= threshold from `configs/grouping.json`
   within intent (union-find). Split 80/10/10 by whole groups, stratified by intent, seed 42. If an intent cannot give every split at
   least one group, report it in the audit and keep the grouping (never break a group).
-- Output `data/processed/{train,val,test}.jsonl` with the row schema in CONTRACTS.md section 3; `data/splits.json` with group ids
+- Output `data/processed/{train,val,test}.jsonl` with the row schema in CONTRACTS.md section 3 (gitignored: Bitext is CDLA-Sharing-1.0,
+  so we publish code plus hashes, never rows; prepare.py must be deterministic from `data/raw/bitext.csv`); `data/splits.json` with group ids
   per split and sha256 of each jsonl; `data/audit.json` with counts per rule, per split, per intent, cross-split intersection checks
   (group ids and normalized instructions both empty), nearest cross-split neighbour cosine distribution, and residual-risk note.
 - Drop rows over 512 total tokens with the chat template applied (count them). Provide `--cap-train N` (used by the free-T4 config,

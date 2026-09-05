@@ -16,7 +16,11 @@ Every worker (Opus, Sol, Grok) reads this before its task brief. It fixes the th
 
 ## 2. Repository layout and ownership
 
-Repo: `/Users/sharad/Projects/agents-hq/gohighlevel-assignement-1` (git, branch `main`). One working tree shared by all workers; parallel safety comes from disjoint paths. Each task brief lists the paths it owns. Commit only those paths (`git add <paths>`), message `<TASK-ID>: <what>`.
+Repo: `/Users/sharad/Projects/agents-hq/gohighlevel-assignement-1` (git, branch `main`; it was briefly `master` until 22:50 IST Sep 5). One working tree shared by all workers; parallel safety comes from disjoint paths. Each task brief lists the paths it owns. Commit only those paths (`git add <paths>`), message `<TASK-ID>: <what>`.
+
+Commit identity: repo-local `user.name`/`user.email` are set to Sharad Jain / im.sharad.jain@gmail.com (this is shark's submission, so commits carry his identity). Workers commit with it; do not ask. Put your agent name in the commit body if you want attribution, e.g. `Authored-by: Sol`.
+
+Data licensing: Bitext is CDLA-Sharing-1.0 (see `docs/LICENSE_REVIEW.md`). Raw and processed rows are gitignored (`data/raw/`, `data/processed/`); the repo publishes fetch/prepare code and sha256 hashes, and `data/prepare.py` must regenerate the same files deterministically. Trained weights and metrics are Results and may be published.
 
 ```
 configs/        prompt.txt, eval.yaml, train.yaml, train-t4.yaml, cleaning.json, grouping.json, versions.json
@@ -34,7 +38,7 @@ docs/           plans/, dag/, LICENSE_REVIEW.md, CONVERSION.md, TRAINING.md, SEL
 
 ## 3. Data sources and schemas
 
-Dataset: HF `bitext/Bitext-customer-support-llm-chatbot-training-dataset`, pinned by commit revision in `artifacts/sources.json` (task A2). Columns `flags, instruction, category, intent, response`. 26,872 rows expected.
+Dataset: HF `bitext/Bitext-customer-support-llm-chatbot-training-dataset`, pinned by commit revision in `artifacts/sources.json` (task A2). Columns `flags, instruction, category, intent, response`. 26,872 rows confirmed by A2 (revision 430d1a89, sha256 6f81102b...). Note from A2: the CSV has 11 categories, not the 10 the card lists (extra `CONTACT`), and names `CANCEL`/`SHIPPING`/`SUBSCRIPTION` differ from the card; treat the CSV as truth and say so in the README. 385 distinct placeholders, 306 of them rare; flags `S` and `V` are undocumented.
 
 Base model: `Qwen/Qwen2.5-1.5B-Instruct`, pinned by commit revision in `configs/versions.json` (task A3). Apache-2.0 expected, verified offline by A3.
 

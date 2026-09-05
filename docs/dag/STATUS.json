@@ -4,16 +4,16 @@
     "note": "a211c5e verified 22:40 IST; readme moved to docs/ASSIGNMENT.md"
   },
   "A2": {
-    "state": "running",
-    "note": "dispatched 2026-09-05 22:40 IST"
+    "state": "done",
+    "note": "ae7fc5f verified 22:50 IST"
   },
   "A3": {
-    "state": "running",
-    "note": "dispatched 2026-09-05 22:40 IST"
+    "state": "done",
+    "note": "51d9bf5 committed by Fable 22:50 IST (Sol's files)"
   },
   "B2": {
-    "state": "pending",
-    "note": ""
+    "state": "running",
+    "note": "dispatched 22:52 IST"
   },
   "B1": {
     "state": "pending",
@@ -36,8 +36,8 @@
     "note": ""
   },
   "C3": {
-    "state": "pending",
-    "note": ""
+    "state": "running",
+    "note": "dispatched 22:52 IST; parity check waits on C2"
   },
   "C4": {
     "state": "pending",
@@ -104,8 +104,8 @@
     "note": ""
   },
   "R-A": {
-    "state": "pending",
-    "note": ""
+    "state": "done",
+    "note": "22:52 IST"
   },
   "R-B": {
     "state": "pending",
