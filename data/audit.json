@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-06 00:32 IST",
+  "generated_at": "2026-09-06 00:37 IST",
   "seed": 42,
   "threshold": 0.86,
   "linkage": "average",
@@ -216,17 +216,17 @@
     "train": {
       "rows": 17701,
       "groups": 3568,
-      "sha256": "bee364b9305f3531acbaddfc2bff59ec26d680ddffb79867b20a3d1d91ca6c20"
+      "sha256": "7824f79310ef6ca8cb372dc74def7d7ce8e342892a18cb929389ae0eb8a64926"
     },
     "val": {
       "rows": 2477,
       "groups": 447,
-      "sha256": "68e2087fa8bd446ed475738d72420fc689a6f9f6d2b5e1d8b0a75517d91565b5"
+      "sha256": "7917ee6cf825edfffcd0c755e04cda0a2fb591faa63000398e9d3645ec4450d9"
     },
     "test": {
       "rows": 2270,
       "groups": 447,
-      "sha256": "3ea44818a256693d7a73d48a6e8999ac51ca9a673576df72193d9caed8c6e018"
+      "sha256": "bb3559542cef0f8dab9b6d24377ee9d7f898975ef8a29edd5a486d2c3d813230"
     }
   },
   "per_intent": {
@@ -595,21 +595,22 @@
       "number": 0,
       "noun": 2805,
       "the": 470,
-      "standalone": 2497
+      "standalone": 2497,
+      "the_number": 0
     },
     "response": {
-      "number": 2213,
-      "noun": 536,
+      "number": 2207,
+      "noun": 542,
       "the": 2308,
-      "standalone": 11133
+      "standalone": 10692,
+      "the_number": 441
     }
   },
   "rows_text_changed": {
-    "train": 4920,
-    "val": 520,
-    "test": 562
+    "train": 280,
+    "val": 26,
+    "test": 40
   },
   "grouping_pinned_to": "24ab0d9",
-  "readme_note": "B1 cannot edit README.md. If near_collapse_intents is nonempty, G1 must copy those intents and shares into the data/splits section. B1b frame counts live in placeholder_frames.",
-  "rows_text_changed_versus": "B1 blanket your-noun wording (24ab0d9 processed text)"
+  "readme_note": "B1 cannot edit README.md. If near_collapse_intents is nonempty, G1 must copy those intents and shares into the data/splits section. B1b frame counts live in placeholder_frames."
 }

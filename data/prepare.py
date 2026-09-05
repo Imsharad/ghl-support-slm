@@ -51,7 +51,11 @@ PLACEHOLDER_RE = re.compile(r"\{\{([^{}]+)\}\}")
 FROZEN_SPLITS_COMMIT = "24ab0d9"
 NUMBER_HEADS = "order|purchase|invoice|tracking|account"
 NOUN_HEADS = "order|purchase|invoice|account"
-ID_FRAME_NAMES = ("number", "noun", "the", "standalone")
+ID_FRAME_NAMES = ("number", "noun", "the", "standalone", "the_number")
+_THE_NUMBER_PREFIX = re.compile(r"(?i)(?P<consumed>\bthe\s+number\s+)$")
+_PURCHASE_ORDER_NUMBER = re.compile(
+    r"(?i)(?P<consumed>(?:(?:\bthe|\bmy|\byour)\s+)?\bpurchase\s+order\s+number\s+)$"
+)
 _NUMBER_PREFIX = re.compile(
     rf"(?i)(?P<consumed>(?:(?:\bthe|\bmy|\byour)\s+)?\b(?P<head>{NUMBER_HEADS})\s+number\s+)$"
 )
@@ -228,6 +232,12 @@ def id_style_phrase(mapped: str, cleaning: dict) -> str | None:
 
 def apply_id_frame(prefix: str, possessive: str, noun_phrase: str) -> tuple[str, str, str]:
     """Consume a preceding frame and return (kept_prefix, replacement, frame_name)."""
+    match = _THE_NUMBER_PREFIX.search(prefix)
+    if match:
+        return prefix[: match.start()], f"{possessive} order number", "the_number"
+    match = _PURCHASE_ORDER_NUMBER.search(prefix)
+    if match:
+        return prefix[: match.start()], f"{possessive} purchase", "noun"
     match = _NUMBER_PREFIX.search(prefix)
     if match:
         head = match.group("head").casefold()
