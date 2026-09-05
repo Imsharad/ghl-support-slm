@@ -33,7 +33,7 @@
   },
   "C1": {
     "state": "done",
-    "note": "2baa00c verified 00:10 IST 2026-09-06 by Fable: 24 tests, live dry run 3/3 with resume, CHECK PASS"
+    "note": "2baa00c verified 00:10 IST 2026-09-06 by Fable: 24 tests, live dry run 3/3 with resume, CHECK PASS; follow-up owed: --adapter option on eval/run.py (Sol, before D3) so the notebook stops merging into artifacts/merged per checkpoint"
   },
   "C3": {
     "state": "done",
