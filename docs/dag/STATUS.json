@@ -33,7 +33,7 @@
   },
   "C1": {
     "state": "done",
-    "note": "2baa00c verified 00:10 IST 2026-09-06 by Fable: 24 tests, live dry run 3/3 with resume, CHECK PASS; follow-up owed: --adapter option on eval/run.py (Sol, before D3) so the notebook stops merging into artifacts/merged per checkpoint"
+    "note": "2baa00c verified 00:10 IST 2026-09-06 by Fable: 24 tests, live dry run 3/3 with resume, CHECK PASS; --adapter follow-up tracked as C1b"
   },
   "C3": {
     "state": "done",
@@ -133,7 +133,7 @@
   },
   "B1b": {
     "state": "done",
-    "note": "d573366 + 0af0f15 verified 00:40 IST 2026-09-06 by Fable: splits byte-identical to 24ab0d9, strict ok, 26 tests; 30 train responses still \"with number your order number\", generalised number frame requested"
+    "note": "d573366 + 0af0f15 + c19ee89 verified 00:45 IST 2026-09-06 by Fable: leftover regex 0 hits in all splits, 0 braces, group lists byte-identical to 24ab0d9, strict ok, 26 tests"
   },
   "G0": {
     "state": "done",
@@ -142,5 +142,9 @@
   "D2L": {
     "state": "running",
     "note": "launched 00:35:47 IST; process gone by 00:37 with no traceback (log ends after model load, resource_tracker shutdown warning); Opus alerted 00:41 IST to relaunch detached"
+  },
+  "C1b": {
+    "state": "running",
+    "note": "opened 00:45 IST 2026-09-06 (owed follow-up from D1 report); dispatched to Grok"
   }
 }

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-06 00:40 IST",
+  "generated_at": "2026-09-06 00:44 IST",
   "channel": "04861c85-e907-4639-9075-7c474cbd8b51",
   "thread": "1981860808e7d870aa450555e16a336f0c9d20b710a0fee98e401b96ebf5c593",
   "share_target": {
@@ -8,14 +8,14 @@
     "grok": 0.25
   },
   "share_actual": {
-    "opus": 0.32,
-    "sol": 0.36,
-    "grok": 0.32
+    "opus": 0.31,
+    "sol": 0.35,
+    "grok": 0.35
   },
   "counts": {
     "opus": 8,
     "sol": 9,
-    "grok": 8
+    "grok": 9
   },
   "nodes": [
     {
@@ -265,6 +265,22 @@
       ],
       "paths": [
         "README.md"
+      ]
+    },
+    {
+      "id": "C1b",
+      "worker": "grok",
+      "phase": "C",
+      "title": "eval/run.py --adapter: score a PEFT adapter without merging",
+      "due": "Sun 2026-09-06 02:30",
+      "est": 1.0,
+      "deps": [
+        "C1",
+        "D1"
+      ],
+      "paths": [
+        "eval/run.py",
+        "tests/test_eval.py"
       ]
     },
     {

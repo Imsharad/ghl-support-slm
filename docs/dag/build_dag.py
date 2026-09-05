@@ -366,6 +366,29 @@ Do:
 Verify: every local path linked in the README exists; no `{{`; `uv run pytest -q` passes; commit as `G0: README sections 2, 3, 5, 6, 8`.
 """,
     ),
+    dict(
+        id="C1b", worker="grok", phase="C", title="eval/run.py --adapter: score a PEFT adapter without merging",
+        due="Sun 2026-09-06 02:30", est=1.0, deps=["C1", "D1"],
+        paths=["eval/run.py", "tests/test_eval.py"],
+        brief="""
+D3 scores several checkpoints on dev. Today `--model tuned --backend transformers` only reads `artifacts/merged/`, so the
+Colab notebook merges each adapter into that directory and deletes it between checkpoints. Remove the dance.
+
+Do:
+- Add `--adapter <dir>` to `eval/run.py`. With it, the transformers backend loads the pinned fp16 base from
+  `configs/versions.json` (same revision as `tools/merge.py`) and wraps it with `PeftModel.from_pretrained(base, adapter_dir)`;
+  the tokenizer and prompt come from the adapter dir when present, else from the base. `--model tuned` without `--adapter`
+  keeps the current merged-directory behaviour; `--adapter` with `--backend ollama` is an error.
+- Record `adapter_dir` and its sha256 of `adapter_model.safetensors` in the raw file header/rows so D3 can prove which
+  checkpoint produced which answers.
+- Test with a disposable zero-effect rank-1 adapter as Sol did for E1 (build it in the test, delete after): answers with
+  `--adapter` on 2 dev items equal the base answers greedy on cpu. Add the argument-validation case.
+- Do not touch `serve/inference.py` (F1, Sol). Sol's C5 process is running `eval/run.py` right now; editing the file on disk
+  does not affect the loaded process, but do not delete or rename anything under `eval/results/`.
+
+Verify: `uv run pytest -q tests/test_eval.py` and the full suite; paste the raw-file header line showing adapter_dir and sha.
+""",
+    ),
     # ---------------- Phase D: train and choose ----------------
     dict(
         id="D0", worker="opus", phase="D", title="Local QLoRA timing probe on the M1 Pro (30-minute box)",
