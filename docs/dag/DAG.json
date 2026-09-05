@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-06 00:11 IST",
+  "generated_at": "2026-09-06 00:20 IST",
   "channel": "04861c85-e907-4639-9075-7c474cbd8b51",
   "thread": "1981860808e7d870aa450555e16a336f0c9d20b710a0fee98e401b96ebf5c593",
   "share_target": {
@@ -8,14 +8,14 @@
     "grok": 0.25
   },
   "share_actual": {
-    "opus": 0.32,
-    "sol": 0.36,
-    "grok": 0.32
+    "opus": 0.3,
+    "sol": 0.35,
+    "grok": 0.35
   },
   "counts": {
     "opus": 7,
     "sol": 8,
-    "grok": 7
+    "grok": 8
   },
   "nodes": [
     {
@@ -218,16 +218,37 @@
       "worker": "sol",
       "phase": "C",
       "title": "Base answers on the frozen test split plus automated metrics",
-      "due": "Sun 2026-09-06 03:00",
+      "due": "Sun 2026-09-06 04:00",
       "est": 1.5,
       "deps": [
         "B1",
+        "B1b",
         "C1",
         "C3"
       ],
       "paths": [
         "eval/results/base-test-raw.jsonl",
         "eval/results/base-test-auto.json"
+      ]
+    },
+    {
+      "id": "B1b",
+      "worker": "grok",
+      "phase": "B",
+      "title": "Frame-aware and voice-aware placeholder wording",
+      "due": "Sun 2026-09-06 02:00",
+      "est": 1.0,
+      "deps": [
+        "B1",
+        "C4"
+      ],
+      "paths": [
+        "data/prepare.py",
+        "data/processed/",
+        "data/splits.json",
+        "data/audit.json",
+        "configs/cleaning.json",
+        "tests/test_prepare.py"
       ]
     },
     {

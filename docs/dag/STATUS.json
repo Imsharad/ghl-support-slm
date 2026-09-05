@@ -40,8 +40,8 @@
     "note": "1a6499d + 2bf3d99 verified 23:57 IST by Fable: five-row CONVERSION.md, tokenizer and raw/chat parity all match, 11 tests pass"
   },
   "C4": {
-    "state": "running",
-    "note": "dispatched to Grok 00:15 IST 2026-09-06"
+    "state": "done",
+    "note": "aac92f6 verified 00:22 IST 2026-09-06 by Fable: 54 rows, 20 entries, 6 critical fails on base, 2 truncations; surfaced B1 wording defect"
   },
   "D1": {
     "state": "running",
@@ -128,7 +128,11 @@
     "note": "affd2e7 verified 00:08 IST 2026-09-06 by Fable: docs/LOCAL_QLORA_PROBE.md, MPS 2.567 s/step, 4.09 GB peak, random-token caveat present, probe procs gone"
   },
   "C5": {
+    "state": "pending",
+    "note": "paused 00:25 IST at 215/2270 rows; restarts after B1b since test-split text changes"
+  },
+  "B1b": {
     "state": "running",
-    "note": "new node 00:15 IST 2026-09-06: base test-split answers + auto metrics, dispatched to Sol"
+    "note": "opened 00:25 IST 2026-09-06 from C4 finding; dispatched to Grok"
   }
 }

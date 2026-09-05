@@ -299,7 +299,7 @@ Verify: 54 rows in the raw file; inspection file has 20 entries and the defect l
     ),
     dict(
         id="C5", worker="sol", phase="C", title="Base answers on the frozen test split plus automated metrics",
-        due="Sun 2026-09-06 03:00", est=1.5, deps=["B1", "C1", "C3"],
+        due="Sun 2026-09-06 04:00", est=1.5, deps=["B1", "B1b", "C1", "C3"],
         paths=["eval/results/base-test-raw.jsonl", "eval/results/base-test-auto.json"],
         brief="""
 Pre-generate the base half of D3's automated comparison so the tuned run on Sunday is not waiting an hour on the base.
@@ -312,6 +312,32 @@ Do:
   (ROUGE-L, cosine, placeholder rate, truncated rate, mean gen_tokens).
 
 Verify: `--check-complete` PASS on 2,270 rows; auto json has the per-intent breakdown.
+""",
+    ),
+    dict(
+        id="B1b", worker="grok", phase="B", title="Frame-aware and voice-aware placeholder wording",
+        due="Sun 2026-09-06 02:00", est=1.0, deps=["B1", "C4"],
+        paths=["data/prepare.py", "data/processed/", "data/splits.json", "data/audit.json", "configs/cleaning.json", "tests/test_prepare.py"],
+        brief="""
+C4 found that the blanket neutral wording for id-style placeholders is ungrammatical in the common frames and uses the
+assistant's voice inside the user turn: 782 train instructions read "purchase your order number", 767 "order your order
+number", 1,475 rows "number your order number", 760 "the your ...". Fix the wording, not the grouping.
+
+Do:
+- In `replace_placeholders`, make the wording depend on the field and the preceding words. Possessive P is "my" in the
+  instruction and "your" in the response. For every id-style placeholder in `placeholder_replace` whose wording is
+  "your <noun phrase>" (order number, invoice number, tracking number, account number, account id, account type, account
+  category, refund amount): `(order|purchase|invoice|tracking|account)\s+number\s+{{X}}` -> "P <noun> number";
+  `\b(order|purchase|invoice|account)\s+{{X}}` -> "P <that word>"; `\bthe\s+{{X}}` -> "P <noun phrase>";
+  standalone -> "P <noun phrase>". Keep Bitext typo rows as they are (a typo before the slot falls to the standalone form).
+- Add a `frame` count per rule to `data/audit.json` so the README can say how many rows took each form.
+- Regenerate. Splits must not move: group ids, split membership and `data/splits.json` group lists are expected to be
+  byte-identical to 24ab0d9 because `normalize` runs on the raw text; if anything moves, stop and report before committing.
+- `tests/test_prepare.py`: add cases for the four frames in both voices, and assert no processed instruction contains
+  "your order number" preceded by order/purchase/number, and no "the my"/"the your".
+
+Verify: `uv run python data/prepare.py` then `--audit-only --strict`; `uv run pytest -q`; report the count of rows whose text
+changed per split and confirm splits.json group lists are unchanged (diff against HEAD).
 """,
     ),
     # ---------------- Phase D: train and choose ----------------
