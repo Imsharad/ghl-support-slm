@@ -129,7 +129,7 @@
   },
   "C5": {
     "state": "running",
-    "note": "deferred 01:05 IST 2026-09-06: two detached launches died silently, root cause swap 15.4/16 GB used with training + Ollama + agents; 537/2270 rows preserved, resume after D2L finishes ~06:45 IST"
+    "note": "D2L done 03:43 IST, Mac free (47 pct RAM free 04:36 IST); Sol pinged 04:40 IST to resume from 537/2270 rows via .scratch/c5_run.sh detached. Earlier: two detached launches died silently under 15.4/16 GB swap"
   },
   "B1b": {
     "state": "done",
@@ -140,8 +140,8 @@
     "note": "536f937 verified 00:52 IST 2026-09-06 by Fable: 12 cited paths exist, prompt and bench table match sources, 11 markers. For G1: markers at README lines 70 (B1b numbers, now final after the-number patch), 136 (label should be E1 tuned bench), 162 (D1 is done; fill from docs/TRAINING.md)"
   },
   "D2L": {
-    "state": "running",
-    "note": "Fable launched detached 00:55:37 IST via .scratch/d2l_run.sh (launcher pid 20389, train.py pid 20394); log_every 25 opt steps = 400 passes so first log line ~01:15-01:25; 500 opt steps total, finish ~06:45 IST; Opus owns monitoring + check_run + LOCAL_RUN.md"
+    "state": "done",
+    "note": "training finished 03:43 IST 2026-09-06 exit 0: 500 opt steps in 10028.9 s, final train 0.7943 val 0.6517, peak 8.24 GB, checkpoints 100/200/250/300/400/500 under train/runs/local-t4 (untracked). Opus still owes check_run, plot_curves, docs/LOCAL_RUN.md; D3 scores these checkpoints instead of a Colab zip"
   },
   "C1b": {
     "state": "done",
