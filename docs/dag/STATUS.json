@@ -48,8 +48,8 @@
     "note": "2d43dfc+7542fda verified 00:38 IST 2026-09-06 by Fable: 26 tests, real mps smoke with resume proven; tests/fixtures/train_smoke accepted as D1 path"
   },
   "D3": {
-    "state": "pending",
-    "note": ""
+    "state": "held",
+    "note": "brief rewritten ce04e26 for local-t4 run; base test answers come from C5 file (sample 270 ids, subset files); Opus holds all generation until Sol reports C5 complete, expected ~05:15-05:20 IST 2026-09-06"
   },
   "E1": {
     "state": "running",
@@ -141,7 +141,7 @@
   },
   "D2L": {
     "state": "done",
-    "note": "training finished 03:43 IST 2026-09-06 exit 0: 500 opt steps in 10028.9 s, final train 0.7943 val 0.6517, peak 8.24 GB, checkpoints 100/200/250/300/400/500 under train/runs/local-t4 (untracked). Opus still owes check_run, plot_curves, docs/LOCAL_RUN.md; D3 scores these checkpoints instead of a Colab zip"
+    "note": "training finished 03:43 IST 2026-09-06 exit 0: 500 opt steps in 10028.9 s, final train 0.7943 val 0.6517, peak 8.24 GB, checkpoints 100/200/250/300/400/500 under train/runs/local-t4 (untracked). Opus still owes check_run, plot_curves, docs/LOCAL_RUN.md; D3 scores these checkpoints instead of a Colab zip | 0c3ee1b verified 04:50 IST by Fable: check_run PASS (note: check 4 reloads a checkpoint, so it needs one-model clearance), curves.png, docs/LOCAL_RUN.md; val curve is 32 fixed rows, trend only"
   },
   "C1b": {
     "state": "done",
