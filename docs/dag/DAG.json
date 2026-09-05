@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-06 00:20 IST",
+  "generated_at": "2026-09-06 00:21 IST",
   "channel": "04861c85-e907-4639-9075-7c474cbd8b51",
   "thread": "1981860808e7d870aa450555e16a336f0c9d20b710a0fee98e401b96ebf5c593",
   "share_target": {
@@ -8,13 +8,13 @@
     "grok": 0.25
   },
   "share_actual": {
-    "opus": 0.3,
-    "sol": 0.35,
-    "grok": 0.35
+    "opus": 0.29,
+    "sol": 0.38,
+    "grok": 0.33
   },
   "counts": {
     "opus": 7,
-    "sol": 8,
+    "sol": 9,
     "grok": 8
   },
   "nodes": [
@@ -249,6 +249,22 @@
         "data/audit.json",
         "configs/cleaning.json",
         "tests/test_prepare.py"
+      ]
+    },
+    {
+      "id": "G0",
+      "worker": "sol",
+      "phase": "C",
+      "title": "README sections that are already final",
+      "due": "Sun 2026-09-06 03:30",
+      "est": 1.0,
+      "deps": [
+        "C2",
+        "C3",
+        "F1"
+      ],
+      "paths": [
+        "README.md"
       ]
     },
     {

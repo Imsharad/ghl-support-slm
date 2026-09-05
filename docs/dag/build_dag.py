@@ -340,6 +340,32 @@ Verify: `uv run python data/prepare.py` then `--audit-only --strict`; `uv run py
 changed per split and confirm splits.json group lists are unchanged (diff against HEAD).
 """,
     ),
+    dict(
+        id="G0", worker="sol", phase="C", title="README sections that are already final",
+        due="Sun 2026-09-06 03:30", est=1.0, deps=["C2", "C3", "F1"],
+        paths=["README.md"],
+        brief="""
+Draft the README sections whose inputs are already frozen so G1 only has to add results. Order and headings from
+CONTRACTS.md section 7; keep the existing section numbers and the A1 developer quickstart.
+
+Do:
+- Section 5: the exact rendered prompt from `uv run python train/render.py` (text, not ids), and load-and-run commands for the
+  Ollama route against `ghl-base` today (the `ghl-support` tag and the adapter/merged routes get one line each marked
+  `[PENDING D3]` so G1 can fill them).
+- Section 6: the ghl-base block from `serve/bench_results.json` as a table with the file cited, hardware and Ollama version,
+  the cold-load numbers, and the 256-token cap note with the two truncated dev ids from `eval/results/base-dev-raw.jsonl`.
+- Section 8: reproduce steps in dependency order using the real commands from the briefs that have landed (uv sync, data/fetch.py,
+  data/prepare.py, --audit-only --strict, tools/convert.sh, ollama create with serve/Modelfile.base, eval/run.py, serve/bench.py,
+  tools/check_artifacts.py). Every command must be one you ran or one that exists on main.
+- Section 2, method half only: base model, pinned revision, licence line from `docs/LICENSE_REVIEW.md` (A3), Bitext licence and
+  why rows are not published, QLoRA settings from `docs/LOCAL_QLORA_PROBE.md` as the measured local fallback. Leave the
+  "why these choices" prose to G1.
+- Section 3: the structure and the cleaning-rule list from `configs/cleaning.json`, with numbers left as `[PENDING B1b]`.
+- Use exactly the marker form `[PENDING <node>]` for anything not yet final; G1 removes them. No other TODO text.
+
+Verify: every local path linked in the README exists; no `{{`; `uv run pytest -q` passes; commit as `G0: README sections 2, 3, 5, 6, 8`.
+""",
+    ),
     # ---------------- Phase D: train and choose ----------------
     dict(
         id="D0", worker="opus", phase="D", title="Local QLoRA timing probe on the M1 Pro (30-minute box)",

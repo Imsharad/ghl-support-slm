@@ -134,5 +134,9 @@
   "B1b": {
     "state": "running",
     "note": "opened 00:25 IST 2026-09-06 from C4 finding; dispatched to Grok"
+  },
+  "G0": {
+    "state": "running",
+    "note": "opened 00:32 IST 2026-09-06 to use Sol idle time while B1b runs; dispatched to Sol"
   }
 }
