@@ -11,3 +11,4 @@ artifacts/adapter/
 .gstack/
 eval/results/blind-key.json
 train/runs/**/checkpoint-*/
+data/processed/
