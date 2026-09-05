@@ -1,0 +1,204 @@
+{
+  "p-01": {
+    "same_scenario": false,
+    "reason": "Both create-account, but A is opening for dad with Account Category; B is a generic can-I-open with Account Type. Different beneficiary and slot.",
+    "intent_wrong": false
+  },
+  "p-02": {
+    "same_scenario": true,
+    "reason": "Same request: report a payment problem. Online vs generic error is wording, no extra specifics.",
+    "intent_wrong": false
+  },
+  "p-03": {
+    "same_scenario": true,
+    "reason": "Same how-to get money back; refunds vs reimbursements is wording.",
+    "intent_wrong": false
+  },
+  "p-04": {
+    "same_scenario": true,
+    "reason": "Same track-order on {{Order Number}}; how vs where is wording.",
+    "intent_wrong": false
+  },
+  "p-05": {
+    "same_scenario": true,
+    "reason": "Same change of delivery/shipping address; edit vs update is wording.",
+    "intent_wrong": false
+  },
+  "p-06": {
+    "same_scenario": true,
+    "reason": "Same delivery ETA request; purchase vs order, when vs how soon.",
+    "intent_wrong": false
+  },
+  "p-07": {
+    "same_scenario": true,
+    "reason": "Same newsletter signup; sign up vs subscribe.",
+    "intent_wrong": false
+  },
+  "p-08": {
+    "same_scenario": true,
+    "reason": "Same track-compensation/refund status; cannot-see-updates is the same ask.",
+    "intent_wrong": false
+  },
+  "p-09": {
+    "same_scenario": true,
+    "reason": "Same leave-feedback-about-company; B names email as the channel, not a different scenario.",
+    "intent_wrong": false
+  },
+  "p-10": {
+    "same_scenario": false,
+    "reason": "Same order id and change_order intent, but A is swap an item and B is generic edit. Different operation.",
+    "intent_wrong": false
+  },
+  "p-11": {
+    "same_scenario": true,
+    "reason": "Same file-a-complaint; customer vs consumer is wording.",
+    "intent_wrong": false
+  },
+  "p-12": {
+    "same_scenario": true,
+    "reason": "Same list payment options/methods.",
+    "intent_wrong": false
+  },
+  "p-13": {
+    "same_scenario": true,
+    "reason": "Same how-to get a refund of my money.",
+    "intent_wrong": false
+  },
+  "p-14": {
+    "same_scenario": true,
+    "reason": "Same reach an operator; how-to vs need-help is wording.",
+    "intent_wrong": false
+  },
+  "p-15": {
+    "same_scenario": true,
+    "reason": "Same see status of order {{Order Number}}.",
+    "intent_wrong": false
+  },
+  "p-16": {
+    "same_scenario": true,
+    "reason": "Same call customer assistance; can-I vs how-to.",
+    "intent_wrong": false
+  },
+  "p-17": {
+    "same_scenario": true,
+    "reason": "Same submit a delivery address; issue-with-new is still that task.",
+    "intent_wrong": false
+  },
+  "p-18": {
+    "same_scenario": true,
+    "reason": "Same refund-policy question: in what cases can I request a refund.",
+    "intent_wrong": false
+  },
+  "p-19": {
+    "same_scenario": false,
+    "reason": "A is generic modify order; B is switch a product on that order. Different operation.",
+    "intent_wrong": false
+  },
+  "p-20": {
+    "same_scenario": true,
+    "reason": "Same get/send bills from {{Person Name}}.",
+    "intent_wrong": false
+  },
+  "p-21": {
+    "same_scenario": false,
+    "reason": "A is switch to {{Account Type}}; B is use that account. Change vs operate.",
+    "intent_wrong": true,
+    "intent_wrong_note": "B reads as 'how to use', which Bitext filed under switch_account."
+  },
+  "p-22": {
+    "same_scenario": true,
+    "reason": "Same talk to a human agent.",
+    "intent_wrong": false
+  },
+  "p-23": {
+    "same_scenario": true,
+    "reason": "Same list allowed payment methods.",
+    "intent_wrong": false
+  },
+  "p-24": {
+    "same_scenario": true,
+    "reason": "Same customer-assistance calling hours.",
+    "intent_wrong": false
+  },
+  "p-25": {
+    "same_scenario": true,
+    "reason": "Same edit details on {{Account Category}} account; changing vs modify.",
+    "intent_wrong": false
+  },
+  "p-26": {
+    "same_scenario": true,
+    "reason": "Same see shipment methods; how vs where.",
+    "intent_wrong": false
+  },
+  "p-27": {
+    "same_scenario": false,
+    "reason": "A is switch to {{Account Type}}; B is use that account (typo touse). Same split as p-21.",
+    "intent_wrong": true,
+    "intent_wrong_note": "B reads as 'how to use', filed under switch_account."
+  },
+  "p-28": {
+    "same_scenario": true,
+    "reason": "Both swap an item/something on order {{Order Number}}.",
+    "intent_wrong": false
+  },
+  "p-29": {
+    "same_scenario": true,
+    "reason": "Same edit/modify purchase {{Order Number}}.",
+    "intent_wrong": false
+  },
+  "p-30": {
+    "same_scenario": true,
+    "reason": "Same check termination penalties; early is extra wording, not a different fee.",
+    "intent_wrong": false
+  },
+  "p-31": {
+    "same_scenario": true,
+    "reason": "Same edit the address; issues vs assistance is wording.",
+    "intent_wrong": false
+  },
+  "p-32": {
+    "same_scenario": true,
+    "reason": "Same check hours to contact customer service.",
+    "intent_wrong": false
+  },
+  "p-33": {
+    "same_scenario": true,
+    "reason": "Same recover/retrieve PIN of the profile.",
+    "intent_wrong": false
+  },
+  "p-34": {
+    "same_scenario": true,
+    "reason": "Same how to speak to an agent.",
+    "intent_wrong": false
+  },
+  "p-35": {
+    "same_scenario": true,
+    "reason": "Same create a gold account; how vs what-to-do.",
+    "intent_wrong": false
+  },
+  "p-36": {
+    "same_scenario": true,
+    "reason": "Same check news/updates on the rebate.",
+    "intent_wrong": false
+  },
+  "p-37": {
+    "same_scenario": true,
+    "reason": "Same how-soon-can-I-expect the product.",
+    "intent_wrong": false
+  },
+  "p-38": {
+    "same_scenario": true,
+    "reason": "Same see allowed payment methods; trying vs how-to.",
+    "intent_wrong": false
+  },
+  "p-39": {
+    "same_scenario": true,
+    "reason": "Same leave a company review; leave vs leaving.",
+    "intent_wrong": false
+  },
+  "p-40": {
+    "same_scenario": true,
+    "reason": "Same set up the secondary delivery address; typo howq.",
+    "intent_wrong": false
+  }
+}

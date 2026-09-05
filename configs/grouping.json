@@ -1,0 +1,14 @@
+{
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "normalize": "lower_strip_punct_keep_neg_num",
+  "exact_match": true,
+  "template_family": true,
+  "cosine_threshold": 0.86,
+  "labelled_pairs": 40,
+  "report": "data/calibration/REPORT.md",
+  "seed": 42,
+  "exact_match_on": "normalized_instruction",
+  "template_family_on": "response_after_slot_normalize",
+  "chosen_reason": "lowest T with zero labelled-different pairs at cosine >= T (band below T was not majority-different on this sample)",
+  "generated_at": "2026-09-05 22:46 IST"
+}
