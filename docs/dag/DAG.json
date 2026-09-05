@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-05 23:35 IST",
+  "generated_at": "2026-09-05 23:48 IST",
   "channel": "04861c85-e907-4639-9075-7c474cbd8b51",
   "thread": "1981860808e7d870aa450555e16a336f0c9d20b710a0fee98e401b96ebf5c593",
   "share_target": {
@@ -8,13 +8,13 @@
     "grok": 0.25
   },
   "share_actual": {
-    "opus": 0.48,
-    "sol": 0.24,
+    "opus": 0.43,
+    "sol": 0.29,
     "grok": 0.29
   },
   "counts": {
-    "opus": 10,
-    "sol": 5,
+    "opus": 9,
+    "sol": 6,
     "grok": 6
   },
   "nodes": [
@@ -143,7 +143,7 @@
     },
     {
       "id": "C2",
-      "worker": "opus",
+      "worker": "sol",
       "phase": "C",
       "title": "Prompt template rendering and loss-mask collator with fixtures",
       "due": "Sun 2026-09-06 14:00",

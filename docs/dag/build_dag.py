@@ -204,7 +204,7 @@ Verify: `uv run pytest -q tests/test_auto_metrics.py` passes.
     ),
     # ---------------- Phase C: harness and base first (Sun afternoon) ----------------
     dict(
-        id="C2", worker="opus", phase="C", title="Prompt template rendering and loss-mask collator with fixtures",
+        id="C2", worker="sol", phase="C", title="Prompt template rendering and loss-mask collator with fixtures",
         due="Sun 2026-09-06 14:00", est=1.5, deps=["A1", "A3"],
         paths=["train/collate.py", "train/render.py", "tests/test_prompt.py", "tests/fixtures/"],
         brief="""

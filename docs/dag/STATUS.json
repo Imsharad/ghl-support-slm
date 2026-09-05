@@ -28,8 +28,8 @@
     "note": "d2e43bd verified 23:12 IST, 5 tests pass"
   },
   "C2": {
-    "state": "pending",
-    "note": ""
+    "state": "running",
+    "note": "moved Opus -> Sol 23:50 IST (Opus queued on D0/B1, D0 past its 30-min box); dispatched to Sol"
   },
   "C1": {
     "state": "pending",
@@ -53,7 +53,7 @@
   },
   "E1": {
     "state": "running",
-    "note": "tools half (merge.py, fetch/check_artifacts.py, manifest schema) dispatched 23:35 IST against base Q8; merge/convert/push waits on D3"
+    "note": "3d4e940 tools half verified 23:48 IST by Fable: check/fetch PASS on base Q8, bad-sha exit 1, 5 tests pass; merge/convert/Modelfile/EXPORT.md wait on D3"
   },
   "E2": {
     "state": "pending",
