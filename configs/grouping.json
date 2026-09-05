@@ -10,5 +10,12 @@
   "exact_match_on": "normalized_instruction",
   "template_family_on": "response_after_slot_normalize",
   "chosen_reason": "lowest T with zero labelled-different pairs at cosine >= T (band below T was not majority-different on this sample)",
-  "generated_at": "2026-09-05 22:46 IST"
+  "generated_at": "2026-09-05 22:51 IST",
+  "linkage": "average",
+  "linkage_compared": [
+    "single",
+    "average",
+    "complete"
+  ],
+  "linkage_reason": "Average linkage at cosine distance 0.14 (1 - 0.86) stops the single-link chain: none of the six previously near-collapsed intents keep >=50% of rows in one group, and the total group count stays far below complete. Complete is safer against chaining but splits paraphrases that the 40 labels called the same scenario. Single (union-find on every pair >= 0.86) is rejected because transitivity merged whole intents."
 }

@@ -1,0 +1,155 @@
+{
+  "threshold": 0.86,
+  "chosen": "average",
+  "summaries": [
+    {
+      "linkage": "single",
+      "total_groups": 2358,
+      "near_intents": [
+        "cancel_order",
+        "change_order",
+        "change_shipping_address",
+        "check_payment_methods",
+        "complaint",
+        "delivery_period",
+        "newsletter_subscription",
+        "payment_issue",
+        "registration_problems",
+        "review",
+        "set_up_shipping_address",
+        "track_order"
+      ],
+      "n_near": 12,
+      "max_largest": 934,
+      "six": {
+        "cancel_order": {
+          "largest": 908,
+          "rows": 998,
+          "share": 0.91,
+          "groups": 39
+        },
+        "check_payment_methods": {
+          "largest": 934,
+          "rows": 999,
+          "share": 0.935,
+          "groups": 64
+        },
+        "newsletter_subscription": {
+          "largest": 931,
+          "rows": 999,
+          "share": 0.932,
+          "groups": 63
+        },
+        "payment_issue": {
+          "largest": 923,
+          "rows": 999,
+          "share": 0.924,
+          "groups": 55
+        },
+        "registration_problems": {
+          "largest": 889,
+          "rows": 999,
+          "share": 0.89,
+          "groups": 74
+        },
+        "set_up_shipping_address": {
+          "largest": 915,
+          "rows": 997,
+          "share": 0.918,
+          "groups": 71
+        }
+      }
+    },
+    {
+      "linkage": "average",
+      "total_groups": 4882,
+      "near_intents": [],
+      "n_near": 0,
+      "max_largest": 471,
+      "six": {
+        "cancel_order": {
+          "largest": 471,
+          "rows": 998,
+          "share": 0.472,
+          "groups": 65
+        },
+        "check_payment_methods": {
+          "largest": 78,
+          "rows": 999,
+          "share": 0.078,
+          "groups": 171
+        },
+        "newsletter_subscription": {
+          "largest": 200,
+          "rows": 999,
+          "share": 0.2,
+          "groups": 138
+        },
+        "payment_issue": {
+          "largest": 119,
+          "rows": 999,
+          "share": 0.119,
+          "groups": 130
+        },
+        "registration_problems": {
+          "largest": 102,
+          "rows": 999,
+          "share": 0.102,
+          "groups": 154
+        },
+        "set_up_shipping_address": {
+          "largest": 81,
+          "rows": 997,
+          "share": 0.081,
+          "groups": 170
+        }
+      }
+    },
+    {
+      "linkage": "complete",
+      "total_groups": 6676,
+      "near_intents": [],
+      "n_near": 0,
+      "max_largest": 246,
+      "six": {
+        "cancel_order": {
+          "largest": 246,
+          "rows": 998,
+          "share": 0.246,
+          "groups": 90
+        },
+        "check_payment_methods": {
+          "largest": 20,
+          "rows": 999,
+          "share": 0.02,
+          "groups": 254
+        },
+        "newsletter_subscription": {
+          "largest": 45,
+          "rows": 999,
+          "share": 0.045,
+          "groups": 209
+        },
+        "payment_issue": {
+          "largest": 60,
+          "rows": 999,
+          "share": 0.06,
+          "groups": 204
+        },
+        "registration_problems": {
+          "largest": 27,
+          "rows": 999,
+          "share": 0.027,
+          "groups": 222
+        },
+        "set_up_shipping_address": {
+          "largest": 30,
+          "rows": 997,
+          "share": 0.03,
+          "groups": 240
+        }
+      }
+    }
+  ],
+  "why": "Average linkage at cosine distance 0.14 (1 - 0.86) stops the single-link chain: none of the six previously near-collapsed intents keep >=50% of rows in one group, and the total group count stays far below complete. Complete is safer against chaining but splits paraphrases that the 40 labels called the same scenario. Single (union-find on every pair >= 0.86) is rejected because transitivity merged whole intents."
+}

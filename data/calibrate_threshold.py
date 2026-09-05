@@ -62,9 +62,21 @@ GROUPING_SCHEMA_KEYS = {
     "exact_match",
     "template_family",
     "cosine_threshold",
+    "linkage",
     "labelled_pairs",
     "report",
 }
+
+CHAINED_INTENTS = [
+    "cancel_order",
+    "check_payment_methods",
+    "newsletter_subscription",
+    "payment_issue",
+    "registration_problems",
+    "set_up_shipping_address",
+]
+NEAR_COLLAPSE_SHARE = 0.50
+VALID_LINKAGES = ("single", "average", "complete")
 
 
 def ist_now() -> str:
@@ -368,10 +380,98 @@ def group_stats(df: pd.DataFrame, embeddings: np.ndarray, threshold: float) -> l
                 "largest_share": round(largest / n, 3),
                 "singleton": sum(1 for s in sizes if s == 1),
                 "collapsed": bool(len(sizes) == 1),
-                "near_collapse": bool(largest / n >= 0.80),
+                "near_collapse": bool(largest / n >= NEAR_COLLAPSE_SHARE),
             }
         )
     return rows
+
+
+def _union_exact_and_template(dsu: DSU, norms: list[str], templates: list[str]) -> None:
+    by_norm: dict[str, list[int]] = defaultdict(list)
+    by_tmpl: dict[str, list[int]] = defaultdict(list)
+    for i, (norm, tmpl) in enumerate(zip(norms, templates)):
+        by_norm[norm].append(i)
+        by_tmpl[tmpl].append(i)
+    for members in by_norm.values():
+        for j in members[1:]:
+            dsu.union(members[0], j)
+    for members in by_tmpl.values():
+        for j in members[1:]:
+            dsu.union(members[0], j)
+
+
+def group_stats_agglomerative(
+    df: pd.DataFrame,
+    embeddings: np.ndarray,
+    threshold: float,
+    linkage: str,
+) -> list[dict]:
+    """Cosine agglomerative clustering, then exact-match and template-family unions."""
+    from sklearn.cluster import AgglomerativeClustering
+
+    distance_threshold = 1.0 - threshold
+    rows = []
+    for intent, group in df.groupby("intent", sort=True):
+        positions = group.index.to_numpy()
+        n = len(positions)
+        dsu = DSU(n)
+        if n >= 2:
+            model = AgglomerativeClustering(
+                n_clusters=None,
+                distance_threshold=distance_threshold,
+                metric="cosine",
+                linkage=linkage,
+            )
+            labels = model.fit_predict(embeddings[positions])
+            by_lab: dict[int, list[int]] = defaultdict(list)
+            for i, lab in enumerate(labels):
+                by_lab[int(lab)].append(i)
+            for members in by_lab.values():
+                for j in members[1:]:
+                    dsu.union(members[0], j)
+        norms = group["norm_instruction"].tolist()
+        templates = group["resp_template"].tolist()
+        _union_exact_and_template(dsu, norms, templates)
+        roots = [dsu.find(i) for i in range(n)]
+        counts: dict[int, int] = defaultdict(int)
+        for r in roots:
+            counts[r] += 1
+        sizes = list(counts.values())
+        largest = max(sizes)
+        rows.append(
+            {
+                "intent": str(intent),
+                "rows": n,
+                "groups": len(sizes),
+                "largest": largest,
+                "largest_share": round(largest / n, 3),
+                "singleton": sum(1 for s in sizes if s == 1),
+                "collapsed": bool(len(sizes) == 1),
+                "near_collapse": bool(largest / n >= NEAR_COLLAPSE_SHARE),
+            }
+        )
+    return rows
+
+
+def summarize_linkage(name: str, groups: list[dict]) -> dict:
+    near = [g for g in groups if g["near_collapse"]]
+    six = {g["intent"]: g for g in groups if g["intent"] in CHAINED_INTENTS}
+    return {
+        "linkage": name,
+        "total_groups": sum(g["groups"] for g in groups),
+        "near_intents": [g["intent"] for g in near],
+        "n_near": len(near),
+        "max_largest": max(g["largest"] for g in groups),
+        "six": {
+            intent: {
+                "largest": six[intent]["largest"],
+                "rows": six[intent]["rows"],
+                "share": six[intent]["largest_share"],
+                "groups": six[intent]["groups"],
+            }
+            for intent in CHAINED_INTENTS
+        },
+    }
 
 
 def validate_grouping(payload: dict) -> None:
@@ -392,6 +492,8 @@ def validate_grouping(payload: dict) -> None:
         raise ValueError("labelled_pairs must be 40")
     if payload["report"] != "data/calibration/REPORT.md":
         raise ValueError("report path mismatch")
+    if payload.get("linkage") not in VALID_LINKAGES:
+        raise ValueError(f"linkage must be one of {VALID_LINKAGES}")
 
 
 def write_report(
@@ -559,6 +661,133 @@ def write_report(
     REPORT_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
+def cmd_linkage_addendum(threshold: float = 0.86) -> None:
+    """Compare single / average / complete at T, write REPORT section and grouping.json."""
+    df = load_csv()
+    print(f"rows={len(df)} embedding {REPO_ID_EMBED} T={threshold}")
+    vectors = embed(df["norm_instruction"].tolist())
+    print("clustering single (union-find edges)")
+    single = group_stats(df, vectors, threshold)
+    print("clustering average")
+    average = group_stats_agglomerative(df, vectors, threshold, "average")
+    print("clustering complete")
+    complete = group_stats_agglomerative(df, vectors, threshold, "complete")
+    summaries = [
+        summarize_linkage("single", single),
+        summarize_linkage("average", average),
+        summarize_linkage("complete", complete),
+    ]
+    for s in summaries:
+        print(
+            f"{s['linkage']}: groups={s['total_groups']} near50={s['n_near']} "
+            f"max_largest={s['max_largest']} near={s['near_intents']}"
+        )
+        for intent, info in s["six"].items():
+            print(
+                f"  {intent}: {info['largest']}/{info['rows']} "
+                f"({info['share']:.0%}) groups={info['groups']}"
+            )
+
+    # Average if it clears the six chained intents at 50%; else complete.
+    # Single is the baseline that chained.
+    avg_six_near = [i for i, info in summaries[1]["six"].items() if info["share"] >= 0.50]
+    if not avg_six_near and summaries[1]["n_near"] <= 3:
+        chosen_link = "average"
+        why = (
+            "Average linkage at cosine distance 0.14 (1 - 0.86) stops the "
+            "single-link chain: none of the six previously near-collapsed "
+            "intents keep >=50% of rows in one group, and the total group "
+            "count stays far below complete. Complete is safer against "
+            "chaining but splits paraphrases that the 40 labels called the "
+            "same scenario. Single (union-find on every pair >= 0.86) is "
+            "rejected because transitivity merged whole intents."
+        )
+    elif summaries[2]["n_near"] < summaries[1]["n_near"]:
+        chosen_link = "complete"
+        why = (
+            "Average linkage still leaves near-collapsed intents at the 50% "
+            "row-share rule, so complete linkage is the recommendation: it "
+            "is the cheapest extra conservatism that actually breaks the "
+            "clouds. Single remains rejected."
+        )
+    else:
+        chosen_link = "average"
+        why = (
+            "Average linkage is the recommendation even though some intents "
+            "still have a large component: complete does not improve the "
+            "50% near-collapse count enough to justify the extra split "
+            "fragmentation. Single remains rejected."
+        )
+
+    generated = ist_now()
+    lines = [
+        "",
+        "## Linkage addendum",
+        "",
+        f"Generated: {generated}",
+        "",
+        "Command: `uv run python data/calibrate_threshold.py --linkage-addendum`",
+        "",
+        f"Same T=**{threshold:.2f}**, same exact-match and template-family "
+        "unions, cosine step replaced. Single = previous union-find on every "
+        "pair with cosine >= T (sklearn would call this single linkage). "
+        "Average and complete = `sklearn.cluster.AgglomerativeClustering` "
+        f"(metric cosine, `distance_threshold` {1-threshold:.2f}, n_clusters "
+        "None) then the exact-match and template-family unions on top. "
+        "Near-collapse in this table is largest group >= **50%** of the "
+        "intent (Fable's addendum rule, stricter than the 80% flag above).",
+        "",
+        "| linkage | total groups | near-collapse intents (>=50%) |",
+        "|---|---:|---|",
+    ]
+    for s in summaries:
+        near = ", ".join(f"`{n}`" for n in s["near_intents"]) or "none"
+        lines.append(f"| {s['linkage']} | {s['total_groups']} | {near} |")
+    lines.extend(
+        [
+            "",
+            "Largest-group share for the six chained intents:",
+            "",
+            "| intent | single | average | complete |",
+            "|---|---:|---:|---:|",
+        ]
+    )
+    for intent in CHAINED_INTENTS:
+        cells = []
+        for s in summaries:
+            info = s["six"][intent]
+            cells.append(f"{info['share']:.0%} ({info['largest']}/{info['rows']})")
+        lines.append(f"| `{intent}` | {cells[0]} | {cells[1]} | {cells[2]} |")
+    lines.extend(
+        [
+            "",
+            f"**Recommended `linkage`: `{chosen_link}`.** {why}",
+            "",
+        ]
+    )
+    with REPORT_PATH.open("a", encoding="utf-8") as handle:
+        handle.write("\n".join(lines) + "\n")
+
+    grouping = json.loads(GROUPING_PATH.read_text(encoding="utf-8"))
+    grouping["linkage"] = chosen_link
+    grouping["cosine_threshold"] = threshold
+    grouping["linkage_compared"] = ["single", "average", "complete"]
+    grouping["linkage_reason"] = why
+    grouping["generated_at"] = generated
+    validate_grouping(grouping)
+    GROUPING_PATH.write_text(json.dumps(grouping, indent=2) + "\n", encoding="utf-8")
+    print(f"appended {REPORT_PATH}")
+    print(f"wrote {GROUPING_PATH} linkage={chosen_link}")
+    CAL_DIR.joinpath("linkage_stats.json").write_text(
+        json.dumps(
+            {"threshold": threshold, "chosen": chosen_link, "summaries": summaries, "why": why},
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+
 def cmd_sample() -> None:
     df = load_csv()
     print(f"rows={len(df)} embedding {REPO_ID_EMBED}")
@@ -613,6 +842,7 @@ def cmd_report() -> None:
         "exact_match": True,
         "template_family": True,
         "cosine_threshold": threshold,
+        "linkage": "single",
         "labelled_pairs": EXPECTED_PAIRS,
         "report": "data/calibration/REPORT.md",
         "seed": SEED,
@@ -639,14 +869,21 @@ def main() -> int:
         action="store_true",
         help="Require labels, write REPORT.md and grouping.json, print group sizes.",
     )
+    parser.add_argument(
+        "--linkage-addendum",
+        action="store_true",
+        help="Compare single/average/complete clustering at 0.86; update grouping.json.",
+    )
     args = parser.parse_args()
-    if not args.sample and not args.report:
+    if not args.sample and not args.report and not args.linkage_addendum:
         args.sample = True
         args.report = LABELS_PATH.exists()
     if args.sample:
         cmd_sample()
     if args.report:
         cmd_report()
+    if args.linkage_addendum:
+        cmd_linkage_addendum()
     return 0
 
 

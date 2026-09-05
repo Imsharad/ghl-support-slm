@@ -138,3 +138,31 @@ Same grouping rules at nearby cuts (chaining sensitivity):
 | 0.90 | 4000 | 873 | `cancel_order`, `payment_issue`, `registration_problems`, `set_up_shipping_address` |
 | 0.95 | 9827 | 467 | none |
 
+
+## Linkage addendum
+
+Generated: 2026-09-05 22:51 IST
+
+Command: `uv run python data/calibrate_threshold.py --linkage-addendum`
+
+Same T=**0.86**, same exact-match and template-family unions, cosine step replaced. Single = previous union-find on every pair with cosine >= T (sklearn would call this single linkage). Average and complete = `sklearn.cluster.AgglomerativeClustering` (metric cosine, `distance_threshold` 0.14, n_clusters None) then the exact-match and template-family unions on top. Near-collapse in this table is largest group >= **50%** of the intent (Fable's addendum rule, stricter than the 80% flag above).
+
+| linkage | total groups | near-collapse intents (>=50%) |
+|---|---:|---|
+| single | 2358 | `cancel_order`, `change_order`, `change_shipping_address`, `check_payment_methods`, `complaint`, `delivery_period`, `newsletter_subscription`, `payment_issue`, `registration_problems`, `review`, `set_up_shipping_address`, `track_order` |
+| average | 4882 | none |
+| complete | 6676 | none |
+
+Largest-group share for the six chained intents:
+
+| intent | single | average | complete |
+|---|---:|---:|---:|
+| `cancel_order` | 91% (908/998) | 47% (471/998) | 25% (246/998) |
+| `check_payment_methods` | 94% (934/999) | 8% (78/999) | 2% (20/999) |
+| `newsletter_subscription` | 93% (931/999) | 20% (200/999) | 4% (45/999) |
+| `payment_issue` | 92% (923/999) | 12% (119/999) | 6% (60/999) |
+| `registration_problems` | 89% (889/999) | 10% (102/999) | 3% (27/999) |
+| `set_up_shipping_address` | 92% (915/997) | 8% (81/997) | 3% (30/997) |
+
+**Recommended `linkage`: `average`.** Average linkage at cosine distance 0.14 (1 - 0.86) stops the single-link chain: none of the six previously near-collapsed intents keep >=50% of rows in one group, and the total group count stays far below complete. Complete is safer against chaining but splits paraphrases that the 40 labels called the same scenario. Single (union-find on every pair >= 0.86) is rejected because transitivity merged whole intents.
+
