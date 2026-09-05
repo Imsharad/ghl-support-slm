@@ -16,8 +16,8 @@
     "note": "0e95878 linkage=average; 23:00 IST"
   },
   "B1": {
-    "state": "running",
-    "note": "moved Opus -> Grok 00:00 IST 2026-09-06 (Grok built B2 grouping; Opus silent on D0); dispatched to Grok"
+    "state": "done",
+    "note": "24ab0d9 verified 00:14 IST 2026-09-06 by Fable: audit --strict ok, 7 prepare tests, schema matches CONTRACTS s3, 0 placeholders in test; cancel_order 80% one group, 64/1/1"
   },
   "B3": {
     "state": "done",
@@ -32,16 +32,16 @@
     "note": "59e6fdb verified 23:57 IST by Fable: 6 prompt tests, render CLI sample matches Modelfile.base rendering"
   },
   "C1": {
-    "state": "running",
-    "note": "moved Opus -> Sol 00:00 IST 2026-09-06 (Opus silent on D0 since 22:45 dispatch); dispatched to Sol"
+    "state": "done",
+    "note": "2baa00c verified 00:10 IST 2026-09-06 by Fable: 24 tests, live dry run 3/3 with resume, CHECK PASS"
   },
   "C3": {
     "state": "done",
     "note": "1a6499d + 2bf3d99 verified 23:57 IST by Fable: five-row CONVERSION.md, tokenizer and raw/chat parity all match, 11 tests pass"
   },
   "C4": {
-    "state": "pending",
-    "note": ""
+    "state": "running",
+    "note": "dispatched to Grok 00:15 IST 2026-09-06"
   },
   "D1": {
     "state": "running",
@@ -126,5 +126,9 @@
   "D0": {
     "state": "done",
     "note": "affd2e7 verified 00:08 IST 2026-09-06 by Fable: docs/LOCAL_QLORA_PROBE.md, MPS 2.567 s/step, 4.09 GB peak, random-token caveat present, probe procs gone"
+  },
+  "C5": {
+    "state": "running",
+    "note": "new node 00:15 IST 2026-09-06: base test-split answers + auto metrics, dispatched to Sol"
   }
 }

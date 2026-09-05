@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-06 00:02 IST",
+  "generated_at": "2026-09-06 00:11 IST",
   "channel": "04861c85-e907-4639-9075-7c474cbd8b51",
   "thread": "1981860808e7d870aa450555e16a336f0c9d20b710a0fee98e401b96ebf5c593",
   "share_target": {
@@ -8,13 +8,13 @@
     "grok": 0.25
   },
   "share_actual": {
-    "opus": 0.33,
-    "sol": 0.33,
-    "grok": 0.33
+    "opus": 0.32,
+    "sol": 0.36,
+    "grok": 0.32
   },
   "counts": {
     "opus": 7,
-    "sol": 7,
+    "sol": 8,
     "grok": 7
   },
   "nodes": [
@@ -211,6 +211,23 @@
       "paths": [
         "eval/results/base-dev-raw.jsonl",
         "eval/results/BASE_DEV_INSPECTION.md"
+      ]
+    },
+    {
+      "id": "C5",
+      "worker": "sol",
+      "phase": "C",
+      "title": "Base answers on the frozen test split plus automated metrics",
+      "due": "Sun 2026-09-06 03:00",
+      "est": 1.5,
+      "deps": [
+        "B1",
+        "C1",
+        "C3"
+      ],
+      "paths": [
+        "eval/results/base-test-raw.jsonl",
+        "eval/results/base-test-auto.json"
       ]
     },
     {

@@ -297,6 +297,23 @@ Do:
 Verify: 54 rows in the raw file; inspection file has 20 entries and the defect list (possibly empty, say "none found").
 """,
     ),
+    dict(
+        id="C5", worker="sol", phase="C", title="Base answers on the frozen test split plus automated metrics",
+        due="Sun 2026-09-06 03:00", est=1.5, deps=["B1", "C1", "C3"],
+        paths=["eval/results/base-test-raw.jsonl", "eval/results/base-test-auto.json"],
+        brief="""
+Pre-generate the base half of D3's automated comparison so the tuned run on Sunday is not waiting an hour on the base.
+
+Do:
+- `uv run python eval/run.py --model base --backend ollama --split test --check-complete` (2,270 rows, serial, temperature 0).
+  Resume by id if interrupted; do not regenerate rows that already exist.
+- `uv run python eval/auto_metrics.py --raw eval/results/base-test-raw.jsonl --refs data/processed/test.jsonl --out eval/results/base-test-auto.json`.
+- Commit both files. Report row count, failures, wall time, tokens/sec, and the headline numbers from the auto file
+  (ROUGE-L, cosine, placeholder rate, truncated rate, mean gen_tokens).
+
+Verify: `--check-complete` PASS on 2,270 rows; auto json has the per-intent breakdown.
+""",
+    ),
     # ---------------- Phase D: train and choose ----------------
     dict(
         id="D0", worker="opus", phase="D", title="Local QLoRA timing probe on the M1 Pro (30-minute box)",
