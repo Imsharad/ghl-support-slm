@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-06 00:37 IST",
+  "generated_at": "2026-09-06 00:42 IST",
   "seed": 42,
   "threshold": 0.86,
   "linkage": "average",
@@ -216,17 +216,17 @@
     "train": {
       "rows": 17701,
       "groups": 3568,
-      "sha256": "7824f79310ef6ca8cb372dc74def7d7ce8e342892a18cb929389ae0eb8a64926"
+      "sha256": "307c59da350336a7bc603c5b2221043099df828ef55e1d409095868c4d51c6a7"
     },
     "val": {
       "rows": 2477,
       "groups": 447,
-      "sha256": "7917ee6cf825edfffcd0c755e04cda0a2fb591faa63000398e9d3645ec4450d9"
+      "sha256": "b5f2e52d0d327cabd7cf8f83097c634c2f1132f6274e344d1677b05f02b304d3"
     },
     "test": {
       "rows": 2270,
       "groups": 447,
-      "sha256": "bb3559542cef0f8dab9b6d24377ee9d7f898975ef8a29edd5a486d2c3d813230"
+      "sha256": "ef864aace40157971664c067b12972fddc448ba24729a3a6f8658015faee20af"
     }
   },
   "per_intent": {
@@ -595,21 +595,19 @@
       "number": 0,
       "noun": 2805,
       "the": 470,
-      "standalone": 2497,
-      "the_number": 0
+      "standalone": 2497
     },
     "response": {
-      "number": 2207,
+      "number": 2763,
       "noun": 542,
       "the": 2308,
-      "standalone": 10692,
-      "the_number": 441
+      "standalone": 10577
     }
   },
   "rows_text_changed": {
-    "train": 280,
-    "val": 26,
-    "test": 40
+    "train": 80,
+    "val": 12,
+    "test": 7
   },
   "grouping_pinned_to": "24ab0d9",
   "readme_note": "B1 cannot edit README.md. If near_collapse_intents is nonempty, G1 must copy those intents and shares into the data/splits section. B1b frame counts live in placeholder_frames."

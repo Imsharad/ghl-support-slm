@@ -199,8 +199,21 @@ def test_id_placeholder_four_frames_both_voices() -> None:
     assert reject_id is None
     assert inst == "cancel with my order number"
     assert resp == "cancel with your order number"
-    assert counts["instruction"]["the_number"] == 1
-    assert counts["response"]["the_number"] == 1
+    assert counts["instruction"]["number"] == 1
+    assert counts["response"]["number"] == 1
+
+    counts = prepare.empty_frame_counts()
+    inst, resp, _, reject_id = prepare.apply_cleaning(
+        "cancel with number {{Order Number}}",
+        "cancel with number {{Order Number}}",
+        CLEANING,
+        frame_counts=counts,
+    )
+    assert reject_id is None
+    assert inst == "cancel with my order number"
+    assert resp == "cancel with your order number"
+    assert counts["instruction"]["number"] == 1
+    assert counts["response"]["number"] == 1
 
     counts = prepare.empty_frame_counts()
     inst, resp, _, reject_id = prepare.apply_cleaning(
@@ -233,11 +246,9 @@ def test_processed_instructions_have_no_assistant_voice_or_double_article() -> N
     bad_voice = re.compile(
         r"\b(order|purchase|number)\s+your order number", re.IGNORECASE
     )
-    leftover = re.compile(
-        r"(the\s+number\s+your order number|purchase\s+your order number)",
-        re.IGNORECASE,
+    fable_leftover = re.compile(
+        r"\b(order|purchase|number)\s+your order number|\bthe (my|your)\b"
     )
-    double_article = re.compile(r"\bthe (my|your)\b")
     cases = [
         "question about cancelling order {{Order Number}}",
         "question about canceling purchase {{Order Number}}",
@@ -252,8 +263,8 @@ def test_processed_instructions_have_no_assistant_voice_or_double_article() -> N
         )
         assert reject_id is None
         assert bad_voice.search(inst) is None
-        assert double_article.search(inst) is None
-        assert double_article.search(resp) is None
+        assert fable_leftover.search(inst) is None
+        assert fable_leftover.search(resp) is None
         assert "your order number" not in inst.lower()
 
     if (PROCESSED_DIR / "train.jsonl").exists():
@@ -262,8 +273,7 @@ def test_processed_instructions_have_no_assistant_voice_or_double_article() -> N
                 inst = row["instruction"]
                 blob = inst + "\n" + row["response"]
                 assert bad_voice.search(inst) is None, row["id"]
-                assert leftover.search(blob) is None, row["id"]
-                assert double_article.search(blob) is None, row["id"]
+                assert fable_leftover.search(blob) is None, row["id"]
 
 
 @pytest.mark.skipif(not SPLITS_PATH.exists(), reason="run data/prepare.py first")
