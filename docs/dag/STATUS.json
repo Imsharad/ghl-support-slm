@@ -37,7 +37,7 @@
   },
   "C3": {
     "state": "running",
-    "note": "dispatched 22:52 IST; parity check waits on C2"
+    "note": "built + ghl-base served 23:07 IST; parity table waits on C2"
   },
   "C4": {
     "state": "pending",
@@ -64,8 +64,8 @@
     "note": ""
   },
   "F1": {
-    "state": "pending",
-    "note": ""
+    "state": "running",
+    "note": "dispatched 23:15 IST against ghl-base; rerun bench on ghl-support after E1"
   },
   "G1": {
     "state": "pending",
