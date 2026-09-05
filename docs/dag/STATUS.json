@@ -12,20 +12,20 @@
     "note": "51d9bf5 committed by Fable 22:50 IST (Sol's files)"
   },
   "B2": {
-    "state": "running",
-    "note": "8ee31b6 accepted 23:20 IST; addendum: linkage sensitivity + grouping.json linkage key"
+    "state": "done",
+    "note": "0e95878 linkage=average; 23:00 IST"
   },
   "B1": {
     "state": "pending",
     "note": ""
   },
   "B3": {
-    "state": "pending",
-    "note": ""
+    "state": "done",
+    "note": "3be07c2 verified 23:05 IST; awaits H1 approval then seal"
   },
   "B4": {
-    "state": "pending",
-    "note": ""
+    "state": "running",
+    "note": "reassigned Opus -> Grok 23:05 IST (Opus is the critical path, Grok idle)"
   },
   "C2": {
     "state": "pending",

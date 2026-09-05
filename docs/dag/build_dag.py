@@ -184,7 +184,7 @@ pasted into your report.
 """,
     ),
     dict(
-        id="B4", worker="opus", phase="B", title="Bitext test automated metrics module",
+        id="B4", worker="grok", phase="B", title="Bitext test automated metrics module",
         due="Sun 2026-09-06 15:00", est=1.0, deps=["A1"],
         paths=["eval/auto_metrics.py", "tests/test_auto_metrics.py"],
         brief="""

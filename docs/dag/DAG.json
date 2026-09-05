@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-05 22:48 IST",
+  "generated_at": "2026-09-05 22:59 IST",
   "channel": "04861c85-e907-4639-9075-7c474cbd8b51",
   "thread": "1981860808e7d870aa450555e16a336f0c9d20b710a0fee98e401b96ebf5c593",
   "share_target": {
@@ -8,14 +8,14 @@
     "grok": 0.25
   },
   "share_actual": {
-    "opus": 0.52,
+    "opus": 0.48,
     "sol": 0.24,
-    "grok": 0.24
+    "grok": 0.29
   },
   "counts": {
-    "opus": 11,
+    "opus": 10,
     "sol": 5,
-    "grok": 5
+    "grok": 6
   },
   "nodes": [
     {
@@ -128,7 +128,7 @@
     },
     {
       "id": "B4",
-      "worker": "opus",
+      "worker": "grok",
       "phase": "B",
       "title": "Bitext test automated metrics module",
       "due": "Sun 2026-09-06 15:00",
