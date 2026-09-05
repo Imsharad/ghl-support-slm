@@ -16,8 +16,8 @@
     "note": "0e95878 linkage=average; 23:00 IST"
   },
   "B1": {
-    "state": "pending",
-    "note": ""
+    "state": "running",
+    "note": "moved Opus -> Grok 00:00 IST 2026-09-06 (Grok built B2 grouping; Opus silent on D0); dispatched to Grok"
   },
   "B3": {
     "state": "done",
@@ -28,16 +28,16 @@
     "note": "d2e43bd verified 23:12 IST, 5 tests pass"
   },
   "C2": {
-    "state": "running",
-    "note": "moved Opus -> Sol 23:50 IST (Opus queued on D0/B1, D0 past its 30-min box); dispatched to Sol"
+    "state": "done",
+    "note": "59e6fdb verified 23:57 IST by Fable: 6 prompt tests, render CLI sample matches Modelfile.base rendering"
   },
   "C1": {
-    "state": "pending",
-    "note": ""
+    "state": "running",
+    "note": "moved Opus -> Sol 00:00 IST 2026-09-06 (Opus silent on D0 since 22:45 dispatch); dispatched to Sol"
   },
   "C3": {
-    "state": "running",
-    "note": "1a6499d sources committed 23:10 IST; five-row docs/CONVERSION.md parity table pending C2 (Opus)"
+    "state": "done",
+    "note": "1a6499d + 2bf3d99 verified 23:57 IST by Fable: five-row CONVERSION.md, tokenizer and raw/chat parity all match, 11 tests pass"
   },
   "C4": {
     "state": "pending",
@@ -125,6 +125,6 @@
   },
   "D0": {
     "state": "running",
-    "note": "dispatched 22:45 IST, 30-min box"
+    "note": "dispatched 22:45 IST, 30-min box; chased 00:00 IST 2026-09-06, no report yet"
   }
 }

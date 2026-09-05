@@ -126,7 +126,7 @@ Verify: `configs/grouping.json` validates against the schema; REPORT.md has the 
 """,
     ),
     dict(
-        id="B1", worker="opus", phase="B", title="data/prepare.py: clean, group, split, audit, freeze",
+        id="B1", worker="grok", phase="B", title="data/prepare.py: clean, group, split, audit, freeze",
         due="Sun 2026-09-06 12:30", est=2.5, deps=["A1", "A2", "B2"],
         paths=["data/prepare.py", "data/processed/", "data/splits.json", "data/audit.json",
                "configs/cleaning.json", "tests/test_prepare.py"],
@@ -226,7 +226,7 @@ Verify: `uv run pytest -q tests/test_prompt.py` passes; paste the rendered sampl
 """,
     ),
     dict(
-        id="C1", worker="opus", phase="C", title="Eval harness: eval/run.py and eval/score.py with bootstrap",
+        id="C1", worker="sol", phase="C", title="Eval harness: eval/run.py and eval/score.py with bootstrap",
         due="Sun 2026-09-06 16:30", est=2.5, deps=["A1", "B3", "C2"],
         paths=["eval/run.py", "eval/score.py", "eval/blind.py", "tests/test_eval.py"],
         brief="""

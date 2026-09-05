@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-05 23:48 IST",
+  "generated_at": "2026-09-05 23:57 IST",
   "channel": "04861c85-e907-4639-9075-7c474cbd8b51",
   "thread": "1981860808e7d870aa450555e16a336f0c9d20b710a0fee98e401b96ebf5c593",
   "share_target": {
@@ -8,14 +8,14 @@
     "grok": 0.25
   },
   "share_actual": {
-    "opus": 0.43,
-    "sol": 0.29,
-    "grok": 0.29
+    "opus": 0.33,
+    "sol": 0.33,
+    "grok": 0.33
   },
   "counts": {
-    "opus": 9,
-    "sol": 6,
-    "grok": 6
+    "opus": 7,
+    "sol": 7,
+    "grok": 7
   },
   "nodes": [
     {
@@ -91,7 +91,7 @@
     },
     {
       "id": "B1",
-      "worker": "opus",
+      "worker": "grok",
       "phase": "B",
       "title": "data/prepare.py: clean, group, split, audit, freeze",
       "due": "Sun 2026-09-06 12:30",
@@ -161,7 +161,7 @@
     },
     {
       "id": "C1",
-      "worker": "opus",
+      "worker": "sol",
       "phase": "C",
       "title": "Eval harness: eval/run.py and eval/score.py with bootstrap",
       "due": "Sun 2026-09-06 16:30",
