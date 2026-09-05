@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "artifacts": [
+    {
+      "path": "artifacts/base-q8.gguf",
+      "sha256": "eb2837d6dd3d8724fe51f80796e2dd16ba3bb38dd4301b43a4704d0c1219e7a5",
+      "bytes": 1646572704,
+      "hub_url": null,
+      "base_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+      "converter_commit": "6a1a922d269908a29cbd4b49c27e6a8e7fd10fae",
+      "tokenizer_sha": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "prompt_sha": "d738ddb811ab3d1bb0d0804b2f1a9978b48435f9adb518159b5360ff7bd53443",
+      "ollama_version": "0.24.0",
+      "created_at": "2026-09-05 22:48:21 IST"
+    }
+  ]
+}
