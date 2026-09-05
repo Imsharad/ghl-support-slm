@@ -1,0 +1,13 @@
+.venv/
+data/raw/
+artifacts/**/*.gguf
+artifacts/merged/
+artifacts/adapter/
+**/__pycache__/
+.pytest_cache/
+*.log
+.DS_Store
+.scratch/
+.gstack/
+eval/results/blind-key.json
+train/runs/**/checkpoint-*/

@@ -1,0 +1,1527 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GoHighLevel SLM — Master (index + progressive disclosure)</title>
+<style>
+
+:root {
+  color-scheme: light;
+  --ivory:#FAF9F5; --paper:#fff; --slate:#141413; --clay:#D97757; --clay-d:#B85C3E;
+  --oat:#E3DACC; --olive:#788C5D; --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5;
+  --g500:#87867F; --g700:#3D3D3A; --accent-soft:#F4E7DF; --crit:#A8402A; --good:#788C5D;
+  --serif:ui-serif,Georgia,"Times New Roman",Times,serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --shadow:0 10px 30px rgba(20,20,19,.08);
+  --sidebar-w: 280px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--clay-d)}
+a:hover{color:var(--slate)}
+code,.mono{font-family:var(--mono)}
+p code,li code,td code,dd code,.why code,.qa code,.sum-rec code{
+  font-size:.86em;background:var(--g100);padding:1px 6px;border-radius:4px;color:var(--g700)}
+pre{font-family:var(--mono);font-size:12.5px;line-height:1.5;background:var(--g100);
+  border:1.5px solid var(--g200);border-radius:10px;padding:14px 16px;overflow-x:auto;margin:12px 0 0;color:var(--g700)}
+pre b{color:var(--clay-d);font-weight:600}
+:focus-visible{outline:2px solid var(--clay);outline-offset:3px;border-radius:4px}
+
+/* shell */
+.app{display:grid;grid-template-columns:var(--sidebar-w) 1fr;min-height:100vh}
+@media(max-width:960px){.app{grid-template-columns:1fr}}
+.sidebar{position:sticky;top:0;align-self:start;height:100vh;overflow:auto;padding:24px 18px 40px;
+  border-right:1.5px solid var(--g300);background:var(--ivory);z-index:20}
+@media(max-width:960px){
+  .sidebar{position:relative;height:auto;border-right:none;border-bottom:1.5px solid var(--g300)}
+}
+.main{min-width:0;padding:0 36px 100px;max-width:920px}
+@media(max-width:640px){.main{padding:0 18px 80px}}
+
+/* sidebar index */
+.side-brand{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--g500);
+  display:flex;align-items:center;gap:10px;margin:0 0 14px}
+.side-brand::before{content:"";width:20px;height:1.5px;background:var(--clay)}
+.side-title{font-family:var(--serif);font-size:22px;font-weight:500;margin:0 0 6px;letter-spacing:-.01em;line-height:1.15}
+.side-title em{font-style:italic;color:var(--clay)}
+.side-sub{font-size:12.5px;color:var(--g700);margin:0 0 16px}
+
+.toolbar{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.modes{display:flex;flex-wrap:wrap;gap:6px}
+.modes button,.toolbtn{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;
+  border:1.5px solid var(--g300);background:var(--paper);color:var(--g700);border-radius:999px;
+  padding:6px 10px;cursor:pointer}
+.modes button.active{border-color:var(--slate);background:var(--slate);color:var(--ivory)}
+.modes button:hover,.toolbtn:hover{border-color:var(--slate);color:var(--slate)}
+.toolrow{display:flex;flex-wrap:wrap;gap:6px}
+.search{width:100%;font-family:var(--sans);font-size:13px;padding:8px 10px;border:1.5px solid var(--g300);
+  border-radius:10px;background:var(--paper);color:var(--slate)}
+.search:focus{outline:none;border-color:var(--clay)}
+
+.idx{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.idx a{display:grid;grid-template-columns:28px 1fr;gap:8px;padding:8px 10px;border-radius:10px;
+  text-decoration:none;color:var(--g700);border:1.5px solid transparent}
+.idx a:hover{background:var(--g100);color:var(--slate)}
+.idx a.active{background:var(--paper);border-color:var(--g300);box-shadow:var(--shadow);color:var(--slate)}
+.idx a .n{font-family:var(--mono);font-size:10px;color:var(--clay);padding-top:2px}
+.idx a .lab{font-size:13px;font-weight:550;line-height:1.25}
+.idx a .blurb{grid-column:2;font-size:11.5px;color:var(--g500);margin-top:2px}
+.idx a[data-hidden="1"]{display:none}
+.side-foot{margin-top:18px;padding-top:14px;border-top:1px solid var(--g200);font-size:11.5px;color:var(--g500)}
+.side-foot .prog{height:5px;background:var(--g200);border-radius:999px;overflow:hidden;margin:8px 0}
+.side-foot .prog i{display:block;height:100%;width:0;background:var(--clay);transition:width .2s}
+
+/* hero */
+.hero{padding:48px 0 28px;border-bottom:1.5px solid var(--g300);margin-bottom:8px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);
+  margin:0 0 14px;display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+.hero h1{font-family:var(--serif);font-weight:500;font-size:clamp(28px,4vw,44px);line-height:1.08;
+  letter-spacing:-.018em;margin:0;max-width:18ch}
+.hero h1 em{font-style:italic;color:var(--clay)}
+.hero .intro{font-size:15.5px;color:var(--g700);margin:16px 0 0;max-width:620px}
+.hero .intro b{color:var(--clay);font-weight:600;font-style:italic}
+.hero-grid{display:grid;grid-template-columns:1fr 280px;gap:36px;align-items:end;margin-top:8px}
+@media(max-width:800px){.hero-grid{grid-template-columns:1fr}}
+.hero-fig{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hero-fig .q{border-radius:10px;border:1.5px solid var(--g300);background:var(--paper);padding:10px;
+  aspect-ratio:1;display:flex;flex-direction:column;justify-content:space-between}
+.hero-fig .q .qtag{font-family:var(--mono);font-size:8px;letter-spacing:.06em;text-transform:uppercase;color:var(--g500)}
+.hero-fig .q .qwin{font-family:var(--serif);font-size:14px;font-style:italic}
+.hero-fig .q.soft{background:var(--g100)}
+.hero-fig .q.emph{border-color:var(--slate);box-shadow:0 10px 26px rgba(20,20,19,.10)}
+.axis-note{font-family:var(--mono);font-size:10px;color:var(--g500);letter-spacing:.06em;text-transform:uppercase;
+  margin:8px 0 0;display:flex;justify-content:space-between}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:22px}
+@media(max-width:800px){.kpis{grid-template-columns:1fr 1fr}}
+.stat{background:var(--g100);border:1.5px solid var(--g200);border-radius:11px;padding:12px 14px}
+.stat .lbl{font-family:var(--mono);font-size:10px;color:var(--g500);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
+.stat .val{font-family:var(--serif);font-size:22px;margin-top:4px;font-variant-numeric:tabular-nums}
+.stat .sub{font-size:11.5px;color:var(--g500);margin-top:2px}
+.stat.hot{background:var(--accent-soft);border-color:var(--clay)}
+.stat.hot .val{color:var(--clay-d)}
+
+/* section disclosure */
+section.sec{margin-top:18px;scroll-margin-top:24px}
+section.sec[data-hidden="1"]{display:none}
+details.sec-disc{background:var(--paper);border:1.5px solid var(--g300);border-radius:14px;overflow:hidden}
+details.sec-disc>summary{cursor:pointer;list-style:none;padding:16px 20px;display:grid;
+  grid-template-columns:36px 1fr auto;gap:12px;align-items:start;user-select:none}
+details.sec-disc>summary::-webkit-details-marker{display:none}
+details.sec-disc>summary .idx{font-family:var(--mono);font-size:13px;color:var(--clay);font-weight:600;padding-top:4px}
+details.sec-disc>summary h2{font-family:var(--serif);font-weight:500;font-size:22px;margin:0;letter-spacing:-.01em}
+details.sec-disc>summary .count{font-family:var(--mono);font-size:10px;color:var(--g500);background:var(--g100);
+  padding:2px 8px;border-radius:999px;margin-top:4px;display:inline-block}
+details.sec-disc>summary .chev{font-family:var(--mono);color:var(--g500);font-size:16px;padding-top:2px;
+  transition:transform .15s}
+details.sec-disc[open]>summary .chev{transform:rotate(45deg)}
+details.sec-disc>summary .sec-blurb{grid-column:2;font-size:13px;color:var(--g700);margin:4px 0 0}
+.sec-inner{padding:0 20px 20px 68px;border-top:1px solid var(--g200)}
+@media(max-width:640px){
+  details.sec-disc>summary{grid-template-columns:28px 1fr auto}
+  .sec-inner{padding:0 16px 16px 16px}
+}
+.sec-intro{font-size:14.5px;color:var(--g700);margin:14px 0 16px;max-width:680px}
+
+/* nested disclosure */
+.disc{border:1.5px solid var(--g200);border-radius:12px;background:var(--ivory);margin:0 0 10px}
+.disc>summary{cursor:pointer;list-style:none;padding:12px 14px;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:baseline}
+.disc>summary::-webkit-details-marker{display:none}
+.disc>summary::after{content:"+";margin-left:auto;font-family:var(--mono);color:var(--g500);font-size:14px}
+.disc[open]>summary::after{content:"–"}
+.sum-k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--clay);font-weight:600}
+.sum-t{font-family:var(--serif);font-size:16px;font-weight:500;color:var(--slate);letter-spacing:-.006em}
+.sum-rec{font-size:12.5px;color:var(--g700);width:100%;padding-left:0}
+.disc-decision .sum-rec{color:var(--clay-d);font-family:var(--mono);font-size:11.5px}
+.disc-body{padding:0 14px 14px}
+.disc-stack{display:flex;flex-direction:column;gap:0}
+.open-x{margin:8px 0 0;font-family:var(--mono);font-size:12px}
+.disc[data-hidden="1"]{display:none}
+
+/* reuse brief components inside disc-body */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.cols{grid-template-columns:1fr}}
+.panel{background:var(--paper);border:1.5px solid var(--g300);border-radius:14px;padding:18px 20px;margin-bottom:12px}
+.panel h3{font-family:var(--serif);font-weight:500;font-size:17px;margin:0 0 8px;letter-spacing:-.008em}
+.panel h3 .k{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--clay);display:block;margin-bottom:4px;font-style:normal}
+.panel ul,.panel ol{margin:0;padding-left:18px;font-size:14px;color:var(--g700)}
+.panel li{margin:5px 0}
+.panel li b{color:var(--slate);font-weight:600}
+.panel p{font-size:14px;color:var(--g700);margin:0 0 8px}
+.panel.callout{background:var(--accent-soft);border-color:var(--clay)}
+.panel.callout p{color:var(--slate)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:720px){.grid2{grid-template-columns:1fr}}
+.bridge{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:720px){.bridge{grid-template-columns:1fr}}
+.recipe{font-family:var(--mono);font-size:12.5px;line-height:1.7;background:var(--g100);
+  border:1.5px solid var(--g200);border-radius:12px;padding:14px 16px;color:var(--g700);margin:12px 0}
+.recipe strong{color:var(--slate)}
+
+.dcard{background:var(--paper);border:1.5px solid var(--g300);border-radius:12px;padding:16px 18px;
+  display:grid;grid-template-columns:150px 1fr;gap:14px}
+@media(max-width:760px){.dcard{grid-template-columns:1fr}}
+.dcard .dk{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--clay);font-weight:600}
+.dcard .title{font-family:var(--serif);font-size:18px;margin-top:2px}
+.dcard .qn{font-size:13px;color:var(--g500);margin-top:6px;line-height:1.45}
+.opts{list-style:none;margin:0;padding:0}
+.opts li{display:grid;grid-template-columns:96px 1fr;gap:10px;padding:8px 0;border-top:1px solid var(--g200);font-size:13.5px;color:var(--g700)}
+.opts li:first-child{border-top:none;padding-top:0}
+@media(max-width:520px){.opts li{grid-template-columns:1fr}}
+.opts li b{color:var(--slate)}
+.tag{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+  padding:2px 7px;border-radius:999px;background:var(--paper);color:var(--g500);border:1px solid var(--g300);
+  align-self:start}
+.tag.rec{background:var(--accent-soft);color:var(--clay-d);border-color:var(--clay)}
+.tag.no{color:var(--crit);border-color:var(--crit)}
+.tag.hot{background:var(--accent-soft);color:var(--clay-d);border-color:var(--clay)}
+.tag.good{background:#E8EDE1;color:#4F5F3C;border-color:#C9D4B8}
+.opts li.rec{background:var(--g100);margin:0 -10px;padding:8px 10px;border-radius:8px;border-top:none}
+.opts li.rec + li{border-top:none}
+.why{font-size:13px;color:var(--g700);margin:10px 0 0;padding-top:8px;border-top:1.5px dashed var(--g300)}
+.why b{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--g500);margin-right:8px}
+
+.steps{list-style:none;margin:0;padding:0}
+.step{display:grid;grid-template-columns:44px 1fr;gap:14px;padding:0}
+.step .n{width:40px;height:40px;border-radius:999px;background:var(--paper);border:1.5px solid var(--slate);
+  display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:12px;font-weight:600;color:var(--clay)}
+.step .body{background:var(--paper);border:1.5px solid var(--g300);border-radius:12px;padding:14px 16px}
+.step .head{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;margin-bottom:6px}
+.step .head h3{font-family:var(--serif);font-weight:500;font-size:17px;margin:0}
+.step .head .day,.step .head .out{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--g500);background:var(--g100);padding:2px 8px;border-radius:999px}
+.step .head .out{color:var(--clay-d);margin-left:auto;background:transparent}
+.step p{font-size:13.5px;color:var(--g700);margin:0 0 6px}
+.step ul{margin:0;padding-left:18px;font-size:13px;color:var(--g700)}
+.step .gate{margin-top:8px;font-size:12.5px;padding:8px 10px;border-left:3px solid var(--clay);background:var(--g100);border-radius:0 8px 8px 0}
+.step .gate b{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--clay-d);margin-right:6px}
+
+.trap{background:var(--paper);border:1.5px solid var(--g300);border-radius:10px;padding:14px 16px}
+.trap .tn{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--crit);font-weight:600}
+.trap h3{font-family:var(--serif);font-weight:500;font-size:16px;margin:4px 0 6px}
+.trap p{font-size:13px;color:var(--g700);margin:0 0 6px}
+.trap .fix{font-size:13px;color:var(--slate);margin:0}
+.trap .fix b{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--good);margin-right:6px}
+
+.miss{background:var(--paper);border:1.5px solid var(--g300);border-radius:10px;padding:14px 16px}
+.miss h3{font-family:var(--serif);font-weight:500;font-size:16px;margin:0 0 6px}
+.miss p{font-size:13.5px;color:var(--g700);margin:0}
+
+a.tcard,.tcard{display:flex;flex-direction:column;gap:6px;background:var(--paper);border:1.5px solid var(--g300);
+  border-radius:12px;padding:14px 16px;text-decoration:none;color:inherit}
+a.tcard:hover{border-color:var(--slate);box-shadow:var(--shadow)}
+.tcard .meta{font-family:var(--mono);font-size:11px;color:var(--g500)}
+.tcard .title{font-family:var(--serif);font-size:16px;font-weight:500;margin:0}
+.tcard .quote{font-size:13px;color:var(--g700);border-left:2px solid var(--clay);padding-left:10px;margin:4px 0}
+.tcard .why{font-size:12.5px;color:var(--g700);margin:0;padding:0;border:none}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.tier{font-family:var(--mono);font-size:10px;color:var(--clay);float:right}
+
+table.lens{width:100%;border-collapse:collapse;font-size:13.5px}
+table.lens th{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--g500);
+  text-align:left;padding:0 10px 8px 0;border-bottom:1.5px solid var(--g300)}
+table.lens td{padding:10px 10px 10px 0;border-bottom:1px solid var(--g200);vertical-align:top;color:var(--g700)}
+table.lens td:first-child{font-family:var(--serif);font-size:15px;color:var(--slate);white-space:nowrap}
+@media(max-width:760px){
+  table.lens thead{display:none}
+  table.lens tr{display:block;padding:8px 0;border-bottom:1px solid var(--g200)}
+  table.lens td{display:block;padding:2px 0;border:none;white-space:normal}
+}
+
+.check-wrap{background:var(--paper);border:1.5px solid var(--g300);border-radius:14px;padding:8px 20px 16px}
+.check-group{padding:12px 0 4px;border-top:1px solid var(--g200)}
+.check-group:first-child{border-top:none}
+.check-group h3{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--clay);margin:0 0 6px}
+.ck{display:flex;gap:10px;align-items:flex-start;padding:6px 0;font-size:13.5px;color:var(--g700);cursor:pointer}
+.ck input{appearance:none;-webkit-appearance:none;width:17px;height:17px;flex-shrink:0;margin:2px 0 0;
+  border:1.5px solid var(--g300);border-radius:5px;background:var(--paper);cursor:pointer;position:relative}
+.ck input:checked{background:var(--slate);border-color:var(--slate)}
+.ck input:checked::after{content:"";position:absolute;left:5px;top:1px;width:4px;height:9px;border:solid var(--ivory);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.ck input:checked + span{color:var(--g500);text-decoration:line-through;text-decoration-color:var(--g300)}
+.ck span b{color:var(--slate)}
+.check-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;flex-wrap:wrap}
+.progress{flex:1;min-width:120px;height:6px;background:var(--g200);border-radius:999px;overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:var(--clay);transition:width .2s}
+.pcount{font-family:var(--mono);font-size:11px;color:var(--g500)}
+button.reset{font-family:var(--mono);font-size:11px;color:var(--g700);background:var(--paper);
+  border:1.5px solid var(--g300);border-radius:999px;padding:5px 10px;cursor:pointer}
+
+.qa-list{display:flex;flex-direction:column;gap:8px}
+details.qa{background:var(--paper);border:1.5px solid var(--g300);border-radius:12px;padding:0 16px}
+details.qa summary{cursor:pointer;padding:12px 0;font-family:var(--serif);font-size:16px;list-style:none;
+  display:flex;gap:12px;align-items:baseline}
+details.qa summary::-webkit-details-marker{display:none}
+details.qa summary .qn{font-family:var(--mono);font-size:11px;color:var(--clay);font-weight:600;width:26px}
+details.qa summary::after{content:"+";margin-left:auto;font-family:var(--mono);color:var(--g500)}
+details.qa[open] summary::after{content:"–"}
+details.qa .ans{padding:0 0 14px 38px;font-size:13.5px;color:var(--g700)}
+@media(max-width:520px){details.qa .ans{padding-left:0}}
+.realcut{margin-top:14px}
+
+mark{background:#F4E7DF;color:inherit;padding:0 2px;border-radius:2px}
+.hit-hide{display:none !important}
+
+footer{margin-top:40px;border-top:1.5px solid var(--g300);padding-top:22px;font-size:12.5px;color:var(--g500);line-height:1.65}
+footer .k{font-family:var(--serif);font-style:italic;color:var(--g700);font-size:15px;display:block;margin-bottom:8px}
+footer code{font-family:var(--mono);font-size:11.5px;background:var(--g100);padding:1px 6px;border-radius:4px}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{transition:none !important}
+}
+@media print{
+  .sidebar,.toolbar{display:none}
+  .app{display:block}
+  details.sec-disc,details.disc,details.qa{break-inside:avoid}
+  details:not([open]){border-style:dashed}
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" aria-label="Index">
+    <p class="side-brand">GHL take-home</p>
+    <h1 class="side-title">SLM master <em>index</em></h1>
+    <p class="side-sub">Brief + research + bangers. Expand only what you need.</p>
+
+    <div class="toolbar">
+      <input class="search" id="search" type="search" placeholder="Filter sections…" autocomplete="off">
+      <div class="modes" role="tablist" aria-label="View mode">
+        <button type="button" class="active" data-mode="all">All</button>
+        <button type="button" data-mode="execute">Execute</button>
+        <button type="button" data-mode="research">Research</button>
+        <button type="button" data-mode="defend">Defend</button>
+      </div>
+      <div class="toolrow">
+        <button type="button" class="toolbtn" id="expand-secs">Expand sections</button>
+        <button type="button" class="toolbtn" id="collapse-secs">Collapse sections</button>
+        <button type="button" class="toolbtn" id="expand-nested">Expand nested</button>
+        <button type="button" class="toolbtn" id="collapse-nested">Collapse nested</button>
+      </div>
+    </div>
+
+    <ol class="idx" id="idx">
+      <li><a href="#s1" data-sec="s1" data-mode="execute">
+  <span class="n">01</span>
+  <span class="lab">Brief</span>
+  <span class="blurb">What they ask</span>
+</a></li><li><a href="#s2" data-sec="s2" data-mode="execute">
+  <span class="n">02</span>
+  <span class="lab">Grader lens</span>
+  <span class="blurb">What moves the score</span>
+</a></li><li><a href="#s3" data-sec="s3" data-mode="execute">
+  <span class="n">03</span>
+  <span class="lab">Decision map</span>
+  <span class="blurb">Model, method, data, eval, serve</span>
+</a></li><li><a href="#s4" data-sec="s4" data-mode="execute">
+  <span class="n">04</span>
+  <span class="lab">Pipeline</span>
+  <span class="blurb">Day-by-day order</span>
+</a></li><li><a href="#s5" data-sec="s5" data-mode="execute">
+  <span class="n">05</span>
+  <span class="lab">Leakage & traps</span>
+  <span class="blurb">Eight ways to fail their set</span>
+</a></li><li><a href="#s6" data-sec="s6" data-mode="execute">
+  <span class="n">06</span>
+  <span class="lab">Deliverables checklist</span>
+  <span class="blurb">Tickable submission list</span>
+</a></li><li><a href="#s7" data-sec="s7" data-mode="defend">
+  <span class="n">07</span>
+  <span class="lab">Interview defense</span>
+  <span class="blurb">Q&A shapes for the interview</span>
+</a></li><li><a href="#s8" data-sec="s8" data-mode="research">
+  <span class="n">08</span>
+  <span class="lab">Research thesis</span>
+  <span class="blurb">Tobi / flywheel thesis</span>
+</a></li><li><a href="#s9" data-sec="s9" data-mode="research">
+  <span class="n">09</span>
+  <span class="lab">Methods from X</span>
+  <span class="blurb">PEFT, OPD, GRPO, tooling</span>
+</a></li><li><a href="#s10" data-sec="s10" data-mode="research">
+  <span class="n">10</span>
+  <span class="lab">Banger tweets</span>
+  <span class="blurb">Viral posts that match the thesis</span>
+</a></li><li><a href="#s11" data-sec="s11" data-mode="execute">
+  <span class="n">11</span>
+  <span class="lab">Map research → GHL plan</span>
+  <span class="blurb">Adopt now vs stretch</span>
+</a></li><li><a href="#s12" data-sec="s12" data-mode="research">
+  <span class="n">12</span>
+  <span class="lab">Search lessons</span>
+  <span class="blurb">Why the first X search missed</span>
+</a></li>
+    </ol>
+
+    <div class="side-foot">
+      <div>Checklist <span id="side-ck">0/0</span></div>
+      <div class="prog" aria-hidden="true"><i id="side-bar"></i></div>
+      <div>Open sections: <span id="side-open">—</span></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="hero">
+      <p class="eyebrow">GoHighLevel · Fine-tune &amp; self-host an SLM · master v2</p>
+      <div class="hero-grid">
+        <div>
+          <h1>Prove the tuned model is better, then <em>serve it where they can test it.</em></h1>
+          <p class="intro">One artifact: execution brief, X research on specialist SLMs, and Tobi-shaped bangers. Use the index to jump. Sections and cards start collapsed so you open only the path you need. <b>Evaluation is criterion #1.</b></p>
+        </div>
+        <div>
+          <div class="hero-fig" aria-hidden="true">
+          <div class="q"><span class="qtag">Strong eval &middot; no API</span><span class="qwin">Incomplete</span></div>
+          <div class="q emph"><span class="qtag">Strong eval &middot; working API</span><span class="qwin">Pass bar</span></div>
+          <div class="q soft"><span class="qtag">Weak eval &middot; no API</span><span class="qwin">Reject</span></div>
+          <div class="q"><span class="qtag">Weak eval &middot; working API</span><span class="qwin">Fails their held-out set</span></div>
+        </div>
+        <p class="axis-note" aria-hidden="true"><span>&uarr; eval rigor</span><span>self-hosted api &rarr;</span></p>
+        </div>
+      </div>
+      <div class="kpis" role="list">
+      <div class="stat" role="listitem"><div class="lbl">Dataset</div><div class="val">26,872</div><div class="sub">instruction / response pairs, ~3.57M tokens</div></div>
+      <div class="stat" role="listitem"><div class="lbl">Label space</div><div class="val">27 / 10</div><div class="sub">intents / categories, paraphrase-heavy</div></div>
+      <div class="stat" role="listitem"><div class="lbl">Window</div><div class="val">7 days</div><div class="sub">3 to 5 days part-time effort</div></div>
+      <div class="stat hot" role="listitem"><div class="lbl">Criterion #1</div><div class="val">Eval rigor</div><div class="sub">judged on their internal held-out set</div></div>
+    </div>
+    </header>
+
+    
+<section class="sec" id="s1" data-mode="execute" data-title="Brief">
+  <details class="sec-disc" data-sec="s1" open>
+    <summary>
+      <span class="idx">01</span>
+      <div>
+        <h2>Brief</h2>
+        <span class="count">the ask</span>
+        <p class="sec-blurb">What they ask</p>
+      </div>
+      <span class="chev" aria-hidden="true">+</span>
+    </summary>
+    <div class="sec-inner">
+      <p class="sec-intro">GoHighLevel wants a customer-support assistant built from an open-source small language model. They say every choice is yours. They mean it: the grade is on how you decide, not on whether you followed steps.</p>
+      <div class="cols">
+        <div class="panel">
+          <h3><span class="k">Objective</span>Better than base, and reachable over HTTP</h3>
+          <ul>
+            <li><b>Fine-tune</b> an open-source SLM on the Bitext data so it answers support questions better than the base model.</li>
+            <li><b>Self-host</b> the result behind an HTTP API on hardware you control.</li>
+            <li><b>Use case:</b> a customer writes in about account access, orders, refunds, payments, delivery, invoices, or subscriptions. The model answers as the support assistant: understands the request, answers accurately, keeps a support tone.</li>
+            <li><b>Measurably</b> better. Their word. The proof matters more than the model.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3><span class="k">Dataset</span>Bitext Gen AI Chatbot Customer Support</h3>
+          <ul>
+            <li><b>Size:</b> 26,872 pairs, about 3.57M tokens. Kaggle: <code>bitext/bitext-gen-ai-chatbot-customer-support-dataset</code>.</li>
+            <li><b>Fields:</b> <code>flags</code>, <code>instruction</code>, <code>category</code>, <code>intent</code>, <code>response</code>.</li>
+            <li><b>Shape:</b> 27 intents across 10 categories. Instructions are paraphrases of the same few hundred asks. Responses are templated per intent and carry placeholders such as <code>{{Order Number}}</code>.</li>
+            <li><b>Leakage risk</b> is called out in the assignment itself. Treat it as a graded item.</li>
+            <li><b>Optional:</b> Customer Support on Twitter. Skip unless you have a specific reason and a spare day.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3><span class="k">Constraints</span>What they fix, what they leave open</h3>
+          <ul>
+            <li><b>License:</b> must permit commercial self-hosting. Justify the pick.</li>
+            <li><b>Method:</b> parameter-efficient or full fine-tuning. Justify the pick.</li>
+            <li><b>Compute:</b> free tiers only, Kaggle or Colab. Spending money is a negative signal.</li>
+            <li><b>Serving:</b> any HTTP stack. vLLM, SGLang, TGI, llama.cpp, Ollama, or your own.</li>
+            <li><b>AI assistants</b> allowed. You must defend every line in the interview.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3><span class="k">Core work</span>Four parts, one weighted</h3>
+          <ol>
+            <li><b>Data prep.</b> Explore, format for the chat template, build leakage-free train / val / held-out test splits.</li>
+            <li><b>Fine-tune.</b> Train, log curves, document hyperparameters and what you tried.</li>
+            <li><b>Evaluate.</b> Marked "most important". Define better. Measure on unseen data. Compare base vs tuned, with failures.</li>
+            <li><b>Serve.</b> HTTP endpoint. Report latency and throughput and how you measured them.</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </details>
+</section>
+<section class="sec" id="s2" data-mode="execute" data-title="Grader lens">
+  <details class="sec-disc" data-sec="s2">
+    <summary>
+      <span class="idx">02</span>
+      <div>
+        <h2>Grader lens</h2>
+        <span class="count">what moves the score</span>
+        <p class="sec-blurb">What moves the score</p>
+      </div>
+      <span class="chev" aria-hidden="true">+</span>
+    </summary>
+    <div class="sec-inner">
+      <p class="sec-intro">Read the criteria as a skeptical engineer would. They will run your model on queries you have never seen. Your own test split is a rehearsal. Their set is the exam.</p>
+      <div class="panel callout" style="margin-bottom:16px">
+        <h3><span class="k">The sentence that decides the grade</span>They hold an internal evaluation set and will run your model on it</h3>
+        <p>Three things follow. Your model must load with a documented prompt template and one obvious command. Your reported numbers must survive contact with messier queries than Bitext contains. And a model that memorised Bitext phrasing, or that emits <code>{{Order Number}}</code> placeholders, will look worse than base on their set no matter what your split says.</p>
+      </div>
+      <div class="panel">
+        <table class="lens">
+          <thead><tr><th>Criterion</th><th>What earns it</th><th>What loses it</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>Evaluation rigor</td>
+              <td data-l="Earns">Held-out data the model never saw. Same prompts, same template, same decoding for base and tuned. A stated definition of better. Failure cases shown, with a reason for each. Confidence intervals or at least sample counts.</td>
+              <td data-l="Loses">Train accuracy as evidence. ROUGE against templated responses as the headline. A judge that shares a family with the model. Base run with the wrong chat template so it looks bad.</td>
+            </tr>
+            <tr>
+              <td>ML judgment</td>
+              <td data-l="Earns">Model size argued from VRAM and latency. Method argued from compute. Hyperparameters with a reason and a record of what you tried. One deliberate ablation.</td>
+              <td data-l="Loses">A notebook copied from a blog with the defaults left in. A 7B model because bigger. No mention of what you rejected.</td>
+            </tr>
+            <tr>
+              <td>Systems thinking</td>
+              <td data-l="Earns">An endpoint that answers on the recording. p50 and p95 latency, tokens per second, concurrency stated, hardware stated, script in the repo.</td>
+              <td data-l="Loses">A notebook cell that calls <code>model.generate</code>. Numbers with no method. A quantised demo model that differs from the evaluated one and nobody says so.</td>
+            </tr>
+            <tr>
+              <td>Reproducibility</td>
+              <td data-l="Earns">One <code>README</code> path from clone to endpoint. Pinned dependencies. Seeds. Split files committed or regenerable by hash.</td>
+              <td data-l="Loses">Hidden Colab state. Paths to your Drive. A split that changes each run.</td>
+            </tr>
+            <tr>
+              <td>Code quality</td>
+              <td data-l="Earns">Small modules: prepare, train, eval, serve. Config in one place. Functions a reviewer can read in an hour.</td>
+              <td data-l="Loses">One 800-line notebook. Copy-pasted eval loops. Secrets in code.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </details>
+</section>
+<section class="sec" id="s3" data-mode="execute" data-title="Decision map">
+  <details class="sec-disc" data-sec="s3" open>
+    <summary>
+      <span class="idx">03</span>
+      <div>
+        <h2>Decision map</h2>
+        <span class="count">5 decisions</span>
+        <p class="sec-blurb">Model, method, data, eval, serve</p>
+      </div>
+      <span class="chev" aria-hidden="true">+</span>
+    </summary>
+    <div class="sec-inner">
+      <p class="sec-intro">Each card lists the live options and marks one as recommended for a free-compute, seven-day sprint. The mark is a default, not a rule. If you change it, write the reason into the README, because the reason is what they grade.</p>
+      <div class="dgrid">
+
+        <details class="disc disc-decision" data-kind="decision">
+  <summary>
+    <span class="sum-k">Model</span>
+    <span class="sum-t">Which base model</span>
+    <span class="sum-rec">Qwen2.5-1.5B-Instruct</span>
+  </summary>
+  <div class="disc-body"><div class="dcard">
+          <div>
+            <div class="dk">Model</div>
+            <div class="title">Which base model</div>
+            <p class="qn">Size must fit a T4 for training and a laptop for serving. License must allow commercial self-hosting without a phone call.</p>
+          </div>
+          <div>
+            <ul class="opts">
+              <li class="rec"><span class="tag rec">Recommended</span><span><b>Qwen2.5-1.5B-Instruct</b> (Apache-2.0). Strong instruct baseline, standard chat template, fits QLoRA on a 16 GB T4 with room, serves at usable speed on a laptop CPU or Apple silicon via GGUF. A better base makes the base-vs-tuned bar higher, which is honest and defendable.</span></li>
+              <li><span class="tag">Alternative</span><span><b>Llama-3.2-3B-Instruct</b> (Llama 3.2 Community License). Permits commercial use under 700M monthly active users, with attribution terms. More headroom, slower to train and serve. Pick only if you want the Llama story in the interview.</span></li>
+              <li><span class="tag">Alternative</span><span><b>Qwen3-1.7B</b> (Apache-2.0) or <b>SmolLM2-1.7B-Instruct</b> (Apache-2.0). Fine choices. Qwen3 needs thinking mode disabled in both training and serving templates, which is one more thing to get wrong.</span></li>
+              <li><span class="tag no">Avoid</span><span><b>Qwen2.5-3B-Instruct</b> ships under the Qwen Research License, not Apache. It fails the commercial-self-host requirement on its own. Check the license file of whatever you pick, not the family name.</span></li>
+            </ul>
+            <p class="why"><b>Sizing</b>A 1.5B model in 4-bit holds about 1 GB of weights. QLoRA with sequence length 512 and micro-batch 8 stays under 8 GB on a T4. Full fine-tuning of 1.5B with an Adam optimizer needs roughly 24 GB, so it is out on free compute. T4 has no bfloat16, so train in fp16 with fp32 LoRA weights, or use Unsloth which handles this.</p>
+          </div>
+        </div></div>
+</details>
+
+        <details class="disc disc-decision" data-kind="decision">
+  <summary>
+    <span class="sum-k">Method</span>
+    <span class="sum-t">How to fine-tune</span>
+    <span class="sum-rec">QLoRA</span>
+  </summary>
+  <div class="disc-body"><div class="dcard">
+          <div>
+            <div class="dk">Method</div>
+            <div class="title">How to fine-tune</div>
+            <p class="qn">Free compute decides most of this. What is left is rank, targets, and the loss mask.</p>
+          </div>
+          <div>
+            <ul class="opts">
+              <li class="rec"><span class="tag rec">Recommended</span><span><b>QLoRA</b>, 4-bit base, LoRA on all attention and MLP projections. Start at <code>r=16, alpha=32, dropout=0.05, lr=2e-4</code>, cosine schedule, 3% warmup, 2 epochs, effective batch 16, max length 512. Loss on assistant tokens only. Train with TRL <code>SFTTrainer</code>, or Unsloth on Colab for a 2x speed-up on T4.</span></li>
+              <li><span class="tag">Alternative</span><span><b>LoRA in fp16</b> without quantising the base. Fits a 1.5B model on T4 and removes one source of numerical noise. Slightly better quality, slightly more memory. A fair pick if the 4-bit run looks unstable.</span></li>
+              <li><span class="tag no">Avoid</span><span><b>Full fine-tuning.</b> Does not fit free VRAM at any useful size, and on 27 templated intents it overfits faster than LoRA. Say this in the README as a considered rejection, not an omission.</span></li>
+            </ul>
+            <p class="why"><b>Ablation</b>Keep one cheap comparison: <code>r=8</code> vs <code>r=16</code>, or 1 vs 2 epochs. One is enough. It shows you looked, and it gives you a real answer to "why these hyperparameters".</p>
+          </div>
+        </div></div>
+</details>
+
+        <details class="disc disc-decision" data-kind="decision">
+  <summary>
+    <span class="sum-k">Data</span>
+    <span class="sum-t">What to train on, how to split</span>
+    <span class="sum-rec">Group, then stratify, then split.</span>
+  </summary>
+  <div class="disc-body"><div class="dcard">
+          <div>
+            <div class="dk">Data</div>
+            <div class="title">What to train on, how to split</div>
+            <p class="qn">The dataset is a few hundred distinct asks, each paraphrased dozens of times. A random split leaks by construction.</p>
+          </div>
+          <div>
+            <ul class="opts">
+              <li class="rec"><span class="tag rec">Recommended</span><span><b>Group, then stratify, then split.</b> Normalise each instruction (lowercase, strip punctuation, collapse whitespace). Cluster near-paraphrases with MinHash or embedding cosine above 0.9. Assign whole clusters to one split. Stratify by intent so all 27 appear in each split. Aim for 80 / 10 / 10. Freeze the test split on day one and do not open it until the final eval.</span></li>
+              <li class="rec"><span class="tag rec">Recommended</span><span><b>Rewrite placeholders.</b> Replace <code>{{Order Number}}</code>, <code>{{Website URL}}</code> and friends with natural phrasing ("your order number", "our website") in a single deterministic pass. Keep the map in the repo. Otherwise the tuned model emits curly braces on their held-out set.</span></li>
+              <li class="rec"><span class="tag rec">Recommended</span><span><b>Write your own 40 to 60 messy queries.</b> Typos, two intents in one message, missing context, an angry tone, an off-topic ask. This is your proxy for their internal set. Never train on it. It is the eval that will predict your real grade.</span></li>
+              <li><span class="tag">Alternative</span><span><b>Subsample train</b> to 8 to 10k rows if training time is tight. Paraphrase-dense data gives little per extra row. Document the number you used.</span></li>
+              <li><span class="tag">Optional</span><span><b>Twitter data.</b> Adds realism and noise. Costs a day of cleaning and confounds the base-vs-tuned story. Cut it and say why.</span></li>
+            </ul>
+            <p class="why"><b>Prompt</b>Use the model's native chat template with a short fixed system prompt, for example "You are a customer support assistant. Answer clearly and helpfully." Store the exact string in <code>configs/prompt.txt</code> and load it from there in train, eval, and serve. One source, three consumers.</p>
+          </div>
+        </div></div>
+</details>
+
+        <details class="disc disc-decision" data-kind="decision">
+  <summary>
+    <span class="sum-k">Eval</span>
+    <span class="sum-t">What better means, and how to show it</span>
+    <span class="sum-rec">Three layers, all on held-out data.</span>
+  </summary>
+  <div class="disc-body"><div class="dcard">
+          <div>
+            <div class="dk">Eval</div>
+            <div class="title">What better means, and how to show it</div>
+            <p class="qn">This is the graded part. Define better before training. Run base first so the harness is tested and the baseline is fixed before you can be tempted.</p>
+          </div>
+          <div>
+            <ul class="opts">
+              <li class="rec"><span class="tag rec">Recommended</span><span><b>Three layers, all on held-out data.</b> (1) <b>Intent coverage:</b> does the response address the right intent? Score with a small classifier trained on responses, or a judge with the intent list. (2) <b>Judge rubric, pairwise:</b> base vs tuned on the same prompt, judge scores 1 to 5 on correctness, helpfulness, tone, and brevity, with position swapped to cancel order bias. Report win / tie / loss and a bootstrap interval. (3) <b>Hand-reviewed failure gallery:</b> 10 to 15 cases where tuned loses or both fail, each with one sentence on why.</span></li>
+              <li class="rec"><span class="tag rec">Recommended</span><span><b>Same everything.</b> Same system prompt, same chat template, greedy decoding or a fixed seed, same max tokens, for both models. State it in one line in the README so nobody has to ask.</span></li>
+              <li><span class="tag">Supporting</span><span><b>Reference similarity</b> (ROUGE-L, BERTScore) on the Bitext test split. Fine as a secondary number. It rewards template matching, so never lead with it, and say so.</span></li>
+              <li><span class="tag">Judge</span><span>Use a bigger model from a different family than the one you tuned. A local Llama-3.1-8B via Ollama costs nothing and keeps the "no spend" rule. Spot-check 30 judge verdicts by hand and report agreement.</span></li>
+            </ul>
+            <p class="why"><b>Two test sets</b>Report the Bitext held-out split and your own messy set as separate tables. If tuned wins big on the first and small on the second, say so. That gap is the most honest sentence in the whole submission, and the one their held-out set will confirm.</p>
+          </div>
+        </div></div>
+</details>
+
+        <details class="disc disc-decision" data-kind="decision">
+  <summary>
+    <span class="sum-k">Serve</span>
+    <span class="sum-t">Where the endpoint lives</span>
+    <span class="sum-rec">Merge LoRA, export GGUF, serve with llama.cpp or Ollama.</span>
+  </summary>
+  <div class="disc-body"><div class="dcard">
+          <div>
+            <div class="dk">Serve</div>
+            <div class="title">Where the endpoint lives</div>
+            <p class="qn">Free GPU notebooks cannot hold a public endpoint. Your laptop can. Pick the stack that gives a live demo and a clean benchmark.</p>
+          </div>
+          <div>
+            <ul class="opts">
+              <li class="rec"><span class="tag rec">Recommended</span><span><b>Merge LoRA, export GGUF, serve with llama.cpp or Ollama.</b> Merge the adapter into the base in HF format, convert to GGUF at Q8_0 (closest to the evaluated model) and Q4_K_M (fastest). Write an Ollama <code>Modelfile</code> whose <code>TEMPLATE</code> matches the training template exactly. Serve the OpenAI-compatible <code>/v1/chat/completions</code> route. Runs on a MacBook, records well on Loom.</span></li>
+              <li><span class="tag">Alternative</span><span><b>vLLM</b> with <code>--enable-lora</code> on a Kaggle T4, tunnelled with ngrok for the demo. Better throughput numbers, more moving parts, and the tunnel dies with the notebook.</span></li>
+              <li><span class="tag">Alternative</span><span><b>FastAPI + transformers</b> on CPU. Simplest to read, slowest to run. Acceptable if the numbers are reported honestly.</span></li>
+            </ul>
+            <p class="why"><b>Benchmark</b>A script in <code>serve/bench.py</code>: 100 fixed prompts, concurrency 1 and 4, record p50 and p95 end-to-end latency and output tokens per second. Print hardware, quantisation, and context length beside the numbers. Ship the raw JSON.</p>
+          </div>
+        </div></div>
+</details>
+
+      </div>
+    </div>
+  </details>
+</section>
+<section class="sec" id="s4" data-mode="execute" data-title="Pipeline">
+  <details class="sec-disc" data-sec="s4" open>
+    <summary>
+      <span class="idx">04</span>
+      <div>
+        <h2>Pipeline</h2>
+        <span class="count">data &rarr; train &rarr; eval &rarr; serve &rarr; submit</span>
+        <p class="sec-blurb">Day-by-day order</p>
+      </div>
+      <span class="chev" aria-hidden="true">+</span>
+    </summary>
+    <div class="sec-inner">
+      <p class="sec-intro">The order matters. The eval harness is built and run against the base model before training starts. That gives a fixed baseline, a tested harness, and no chance to tune the metric to the result.</p>
+      <details class="disc disc-step" data-kind="step">
+  <summary><span class="sum-k">Step 01</span><span class="sum-t">Data preparation</span><span class="sum-rec">Day 1</span></summary>
+  <div class="disc-body"><ol class="steps" style="list-style:none;padding:0;margin:0"><li class="step">
+          <div class="n">01</div>
+          <div class="body">
+            <div class="head"><h3>Data preparation</h3><span class="day">Day 1</span><span class="out">data/prepare.py</span></div>
+            <p>Download from Kaggle. Profile intents, lengths, flag codes, placeholder tokens. Rewrite placeholders. Cluster paraphrases. Split by cluster with intent stratification. Write three JSONL files in chat format plus a <code>splits.json</code> with row ids and the clustering threshold.</p>
+            <ul>
+              <li><b>Check:</b> no normalised instruction appears in more than one split. Assert it in code.</li></ol></div>
+</details>
+              <li><b>Check:</b> every intent has at least 20 test rows.</li>
+              <li><b>Write</b> the 40 to 60 messy queries into <code>data/ood_queries.jsonl</code> tonight, before you have seen any model output.</li>
+            </ul>
+            <div class="gate"><b>Gate</b>Test split hashed and committed. You will not open it again until step 04.</div>
+          </div>
+        </li>
+
+        <details class="disc disc-step" data-kind="step">
+  <summary><span class="sum-k">Step 02</span><span class="sum-t">Eval harness, run on base first</span><span class="sum-rec">Day 1 to 2</span></summary>
+  <div class="disc-body"><ol class="steps" style="list-style:none;padding:0;margin:0"><li class="step">
+          <div class="n">02</div>
+          <div class="body">
+            <div class="head"><h3>Eval harness, run on base first</h3><span class="day">Day 1 to 2</span><span class="out">eval/run_eval.py &middot; eval/judge.py</span></div>
+            <p>Load the prompt template from one file. Generate base-model answers for the validation split and the messy set with greedy decoding. Run the intent scorer and the judge. Save every generation to disk with the config that produced it.</p>
+            <ul>
+              <li><b>Result:</b> a baseline table you will never have to re-run, and a harness that already found its own bugs.</li></ol></div>
+</details>
+              <li><b>Sanity:</b> read 20 base outputs by hand. If base is already good on Bitext, the bar is high and you should say so early.</li>
+            </ul>
+            <div class="gate"><b>Gate</b>Baseline numbers written into a dated file under <code>eval/results/</code>.</div>
+          </div>
+        </li>
+
+        <details class="disc disc-step" data-kind="step">
+  <summary><span class="sum-k">Step 03</span><span class="sum-t">Fine-tune</span><span class="sum-rec">Day 2 to 3</span></summary>
+  <div class="disc-body"><ol class="steps" style="list-style:none;padding:0;margin:0"><li class="step">
+          <div class="n">03</div>
+          <div class="body">
+            <div class="head"><h3>Fine-tune</h3><span class="day">Day 2 to 3</span><span class="out">train/train.py &middot; configs/lora.yaml</span></div>
+            <p>QLoRA on Colab or Kaggle T4. Log train and validation loss every 50 steps to a CSV and a plot. Checkpoint to Drive or Kaggle output every 200 steps, because free sessions drop. Push the adapter to the Hugging Face Hub when done.</p>
+            <ul>
+              <li><b>Expect</b> validation loss to fall fast and flatten within one epoch on templated data. A rising validation loss in epoch 2 is overfitting. Stop there.</li></ol></div>
+</details>
+              <li><b>Run the ablation</b> (rank or epochs) while writing the README. Keep the loser's curve. It is evidence.</li>
+              <li><b>Merge</b> the adapter into a full HF checkpoint too. Graders load merged weights with fewer surprises.</li>
+            </ul>
+            <div class="gate"><b>Gate</b>Adapter on the Hub. Loss curves as PNG in <code>train/runs/</code>. Config file matches what ran.</div>
+          </div>
+        </li>
+
+        <details class="disc disc-step" data-kind="step">
+  <summary><span class="sum-k">Step 04</span><span class="sum-t">Evaluate tuned vs base</span><span class="sum-rec">Day 3 to 4</span></summary>
+  <div class="disc-body"><ol class="steps" style="list-style:none;padding:0;margin:0"><li class="step">
+          <div class="n">04</div>
+          <div class="body">
+            <div class="head"><h3>Evaluate tuned vs base</h3><span class="day">Day 3 to 4</span><span class="out">eval/results/ &middot; eval/failures.md</span></div>
+            <p>Open the test split once. Run the exact harness from step 02 on the tuned model. Same prompt, same decoding. Produce: intent coverage for both models, pairwise judge win / tie / loss with a bootstrap interval, the secondary reference-similarity table, and the messy-set table beside the Bitext table.</p>
+            <ul>
+              <li><b>Failure gallery:</b> 10 to 15 rows, each with query, base answer, tuned answer, judge verdict, and one sentence on the cause.</li></ol></div>
+</details>
+              <li><b>Judge check:</b> hand-label 30 pairs yourself and report agreement with the judge.</li>
+              <li><b>Quantised check:</b> run the Q8_0 GGUF on the messy set too. Report the drift, if any, next to the fp16 number.</li>
+            </ul>
+            <div class="gate"><b>Gate</b>One results table that a stranger can read in two minutes. If tuned does not win on the messy set, that is a finding, not a failure. Write it down.</div>
+          </div>
+        </li>
+
+        <details class="disc disc-step" data-kind="step">
+  <summary><span class="sum-k">Step 05</span><span class="sum-t">Serve and measure</span><span class="sum-rec">Day 4</span></summary>
+  <div class="disc-body"><ol class="steps" style="list-style:none;padding:0;margin:0"><li class="step">
+          <div class="n">05</div>
+          <div class="body">
+            <div class="head"><h3>Serve and measure</h3><span class="day">Day 4</span><span class="out">serve/Modelfile &middot; serve/bench.py</span></div>
+            <p>Convert merged weights to GGUF. Write the Ollama <code>Modelfile</code> with the same system prompt and template. Start the server. Send one curl. Then run the benchmark script at concurrency 1 and 4 and save the JSON.</p>
+            <ul>
+              <li><b>Report:</b> hardware, quantisation, p50, p95, output tokens per second, prompt set, how many runs.</li></ol></div>
+</details>
+              <li><b>Also ship</b> <code>serve/inference.py</code> that loads the HF adapter with transformers and answers one query. That is the path the graders will use.</li>
+            </ul>
+            <div class="gate"><b>Gate</b>A curl command in the README returns a support answer from the tuned model.</div>
+          </div>
+        </li>
+
+        <details class="disc disc-step" data-kind="step">
+  <summary><span class="sum-k">Step 06</span><span class="sum-t">Write, record, submit</span><span class="sum-rec">Day 5, buffer to day 7</span></summary>
+  <div class="disc-body"><ol class="steps" style="list-style:none;padding:0;margin:0"><li class="step">
+          <div class="n">06</div>
+          <div class="body">
+            <div class="head"><h3>Write, record, submit</h3><span class="day">Day 5, buffer to day 7</span><span class="out">README.md &middot; Loom</span></div>
+            <p>README in the order they asked: choices and why, data and splits, eval design and results, exact prompt template with load-and-run code, real vs cut. Then a 2 to 5 minute Loom: live endpoint, side-by-side base vs tuned on three queries, the results table, one failure and what you learned.</p>
+            <ul>
+              <li><b>Fresh clone test:</b> on a clean machine or container, follow the README top to bottom. Fix what breaks.</li></ol></div>
+</details>
+              <li><b>Submit:</b> repo link, Loom link, README, weights link. Four items.</li>
+            </ul>
+            <div class="gate"><b>Gate</b>A colleague who has never seen the repo reaches a running endpoint from the README alone.</div>
+          </div>
+        </li>
+
+      </ol>
+
+      <div class="panel" style="margin-top:8px">
+        <h3><span class="k">Suggested layout</span>Small modules, one config source</h3>
+<pre>ghl-slm/
+  <b>README.md</b>
+  configs/        prompt.txt  lora.yaml  eval.yaml
+  data/           prepare.py  splits.json  ood_queries.jsonl
+  train/          train.py  runs/&lt;date&gt;/curves.png
+  eval/           run_eval.py  judge.py  results/  failures.md
+  serve/          inference.py  Modelfile  bench.py  bench_results.json
+  requirements.txt</pre>
+      </div>
+    </div>
+  </details>
+</section>
+<section class="sec" id="s5" data-mode="execute" data-title="Leakage & traps">
+  <details class="sec-disc" data-sec="s5">
+    <summary>
+      <span class="idx">05</span>
+      <div>
+        <h2>Leakage & traps</h2>
+        <span class="count">8 ways to fail their set</span>
+        <p class="sec-blurb">Eight ways to fail their set</p>
+      </div>
+      <span class="chev" aria-hidden="true">+</span>
+    </summary>
+    <div class="sec-inner">
+      <p class="sec-intro">Each of these produces a submission that looks good in its own README and falls over on the internal held-out set or in the interview. Most cost minutes to avoid and hours to explain later.</p>
+      <div class="disc-stack"><details class="disc disc-trap" data-kind="trap">
+  <summary><span class="sum-k">Trap 01</span><span class="sum-t">Paraphrase leakage</span></summary>
+  <div class="disc-body"><div class="trap">
+          <div class="tn">Trap 01</div>
+          <h3>Paraphrase leakage</h3>
+          <p>Bitext has a few hundred asks, each phrased dozens of ways. A random 80 / 10 / 10 split puts "how do I cancel my order" in train and "how can I cancel my order?" in test. Any metric on that test set measures memory.</p>
+          <p class="fix"><b>Fix</b>Cluster before splitting. Assert that no normalised instruction crosses splits. Say the threshold in the README.</p>
+        </div></div>
+</details>
+
+        <details class="disc disc-trap" data-kind="trap">
+  <summary><span class="sum-k">Trap 02</span><span class="sum-t">Template mismatch</span></summary>
+  <div class="disc-body"><div class="trap">
+          <div class="tn">Trap 02</div>
+          <h3>Template mismatch</h3>
+          <p>You train with one chat template, evaluate with another, and serve with a third written by hand in an Ollama <code>Modelfile</code>. The model that answered your eval is not the model on the endpoint, and neither is what the graders will load.</p>
+          <p class="fix"><b>Fix</b>One <code>configs/prompt.txt</code>. Print the fully rendered prompt once in each stage and diff them.</p>
+        </div></div>
+</details>
+
+        <details class="disc disc-trap" data-kind="trap">
+  <summary><span class="sum-k">Trap 03</span><span class="sum-t">Placeholder echo</span></summary>
+  <div class="disc-body"><div class="trap">
+          <div class="tn">Trap 03</div>
+          <h3>Placeholder echo</h3>
+          <p>Bitext responses contain <code>{{Order Number}}</code>, <code>{{Website URL}}</code>, and similar. Train on them raw and the tuned model will answer a real customer with curly braces. On their held-out set that reads as broken.</p>
+          <p class="fix"><b>Fix</b>Replace placeholders with natural phrasing in data prep. Keep the mapping in the repo and mention it in the README.</p>
+        </div></div>
+</details>
+
+        <details class="disc disc-trap" data-kind="trap">
+  <summary><span class="sum-k">Trap 04</span><span class="sum-t">Metric theater</span></summary>
+  <div class="disc-body"><div class="trap">
+          <div class="tn">Trap 04</div>
+          <h3>Metric theater</h3>
+          <p>Train accuracy, ROUGE against templated references, or a judge from the same family as the tuned model. Each can show a large gain that means nothing. A skeptical engineer will pick the weakest metric and ask why it is the headline.</p>
+          <p class="fix"><b>Fix</b>Lead with pairwise judge results on unseen data, with intervals. Report ROUGE second and label its weakness yourself.</p>
+        </div></div>
+</details>
+
+        <details class="disc disc-trap" data-kind="trap">
+  <summary><span class="sum-k">Trap 05</span><span class="sum-t">Crippled baseline</span></summary>
+  <div class="disc-body"><div class="trap">
+          <div class="tn">Trap 05</div>
+          <h3>Crippled baseline</h3>
+          <p>Running the base model without its chat template, or with a different system prompt, or with a shorter token limit, makes it look worse than it is. This is the first thing a reviewer checks and the fastest way to lose trust.</p>
+          <p class="fix"><b>Fix</b>Same template, same system prompt, same decoding, same limit. Show three raw base outputs in the README so the reader can see it was fair.</p>
+        </div></div>
+</details>
+
+        <details class="disc disc-trap" data-kind="trap">
+  <summary><span class="sum-k">Trap 06</span><span class="sum-t">Demo-only model</span></summary>
+  <div class="disc-body"><div class="trap">
+          <div class="tn">Trap 06</div>
+          <h3>Demo-only model</h3>
+          <p>You evaluate the fp16 adapter, then serve a Q4 GGUF on the Loom, then upload only the adapter. Three artefacts, one set of numbers, and no statement of which is which.</p>
+          <p class="fix"><b>Fix</b>Name every artefact and say which number came from which. Run the messy set on the GGUF too and report the drift.</p>
+        </div></div>
+</details>
+
+        <details class="disc disc-trap" data-kind="trap">
+  <summary><span class="sum-k">Trap 07</span><span class="sum-t">Overfit to the template, brittle on the wild</span></summary>
+  <div class="disc-body"><div class="trap">
+          <div class="tn">Trap 07</div>
+          <h3>Overfit to the template, brittle on the wild</h3>
+          <p>Two or three epochs on 27 templated intents makes a model that answers Bitext paraphrases perfectly and freezes on a two-intent message with a typo. Their internal set is closer to the wild than to Bitext.</p>
+          <p class="fix"><b>Fix</b>Stop when validation loss flattens. Keep the learning rate modest. Judge on your messy set and let that number decide the checkpoint.</p>
+        </div></div>
+</details>
+
+        <details class="disc disc-trap" data-kind="trap">
+  <summary><span class="sum-k">Trap 08</span><span class="sum-t">License and hardware surprises</span></summary>
+  <div class="disc-body"><div class="trap">
+          <div class="tn">Trap 08</div>
+          <h3>License and hardware surprises</h3>
+          <p>Qwen2.5-3B is research-licensed. Gemma has its own terms. A T4 has no bfloat16, so a bf16 config silently falls back or overflows. Colab kills a session at hour 4 and takes the unsaved adapter with it.</p>
+          <p class="fix"><b>Fix</b>Read the license file of the exact checkpoint. Train in fp16 with fp32 LoRA weights. Checkpoint to Drive every 200 steps.</p>
+        </div></div>
+</details>
+
+      </div>
+    </div>
+  </details>
+</section>
+<section class="sec" id="s6" data-mode="execute" data-title="Deliverables checklist">
+  <details class="sec-disc" data-sec="s6">
+    <summary>
+      <span class="idx">06</span>
+      <div>
+        <h2>Deliverables checklist</h2>
+        <span class="count">0 / 0</span>
+        <p class="sec-blurb">Tickable submission list</p>
+      </div>
+      <span class="chev" aria-hidden="true">+</span>
+    </summary>
+    <div class="sec-inner">
+      <p class="sec-intro">Everything the assignment names, plus the items the criteria imply. Ticks persist in this browser. Nothing is submitted until all four submission links exist.</p>
+      <div class="check-wrap" id="checklist">
+
+        <div class="check-group">
+          <h3>Code and implementation</h3>
+          <label class="ck"><input type="checkbox" data-k="repo"><span><b>Git repo</b> with the full pipeline: data prep, training, evaluation, serving, in separate modules.</span></label>
+          <label class="ck"><input type="checkbox" data-k="weights"><span><b>Fine-tuned adapter and merged weights</b> on the Hugging Face Hub, linked from the README, license stated.</span></label>
+          <label class="ck"><input type="checkbox" data-k="install"><span><b>Install and run steps</b> tested on a fresh clone. Pinned <code>requirements.txt</code>. Seeds set.</span></label>
+          <label class="ck"><input type="checkbox" data-k="splits"><span><b>Split files or split hashes</b> committed. Leakage assertion in code.</span></label>
+          <label class="ck"><input type="checkbox" data-k="curves"><span><b>Training and validation curves</b> as images, plus the config that produced them.</span></label>
+          <label class="ck"><input type="checkbox" data-k="bench"><span><b>Benchmark script and raw results</b> with hardware, quantisation, concurrency, p50, p95, tokens per second.</span></label>
+        </div>
+
+        <div class="check-group">
+          <h3>Loom demo, 2 to 5 minutes</h3>
+          <label class="ck"><input type="checkbox" data-k="loom-live"><span><b>Served endpoint</b> answering live support queries, with the curl or client visible.</span></label>
+          <label class="ck"><input type="checkbox" data-k="loom-side"><span><b>Side-by-side</b> base vs tuned on the same three queries, same template.</span></label>
+          <label class="ck"><input type="checkbox" data-k="loom-eval"><span><b>Eval walkthrough:</b> the results table, what better means, the messy-set number.</span></label>
+          <label class="ck"><input type="checkbox" data-k="loom-fail"><span><b>At least one failure case</b> and what you learned from it.</span></label>
+        </div>
+
+        <div class="check-group">
+          <h3>README</h3>
+          <label class="ck"><input type="checkbox" data-k="rd-choices"><span><b>Model and method choices</b>, with reasons and with what you rejected.</span></label>
+          <label class="ck"><input type="checkbox" data-k="rd-data"><span><b>Data handling and split strategy</b>, including clustering threshold and placeholder rewrite.</span></label>
+          <label class="ck"><input type="checkbox" data-k="rd-eval"><span><b>Evaluation design and results</b>, both test sets, intervals, judge agreement, failure gallery.</span></label>
+          <label class="ck"><input type="checkbox" data-k="rd-prompt"><span><b>Exact prompt template</b> as trained, and a copy-paste snippet to load and run inference.</span></label>
+          <label class="ck"><input type="checkbox" data-k="rd-realcut"><span><b>Real vs cut</b>, and the trade-offs you would revisit for production.</span></label>
+        </div>
+
+        <div class="check-group">
+          <h3>Submission</h3>
+          <label class="ck"><input type="checkbox" data-k="sub-repo"><span><b>GitHub repo</b> link.</span></label>
+          <label class="ck"><input type="checkbox" data-k="sub-loom"><span><b>Loom</b> link.</span></label>
+          <label class="ck"><input type="checkbox" data-k="sub-readme"><span><b>README</b> at the repo root.</span></label>
+          <label class="ck"><input type="checkbox" data-k="sub-weights"><span><b>Model weights / adapter</b> link.</span></label>
+          <label class="ck"><input type="checkbox" data-k="sub-window"><span><b>Sent within 7 calendar days</b> of receiving the assignment.</span></label>
+        </div>
+
+        <div class="check-foot">
+          <div class="progress" aria-hidden="true"><i id="ck-bar"></i></div>
+          <span class="pcount" id="ck-pct">0%</span>
+          <button class="reset" type="button" id="ck-reset">Reset ticks</button>
+        </div>
+      </div>
+    </div>
+  </details>
+</section>
+<section class="sec" id="s7" data-mode="defend" data-title="Interview defense">
+  <details class="sec-disc" data-sec="s7">
+    <summary>
+      <span class="idx">07</span>
+      <div>
+        <h2>Interview defense</h2>
+        <span class="count">what they will ask</span>
+        <p class="sec-blurb">Q&A shapes for the interview</p>
+      </div>
+      <span class="chev" aria-hidden="true">+</span>
+    </summary>
+    <div class="sec-inner">
+      <p class="sec-intro">AI assistants are allowed. The price is that you can defend every choice without notes. Each question below has the shape of a good answer. Fill in your own numbers.</p>
+      <div class="qa-list">
+
+        <details class="qa">
+          <summary><span class="qn">Q1</span>Why this model and this size?</summary>
+          <div class="ans">
+            <p><b>Shape:</b> license first, then VRAM, then latency. "Apache-2.0 removes the legal question. 1.5B in 4-bit trains on a T4 with headroom and serves at N tokens per second on my laptop. A 3B would cost 2x on both and the task is 27 intents, not open-ended reasoning."</p>
+            <p>Have the rejected options ready: the 3B research license, the 7B that does not fit free compute.</p>
+          </div>
+        </details>
+
+        <details class="qa">
+          <summary><span class="qn">Q2</span>How do you know there is no leakage between train and test?</summary>
+          <div class="ans">
+            <p><b>Shape:</b> describe the clustering, the threshold, the assertion, and what happened when you tried a random split. "Random split gave X on the judge. Cluster split gave Y. The gap is the leakage."</p>
+            <p>If you did not run the random split for comparison, run it. It takes ten minutes and is the strongest single answer in the interview.</p>
+          </div>
+        </details>
+
+        <details class="qa">
+          <summary><span class="qn">Q3</span>Your judge is an LLM. Why should we trust it?</summary>
+          <div class="ans">
+            <p><b>Shape:</b> different family from the tuned model, position-swapped pairs, and a hand-labelled sample with an agreement number. "I labelled 30 pairs blind. Agreement with the judge was Z. Disagreements were mostly ties."</p>
+            <p>Concede the limit: an LLM judge favours longer, more polite answers. Say what you did about length.</p>
+          </div>
+        </details>
+
+        <details class="qa">
+          <summary><span class="qn">Q4</span>What happens on our held-out set?</summary>
+          <div class="ans">
+            <p><b>Shape:</b> point at the messy-set table. "My own out-of-distribution set is my best guess at yours. Tuned beat base by N there, less than the Bitext gap of M. I expect your number to sit closer to N. Here is why."</p>
+            <p>Name the known weakness: multi-intent messages, or questions outside the 27 intents. Show one failure from the gallery.</p>
+          </div>
+        </details>
+
+        <details class="qa">
+          <summary><span class="qn">Q5</span>Why these hyperparameters?</summary>
+          <div class="ans">
+            <p><b>Shape:</b> starting point, the one ablation, the curve. "r=16 is the common default for a 1.5B model. I tried r=8, it was within noise, so I kept 16. Two epochs: validation loss flattened at 1.3 and rose after, so I stopped."</p>
+          </div>
+        </details>
+
+        <details class="qa">
+          <summary><span class="qn">Q6</span>Is the model on the endpoint the model you evaluated?</summary>
+          <div class="ans">
+            <p><b>Shape:</b> list the artefacts and the number attached to each. "Eval numbers come from the fp16 merged checkpoint. The endpoint runs Q8_0 GGUF. I re-ran the messy set on the GGUF and it moved by D. The Hub link is the merged checkpoint."</p>
+          </div>
+        </details>
+
+        <details class="qa">
+          <summary><span class="qn">Q7</span>What would you change for production?</summary>
+          <div class="ans">
+            <p><b>Shape:</b> pick three and be concrete. Retrieval for account-specific facts instead of templated answers. Guardrails for off-topic and refund-policy questions. A proper human eval loop with support agents. Batching and a real GPU behind vLLM with a p95 target.</p>
+          </div>
+        </details>
+
+      </div>
+
+      <div class="realcut">
+        <div class="cols">
+          <div class="panel">
+            <h3><span class="k">Real</span>You ran it, the number is in the repo</h3>
+            <ul>
+              <li>Cluster-based leakage-free splits, with the assertion.</li>
+              <li>QLoRA run with logged curves and one ablation.</li>
+              <li>Base vs tuned on two held-out sets, pairwise judge, intervals, failure gallery.</li>
+              <li>A working endpoint with a benchmark script and raw results.</li>
+              <li>A fresh-clone reproduction of the README.</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <h3><span class="k">Cut for time</span>You know it matters and you chose not to</h3>
+            <ul>
+              <li>Human eval beyond yourself. Say what it would cost and who would do it.</li>
+              <li>A hyperparameter sweep. One ablation instead.</li>
+              <li>Twitter data. Realism versus a clean base-vs-tuned story.</li>
+              <li>Multi-turn conversations. Bitext is single-turn.</li>
+              <li>Preference tuning on the failure gallery. The obvious next step, and the interview answer to "what next".</li>
+              <li>GPU serving with batching. Laptop numbers are honest, not impressive.</li>
+            </ul>
+            <p style="margin:10px 0 0">The word cut is not an apology. It says you saw the whole shape and chose the seven-day slice. Write each cut with its cost and its trigger for revisiting.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+</section>
+<section class="sec" id="s8" data-mode="research" data-title="Research thesis">
+  <details class="sec-disc" data-sec="s8">
+    <summary>
+      <span class="idx">08</span>
+      <div>
+        <h2>Research thesis</h2>
+        <span class="count">from X · Sep 2026</span>
+        <p class="sec-blurb">Tobi / flywheel thesis</p>
+      </div>
+      <span class="chev" aria-hidden="true">+</span>
+    </summary>
+    <div class="sec-inner">
+      <p class="sec-intro">What the live discourse says about fine-tuning small models for custom tasks. This is the method thesis behind the decision map above — not a replacement for eval rigor.</p>
+      <div class="panel callout" style="margin-bottom:16px">
+        <h3><span class="k">The sentence</span>Narrow task + tiny model + recursive data flywheel beats rented frontier on that task</h3>
+        <p>Shopify’s @tobi (1 Sep 2026): a finetuned <b>0.8B</b> beat <b>GPT-5.6-sol xhigh</b> on buyer-profile building after a self-improving loop. Prompt 9.1k→1.1k tokens. Throughput ~2M→72M/day. The model is the exhaust; the loop is the engine. Open infra: <a href="https://tangleml.com" target="_blank" rel="noopener">tangleml.com</a>.</p>
+      </div>
+      <div class="cols">
+        <div class="panel">
+          <h3><span class="k">What this means for GHL</span>Specialize, don’t chase size</h3>
+          <ul>
+            <li>Bitext is already a <b>narrow</b> domain: 27 support intents.</li>
+            <li>A 1.5B–3B QLoRA SFT is the right shape — same thesis as 0.8B specialists.</li>
+            <li>Optional stretch if time: preference pass (DPO) on failure pairs, or a tiny on-policy distillation loop from a stronger teacher on synthetic support traces.</li>
+            <li>Do <b>not</b> skip the held-out messy set. Flywheels without honest eval are metric theater.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3><span class="k">Default stack from discourse</span>What people actually ship</h3>
+          <div class="recipe"><strong>pick base (0.5B–4B)</strong> → curate / rewrite domain data → <strong>QLoRA SFT</strong> (Unsloth / TRL) → optional <strong>DPO / GRPO</strong> if rewards are checkable → merge → <strong>GGUF</strong> → Ollama / llama.cpp</div>
+          <ul>
+            <li>Tooling radar: Unsloth, LLaMA-Factory, TRL, Axolotl, MLX.</li>
+            <li>PEFT tip of spear: NoRA (normalize LoRA’s A at init) — optional try if easy to swap.</li>
+            <li>Distill tip of spear: on-policy distillation (OPD), then RL — sequential beats joint.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </details>
+</section>
+<section class="sec" id="s9" data-mode="research" data-title="Methods from X">
+  <details class="sec-disc" data-sec="s9">
+    <summary>
+      <span class="idx">09</span>
+      <div>
+        <h2>Methods from X</h2>
+        <span class="count">cutting-edge cluster</span>
+        <p class="sec-blurb">PEFT, OPD, GRPO, tooling</p>
+      </div>
+      <span class="chev" aria-hidden="true">+</span>
+    </summary>
+    <div class="sec-inner">
+      <p class="sec-intro">Fan-out across PEFT, tooling, preference/RL, and distillation. Filtered for what transfers to a free-compute customer-support SLM.</p>
+      <div class="disc-stack">
+        <details class="disc disc-panel" data-kind="method"><summary><span class="sum-k">PEFT</span><span class="sum-t">Beyond plain LoRA</span></summary><div class="disc-body"><div class="panel">
+          <h3><span class="k">PEFT</span>Beyond plain LoRA</h3>
+          <ul>
+            <li><b>QLoRA / 4-bit</b> — still the default for free T4 / Colab.</li>
+            <li><b>DoRA</b> — claimed better than LoRA in some applied posts (TTS, adapters).</li>
+            <li><b>NoRA</b> (arxiv 2608.31036) — normalize A along rank; NoRA-init gets most of the gain. Worth a one-line README mention if you try it.</li>
+            <li>Also in circulation: LoRA+, VeRA, rsLoRA, PiSSA — treat as optional ablations, not day-1 work.</li>
+          </ul>
+        </div></div></details>
+        <details class="disc disc-panel" data-kind="method"><summary><span class="sum-k">Preference / RL</span><span class="sum-t">When the answer is checkable</span></summary><div class="disc-body"><div class="panel">
+          <h3><span class="k">Preference / RL</span>When the answer is checkable</h3>
+          <ul>
+            <li><b>DPO</b> — lightweight after SFT if you build preference pairs from failures.</li>
+            <li><b>GRPO</b> — hot for math/code/browser with verifiable rewards; less natural for open support chat unless you invent a reward (intent match + placeholder-free + length).</li>
+            <li>Watch <b>reward hacking</b> (try/except on code rewards is the classic cautionary tale).</li>
+          </ul>
+        </div></div></details>
+        <details class="disc disc-panel" data-kind="method"><summary><span class="sum-k">Distillation / data</span><span class="sum-t">Teacher → student</span></summary><div class="disc-body"><div class="panel">
+          <h3><span class="k">Distillation / data</span>Teacher → student</h3>
+          <ul>
+            <li><b>Synthetic teacher traces</b> then SFT/DPO/RL on the SLM.</li>
+            <li><b>OPD</b> (on-policy distillation): student rollouts + teacher token supervision. New papers claim 1–16 queries ≈ full-data coverage; bottleneck is absorption rate.</li>
+            <li><b>OPD-then-RL</b> beats mixing distillation and RL in one loss.</li>
+            <li>Gemma 270M recipe: synthetic task data + LoRA + INT4 → on-device.</li>
+          </ul>
+        </div></div></details>
+        <details class="disc disc-panel" data-kind="method"><summary><span class="sum-k">Production flywheels</span><span class="sum-t">Shopify / Liquid</span></summary><div class="disc-body"><div class="panel">
+          <h3><span class="k">Production flywheels</span>Shopify / Liquid</h3>
+          <ul>
+            <li>Shopify ICML: mine low-scoring conversations → critique → repair → retrain → compress prompts. GraphQL agent cost −96%.</li>
+            <li>Liquid nanos: tiny enterprise specialists; 90→100 reliability is the hard part.</li>
+            <li>TangleML: open-sourced core of Shopify’s self-improving loops.</li>
+          </ul>
+        </div></div></details>
+      </div>
+    </div>
+  </details>
+</section>
+<section class="sec" id="s10" data-mode="research" data-title="Banger tweets">
+  <details class="sec-disc" data-sec="s10">
+    <summary>
+      <span class="idx">10</span>
+      <div>
+        <h2>Banger tweets</h2>
+        <span class="count">Tobi shape</span>
+        <p class="sec-blurb">Viral posts that match the thesis</p>
+      </div>
+      <span class="chev" aria-hidden="true">+</span>
+    </summary>
+    <div class="sec-inner">
+      <p class="sec-intro">High-engagement posts that match the thesis: specialized tiny models beating frontier on one job. Links open in a new tab.</p>
+      <h3 style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--clay);margin:0 0 12px">S-tier</h3>
+      <div class="grid2" style="margin-bottom:18px">
+        <details class="disc disc-tweet" data-kind="tweet">
+  <summary><span class="sum-t">Finetuned 0.8B beats GPT-5.6-sol on a specialized task</span><span class="sum-rec">@tobi · 1 Sep 2026 · 8.3k likes · 1.5M views</span></summary>
+  <div class="disc-body"><a class="tcard" href="https://x.com/tobi/status/2094808564355191249" target="_blank" rel="noopener">
+          <span class="tier">S</span>
+          <div class="meta">@tobi · 1 Sep 2026 · 8.3k likes · 1.5M views</div>
+          <h4 class="title">Finetuned 0.8B beats GPT-5.6-sol on a specialized task</h4>
+          <p class="quote">Training tiny models for special purpose use cases works so incredibly well if you have a great self improving recursive flywheel.</p>
+          <div class="tags"><span class="tag hot">anchor</span><span class="tag">0.8B</span></div>
+        </a>
+  <p class="open-x"><a href="https://x.com/tobi/status/2094808564355191249" target="_blank" rel="noopener">Open on X →</a></p></div>
+</details>
+        <details class="disc disc-tweet" data-kind="tweet">
+  <summary><span class="sum-t">Open-sourced the flywheel infra → tangleml.com</span><span class="sum-rec">@tobi · 1 Sep 2026 · 4.1k likes · 5.3k bookmarks</span></summary>
+  <div class="disc-body"><a class="tcard" href="https://x.com/tobi/status/2094904650709234015" target="_blank" rel="noopener">
+          <span class="tier">S</span>
+          <div class="meta">@tobi · 1 Sep 2026 · 4.1k likes · 5.3k bookmarks</div>
+          <h4 class="title">Open-sourced the flywheel infra → tangleml.com</h4>
+          <p class="why">Actionable companion to the viral slide.</p>
+          <div class="tags"><span class="tag hot">infra</span><span class="tag good">open source</span></div>
+        </a>
+  <p class="open-x"><a href="https://x.com/tobi/status/2094904650709234015" target="_blank" rel="noopener">Open on X →</a></p></div>
+</details>
+        <details class="disc disc-tweet" data-kind="tweet">
+  <summary><span class="sum-t">Distill 3 model families → Llama-3.2-1B (MOPD)</span><span class="sum-rec">@PavloMolchanov · 28 May 2026 · 2.7k likes · 3.8k bookmarks</span></summary>
+  <div class="disc-body"><a class="tcard" href="https://x.com/PavloMolchanov/status/2060053129660637370" target="_blank" rel="noopener">
+          <span class="tier">S</span>
+          <div class="meta">@PavloMolchanov · 28 May 2026 · 2.7k likes · 3.8k bookmarks</div>
+          <h4 class="title">Distill 3 model families → Llama-3.2-1B (MOPD)</h4>
+          <p class="quote">Qwen3-4B + Phi-4-Mini + Llama-3B → 1B. MMLU 32→46.</p>
+          <div class="tags"><span class="tag">MOPD</span><span class="tag">1B</span></div>
+        </a>
+  <p class="open-x"><a href="https://x.com/PavloMolchanov/status/2060053129660637370" target="_blank" rel="noopener">Open on X →</a></p></div>
+</details>
+        <details class="disc disc-tweet" data-kind="tweet">
+  <summary><span class="sum-t">Gemma 270M: 46%→90% on phone in 21 minutes</span><span class="sum-rec">@h100envy · 16 Jul 2026 · 7.2k likes · 15.8k bookmarks</span></summary>
+  <div class="disc-body"><a class="tcard" href="https://x.com/h100envy/status/2077784077604692440" target="_blank" rel="noopener">
+          <span class="tier">S</span>
+          <div class="meta">@h100envy · 16 Jul 2026 · 7.2k likes · 15.8k bookmarks</div>
+          <h4 class="title">Gemma 270M: 46%→90% on phone in 21 minutes</h4>
+          <p class="quote">Gemma 270M + synthetic + LoRA + INT4. How 270M beats 70B on your task offline.</p>
+          <div class="tags"><span class="tag hot">recipe</span><span class="tag">270M</span></div>
+        </a>
+  <p class="open-x"><a href="https://x.com/h100envy/status/2077784077604692440" target="_blank" rel="noopener">Open on X →</a></p></div>
+</details>
+      </div>
+
+      <h3 style="font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--clay);margin:0 0 12px">A-tier</h3>
+      <div class="grid2" style="margin-bottom:18px">
+        <details class="disc disc-tweet" data-kind="tweet">
+  <summary><span class="sum-t">Model Optimization Flywheel @ ICML — −96% serving cost</span><span class="sum-rec">@ShopifyEng · 1 Jul 2026 · 293 likes · 208 bookmarks</span></summary>
+  <div class="disc-body"><a class="tcard" href="https://x.com/ShopifyEng/status/2072405411756724677" target="_blank" rel="noopener">
+          <div class="meta">@ShopifyEng · 1 Jul 2026 · 293 likes · 208 bookmarks</div>
+          <h4 class="title">Model Optimization Flywheel @ ICML — −96% serving cost</h4>
+          <p class="why">GraphQL agent $27M→$1M. Mine failures → critique → retrain → compress prompts.</p>
+        </a>
+  <p class="open-x"><a href="https://x.com/ShopifyEng/status/2072405411756724677" target="_blank" rel="noopener">Open on X →</a></p></div>
+</details>
+        <details class="disc disc-tweet" data-kind="tweet">
+  <summary><span class="sum-t">Liquid nanos already in production at Shopify</span><span class="sum-rec">@ramin_m_h · 1 Sep 2026 · 190 likes · 176 bookmarks</span></summary>
+  <div class="disc-body"><a class="tcard" href="https://x.com/ramin_m_h/status/2094919735528013903" target="_blank" rel="noopener">
+          <div class="meta">@ramin_m_h · 1 Sep 2026 · 190 likes · 176 bookmarks</div>
+          <h4 class="title">Liquid nanos already in production at Shopify</h4>
+          <p class="why">Enterprise tiny specialists; 90→100 reliability is the art.</p>
+        </a>
+  <p class="open-x"><a href="https://x.com/ramin_m_h/status/2094919735528013903" target="_blank" rel="noopener">Open on X →</a></p></div>
+</details>
+        <details class="disc disc-tweet" data-kind="tweet">
+  <summary><span class="sum-t">Challenge: train an SLM that beats frontier in some niche</span><span class="sum-rec">@Austen · 13 Jul 2026 · 1.2k likes · 869 bookmarks</span></summary>
+  <div class="disc-body"><a class="tcard" href="https://x.com/Austen/status/2076745226387902925" target="_blank" rel="noopener">
+          <div class="meta">@Austen · 13 Jul 2026 · 1.2k likes · 869 bookmarks</div>
+          <h4 class="title">Challenge: train an SLM that beats frontier in some niche</h4>
+          <p class="why">Exact framing of the take-home, without the support domain.</p>
+        </a>
+  <p class="open-x"><a href="https://x.com/Austen/status/2076745226387902925" target="_blank" rel="noopener">Open on X →</a></p></div>
+</details>
+        <details class="disc disc-tweet" data-kind="tweet">
+  <summary><span class="sum-t">Music-reading SVLM: 98% in 10s vs frontier &lt;50%</span><span class="sum-rec">@NathanZ721 · 13 Jul 2026 · 441 likes · 278 bookmarks</span></summary>
+  <div class="disc-body"><a class="tcard" href="https://x.com/NathanZ721/status/2076733433686917475" target="_blank" rel="noopener">
+          <div class="meta">@NathanZ721 · 13 Jul 2026 · 441 likes · 278 bookmarks</div>
+          <h4 class="title">Music-reading SVLM: 98% in 10s vs frontier &lt;50%</h4>
+          <p class="why">Pure custom-task win. Weights on HF.</p>
+        </a>
+  <p class="open-x"><a href="https://x.com/NathanZ721/status/2076733433686917475" target="_blank" rel="noopener">Open on X →</a></p></div>
+</details>
+        <details class="disc disc-tweet" data-kind="tweet">
+  <summary><span class="sum-t">Qwen3-1.7B ZPD math recommender beats Opus-4.8</span><span class="sum-rec">@Austen · 20 Jul 2026</span></summary>
+  <div class="disc-body"><a class="tcard" href="https://x.com/Austen/status/2079255740745691497" target="_blank" rel="noopener">
+          <div class="meta">@Austen · 20 Jul 2026</div>
+          <h4 class="title">Qwen3-1.7B ZPD math recommender beats Opus-4.8</h4>
+          <p class="why">96% vs 17% recall@16, 8× faster.</p>
+        </a>
+  <p class="open-x"><a href="https://x.com/Austen/status/2079255740745691497" target="_blank" rel="noopener">Open on X →</a></p></div>
+</details>
+        <details class="disc disc-tweet" data-kind="tweet">
+  <summary><span class="sum-t">TwiL-LM3 (3B) beats GPT-OSS-120B on formal reasoning</span><span class="sum-rec">@Davidstout · 10 Aug 2026 · 825 likes · 709 bookmarks</span></summary>
+  <div class="disc-body"><a class="tcard" href="https://x.com/Davidstout/status/2086831158361264157" target="_blank" rel="noopener">
+          <div class="meta">@Davidstout · 10 Aug 2026 · 825 likes · 709 bookmarks</div>
+          <h4 class="title">TwiL-LM3 (3B) beats GPT-OSS-120B on formal reasoning</h4>
+          <p class="why">40× fewer params. Specialist &gt; generalist.</p>
+        </a>
+  <p class="open-x"><a href="https://x.com/Davidstout/status/2086831158361264157" target="_blank" rel="noopener">Open on X →</a></p></div>
+</details>
+        <details class="disc disc-tweet" data-kind="tweet">
+  <summary><span class="sum-t">Fine-tuned Qwen3-32B for Shopify Flow</span><span class="sum-rec">@ShopifyEng · 23 Apr 2026 · 1.5k likes · 1.2k bookmarks</span></summary>
+  <div class="disc-body"><a class="tcard" href="https://x.com/ShopifyEng/status/2047339034498752986" target="_blank" rel="noopener">
+          <div class="meta">@ShopifyEng · 23 Apr 2026 · 1.5k likes · 1.2k bookmarks</div>
+          <h4 class="title">Fine-tuned Qwen3-32B for Shopify Flow</h4>
+          <p class="why">Domain automations as data. 2.2× faster, 68% cheaper. Bench≠prod honesty.</p>
+        </a>
+  <p class="open-x"><a href="https://x.com/ShopifyEng/status/2047339034498752986" target="_blank" rel="noopener">Open on X →</a></p></div>
+</details>
+        <details class="disc disc-tweet" data-kind="tweet">
+  <summary><span class="sum-t">Numbers behind Tobi’s slide</span><span class="sum-rec">@The_AI_Investor · 1 Sep 2026</span></summary>
+  <div class="disc-body"><a class="tcard" href="https://x.com/The_AI_Investor/status/2094868408596873673" target="_blank" rel="noopener">
+          <div class="meta">@The_AI_Investor · 1 Sep 2026</div>
+          <h4 class="title">Numbers behind Tobi’s slide</h4>
+          <p class="why">75.3→84.6 vs GPT 83.0; prompt 9.1k→1.1k; ~36× throughput.</p>
+        </a>
+  <p class="open-x"><a href="https://x.com/The_AI_Investor/status/2094868408596873673" target="_blank" rel="noopener">Open on X →</a></p></div>
+</details>
+        <details class="disc disc-tweet" data-kind="tweet">
+  <summary><span class="sum-t">QMD natively trained query extender</span><span class="sum-rec">@tobi · 29 Jan 2026</span></summary>
+  <div class="disc-body"><a class="tcard" href="https://x.com/tobi/status/2016777002758656232" target="_blank" rel="noopener">
+          <div class="meta">@tobi · 29 Jan 2026</div>
+          <h4 class="title">QMD natively trained query extender</h4>
+          <p class="why">Earlier personal SLM. Unsloth+GEPA: 4× on 1.7B, 40× on 0.6B.</p>
+        </a>
+  <p class="open-x"><a href="https://x.com/tobi/status/2016777002758656232" target="_blank" rel="noopener">Open on X →</a></p></div>
+</details>
+        <details class="disc disc-tweet" data-kind="tweet">
+  <summary><span class="sum-t">Jetson: Unsloth QLoRA → GGUF on edge</span><span class="sum-rec">@NVIDIARobotics · 31 Aug 2026 · 378 likes</span></summary>
+  <div class="disc-body"><a class="tcard" href="https://x.com/NVIDIARobotics/status/2094480283135316182" target="_blank" rel="noopener">
+          <div class="meta">@NVIDIARobotics · 31 Aug 2026 · 378 likes</div>
+          <h4 class="title">Jetson: Unsloth QLoRA → GGUF on edge</h4>
+          <p class="why">Edge fine-tune path is mainstream tooling.</p>
+        </a>
+  <p class="open-x"><a href="https://x.com/NVIDIARobotics/status/2094480283135316182" target="_blank" rel="noopener">Open on X →</a></p></div>
+</details>
+      </div>
+    </div>
+  </details>
+</section>
+<section class="sec" id="s11" data-mode="execute" data-title="Map research → GHL plan">
+  <details class="sec-disc" data-sec="s11" open>
+    <summary>
+      <span class="idx">11</span>
+      <div>
+        <h2>Map research → GHL plan</h2>
+        <span class="count">what to adopt</span>
+        <p class="sec-blurb">Adopt now vs stretch</p>
+      </div>
+      <span class="chev" aria-hidden="true">+</span>
+    </summary>
+    <div class="sec-inner">
+      <p class="sec-intro">Keep the decision map’s free-compute defaults. Borrow the research thesis where it raises the grade without blowing the week.</p>
+      <div class="bridge">
+        <div class="panel">
+          <h3><span class="k">Adopt now</span>In the 7-day slice</h3>
+          <ul>
+            <li><b>Thesis language in README:</b> “specialist SLM for 27 support intents,” cite the Tobi / Shopify pattern as motivation, not as a claim you replicated their flywheel.</li>
+            <li><b>Qwen2.5-1.5B + Unsloth QLoRA</b> — matches discourse default and brief recommendation.</li>
+            <li><b>Placeholder rewrite + cluster splits + messy OOD set</b> — your stand-in for “held-out reality.”</li>
+            <li><b>Eval first on base</b> — same discipline as Shopify mining failures before retraining.</li>
+            <li><b>Merge → GGUF → Ollama</b> — serve path already in decision map.</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3><span class="k">Adopt if ahead</span>Stretch, then cut honestly</h3>
+          <ul>
+            <li><b>DPO</b> on 200–500 preference pairs from failure gallery (tuned-bad vs rewritten-good).</li>
+            <li><b>One NoRA-init trial</b> if Unsloth/PEFT swap is one config line.</li>
+            <li><b>Synthetic hard negatives</b> from a larger teacher (multi-intent, angry, off-policy) — never mix into the frozen test set.</li>
+            <li><b>Do not</b> attempt full Shopify flywheel / TangleML / GRPO math pipelines in week one. Name them under “what next / production.”</li>
+          </ul>
+        </div>
+        <div class="panel">
+          <h3><span class="k">Interview line</span>Connect research to choices</h3>
+          <p style="font-size:14px;color:var(--g700);margin:0">“The industry pattern right now is specialized small models with a data loop beating frontier on narrow tasks — Shopify’s 0.8B buyer-profile result is the clearest public example. This take-home is that pattern at homework scale: Bitext is the narrow task, QLoRA is the cheap adapter, my messy set is the held-out reality check, and the endpoint is how you verify it.”</p>
+        </div>
+        <div class="panel">
+          <h3><span class="k">Still criterion #1</span>Eval rigor</h3>
+          <p style="font-size:14px;color:var(--g700);margin:0">None of the bangers replace a leakage-free base-vs-tuned comparison. A viral thesis without intervals and failure cases still fails their internal set.</p>
+        </div>
+      </div>
+    </div>
+  </details>
+</section>
+<section class="sec" id="s12" data-mode="research" data-title="Search lessons">
+  <details class="sec-disc" data-sec="s12">
+    <summary>
+      <span class="idx">12</span>
+      <div>
+        <h2>Search lessons</h2>
+        <span class="count">why we almost missed Tobi</span>
+        <p class="sec-blurb">Why the first X search missed</p>
+      </div>
+      <span class="chev" aria-hidden="true">+</span>
+    </summary>
+    <div class="sec-inner">
+      <p class="sec-intro">Operational note for future X research on this topic. Root cause of the miss was query design, not absence of the post.</p>
+      <details class="disc disc-miss" data-kind="lesson"><summary><span class="sum-t">1. Vocabulary AND was too tight</span></summary><div class="disc-body"><div class="miss">
+        <h3>1. Vocabulary AND was too tight</h3>
+        <p>Required <code>SLM|small language model</code> + <code>finetune</code> + <code>LoRA|QLoRA</code>. Tobi said <b>tiny models</b>, <b>finetuned</b>, <b>special purpose</b>, <b>0.8b</b>, <b>flywheel</b> — zero LoRA tokens.</p>
+      </div></div></details>
+      <details class="disc disc-miss" data-kind="lesson"><summary><span class="sum-t">2. Stemming bug: finetune ≠ finetuned</span></summary><div class="disc-body"><div class="miss">
+        <h3>2. Stemming bug: finetune ≠ finetuned</h3>
+        <p>Confirmed: <code>from:tobi finetune</code> misses the Sep 1 post; <code>from:tobi finetuned</code> hits it. Always search both stems plus <code>fine-tuned</code>.</p>
+      </div></div></details>
+      <details class="disc disc-miss" data-kind="lesson"><summary><span class="sum-t">3. Semantic search biased to tutorial jargon</span></summary><div class="disc-body"><div class="miss">
+        <h3>3. Semantic search biased to tutorial jargon</h3>
+        <p>Query “cutting-edge methods for fine-tuning small language models” returned cookbooks, not a 1.5M-view product claim. Near-phrasing of the tweet itself ranked it #1.</p>
+      </div></div></details>
+      <details class="disc disc-miss" data-kind="lesson"><summary><span class="sum-t">4. Prevention rule</span></summary><div class="disc-body"><div class="miss">
+        <h3>4. Prevention rule</h3>
+        <p>For SLM / custom-task X research: (a) synonym fan-out <code>tiny|specialized|0.XB|flywheel</code>, (b) both <code>finetune</code> and <code>finetuned</code>, (c) <code>min_faves</code> / Top pass, (d) named accounts (<code>tobi</code>, ShopifyEng, Unsloth, Liquid, Austen).</p>
+      </div></div></details>
+      <div class="panel" style="margin-top:8px">
+        <h3><span class="k">Source files merged</span></h3>
+        <ul>
+          <li><code>docs/GHL_SLM_ASSIGNMENT_BRIEF.html</code> — sections 01–07</li>
+          <li><code>docs/research/x-slm-finetune-methods-2026-09-05.html</code> — methods digest</li>
+          <li><code>docs/research/x-slm-bangers-2026-09-05.html</code> — banger board</li>
+          <li><code>readme.md</code> — original assignment text</li>
+        </ul>
+      </div>
+    </div>
+  </details>
+</section>
+
+    <footer>
+      <span class="k">A claim of better is a sentence. A proof of better is unseen data, the same prompt for both models, and the losses shown next to the wins.</span>
+      Progressive disclosure master. Sources: <code>GHL_SLM_ASSIGNMENT_BRIEF.html</code>, <code>docs/research/*</code>, <code>readme.md</code>.
+      Path: <code>docs/GHL_SLM_MASTER.html</code>.
+    </footer>
+  </div>
+</div>
+
+<script>
+
+(function () {
+  var KEY = 'ghl-slm-brief-checklist-v1';
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('#checklist input[type=checkbox]'));
+  var bar = document.getElementById('ck-bar');
+  var pct = document.getElementById('ck-pct');
+  var count = document.getElementById('ck-count');
+  var reset = document.getElementById('ck-reset');
+
+  function load() {
+    try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { return {}; }
+  }
+  function save(state) {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  function render() {
+    var done = boxes.filter(function (b) { return b.checked; }).length;
+    var total = boxes.length;
+    var p = total ? Math.round(done / total * 100) : 0;
+    bar.style.width = p + '%';
+    pct.textContent = p + '%';
+    count.textContent = done + ' / ' + total;
+  }
+
+  var state = load();
+  boxes.forEach(function (b) {
+    b.checked = !!state[b.dataset.k];
+    b.addEventListener('change', function () {
+      state[b.dataset.k] = b.checked;
+      save(state);
+      render();
+    });
+  });
+  reset.addEventListener('click', function () {
+    state = {};
+    save(state);
+    boxes.forEach(function (b) { b.checked = false; });
+    render();
+  });
+  render();
+})();
+
+(function () {
+  var MODE_KEY = 'ghl-slm-master-mode-v2';
+  var OPEN_KEY = 'ghl-slm-master-open-v2';
+  var mode = localStorage.getItem(MODE_KEY) || 'all';
+  var idx = document.getElementById('idx');
+  var search = document.getElementById('search');
+  var sections = Array.prototype.slice.call(document.querySelectorAll('section.sec'));
+  var secDiscs = Array.prototype.slice.call(document.querySelectorAll('details.sec-disc'));
+
+  function saveOpen() {
+    var open = {};
+    secDiscs.forEach(function (d) { open[d.dataset.sec] = d.open; });
+    try { localStorage.setItem(OPEN_KEY, JSON.stringify(open)); } catch (e) {}
+  }
+  function loadOpen() {
+    try {
+      var o = JSON.parse(localStorage.getItem(OPEN_KEY) || 'null');
+      if (!o) return;
+      secDiscs.forEach(function (d) {
+        if (Object.prototype.hasOwnProperty.call(o, d.dataset.sec)) d.open = !!o[d.dataset.sec];
+      });
+    } catch (e) {}
+  }
+  loadOpen();
+  secDiscs.forEach(function (d) { d.addEventListener('toggle', function () { saveOpen(); updateSideMeta(); }); });
+
+  function setMode(m) {
+    mode = m;
+    try { localStorage.setItem(MODE_KEY, m); } catch (e) {}
+    document.querySelectorAll('.modes button').forEach(function (b) {
+      b.classList.toggle('active', b.dataset.mode === m);
+    });
+    applyFilters();
+  }
+  document.querySelectorAll('.modes button').forEach(function (b) {
+    b.addEventListener('click', function () { setMode(b.dataset.mode); });
+  });
+
+  function applyFilters() {
+    var q = (search.value || '').trim().toLowerCase();
+    sections.forEach(function (sec) {
+      var modeOk = (mode === 'all' || sec.dataset.mode === mode);
+      var text = (sec.dataset.title + ' ' + sec.textContent).toLowerCase();
+      var qOk = !q || text.indexOf(q) !== -1;
+      var show = modeOk && qOk;
+      sec.setAttribute('data-hidden', show ? '0' : '1');
+      var link = idx.querySelector('a[data-sec="' + sec.id + '"]');
+      if (link) link.setAttribute('data-hidden', show ? '0' : '1');
+    });
+    updateSideMeta();
+  }
+  search.addEventListener('input', applyFilters);
+
+  document.getElementById('expand-secs').addEventListener('click', function () {
+    secDiscs.forEach(function (d) {
+      var sec = d.closest('section.sec');
+      if (sec && sec.getAttribute('data-hidden') === '1') return;
+      d.open = true;
+    });
+    saveOpen(); updateSideMeta();
+  });
+  document.getElementById('collapse-secs').addEventListener('click', function () {
+    secDiscs.forEach(function (d) { d.open = false; });
+    saveOpen(); updateSideMeta();
+  });
+  document.getElementById('expand-nested').addEventListener('click', function () {
+    document.querySelectorAll('section.sec:not([data-hidden="1"]) details.disc, section.sec:not([data-hidden="1"]) details.qa').forEach(function (d) {
+      d.open = true;
+    });
+  });
+  document.getElementById('collapse-nested').addEventListener('click', function () {
+    document.querySelectorAll('details.disc, details.qa').forEach(function (d) { d.open = false; });
+  });
+
+  // scroll spy
+  var links = Array.prototype.slice.call(idx.querySelectorAll('a'));
+  function setActive(id) {
+    links.forEach(function (a) { a.classList.toggle('active', a.dataset.sec === id); });
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) setActive(en.target.id);
+      });
+    }, { rootMargin: '-20% 0px -60% 0px', threshold: 0 });
+    sections.forEach(function (s) { io.observe(s); });
+  }
+  links.forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var sec = document.getElementById(a.dataset.sec);
+      if (!sec) return;
+      var disc = sec.querySelector('details.sec-disc');
+      if (disc && !disc.open) { disc.open = true; saveOpen(); }
+    });
+  });
+
+  function updateSideMeta() {
+    var openN = secDiscs.filter(function (d) { return d.open; }).length;
+    document.getElementById('side-open').textContent = openN + ' / ' + secDiscs.length;
+    // checklist mirror
+    var boxes = document.querySelectorAll('#checklist input[type=checkbox]');
+    if (boxes.length) {
+      var done = Array.prototype.filter.call(boxes, function (b) { return b.checked; }).length;
+      document.getElementById('side-ck').textContent = done + '/' + boxes.length;
+      document.getElementById('side-bar').style.width = Math.round(done / boxes.length * 100) + '%';
+    }
+  }
+  // hook checklist changes
+  document.addEventListener('change', function (e) {
+    if (e.target && e.target.matches && e.target.matches('#checklist input')) updateSideMeta();
+  });
+
+  setMode(mode);
+  updateSideMeta();
+})();
+</script>
+</body>
+</html>

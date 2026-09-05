@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>X digest — cutting-edge SLM fine-tuning methods</title>
+<style>
+:root {
+  color-scheme: light;
+  --ivory:  #FAF9F5;
+  --paper:  #FFFFFF;
+  --slate:  #141413;
+  --clay:   #D97757;
+  --clay-d: #B85C3E;
+  --oat:    #E3DACC;
+  --olive:  #788C5D;
+  --g100:   #F0EEE6;
+  --g200:   #E6E3DA;
+  --g300:   #D1CFC5;
+  --g500:   #87867F;
+  --g700:   #3D3D3A;
+  --bg: var(--ivory);
+  --surface: var(--paper);
+  --ink: var(--slate);
+  --ink-2: var(--g700);
+  --muted: var(--g500);
+  --hair: var(--g200);
+  --hair-strong: var(--g300);
+  --accent: var(--clay);
+  --good: var(--olive);
+  --warn: #C08A2E;
+  --serif: ui-serif, Georgia, "Times New Roman", Times, serif;
+  --mono: ui-monospace, "SF Mono", "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --shadow: 0 10px 30px rgba(20,20,19,.08);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--sans); line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.wrap { max-width: 1120px; margin: 0 auto; padding: 0 32px 120px; }
+@media (max-width: 640px){ .wrap { padding: 0 20px 90px; } }
+header.masthead { padding: 72px 0 44px; border-bottom: 1.5px solid var(--g300); position: relative; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--g500); margin: 0 0 18px; display: flex; align-items: center; gap: 12px; }
+.eyebrow::before { content: ""; width: 24px; height: 1.5px; background: var(--clay); }
+.backlink { position: absolute; top: 30px; right: 0; font-family: var(--mono);
+  font-size: 12px; color: var(--g500); letter-spacing: .04em; text-decoration: none; }
+.backlink:hover { color: var(--clay); }
+h1 { font-family: var(--serif); font-weight: 500; font-size: clamp(34px, 5vw, 58px);
+  line-height: 1.06; letter-spacing: -.018em; margin: 0; max-width: 18ch; text-wrap: balance; }
+h1 em { font-style: italic; color: var(--clay); }
+.intro { font-size: 16.5px; color: var(--g700); margin: 22px 0 0; max-width: 640px; }
+.intro b { color: var(--clay); font-weight: 600; font-style: italic; }
+.hero-grid { display: grid; grid-template-columns: 1fr 320px; gap: 48px; align-items: end; }
+@media (max-width: 880px){ .hero-grid { grid-template-columns: 1fr; } }
+.hero-fig { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 12px; }
+@media (max-width: 880px){ .hero-fig { max-width: 340px; margin-top: 24px; } }
+.hero-fig .q { border-radius: 10px; border: 1.5px solid var(--g300); background: var(--paper);
+  padding: 12px; aspect-ratio: 1; position: relative; display: flex; flex-direction: column;
+  justify-content: space-between; overflow: hidden; }
+.hero-fig .q .qtag { font-family: var(--mono); font-size: 8px; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--g500); line-height: 1.3; }
+.hero-fig .q .qwin { font-family: var(--serif); font-size: 15px; font-style: italic; letter-spacing: -.01em; }
+.hero-fig .q.soft { background: var(--g100); }
+.hero-fig .q.emph { border-color: var(--slate); box-shadow: 0 10px 26px rgba(20,20,19,.10); }
+nav.toc { display: flex; flex-wrap: wrap; gap: 8px; padding: 30px 0 0; }
+nav.toc a { font-size: 12.5px; padding: 7px 14px; border: 1.5px solid var(--g300);
+  border-radius: 999px; text-decoration: none; color: var(--g700); background: var(--paper);
+  transition: border-color 120ms, color 120ms; display: inline-flex; align-items: center; gap: 7px; }
+nav.toc a .n { font-family: var(--mono); font-size: 10px; color: var(--clay); }
+nav.toc a:hover { border-color: var(--slate); color: var(--slate); }
+section { margin-top: 64px; scroll-margin-top: 24px; }
+.sec-head { display: flex; align-items: baseline; gap: 16px; margin-bottom: 8px; }
+.sec-head .idx { font-family: var(--mono); font-size: 13px; color: var(--clay); font-weight: 600; width: 30px; flex-shrink: 0; }
+.sec-head h2 { font-family: var(--serif); font-weight: 500; font-size: 27px; margin: 0; letter-spacing: -.012em; }
+.sec-head .count { font-family: var(--mono); font-size: 11px; color: var(--g500);
+  background: var(--g100); padding: 2px 9px; border-radius: 999px; }
+.sec-intro { font-size: 14.5px; color: var(--g700); max-width: 720px; margin: 0 0 22px 46px; }
+.sec-body { margin-left: 46px; }
+@media (max-width: 640px){ .sec-intro, .sec-body { margin-left: 0; } }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 720px){ .grid2 { grid-template-columns: 1fr; } }
+.card { display: flex; flex-direction: column; gap: 8px; background: var(--paper);
+  border: 1.5px solid var(--g300); border-radius: 14px; padding: 18px 20px; color: inherit; text-decoration: none;
+  transition: transform 150ms ease, box-shadow 150ms ease, border-color 150ms ease; }
+a.card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--slate); }
+.card .meta { font-family: var(--mono); font-size: 11px; color: var(--g500); letter-spacing: .02em; }
+.card .title { font-family: var(--serif); font-size: 18px; font-weight: 500; line-height: 1.25; color: var(--slate); }
+.card .body { font-size: 14px; color: var(--g700); }
+.tag { font-family: var(--mono); font-size: 9px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+  display: inline-block; padding: 3px 8px; border-radius: 999px; background: var(--g100); color: var(--g700); border: 1px solid var(--g200); }
+.tag.hot { background: #F4E7DF; color: var(--clay-d); border-color: #E8C9B8; }
+.tag.good { background: #E8EDE1; color: #4F5F3C; border-color: #C9D4B8; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.panel { background: var(--surface); border: 1.5px solid var(--g300); border-radius: 14px; padding: 22px 24px; margin-bottom: 14px; }
+.panel h3 { font-family: var(--serif); font-weight: 500; font-size: 20px; margin: 0 0 10px; }
+.panel p, .panel li { font-size: 14.5px; color: var(--g700); }
+.panel ul { margin: 8px 0 0; padding-left: 1.15em; }
+.panel code, footer code { font-family: var(--mono); font-size: 12px; background: var(--g100); padding: 1px 5px; border-radius: 4px; }
+.statrow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px; }
+@media (max-width: 720px){ .statrow { grid-template-columns: 1fr 1fr; } }
+.stat { background: var(--g100); border: 1.5px solid var(--g200); border-radius: 11px; padding: 14px 16px; }
+.stat .lbl { font-family: var(--mono); font-size: 10px; color: var(--muted); font-weight: 600;
+  text-transform: uppercase; letter-spacing: .08em; }
+.stat .val { font-family: var(--serif); font-weight: 400; font-size: 22px; margin-top: 5px;
+  font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.recipe { font-family: var(--mono); font-size: 13px; line-height: 1.7; background: var(--g100);
+  border: 1.5px solid var(--g200); border-radius: 12px; padding: 16px 18px; color: var(--g700); }
+.recipe strong { color: var(--slate); }
+footer { margin-top: 80px; padding-top: 28px; border-top: 1.5px solid var(--g300); color: var(--g500); font-size: 13px; }
+footer .k { display: block; font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--g700); margin-bottom: 12px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <span class="backlink">X fan-out · 2026-09-05</span>
+    <p class="eyebrow">SLM fine-tuning &middot; recent posts on X</p>
+    <div class="hero-grid">
+      <div>
+        <h1>Cutting-edge methods to <em>specialize small models</em></h1>
+        <p class="intro">Sequential Thinking fanned nine query angles across PEFT, tooling, preference/RL, and distillation. The live discourse is clear: <b>data + GRPO + cheap adapters</b> beat chasing bigger bases for custom tasks.</p>
+      </div>
+      <div class="hero-fig" aria-hidden="true">
+        <div class="q soft"><span class="qtag">Research · PEFT geometry</span><span class="qwin">NoRA / DoRA</span></div>
+        <div class="q emph"><span class="qtag">Practice · default stack</span><span class="qwin">Unsloth + QLoRA + GRPO</span></div>
+        <div class="q"><span class="qtag">Data · teacher pipelines</span><span class="qwin">Synthetic / OPD</span></div>
+        <div class="q soft"><span class="qtag">Ship · edge deploy</span><span class="qwin">INT4 / GGUF / MLX</span></div>
+      </div>
+    </div>
+    <nav class="toc">
+      <a href="#s1"><span class="n">01</span> Consensus stack</a>
+      <a href="#s2"><span class="n">02</span> PEFT frontier</a>
+      <a href="#s3"><span class="n">03</span> GRPO / preference</a>
+      <a href="#s4"><span class="n">04</span> Distillation &amp; data</a>
+      <a href="#s5"><span class="n">05</span> Custom-task tweets</a>
+      <a href="#s6"><span class="n">06</span> Fan-out method</a>
+    </nav>
+  </header>
+
+  <section id="s1">
+    <div class="sec-head"><span class="idx">01</span><h2>What X treats as the default stack</h2><span class="count">practice</span></div>
+    <p class="sec-intro">Across tooling and how-to posts, the repeatable recipe for Phi / Gemma / Qwen / Llama small models is stable. Research variants matter; this is what people actually ship.</p>
+    <div class="sec-body">
+      <div class="statrow">
+        <div class="stat"><div class="lbl">Adapter</div><div class="val">QLoRA / 4-bit</div></div>
+        <div class="stat"><div class="lbl">Trainer</div><div class="val">Unsloth</div></div>
+        <div class="stat"><div class="lbl">Align</div><div class="val">GRPO / DPO</div></div>
+        <div class="stat"><div class="lbl">Export</div><div class="val">GGUF / INT4</div></div>
+      </div>
+      <div class="recipe">
+        <strong>pick base (0.5B–4B)</strong> → curate / synthesize domain data →
+        <strong>QLoRA SFT</strong> (Unsloth / LLaMA-Factory / Axolotl / TRL) →
+        optional <strong>DPO or GRPO</strong> on verifiable rewards →
+        merge + <strong>quantize</strong> → serve via llama.cpp / Ollama / MLX
+      </div>
+      <div class="grid2" style="margin-top:16px">
+        <a class="card" href="https://x.com/NVIDIARobotics/status/2094480283135316182" target="_blank" rel="noopener">
+          <span class="meta">@NVIDIARobotics · 31 Aug 2026 · 378 likes</span>
+          <span class="title">Jetson: Unsloth + memory-efficient QLoRA → GGUF</span>
+          <span class="body">Hands-on for Nemotron 3.5 Lightning and Qwen3.5-4B on Jetson Orin / Thor. Edge fine-tune path is now mainstream.</span>
+          <div class="tags"><span class="tag hot">edge</span><span class="tag">Unsloth</span><span class="tag">QLoRA</span></div>
+        </a>
+        <a class="card" href="https://x.com/h100envy/status/2075240393419936189" target="_blank" rel="noopener">
+          <span class="meta">@h100envy · 9 Jul 2026 · 4.4k likes</span>
+          <span class="title">Unsloth founder loop: kernels → 4-bit → GRPO/DPO</span>
+          <span class="body">“Pick base → Triton kernels → quantize → GRPO/DPO → ship reasoning model on one GPU.” Viral framing of the default stack.</span>
+          <div class="tags"><span class="tag hot">viral</span><span class="tag">GRPO</span><span class="tag">Unsloth</span></div>
+        </a>
+        <a class="card" href="https://x.com/0xal0ke/status/2094926892126384478" target="_blank" rel="noopener">
+          <span class="meta">@0xal0ke · 1 Sep 2026</span>
+          <span class="title">10 fine-tune repos on the radar</span>
+          <span class="body">Unsloth, LLaMA-Factory, TRL, Axolotl, OpenRLHF, DeepSpeed, TensorRT-LLM, FlashAttention, nanoGPT, llm.c.</span>
+          <div class="tags"><span class="tag">tooling</span></div>
+        </a>
+        <a class="card" href="https://x.com/neuralbroker/status/2064264071353090416" target="_blank" rel="noopener">
+          <span class="meta">@neuralbroker · 9 Jun 2026</span>
+          <span class="title">Local code-model recipe in six steps</span>
+          <span class="body">Small base → curated Q&amp;A → LoRA r=16 4-bit → optional DPO → GGUF Q8 → llama.cpp. Compact custom-task playbook.</span>
+          <div class="tags"><span class="tag good">playbook</span><span class="tag">DPO</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="s2">
+    <div class="sec-head"><span class="idx">02</span><h2>PEFT frontier beyond plain LoRA</h2><span class="count">this week</span></div>
+    <p class="sec-intro">The research chatter in early September 2026 is about initialization and geometry of low-rank adapters, not just rank size. DoRA still shows up in applied posts as “better than LoRA.”</p>
+    <div class="sec-body">
+      <div class="panel">
+        <h3>NoRA — Normalized Low-Rank Adaptation</h3>
+        <p>Paper <code>arxiv.org/abs/2608.31036</code>. Claim: standard LoRA’s zero-init on B leaves early training dominated by a poorly scaled random A; column-normalize A along the rank dimension so early gradients match full finetuning. <strong>NoRA-init</strong> (normalize once) captures most gains — no extra params, fully mergeable.</p>
+        <ul>
+          <li>Author thread reports wins vs LoRA, DoRA, PiSSA, rsLoRA, OFT on SFT; stronger on RLVR where spectral inits can collapse.</li>
+          <li>Skeptical reply (@zraytam): check whether learning rate was fairly tuned across methods.</li>
+          <li>@ZhengZhan13: gap vs full FT is still about init/scale/normalization, not only rank.</li>
+        </ul>
+      </div>
+      <div class="grid2">
+        <a class="card" href="https://x.com/Jo1uck/status/2094794896859402663" target="_blank" rel="noopener">
+          <span class="meta">@Jo1uck · 1 Sep 2026 · 144 likes · 124 bookmarks</span>
+          <span class="title">NoRA paper thread</span>
+          <span class="body">Norm(A)x instead of Norm(Ax) keeps LoRA linear and mergeable while stabilizing early optimization.</span>
+          <div class="tags"><span class="tag hot">new</span><span class="tag">NoRA</span></div>
+        </a>
+        <a class="card" href="https://x.com/Soul0Engineer/status/2095114525900947698" target="_blank" rel="noopener">
+          <span class="meta">@Soul0Engineer · 2 Sep 2026</span>
+          <span class="title">“You’ve been tuning the wrong thing”</span>
+          <span class="body">Clear explainer: LoRA rank was never the bottleneck — geometry of A was. Reports NoRA crushing baselines on SFT/RLVR.</span>
+          <div class="tags"><span class="tag">explainer</span></div>
+        </a>
+        <a class="card" href="https://x.com/askalphaxiv/status/2095078527389331836" target="_blank" rel="noopener">
+          <span class="meta">@askalphaxiv · 2 Sep 2026 · 90 likes</span>
+          <span class="title">alphaXiv card on NoRA</span>
+          <span class="body">Even init-only normalization captures most gain; better convergence and stability, zero inference cost.</span>
+          <div class="tags"><span class="tag">paper</span></div>
+        </a>
+        <a class="card" href="https://x.com/FurkanGozukara/status/2095162030420365820" target="_blank" rel="noopener">
+          <span class="meta">@FurkanGozukara · 2 Sep 2026</span>
+          <span class="title">DoRA for custom-voice TTS</span>
+          <span class="body">Applied claim: Index TTS 2.5 DoRA training “better than LoRA” for custom voice. Shows DoRA still in production discourse.</span>
+          <div class="tags"><span class="tag">DoRA</span><span class="tag">TTS</span></div>
+        </a>
+      </div>
+      <div class="panel" style="margin-top:14px">
+        <h3>Also mentioned in the PEFT neighborhood</h3>
+        <p>Classic visual thread still recirculates: LoRA, LoRA-FA, VeRA, Delta-LoRA, LoRA+ (@akshay_pachaar). Newer paper card: <em>Fine-Tuning Low-Bit Models with Gradient in Quantized Code Space</em> (<code>arxiv.org/abs/2608.30908</code>, @Memoirs).</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="s3">
+    <div class="sec-head"><span class="idx">03</span><h2>GRPO and preference training on tiny models</h2><span class="count">hot</span></div>
+    <p class="sec-intro">For custom tasks with a checkable answer (math, code, browser actions, tool use), GRPO is the method people keep posting. DPO remains the lightweight preference step after SFT.</p>
+    <div class="sec-body">
+      <div class="grid2">
+        <a class="card" href="https://x.com/paulabartabajo_/status/2057272715388563857" target="_blank" rel="noopener">
+          <span class="meta">@paulabartabajo_ · 21 May 2026 · 88 likes</span>
+          <span class="title">Browser agents: fine-tune small model with GRPO</span>
+          <span class="body">Liquid AI cookbook: BrowserGym tasks → reliable browser controller without a huge proprietary model.</span>
+          <div class="tags"><span class="tag hot">agents</span><span class="tag">GRPO</span></div>
+        </a>
+        <a class="card" href="https://x.com/Orphentis/status/2074449128054997407" target="_blank" rel="noopener">
+          <span class="meta">@Orphentis · 7 Jul 2026</span>
+          <span class="title">Gemma-3 math with Tunix GRPO + LoRA</span>
+          <span class="body">Custom reward functions on GSM8K, single-accelerator setup → production reasoning checkpoint.</span>
+          <div class="tags"><span class="tag">Gemma-3</span><span class="tag">math</span></div>
+        </a>
+        <a class="card" href="https://x.com/AgileRL_Inc/status/2086734684088610955" target="_blank" rel="noopener">
+          <span class="meta">@AgileRL_Inc · 10 Aug 2026</span>
+          <span class="title">GRPO fine-tune of Qwen2.5-0.5B</span>
+          <span class="body">One manifest, one reward file, plain Python reward(question, answer, completion) → score.</span>
+          <div class="tags"><span class="tag">0.5B</span></div>
+        </a>
+        <a class="card" href="https://x.com/adithya_s_k/status/2052436903396569112" target="_blank" rel="noopener">
+          <span class="meta">@adithya_s_k · 7 May 2026 · 391 likes</span>
+          <span class="title">Reward hacking on Qwen 0.5B GRPO</span>
+          <span class="body">Code-execution reward → model wraps everything in try/except. Warning for custom-task reward design.</span>
+          <div class="tags"><span class="tag">caution</span><span class="tag">RL</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="s4">
+    <div class="sec-head"><span class="idx">04</span><h2>Distillation, OPD, and synthetic data</h2><span class="count">frontier</span></div>
+    <p class="sec-intro">For custom domains, the loudest cutting-edge thread is teacher→student: synthetic traces from a strong model, then SFT / DPO / RL on the SLM. On-policy distillation (OPD) is the research tip of that spear right now.</p>
+    <div class="sec-body">
+      <div class="panel">
+        <h3>On-policy distillation (OPD) — Sep 2026 papers circulating hard</h3>
+        <ul>
+          <li><strong>One training example is enough?</strong> One query recovers ~60–75% of full-data OPD gains; 16 diverse queries ≈ full data via state coverage (<code>arxiv.org/abs/2609.04172</code>). Bottleneck = student absorption rate, not prompt-set size.</li>
+          <li><strong>Sequential beats joint:</strong> OPD-then-RL (OPD to expand teacher-support coverage, then GRPO/RLVR to sharpen) beats pure OPD, pure RL, and joint hybrids that mix signals in one step.</li>
+        </ul>
+      </div>
+      <div class="grid2">
+        <a class="card" href="https://x.com/HuggingPapers/status/2096088806126489776" target="_blank" rel="noopener">
+          <span class="meta">@HuggingPapers · 5 Sep 2026 · today</span>
+          <span class="title">One training example for OPD</span>
+          <span class="body">71.5% state coverage from a single query; 16 queries match full-data training. Fresh DailyPapers hit.</span>
+          <div class="tags"><span class="tag hot">today</span><span class="tag">OPD</span></div>
+        </a>
+        <a class="card" href="https://x.com/di_zhang_fdu/status/2096011271225368702" target="_blank" rel="noopener">
+          <span class="meta">@di_zhang_fdu · 4 Sep 2026</span>
+          <span class="title">OPD is data-overfed, algorithm-starved</span>
+          <span class="body">Short English summary linking the one-query result and arXiv abs.</span>
+          <div class="tags"><span class="tag">paper</span></div>
+        </a>
+        <a class="card" href="https://x.com/neural_avb/status/2083163475795390873" target="_blank" rel="noopener">
+          <span class="meta">@neural_avb · 31 Jul 2026 · 758 likes</span>
+          <span class="title">135M SLM: CPT → SFT → DPO → RL</span>
+          <span class="body">DeepSeek used for ~80% of synthetic data, reasoning traces, and reward evals. Full post-training ladder on a tiny model.</span>
+          <div class="tags"><span class="tag hot">pipeline</span><span class="tag">synthetic</span></div>
+        </a>
+        <a class="card" href="https://x.com/GodwinPaulPinto/status/2077995993996693918" target="_blank" rel="noopener">
+          <span class="meta">@GodwinPaulPinto · 17 Jul 2026</span>
+          <span class="title">Gemma 270M: synthetic + LoRA + INT4</span>
+          <span class="body">Google-style story: tiny model adapted for a specific task can beat a 70B generalist on that task, on-device.</span>
+          <div class="tags"><span class="tag">270M</span><span class="tag">INT4</span></div>
+        </a>
+        <a class="card" href="https://x.com/TeksCreate/status/2080663607977652530" target="_blank" rel="noopener">
+          <span class="meta">@TeksCreate · 24 Jul 2026</span>
+          <span class="title">Cisco Antares 7B — 1T synthetic-only</span>
+          <span class="body">Claims beat Llama 3.1 8B on GSM8K / ARC with zero human data. Synthetic-only as a strategy, not a hack.</span>
+          <div class="tags"><span class="tag">synthetic-only</span></div>
+        </a>
+        <a class="card" href="https://x.com/0x0SojalSec/status/2086913475708891539" target="_blank" rel="noopener">
+          <span class="meta">@0x0SojalSec · 10 Aug 2026 · 44 likes</span>
+          <span class="title">Distill GPT-4o / Claude into 3B–7B</span>
+          <span class="body">Playbook: 100–500 HQ examples, teacher synthetic + filter, Unsloth QLoRA on 6–8GB VRAM.</span>
+          <div class="tags"><span class="tag good">playbook</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="s5">
+    <div class="sec-head"><span class="idx">05</span><h2>Custom-task examples people are actually training</h2><span class="count">applied</span></div>
+    <p class="sec-intro">These are not method papers — they show the pattern: narrow task, tiny base, LoRA/QLoRA, sometimes synthetic data or GRPO.</p>
+    <div class="sec-body">
+      <div class="grid2">
+        <a class="card" href="https://x.com/RightSideOfAI/status/2080953524666683847" target="_blank" rel="noopener">
+          <span class="meta">@RightSideOfAI · 25 Jul 2026</span>
+          <span class="title">Qwen2.5-0.5B QLoRA for pasture weeds → soil indicators</span>
+          <span class="body">Domain SLM for regenerative farmers. Classic custom-task LoRA.</span>
+        </a>
+        <a class="card" href="https://x.com/kekeront/status/2043974170107847094" target="_blank" rel="noopener">
+          <span class="meta">@kekeront · 14 Apr 2026</span>
+          <span class="title">Kazakh SLM: QLoRA on Qwen3-0.6 + engram / dream noising</span>
+          <span class="body">Language adaptation with unusual regularization; positive KazMMLU correlation reported.</span>
+        </a>
+        <a class="card" href="https://x.com/yashkavaiya/status/2083414244197036320" target="_blank" rel="noopener">
+          <span class="meta">@yashkavaiya · 1 Aug 2026</span>
+          <span class="title">Healthcare SLM: citation-preserving synthetic data</span>
+          <span class="body">7-stage grounded SDG with fail-closed gates — domain custom task without real PHI.</span>
+        </a>
+        <a class="card" href="https://x.com/cjzafir/status/2060448943809654851" target="_blank" rel="noopener">
+          <span class="meta">@cjzafir · 29 May 2026 · 235 likes</span>
+          <span class="title">67k synthetic rows for SLM fine-tune via Codex + teacher APIs</span>
+          <span class="body">~$38 API cost; 48.8k rows accepted after audit. Synthetic-data factory for SLMs.</span>
+        </a>
+        <a class="card" href="https://x.com/camale0nrar0/status/2082773717176705114" target="_blank" rel="noopener">
+          <span class="meta">@camale0nrar0 · 30 Jul 2026</span>
+          <span class="title">AST parsing: 3B–7B LoRA SLM vs huge API model</span>
+          <span class="body">Claims LoRA SLM matches expensive token APIs at &lt;200ms latency for a narrow parse task.</span>
+        </a>
+        <a class="card" href="https://x.com/paulabartabajo_/status/1984319799908819287" target="_blank" rel="noopener">
+          <span class="meta">@paulabartabajo_ · 31 Oct 2025 · 280 likes</span>
+          <span class="title">Liquid AI cookbook: hands-on SLM fine-tuning</span>
+          <span class="body">Still the most bookmarked “go do the labs” pointer in this search set.</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="s6">
+    <div class="sec-head"><span class="idx">06</span><h2>Fan-out queries (Sequential Thinking)</h2><span class="count">method</span></div>
+    <p class="sec-intro">Nine complementary angles were planned, then executed as keyword + semantic X searches. One PEFT keyword query was polluted by Spanish “Lora” names and was re-run with NoRA/DoRA-focused terms.</p>
+    <div class="sec-body">
+      <div class="panel">
+        <h3>Query branches</h3>
+        <ul>
+          <li>SLM + LoRA/QLoRA/DoRA (Latest, since mid-2025)</li>
+          <li>DoRA / PiSSA / GaLore / VeRA / AdaLoRA / LoftQ / rsLoRA</li>
+          <li>Unsloth / Axolotl / LLaMA-Factory / MLX × Phi|Gemma|Qwen|Llama|SmolLM</li>
+          <li>DPO / ORPO / SimPO / KTO / GRPO on small bases</li>
+          <li>Knowledge distillation / on-policy distillation / synthetic × SLM</li>
+          <li>Semantic: cutting-edge SLM fine-tune methods</li>
+          <li>Semantic: PEFT beyond LoRA; Unsloth+QLoRA+DPO pipeline</li>
+          <li>NoRA / Normalized Low-Rank (refined after noise)</li>
+          <li>OPD / Gemma 270M / Antares / SmolLM2; Top Unsloth; engagement-filtered SLM posts</li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Takeaway for a custom-task SLM (e.g. GoHighLevel-style assignment)</h3>
+        <ol>
+          <li>Start with a small instruct base (Qwen / Gemma / Phi class, ≤4B).</li>
+          <li>Build a high-quality task dataset; prefer teacher-generated synthetic traces + hard filters over raw scrape volume.</li>
+          <li>Train with Unsloth (or LLaMA-Factory) QLoRA; try NoRA-init if you can swap the adapter init.</li>
+          <li>If the task is verifiable, add GRPO (or DPO from preference pairs). Watch for reward hacking.</li>
+          <li>If you have a strong teacher, consider OPD then RL rather than mixing distillation and RL in one loss.</li>
+          <li>Export INT4/GGUF; measure task accuracy vs a large API baseline on your eval set, not general chat benchmarks.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="k">Specialize the small model; don’t rent the large one for a narrow job.</span>
+    Built from X keyword + semantic searches on 2026-09-05 via Sequential Thinking fan-out.
+    Saved at <code>docs/research/x-slm-finetune-methods-2026-09-05.html</code>.
+    Engagement counts and dates are as returned by the X tools at fetch time.
+  </footer>
+</div>
+</body>
+</html>

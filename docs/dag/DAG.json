@@ -1,0 +1,532 @@
+{
+  "generated_at": "2026-09-05 22:27 IST",
+  "channel": "04861c85-e907-4639-9075-7c474cbd8b51",
+  "thread": "1981860808e7d870aa450555e16a336f0c9d20b710a0fee98e401b96ebf5c593",
+  "share_target": {
+    "opus": 0.5,
+    "sol": 0.25,
+    "grok": 0.25
+  },
+  "share_actual": {
+    "opus": 0.5,
+    "sol": 0.25,
+    "grok": 0.25
+  },
+  "counts": {
+    "opus": 10,
+    "sol": 5,
+    "grok": 5
+  },
+  "nodes": [
+    {
+      "id": "A1",
+      "worker": "opus",
+      "phase": "A",
+      "title": "Repo scaffold and dependency lock",
+      "due": "Sat 2026-09-05 23:30",
+      "est": 1.0,
+      "deps": [],
+      "paths": [
+        "pyproject.toml",
+        "uv.lock",
+        ".python-version",
+        ".gitignore",
+        "README.md",
+        "configs/prompt.txt",
+        "configs/eval.yaml",
+        "tools/__init__.py",
+        "data/.gitkeep",
+        "eval/.gitkeep",
+        "train/.gitkeep",
+        "serve/.gitkeep",
+        "artifacts/.gitkeep",
+        "tests/.gitkeep",
+        "Makefile"
+      ]
+    },
+    {
+      "id": "A2",
+      "worker": "grok",
+      "phase": "A",
+      "title": "Dataset acquisition, pin and profile",
+      "due": "Sat 2026-09-05 23:45",
+      "est": 1.0,
+      "deps": [],
+      "paths": [
+        "data/fetch.py",
+        "data/raw/",
+        "data/PROFILE.md",
+        "artifacts/sources.json"
+      ]
+    },
+    {
+      "id": "A3",
+      "worker": "sol",
+      "phase": "A",
+      "title": "Model pin, license check, preflight tool",
+      "due": "Sat 2026-09-05 23:45",
+      "est": 1.0,
+      "deps": [],
+      "paths": [
+        "configs/versions.json",
+        "tools/preflight.py",
+        "docs/LICENSE_REVIEW.md"
+      ]
+    },
+    {
+      "id": "B2",
+      "worker": "grok",
+      "phase": "B",
+      "title": "Similarity threshold calibration (40 pairs)",
+      "due": "Sun 2026-09-06 10:30",
+      "est": 1.0,
+      "deps": [
+        "A2"
+      ],
+      "paths": [
+        "data/calibrate_threshold.py",
+        "data/calibration/",
+        "configs/grouping.json"
+      ]
+    },
+    {
+      "id": "B1",
+      "worker": "opus",
+      "phase": "B",
+      "title": "data/prepare.py: clean, group, split, audit, freeze",
+      "due": "Sun 2026-09-06 12:30",
+      "est": 2.5,
+      "deps": [
+        "A1",
+        "A2",
+        "B2"
+      ],
+      "paths": [
+        "data/prepare.py",
+        "data/processed/",
+        "data/splits.json",
+        "data/audit.json",
+        "configs/cleaning.json",
+        "tests/test_prepare.py"
+      ]
+    },
+    {
+      "id": "B3",
+      "worker": "grok",
+      "phase": "B",
+      "title": "Draft 54 challenge queries, 54 dev scenarios, rubric",
+      "due": "Sun 2026-09-06 11:15",
+      "est": 1.5,
+      "deps": [
+        "A2"
+      ],
+      "paths": [
+        "eval/challenge_draft.jsonl",
+        "eval/dev.jsonl",
+        "eval/RUBRIC.md"
+      ]
+    },
+    {
+      "id": "B4",
+      "worker": "opus",
+      "phase": "B",
+      "title": "Bitext test automated metrics module",
+      "due": "Sun 2026-09-06 15:00",
+      "est": 1.0,
+      "deps": [
+        "A1"
+      ],
+      "paths": [
+        "eval/auto_metrics.py",
+        "tests/test_auto_metrics.py"
+      ]
+    },
+    {
+      "id": "C2",
+      "worker": "opus",
+      "phase": "C",
+      "title": "Prompt template rendering and loss-mask collator with fixtures",
+      "due": "Sun 2026-09-06 14:00",
+      "est": 1.5,
+      "deps": [
+        "A1",
+        "A3"
+      ],
+      "paths": [
+        "train/collate.py",
+        "train/render.py",
+        "tests/test_prompt.py",
+        "tests/fixtures/"
+      ]
+    },
+    {
+      "id": "C1",
+      "worker": "opus",
+      "phase": "C",
+      "title": "Eval harness: eval/run.py and eval/score.py with bootstrap",
+      "due": "Sun 2026-09-06 16:30",
+      "est": 2.5,
+      "deps": [
+        "A1",
+        "B3",
+        "C2"
+      ],
+      "paths": [
+        "eval/run.py",
+        "eval/score.py",
+        "eval/blind.py",
+        "tests/test_eval.py"
+      ]
+    },
+    {
+      "id": "C3",
+      "worker": "sol",
+      "phase": "C",
+      "title": "Base Q8 GGUF, Ollama import, prompt parity check",
+      "due": "Sun 2026-09-06 15:30",
+      "est": 2.0,
+      "deps": [
+        "A3",
+        "C2"
+      ],
+      "paths": [
+        "tools/convert.sh",
+        "tools/parity_check.py",
+        "serve/Modelfile.base",
+        "artifacts/base-q8.gguf",
+        "docs/CONVERSION.md"
+      ]
+    },
+    {
+      "id": "C4",
+      "worker": "grok",
+      "phase": "C",
+      "title": "Base dev answers and 20-answer inspection",
+      "due": "Sun 2026-09-06 18:00",
+      "est": 1.5,
+      "deps": [
+        "C1",
+        "C3"
+      ],
+      "paths": [
+        "eval/results/base-dev-raw.jsonl",
+        "eval/results/BASE_DEV_INSPECTION.md"
+      ]
+    },
+    {
+      "id": "D1",
+      "worker": "opus",
+      "phase": "D",
+      "title": "train/train.py, configs, Colab notebook, check_run",
+      "due": "Sun 2026-09-06 15:30",
+      "est": 2.5,
+      "deps": [
+        "A1",
+        "C2",
+        "B1"
+      ],
+      "paths": [
+        "train/train.py",
+        "configs/train.yaml",
+        "configs/train-t4.yaml",
+        "notebooks/train_colab.ipynb",
+        "tools/check_run.py",
+        "train/plot_curves.py",
+        "docs/TRAINING.md"
+      ]
+    },
+    {
+      "id": "D3",
+      "worker": "opus",
+      "phase": "D",
+      "title": "Checkpoint selection and Bitext test generation",
+      "due": "Mon 2026-09-07 10:30",
+      "est": 1.5,
+      "deps": [
+        "D2",
+        "B4",
+        "C1"
+      ],
+      "paths": [
+        "artifacts/selection.json",
+        "train/runs/main/",
+        "eval/results/base-test-raw.jsonl",
+        "eval/results/tuned-test-raw.jsonl",
+        "eval/results/*-auto.json",
+        "docs/SELECTION.md"
+      ]
+    },
+    {
+      "id": "E1",
+      "worker": "sol",
+      "phase": "E",
+      "title": "Merge, tuned Q8 GGUF, manifest, fetch/check tools, Hub push",
+      "due": "Mon 2026-09-07 12:30",
+      "est": 2.0,
+      "deps": [
+        "D3",
+        "C3"
+      ],
+      "paths": [
+        "tools/merge.py",
+        "artifacts/manifest.json",
+        "artifacts/tuned-q8.gguf",
+        "artifacts/merged/",
+        "artifacts/adapter/",
+        "serve/Modelfile",
+        "tools/fetch_artifacts.py",
+        "tools/check_artifacts.py",
+        "docs/EXPORT.md"
+      ]
+    },
+    {
+      "id": "E2",
+      "worker": "grok",
+      "phase": "E",
+      "title": "Generate 54 challenge answers x 2 models and the blind sheet",
+      "due": "Mon 2026-09-07 13:30",
+      "est": 1.0,
+      "deps": [
+        "E1",
+        "C1",
+        "H1"
+      ],
+      "paths": [
+        "eval/results/base-challenge-raw.jsonl",
+        "eval/results/tuned-challenge-raw.jsonl",
+        "eval/results/blind-sheet.csv",
+        "eval/results/blind-sheet.html"
+      ]
+    },
+    {
+      "id": "E3",
+      "worker": "opus",
+      "phase": "E",
+      "title": "Unblind, final statistics, failure write-ups",
+      "due": "Mon 2026-09-07 20:00",
+      "est": 1.0,
+      "deps": [
+        "H2"
+      ],
+      "paths": [
+        "eval/results/scores.jsonl",
+        "eval/results/summary.jsonl",
+        "eval/results/failures.jsonl",
+        "docs/RESULTS.md",
+        "docs/FAILURES.md"
+      ]
+    },
+    {
+      "id": "F1",
+      "worker": "sol",
+      "phase": "F",
+      "title": "serve/inference.py, serve/bench.py, bench results",
+      "due": "Mon 2026-09-07 15:00",
+      "est": 2.0,
+      "deps": [
+        "C3"
+      ],
+      "paths": [
+        "serve/inference.py",
+        "serve/bench.py",
+        "serve/bench_results.json",
+        "docs/SERVING.md"
+      ]
+    },
+    {
+      "id": "G1",
+      "worker": "opus",
+      "phase": "G",
+      "title": "README complete with results, prompt template, real-vs-cut",
+      "due": "Tue 2026-09-08 11:30",
+      "est": 2.0,
+      "deps": [
+        "E3",
+        "F1",
+        "E1"
+      ],
+      "paths": [
+        "README.md",
+        "docs/curves.png"
+      ]
+    },
+    {
+      "id": "G2",
+      "worker": "sol",
+      "phase": "G",
+      "title": "Fresh-clone smoke in a temp dir",
+      "due": "Tue 2026-09-08 12:30",
+      "est": 1.0,
+      "deps": [
+        "G1",
+        "E1"
+      ],
+      "paths": [
+        "docs/FRESH_CLONE_TRANSCRIPT.md"
+      ]
+    },
+    {
+      "id": "G3",
+      "worker": "opus",
+      "phase": "G",
+      "title": "Loom shot list, demo driver, submission.json, check_submission",
+      "due": "Tue 2026-09-08 13:30",
+      "est": 1.0,
+      "deps": [
+        "G1"
+      ],
+      "paths": [
+        "docs/LOOM_SHOTLIST.md",
+        "serve/demo.py",
+        "submission.json",
+        "tools/check_submission.py"
+      ]
+    },
+    {
+      "id": "H0",
+      "worker": "shark",
+      "phase": "H",
+      "title": "Colab Pro GPU attached, nvidia-smi pasted; Kaggle T4 backup confirmed; HF token available; recruiter asked (endpoint vs artifacts)",
+      "due": "Sat 2026-09-05 23:30",
+      "est": null,
+      "deps": [],
+      "paths": []
+    },
+    {
+      "id": "D2",
+      "worker": "shark",
+      "phase": "H",
+      "title": "Run notebooks/train_colab.ipynb on Colab Pro: smoke, then full epoch 1 (Opus on standby for errors); download the run zip",
+      "due": "Sun 2026-09-06 16:30",
+      "est": null,
+      "deps": [
+        "D1",
+        "B1",
+        "H0"
+      ],
+      "paths": []
+    },
+    {
+      "id": "H1",
+      "worker": "shark",
+      "phase": "H",
+      "title": "Edit and approve the 54 challenge queries and rubric (45 min); Fable seals the hash right after",
+      "due": "Sun 2026-09-06 12:15",
+      "est": null,
+      "deps": [
+        "B3"
+      ],
+      "paths": []
+    },
+    {
+      "id": "H2",
+      "worker": "shark",
+      "phase": "H",
+      "title": "Blind-score 108 answers on the sheet (90 min)",
+      "due": "Mon 2026-09-07 19:30",
+      "est": null,
+      "deps": [
+        "E2"
+      ],
+      "paths": []
+    },
+    {
+      "id": "H3",
+      "worker": "shark",
+      "phase": "H",
+      "title": "Record the 3-minute Loom (45 min)",
+      "due": "Tue 2026-09-08 15:00",
+      "est": null,
+      "deps": [
+        "G3",
+        "G2"
+      ],
+      "paths": []
+    },
+    {
+      "id": "H4",
+      "worker": "shark",
+      "phase": "H",
+      "title": "Submit; post the receipt in the thread",
+      "due": "Tue 2026-09-08 18:00",
+      "est": null,
+      "deps": [
+        "H3",
+        "G3"
+      ],
+      "paths": []
+    },
+    {
+      "id": "R-A",
+      "worker": "fable",
+      "phase": "R",
+      "title": "Review A1-A3, commit, dispatch wave B",
+      "due": "Sun 2026-09-06 09:00",
+      "est": null,
+      "deps": [
+        "A1",
+        "A2",
+        "A3"
+      ],
+      "paths": []
+    },
+    {
+      "id": "R-B",
+      "worker": "fable",
+      "phase": "R",
+      "title": "Freeze split hashes, seal challenge (eval/SEAL.json) after H1, dispatch C/D",
+      "due": "Sun 2026-09-06 12:30",
+      "est": null,
+      "deps": [
+        "B1",
+        "H1"
+      ],
+      "paths": []
+    },
+    {
+      "id": "CP1",
+      "worker": "fable",
+      "phase": "R",
+      "title": "Checkpoint 1 review in thread",
+      "due": "Sun 2026-09-06 20:00",
+      "est": null,
+      "deps": [
+        "B1",
+        "C1",
+        "C3",
+        "C4",
+        "D2"
+      ],
+      "paths": []
+    },
+    {
+      "id": "CP2",
+      "worker": "fable",
+      "phase": "R",
+      "title": "Checkpoint 2 review in thread with the honest verdict",
+      "due": "Mon 2026-09-07 20:00",
+      "est": null,
+      "deps": [
+        "E3",
+        "F1",
+        "E1"
+      ],
+      "paths": []
+    },
+    {
+      "id": "R-G",
+      "worker": "fable",
+      "phase": "R",
+      "title": "Final read of README, links in private window, watch Loom",
+      "due": "Tue 2026-09-08 17:00",
+      "est": null,
+      "deps": [
+        "G1",
+        "G2",
+        "G3",
+        "H3"
+      ],
+      "paths": []
+    }
+  ]
+}

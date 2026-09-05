@@ -1,0 +1,126 @@
+{
+  "A1": {
+    "state": "pending",
+    "note": ""
+  },
+  "A2": {
+    "state": "pending",
+    "note": ""
+  },
+  "A3": {
+    "state": "pending",
+    "note": ""
+  },
+  "B2": {
+    "state": "pending",
+    "note": ""
+  },
+  "B1": {
+    "state": "pending",
+    "note": ""
+  },
+  "B3": {
+    "state": "pending",
+    "note": ""
+  },
+  "B4": {
+    "state": "pending",
+    "note": ""
+  },
+  "C2": {
+    "state": "pending",
+    "note": ""
+  },
+  "C1": {
+    "state": "pending",
+    "note": ""
+  },
+  "C3": {
+    "state": "pending",
+    "note": ""
+  },
+  "C4": {
+    "state": "pending",
+    "note": ""
+  },
+  "D1": {
+    "state": "pending",
+    "note": ""
+  },
+  "D3": {
+    "state": "pending",
+    "note": ""
+  },
+  "E1": {
+    "state": "pending",
+    "note": ""
+  },
+  "E2": {
+    "state": "pending",
+    "note": ""
+  },
+  "E3": {
+    "state": "pending",
+    "note": ""
+  },
+  "F1": {
+    "state": "pending",
+    "note": ""
+  },
+  "G1": {
+    "state": "pending",
+    "note": ""
+  },
+  "G2": {
+    "state": "pending",
+    "note": ""
+  },
+  "G3": {
+    "state": "pending",
+    "note": ""
+  },
+  "H0": {
+    "state": "pending",
+    "note": ""
+  },
+  "D2": {
+    "state": "pending",
+    "note": ""
+  },
+  "H1": {
+    "state": "pending",
+    "note": ""
+  },
+  "H2": {
+    "state": "pending",
+    "note": ""
+  },
+  "H3": {
+    "state": "pending",
+    "note": ""
+  },
+  "H4": {
+    "state": "pending",
+    "note": ""
+  },
+  "R-A": {
+    "state": "pending",
+    "note": ""
+  },
+  "R-B": {
+    "state": "pending",
+    "note": ""
+  },
+  "CP1": {
+    "state": "pending",
+    "note": ""
+  },
+  "CP2": {
+    "state": "pending",
+    "note": ""
+  },
+  "R-G": {
+    "state": "pending",
+    "note": ""
+  }
+}

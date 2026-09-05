@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>GHL SLM Assignment: End-to-End Plan (Astra, 2026-09-05 20:06 IST)</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">GHL SLM Assignment: End-to-End Plan (Astra, 2026-09-05
+20:06 IST)</h1>
+</header>
+<blockquote>
+<p><strong>Schedule superseded 2026-09-05 20:50 IST.</strong> Real
+deadlines from shark: soft Sun 2026-09-06 evening, soft Mon 2026-09-07
+evening, final Tue 2026-09-08 evening (IST). Dates in sections 1, 3, 4
+and 8 are stale; see
+<code>E2E_PLAN_COMPRESSED_2026-09-05-2050IST.md</code> for the
+checkpoint schedule and extra cuts. Decisions, traps, evaluation rules
+and README outline here still stand.</p>
+</blockquote>
+<h1 id="assignment-in-brief">1. Assignment in brief</h1>
+<p>Fine-tune a commercially self-hostable small model for customer
+support, then serve it over HTTP. Evaluation matters most; graders also
+run their own unseen queries. Use Bitext: 26,872 pairs, about 3.57M
+tokens, 27 intents, 10 categories (source: <code>readme.md</code>). Show
+a fair base-versus-tuned gain, unseen splits, failure cases, curves, and
+measured serving speed. Deliver code, weights or adapter, README, and a
+2–5-minute recording (source: <code>readme.md</code>). Model, method,
+split, metrics, and serving stack are open; paid compute is out.
+Deadline: September 11 IST, TO-CONFIRM; finish September 9 and reserve
+September 10 as buffer (user assumption). September 5, 2026 is Saturday,
+not Friday (Python calendar check); use dates throughout.</p>
+<p>Uncredited numbers are planning choices or estimates. Commands and
+output paths describe future work, not existing code or results.</p>
+<h1 id="decision-audit">2. Decision audit</h1>
+<p>Sources: “brief” means
+<code>docs/GHL_SLM_ASSIGNMENT_BRIEF.html</code>, sections 01–07;
+“Methods” and “specialists” mean the supplied research digests. Social
+claims are unverified leads.</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Decision</th>
+<th>Brief said</th>
+<th>Verdict</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model</td>
+<td>Qwen2.5-1.5B-Instruct</td>
+<td>AGREE</td>
+<td>Use exactly <code>Qwen/Qwen2.5-1.5B-Instruct</code>. It fits this
+Mac. Specialists’ buyer-profile and math wins justify an experiment, not
+a support-quality claim or newer checkpoint.</td>
+</tr>
+<tr>
+<td>Method</td>
+<td>QLoRA; two epochs; length 512; batch 16</td>
+<td>CHANGE</td>
+<td>Keep ordinary QLoRA; compare epochs on development data. Use
+micro-batch 1, accumulate 16. The brief’s batch-8 memory claim is
+unmeasured. Methods’ NoRA-init/DoRA need extra fair comparisons without
+established task gains.</td>
+</tr>
+<tr>
+<td>Split</td>
+<td>Cosine 0.9; 80/10/10; every intent</td>
+<td>CHANGE</td>
+<td>Test threshold and group sizes first: meaning may collapse into
+intent. Never split a group for proportions. Exact matches alone miss
+paraphrases.</td>
+</tr>
+<tr>
+<td>Targets</td>
+<td>Rewrite placeholders</td>
+<td>CHANGE</td>
+<td>Inspect whole answers. Natural wording can still invent channels,
+policy, or completed refunds. Repair or reject these with logged
+rules.</td>
+</tr>
+<tr>
+<td>Evaluation</td>
+<td>Model judge; messy set guides selection</td>
+<td>CHANGE</td>
+<td>Make blind human review primary. Separate development from sealed
+cases. Drop the response classifier: intent words do not prove
+correctness.</td>
+</tr>
+<tr>
+<td>Judge</td>
+<td>Local Llama-3.1-8B</td>
+<td>AGREE</td>
+<td>Secondary only, with order swaps and human checks. Different family,
+no API spend. Neither digest validates a better support judge.</td>
+</tr>
+<tr>
+<td>Serving</td>
+<td>Merge; Q8/Q4; Ollama or llama.cpp</td>
+<td>CHANGE</td>
+<td>Use installed Ollama with one Q8 build, plus merged weights for
+graders; evaluate both. Methods supports export. MLX is absent; drop
+that path, Q4, and tunnels.</td>
+</tr>
+<tr>
+<td>Extra experiments</td>
+<td>Epoch/rank and random-split comparisons</td>
+<td>DROP</td>
+<td>Keep only epoch checkpoints. Random-split training changes data as
+well as leakage. Methods’ distillation and reward/preference training
+lack established free teachers or trusted rewards.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="compute-and-serving-placement">3. Compute and serving
+placement</h1>
+<p>Train on one Kaggle T4. User assumptions: T4 x2/P100, 30 hours/week;
+verify access/quota. Cards do not pool memory. Switch to free Colab T4
+by September 6 noon if needed. No paid GPUs, judges, or endpoints.</p>
+<p>Use Transformers, PEFT, TRL, bitsandbytes; pin tested versions. The
+<a
+href="https://huggingface.co/docs/peft/developer_guides/quantization">PEFT
+guide</a> supports four-bit adapter training. Choose NF4, double
+quantization, fp16 compute, fp32 adapters, gradient checkpointing, and
+no training cache. Unsloth’s claimed speedup is not guaranteed.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Placement</th>
+<th>Memory estimate and limit</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>T4 training</td>
+<td>Assume 16 GB per brief; verify with <code>nvidia-smi</code>. Model
+has 1.54B parameters (<a
+href="https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct">model
+card</a>). Four-bit lower bound: 1.54B × 0.5 bytes = 0.77 GB. Allow
+1.3–1.8 GB for unquantized layers and overhead; about 0.3 GB for rank-16
+weights, gradients, and optimizer; 3–6 GB for intermediate tensors and
+runtime. Budget 5–9 GB, require measured peak below 12 GB.</td>
+</tr>
+<tr>
+<td>Training shape</td>
+<td>Total sequence 512 tokens, batch 1, accumulation 16. Full training
+at roughly 16 bytes/parameter would need 24.6 GB before intermediate
+tensors: reject this configuration, not full training of every small
+model.</td>
+</tr>
+<tr>
+<td>Mac serving</td>
+<td>User: M1 Pro, 16 GB unified memory, 16 GPU cores. Q8 weights budget
+1.7–2 GB; runtime 1–2 GB; reserve 6 GB for macOS/apps. At context 2048,
+fp16 attention cache is about 59 MB/request: 2 × 28 layers × 2 cache
+heads × 128 width × 2048 × 2 bytes (<a
+href="https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct/raw/main/config.json">config</a>).
+Target below 11 GB total; start with one request at a time.</td>
+</tr>
+<tr>
+<td>Local judge</td>
+<td>Unload Qwen first. Llama Q4 weights budget 5 GB, cache/runtime 2–3
+GB, OS reserve 6 GB. Use context 2048 and serial requests; measure
+pressure before a long job.</td>
+</tr>
+</tbody>
+</table>
+<p>Expected file: <code>Qwen/Qwen2.5-1.5B-Instruct/LICENSE</code>. The
+<a
+href="https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct/blob/main/LICENSE">online
+license</a> is Apache-2.0, permitting commercial hosting under its
+terms. <strong>TO-VERIFY offline:</strong> inspect the pinned revision
+before training; preserve license, notices, and change attribution. No
+local license was available.</p>
+<p>Budget 6–10 unattended GPU hours and 3–6 local judge/export hours;
+verify by timing. If both accounts fail, smoke-test local fp16 LoRA,
+batch 1. If completion by September 8 looks implausible, ask about
+timing; never buy compute.</p>
+<h1 id="phase-plan">4. Phase plan</h1>
+<p>Budget: 22 active hours across September 5–9, plus the buffer. Each
+check below must later return nonzero on gate failure.</p>
+<h2 id="phase-a-access-and-scope-september-5-1-hour">Phase A — Access
+and scope; September 5; 1 hour</h2>
+<p>Goal: remove access risks. Inputs: assignment/machine facts. Outputs:
+Git repo, <code>configs/versions.json</code>,
+<code>artifacts/sources.json</code>, dependency locks. Confirm free
+accounts, notebook internet, rights/license. Attach Kaggle data without
+local credentials. Record revisions/checksums; exclude tokens.</p>
+<p>Gate: a free training device and permitted sources are available.
+Check: <code>python tools/preflight.py --training</code> verifies
+device, disk, source access, and recorded license review. Save its
+report.</p>
+<h2 id="phase-b-data-and-sealed-cases-september-6-4-hours">Phase B —
+Data and sealed cases; September 6; 4 hours</h2>
+<p>Goal: separate learning from proof. Inputs: pinned Bitext CSV.
+Outputs: <code>data/prepare.py</code>,
+<code>data/processed/{train,val,test}.jsonl</code>,
+<code>data/splits.json</code>, <code>data/audit.json</code>,
+<code>configs/cleaning.json</code>,
+<code>eval/{dev,challenge}.jsonl</code>.</p>
+<p>Profile fields, lengths, duplicates, and templates. Only
+instruction/cleaned response reach the model. Keep row IDs and audit
+metadata. Reject placeholders, private details, and unsupported
+actions/policies; audit each intent and log exclusions.</p>
+<p>Normalize punctuation/case, preserving negation and amounts. Group
+exact matches/paraphrases using text similarity and pinned
+<code>sentence-transformers/all-MiniLM-L6-v2</code> embeddings. Label
+100 candidate pairs across similarities; set threshold before splitting.
+Audit response-template families and linked scenarios. Target 80/10/10
+by whole groups. If an intent collapses, report missing coverage; retain
+grouping. Cap training at 8,000 diverse rows. Reject overlength pairs;
+revisit length using training counts only.</p>
+<p>Gate: frozen split and challenge hashes, no detected cross-split
+duplicate groups. Check:
+<code>python data/prepare.py --audit-only --strict</code>; save actual
+group counts and the manual boundary audit.</p>
+<h2 id="phase-c-harness-and-base-first-september-67-4-hours">Phase C —
+Harness and base first; September 6–7; 4 hours</h2>
+<p>Goal: prove the measurement works before training. Inputs:
+development cases, base revision, rubric. Outputs:
+<code>configs/{prompt.txt,eval.yaml}</code>,
+<code>eval/{run.py,judge.py,score.py}</code>,
+<code>eval/results/base-dev.jsonl</code>,
+<code>tests/test_eval.py</code>, base GGUF and
+<code>serve/Modelfile.base</code>.</p>
+<p>Inspect 20 base development answers; fix harness defects, then freeze
+prompt/rubric. Test good/bad pairs, missing outputs, swapped labels, and
+assistant-only loss. Prove base conversion/API prompt parity before
+training.</p>
+<p>Gate: complete base records with matching prompt tokens across paths.
+Check:
+<code>python -m pytest tests/test_eval.py tests/test_prompt.py</code>;
+<code>python eval/run.py --model base --split dev --check-complete</code>.</p>
+<h2 id="phase-d-train-and-choose-september-78-3-hours">Phase D — Train
+and choose; September 7–8; 3 hours</h2>
+<p>Goal: learn without chasing test scores. Inputs: frozen train/dev,
+base, <code>configs/train.yaml</code>. Outputs:
+<code>train/train.py</code>,
+<code>train/runs/main/{config.json,loss.csv,curves.png}</code>,
+checkpoints, <code>artifacts/selection.json</code>.</p>
+<p>Choose rank 16, alpha 32, dropout 0.05, rate 1e-4, cosine decay, 3%
+warmup, seed 42; adapt attention/feed-forward projections. Score loss
+only on assistant text/end marker. Run
+<code>python train/train.py --config configs/train.yaml</code> for one
+epoch, optionally two. Select by development pass rate, then critical
+errors, then earlier checkpoint. Log every 25 steps; save resumable
+state every 100 steps and epoch end to durable free storage. Test
+resume.</p>
+<p>Gate: finite losses, peak memory below budget, reloadable selected
+adapter, and recorded selection without test access. Check:
+<code>python train/train.py --smoke</code>;
+<code>python tools/check_run.py train/runs/main</code>.</p>
+<h2 id="phase-e-export-and-final-proof-september-89-5-hours">Phase E —
+Export and final proof; September 8–9; 5 hours</h2>
+<p>Goal: assess the submitted artifacts once. Inputs: selected adapter,
+original base, sealed cases. Outputs:
+<code>artifacts/{adapter,merged}/</code>,
+<code>artifacts/{base,tuned}-q8.gguf</code>,
+<code>artifacts/manifest.json</code>,
+<code>eval/results/{raw,scores,summary,failures}.jsonl</code>.</p>
+<p>Reload original fp16 base, merge adapter, export base/tuned with one
+pinned llama.cpp converter. Check adapter/merge parity on development
+first. Manifest pins tokenizer, prompts, revisions, versions, hashes.
+After selection, unlock tests; compare both fp16 checkpoints and both Q8
+builds separately. Inspect Q8 drift. Publish all weights, adapter,
+tokenizer, prompt, and GGUF on free Hub storage.</p>
+<p>Gate: all scheduled answers and blind scores exist; the report
+identifies each artifact and states positive, inconclusive, or negative
+findings. Check:
+<code>python eval/score.py --final --require-complete</code>;
+<code>python tools/check_artifacts.py --manifest artifacts/manifest.json</code>.</p>
+<h2 id="phase-f-serve-and-measure-september-9-2-hours">Phase F — Serve
+and measure; September 9; 2 hours</h2>
+<p>Goal: a usable local HTTP service. Inputs: Q8 files and fixed prompt.
+Outputs: <code>serve/{Modelfile,inference.py,bench.py}</code>,
+<code>serve/bench_results.json</code>. Import merged GGUF using <a
+href="https://docs.ollama.com/import">Ollama’s documented route</a>.
+Keep a plain Transformers merged-model loader for graders, requiring
+neither Ollama nor bitsandbytes.</p>
+<p>Benchmark 30 fixed development prompts after 5 warmups, serially;
+report cold load separately. Save input/output token counts, end-to-end
+p50/p95, per-answer generation tokens/sec, total tokens/whole-run
+seconds, failures, and hardware/runtime settings. Concurrency 4 is
+optional and separately labeled.</p>
+<p>Gate: valid support response over HTTP and complete timing records.
+Check: final curl below;
+<code>python serve/bench.py --requests 30 --concurrency 1 --check</code>.</p>
+<h2 id="phase-g-explain-and-submit-september-9-3-hours">Phase G —
+Explain and submit; September 9; 3 hours</h2>
+<p>Goal: reproducibility. Inputs: artifacts/results. Outputs: README,
+<code>submission.json</code>, video link, fresh-clone transcript.
+Rehearse split limits, human bias, checkpoint choice, transfer risk.
+Report actual work versus cuts.</p>
+<p>Gate: fresh clone works; submission links open without owner access.
+Check: section 10;
+<code>python tools/check_submission.py submission.json</code>; watch
+shared video and open weights/README. Sharad sends and records receipt.
+September 10 is packaging buffer; no silent retuning.</p>
+<h1 id="traps-and-where-each-is-closed">5. Traps and where each is
+closed</h1>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Trap</th>
+<th>Closure and proof</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Paraphrases and shared scenarios</td>
+<td>B: assert group-ID and normalized-instruction intersections are
+empty; inspect cross-split nearest neighbors and template families.
+Report residual uncertainty; embeddings cannot prove zero leakage.</td>
+</tr>
+<tr>
+<td>Test-driven choices</td>
+<td>B–E: hashes and access log show selection predates final generation.
+Development scenarios cannot appear in challenge or training.</td>
+</tr>
+<tr>
+<td>Fake facts or labels</td>
+<td>B: assert metadata absent from model input, no placeholder tokens,
+all repairs traceable. C/E: rubric rejects invented policy, account
+access, or completed actions.</td>
+</tr>
+<tr>
+<td>Weak baseline or loss mask</td>
+<td>C: token-ID fixtures match; user/system labels are ignored,
+assistant labels nonempty. Same decoding for both models.</td>
+</tr>
+<tr>
+<td>Judge bias or injected orders</td>
+<td>C/E: hide model identity; quote answers as data; swap order; assert
+complete pair IDs. Inspect long-answer preference and
+disagreements.</td>
+</tr>
+<tr>
+<td>Dropped failures or artifact drift</td>
+<td>E: expected IDs equal scored IDs; timeouts/empty answers count as
+failures. Verify hashes, merge checks, and paired Q8 results.</td>
+</tr>
+<tr>
+<td>Prior exposure in base training</td>
+<td>E/README: cannot audit pretraining contamination. Separate fresh
+authored scenarios from public Bitext results; make no claim about
+graders’ distribution.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="evaluation-design">6. Evaluation design</h1>
+<p>Primary: paired change in <strong>human support-pass rate on 108
+sealed challenge queries</strong>. Sharad authors before outputs, hides
+model names, and randomizes answer order. Disclose sole-reviewer
+bias.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Set</th>
+<th>Size and role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Development</td>
+<td>54 authored scenarios plus 135 grouped validation rows; used for
+debugging and checkpoint choice.</td>
+</tr>
+<tr>
+<td>Challenge</td>
+<td>54 fresh ordinary queries, two per assignment intent, plus 54
+distinct hard scenarios: typos, anger, multiple requests, missing
+context, unsupported policy, off-topic requests. No paraphrase variants
+of one scenario counted as independent.</td>
+</tr>
+<tr>
+<td>Bitext test</td>
+<td>270 queries, target ten per intent, sampled across distinct groups
+before outputs. If infeasible, use available groups and report smaller
+counts/missing intents. Judge all; human-check 54 selected in
+advance.</td>
+</tr>
+</tbody>
+</table>
+<p>A pass addresses all requests, gives sound next steps, admits missing
+facts, and uses helpful tone. Invented policy/status/actions or
+credential requests are critical failures. Correctness outranks style;
+“contact support” alone earns no pass. Supply scenario facts/acceptable
+actions. Bitext references are fallible.</p>
+<p>Secondary: win/tie/loss, critical-error rate, intent/category pass
+rates, placeholder rate, answer length, empty/truncated answers, and
+serving speed. Do not headline reference overlap.</p>
+<p>Judge: <code>meta-llama/Llama-3.1-8B-Instruct</code>, Meta Llama
+family; local <a
+href="https://ollama.com/library/llama3.1:8b-instruct-q4_K_M"><code>llama3.1:8b-instruct-q4_K_M</code></a>,
+pinned digest. Expected <a
+href="https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct/blob/main/LICENSE"><code>LICENSE</code></a>:
+Llama 3.1 Community License; <strong>TO-VERIFY offline</strong> before
+pulling. Swap pair positions; preserve conflicting verdicts as
+“inconsistent.” Report human agreement. If access/runtime fails, retain
+human scoring and disclose reduced judge coverage.</p>
+<p>Base/tuned: identical native chat template, system prompt, greedy
+decoding, 256 new-token cap, repetition penalty 1, same end token, same
+context limit. Judge: temperature 0, 192-token output cap, short
+structured verdict. Pin all settings; a seed alone does not guarantee
+matching outputs across runtimes.</p>
+<p>Report counts, percentage-point difference, paired 95% bootstrap
+intervals using 2,000 scenario/group resamples, and effective group
+counts. Category tables are descriptive. Claim improvement only for
+challenge gain ≥5 points, interval excluding zero, without increased
+critical errors. Otherwise: inconclusive; lower tuned pass rate or more
+critical errors: negative. Bitext gains alone do not prove transfer.
+Intervals exclude reviewer bias and unknown-set uncertainty.</p>
+<h1 id="readme-outline-and-loom-shot-list">7. README outline and Loom
+shot list</h1>
+<p>README order: model/method reasons; data/splits;
+evaluation/results/failures; exact prompt/load/run; real versus cut and
+production trade-offs. Include install/train/evaluate/benchmark commands
+and artifact links.</p>
+<p>Store this exact system text in <code>configs/prompt.txt</code>:</p>
+<blockquote>
+<p>You are a customer support assistant. Answer clearly and helpfully.
+Do not invent company policy, account details, or completed actions. Ask
+for missing context when needed. Never ask for passwords or full payment
+card details.</p>
+</blockquote>
+<p>Print the rendered native template, role/end markers, and training
+answer boundary. Include merged/adapter loading paths. Apply the fixed
+system prompt once for user-only API calls.</p>
+<p>Target recording: 4 minutes (assignment permits 2–5).</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Time</th>
+<th>Shot and exact query</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0:00–0:25</td>
+<td>Show model IDs, endpoint, hardware, fixed prompt.</td>
+</tr>
+<tr>
+<td>0:25–1:50</td>
+<td>Live base/tuned: “I forgot my password and cannot sign in. What
+should I do?” Then “i cancelled last week but got charged again. can you
+help me stop the plan and check the charge?”</td>
+</tr>
+<tr>
+<td>1:50–2:25</td>
+<td>Live policy probe: “My order is late. Can you guarantee a refund
+today and tell me when the money will arrive?”</td>
+</tr>
+<tr>
+<td>2:25–3:20</td>
+<td>Show challenge result, interval, Bitext gap, critical errors, and
+artifact-specific speed.</td>
+</tr>
+<tr>
+<td>3:20–4:00</td>
+<td>Show one actual saved failure with both answers, cause, and limit;
+finish on run commands and links. Never invent a failure or promise
+these probes expose one.</td>
+</tr>
+</tbody>
+</table>
+<p>Demo queries are public development probes, excluded from final
+scores.</p>
+<h1 id="open-questions-and-unknowns">8. Open questions and unknowns</h1>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Unknown</th>
+<th>Owner, check, deadline</th>
+<th>Assumption meanwhile</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Actual deadline/time zone</td>
+<td>Sharad asks recruiter by September 6 noon</td>
+<td>September 11 IST; ready September 9.</td>
+</tr>
+<tr>
+<td>Free GPU/Internet/quota</td>
+<td>Sharad checks both notebooks September 6 noon</td>
+<td>Kaggle first; Colab second; no payment.</td>
+</tr>
+<tr>
+<td>Dataset rights/revision and group structure</td>
+<td>Engineer reads source terms and profiles data September 6</td>
+<td>Bitext only; redistribution blocked until rights checked.</td>
+</tr>
+<tr>
+<td>Checkpoint licenses/revisions</td>
+<td>Engineer reads pinned LICENSE files before pulls/training September
+6</td>
+<td>Qwen expected Apache; judge can be cut.</td>
+</tr>
+<tr>
+<td>Serving prompt/export support and memory</td>
+<td>Engineer runs C smoke checks September 7</td>
+<td>Ollama Q8; plain Transformers HTTP fallback if import fails.</td>
+</tr>
+<tr>
+<td>Public endpoint or just runnable artifacts</td>
+<td>Sharad asks recruiter September 6</td>
+<td>Local live demo plus reproducible grader loader; no permanent public
+server.</td>
+</tr>
+<tr>
+<td>Publication accounts and recording access</td>
+<td>Sharad verifies GitHub/Hub/free recording September 6</td>
+<td>Public downloadable artifacts; free screen recording if Loom limits
+intervene.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="cut-for-time">9. Cut for time</h1>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Cut</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Twitter and teacher-generated training</td>
+<td>Cleaning and paid teacher costs; task evidence first.</td>
+</tr>
+<tr>
+<td>NoRA/DoRA, rewards, distillation, sweeps</td>
+<td>More comparisons than this budget supports.</td>
+</tr>
+<tr>
+<td>Q4 model and GPU public hosting</td>
+<td>More artifacts and deployment risks.</td>
+</tr>
+<tr>
+<td>Extra human raters and large benchmarks</td>
+<td>Keep a smaller honest review with stated uncertainty.</td>
+</tr>
+<tr>
+<td>Retrieval, real account tools, multi-turn training</td>
+<td>No trusted business source or conversation data supplied.</td>
+</tr>
+<tr>
+<td>Random-split training demonstration</td>
+<td>Does not prove which leakage caused a score gap.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="fresh-clone-checklist">10. Fresh-clone checklist</h1>
+<p>Future release contract: replace URL/tag placeholders; publish
+hashes, Python lock, and tested Ollama version. Mac prerequisites:
+Python, uv, Ollama via README’s free setup steps. Serving needs no
+dataset/training.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> clone <span class="op">&lt;</span>published-repository-url<span class="op">&gt;</span> ghl-slm</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> ghl-slm</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> checkout <span class="op">&lt;</span>submission-tag<span class="op">&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> sync <span class="at">--frozen</span> <span class="at">--extra</span> serve</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tools/fetch_artifacts.py <span class="at">--manifest</span> artifacts/manifest.json <span class="at">--target</span> serve</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tools/check_artifacts.py <span class="at">--manifest</span> artifacts/manifest.json <span class="at">--target</span> serve</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> serve</span></code></pre></div>
+<p>Leave the server running. From a second terminal in the cloned
+repo:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ollama</span> create ghl-support <span class="at">-f</span> serve/Modelfile</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python serve/inference.py <span class="at">--backend</span> ollama <span class="at">--self-test</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">curl</span> <span class="at">--fail-with-body</span> http://localhost:11434/v1/chat/completions <span class="dt">\</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-H</span> <span class="st">&#39;Content-Type: application/json&#39;</span> <span class="dt">\</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">-d</span> <span class="st">&#39;{&quot;model&quot;:&quot;ghl-support&quot;,&quot;messages&quot;:[{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;I forgot my password and cannot sign in. What should I do?&quot;}],&quot;temperature&quot;:0,&quot;max_tokens&quot;:256,&quot;stream&quot;:false}&#39;</span></span></code></pre></div>
+<p>Pass: HTTP success, nonempty <code>choices[0].message.content</code>,
+useful recovery guidance, no account-access claims/password request.
+Fetch verifies public revisions/checksums; Modelfile uses relative
+artifacts and the fixed prompt.</p>
+<h1
+id="session-log-discovery-commands-you-ran-and-what-they-returned">11.
+Session log: discovery commands you ran and what they returned</h1>
+<p>Only this plan was written. No training, installs, data/model
+downloads, or implementation. Log includes the interrupted run.</p>
+<table>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Read-only command/tool</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pwd</code>; <code>rg --files</code> with
+AGENTS/readme/SLM/slm/E2E_PLAN/hosting filename filters</td>
+<td>Expected working directory; assignment, brief, master HTML, and both
+research files found.</td>
+</tr>
+<tr>
+<td><code>cat readme.md</code></td>
+<td>Full authoritative assignment read.</td>
+</tr>
+<tr>
+<td><code>ls -la docs/plans</code>; conditional <code>cat</code> of
+AGENTS.md at root, ancestors, repo, docs, plans</td>
+<td>Plans directory empty; no on-disk instructions printed.
+User-provided instructions applied.</td>
+</tr>
+<tr>
+<td><code>python3 -c</code> using HTMLParser/Path</td>
+<td>Read supplied HTML without rendering; excluded styles/scripts on
+retry; recovered truncated brief sections 05–07.</td>
+</tr>
+<tr>
+<td><code>sysctl -n machdep.cpu.brand_string hw.memsize</code></td>
+<td>Operation not permitted. Hardware remains user-supplied.</td>
+</tr>
+<tr>
+<td><code>which python3 uv ollama llama-server</code></td>
+<td><code>/opt/homebrew/bin/python3</code>,
+<code>/Users/sharad/.local/bin/uv</code>,
+<code>/opt/homebrew/bin/ollama</code>; llama-server absent.</td>
+</tr>
+<tr>
+<td><code>/opt/homebrew/bin/ollama list</code></td>
+<td>Local connection denied by sandbox. Zero installed models remains
+user-supplied, not reconfirmed.</td>
+</tr>
+<tr>
+<td><code>df -h .</code></td>
+<td>926 GiB volume; 231 GiB available.</td>
+</tr>
+<tr>
+<td><code>python3 -c</code>: find_spec, Path, datetime</td>
+<td>torch/transformers discoverable, not import-tested; mlx/peft absent;
+no <code>~/.kaggle</code>; Saturday confirmed.</td>
+</tr>
+<tr>
+<td><code>git status --short</code>; Python Path size checks</td>
+<td>Not a Git repo. Required inputs readable: readme 4,692 bytes; brief
+64,926; methods 27,889; specialists 18,022.</td>
+</tr>
+<tr>
+<td>Tool metadata filter for search/browse/fetch</td>
+<td>Located available read tools; no connector mutation.</td>
+</tr>
+<tr>
+<td>Web reads</td>
+<td>Linked Qwen license/card/config, PEFT, Ollama import/judge, Meta
+license. Config HTML timed out; raw succeeded.</td>
+</tr>
+<tr>
+<td><code>wc -w -l</code>; <code>rg -n</code> heading checks</td>
+<td>Drafts: 3,484, 3,129, then 3,026 words; all sections present. Final
+trim removed over 30 words.</td>
+</tr>
+</tbody>
+</table>
+<p>Next: confirm the deadline and free GPU access, then start Phase
+A.</p>
+</body>
+</html>

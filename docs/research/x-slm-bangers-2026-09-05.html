@@ -1,0 +1,245 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Banger tweets — tiny specialized models beat frontier</title>
+<style>
+:root {
+  color-scheme: light;
+  --ivory:#FAF9F5; --paper:#fff; --slate:#141413; --clay:#D97757; --clay-d:#B85C3E;
+  --g100:#F0EEE6; --g200:#E6E3DA; --g300:#D1CFC5; --g500:#87867F; --g700:#3D3D3A;
+  --olive:#788C5D; --serif:ui-serif,Georgia,serif; --mono:ui-monospace,Menlo,monospace;
+  --sans:system-ui,-apple-system,sans-serif; --shadow:0 10px 30px rgba(20,20,19,.08);
+}
+*{box-sizing:border-box} body{margin:0;background:var(--ivory);color:var(--slate);font-family:var(--sans);line-height:1.55}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px 100px}
+header{padding:64px 0 36px;border-bottom:1.5px solid var(--g300)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500);display:flex;align-items:center;gap:12px;margin:0 0 16px}
+.eyebrow::before{content:"";width:24px;height:1.5px;background:var(--clay)}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(30px,4.5vw,48px);line-height:1.08;margin:0;max-width:18ch;letter-spacing:-.02em}
+h1 em{font-style:italic;color:var(--clay)}
+.intro{max-width:640px;color:var(--g700);margin:18px 0 0;font-size:16px}
+.intro b{color:var(--clay);font-style:italic}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.toc a{font-size:12.5px;padding:6px 12px;border:1.5px solid var(--g300);border-radius:999px;text-decoration:none;color:var(--g700);background:var(--paper)}
+.toc a:hover{border-color:var(--slate);color:var(--slate)}
+.toc .n{font-family:var(--mono);font-size:10px;color:var(--clay);margin-right:6px}
+section{margin-top:52px}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:8px}
+.sec-head .idx{font-family:var(--mono);color:var(--clay);font-size:13px;font-weight:600;width:28px}
+.sec-head h2{font-family:var(--serif);font-weight:500;font-size:24px;margin:0}
+.sec-intro{margin:0 0 18px 42px;color:var(--g700);font-size:14.5px;max-width:700px}
+.stack{display:flex;flex-direction:column;gap:12px;margin-left:42px}
+@media(max-width:640px){.sec-intro,.stack{margin-left:0}}
+a.card,.card{display:block;background:var(--paper);border:1.5px solid var(--g300);border-radius:14px;padding:18px 20px;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s,border-color .15s}
+a.card:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--slate)}
+.meta{font-family:var(--mono);font-size:11px;color:var(--g500);margin-bottom:6px}
+.title{font-family:var(--serif);font-size:18px;font-weight:500;line-height:1.25;margin:0 0 8px}
+.quote{font-size:14px;color:var(--g700);border-left:2px solid var(--clay);padding-left:12px;margin:8px 0}
+.why{font-size:13.5px;color:var(--g700);margin:8px 0 0}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.tag{font-family:var(--mono);font-size:9px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--g100);border:1px solid var(--g200);color:var(--g700)}
+.tag.hot{background:#F4E7DF;color:var(--clay-d);border-color:#E8C9B8}
+.tag.good{background:#E8EDE1;color:#4F5F3C;border-color:#C9D4B8}
+.tier{font-family:var(--mono);font-size:10px;color:var(--clay);float:right}
+footer{margin-top:64px;padding-top:24px;border-top:1.5px solid var(--g300);color:var(--g500);font-size:13px}
+footer .k{display:block;font-family:var(--serif);font-style:italic;font-size:17px;color:var(--g700);margin-bottom:10px}
+code{font-family:var(--mono);font-size:12px;background:var(--g100);padding:1px 5px;border-radius:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="eyebrow">X bangers · fixed search · 2026-09-05</p>
+  <h1>More tweets in the <em>Tobi shape</em></h1>
+  <p class="intro">Same thesis as <a href="https://x.com/tobi/status/2094808564355191249">tobi/2094808564355191249</a>: <b>narrow task + tiny model + data flywheel beats rented frontier</b>. Found with synonym fan-out, <code>finetuned</code> stems, <code>min_faves</code>, and named accounts.</p>
+  <nav class="toc">
+    <a href="#s1"><span class="n">01</span> Core thesis</a>
+    <a href="#s2"><span class="n">02</span> Flywheel / Shopify</a>
+    <a href="#s3"><span class="n">03</span> Niche SLMs beat frontier</a>
+    <a href="#s4"><span class="n">04</span> Distill into tiny</a>
+    <a href="#s5"><span class="n">05</span> On-device recipe</a>
+  </nav>
+</header>
+
+<section id="s1">
+  <div class="sec-head"><span class="idx">01</span><h2>Anchor + closest companions</h2></div>
+  <p class="sec-intro">The viral center of gravity, then the posts that complete the story (infra, enterprise nanos, numbers).</p>
+  <div class="stack">
+    <a class="card" href="https://x.com/tobi/status/2094808564355191249" target="_blank" rel="noopener">
+      <span class="tier">S-TIER</span>
+      <div class="meta">@tobi · 1 Sep 2026 · 8.3k likes · 5.4k bookmarks · 1.5M views</div>
+      <h3 class="title">Finetuned 0.8B beats GPT-5.6-sol xhigh on a specialized task</h3>
+      <p class="quote">Training tiny models for special purpose use cases works so incredibly well if you have a great self improving recursive flywheel. Shopify ML team is on fire.</p>
+      <p class="why">The assignment thesis in one screenshot. Task was buyer-profile building; recursive retrain loop; prompt shrunk hard while throughput exploded (see explainer below).</p>
+      <div class="tags"><span class="tag hot">anchor</span><span class="tag">0.8B</span><span class="tag">flywheel</span></div>
+    </a>
+    <a class="card" href="https://x.com/tobi/status/2094904650709234015" target="_blank" rel="noopener">
+      <span class="tier">S-TIER</span>
+      <div class="meta">@tobi · 1 Sep 2026 · 4.1k likes · 5.3k bookmarks</div>
+      <h3 class="title">Open-sourced the flywheel infra: tangleml.com</h3>
+      <p class="quote">Btw we open sourced the core infra piece that makes these self improving loops possible.</p>
+      <p class="why">Actionable. If you want the Shopify loop, start at TangleML, not another LoRA tutorial.</p>
+      <div class="tags"><span class="tag hot">infra</span><span class="tag good">open source</span></div>
+    </a>
+    <a class="card" href="https://x.com/The_AI_Investor/status/2094868408596873673" target="_blank" rel="noopener">
+      <div class="meta">@The_AI_Investor · 1 Sep 2026 · 76 likes · 47 bookmarks</div>
+      <h3 class="title">Numbers behind Tobi’s slide</h3>
+      <p class="why">Qwen3.5 0.8B for buyer profiles: judge score 75.3 → 78.1 → 84.6 vs GPT-5.6 Sol xhigh at 83.0. System prompt 9.1k → 1.1k tokens. Throughput ~2M → 72M profiles/day (~36×).</p>
+      <div class="tags"><span class="tag">explainer</span><span class="tag">metrics</span></div>
+    </a>
+    <a class="card" href="https://x.com/ramin_m_h/status/2094919735528013903" target="_blank" rel="noopener">
+      <div class="meta">@ramin_m_h (Liquid AI) · 1 Sep 2026 · 190 likes · 176 bookmarks</div>
+      <h3 class="title">Liquid nanos already in production at Shopify</h3>
+      <p class="quote">tiny models + the customization platform matching the quality of frontier models on specialized use-cases… going from 90 to 100 that satisfies enterprise reliability… is the art.</p>
+      <p class="why">Confirms the product category: specialist nanos, not one frontier model per company.</p>
+      <div class="tags"><span class="tag">Liquid</span><span class="tag">enterprise</span></div>
+    </a>
+  </div>
+</section>
+
+<section id="s2">
+  <div class="sec-head"><span class="idx">02</span><h2>Shopify flywheel (same org, earlier receipts)</h2></div>
+  <p class="sec-intro">Tobi’s Sep post is the tip. The ICML talk and Flow agent posts show the system behind it.</p>
+  <div class="stack">
+    <a class="card" href="https://x.com/ShopifyEng/status/2072405411756724677" target="_blank" rel="noopener">
+      <span class="tier">A-TIER</span>
+      <div class="meta">@ShopifyEng · 1 Jul 2026 · 293 likes · 208 bookmarks</div>
+      <h3 class="title">Model Optimization Flywheel @ ICML — beat frontier, −96% cost</h3>
+      <p class="quote">Shopify's LLMs beat frontier models on a range of tasks at a fraction of the cost… GraphQL agent serving cost dropped from $27M to $1M annualized (−96%).</p>
+      <p class="why">Pipeline: product expertise → evals → mine failures → critique/repair → feed back → compress prompts. Same shape as the 0.8B story.</p>
+      <div class="tags"><span class="tag hot">flywheel</span><span class="tag">production</span></div>
+    </a>
+    <a class="card" href="https://x.com/Drewch/status/2094795144595734705" target="_blank" rel="noopener">
+      <div class="meta">@Drewch (Shopify VP ML) · 1 Sep 2026 · 119 likes · 252 bookmarks</div>
+      <h3 class="title">ICML talk recording: Continuously Self-Improving LLMs in Production</h3>
+      <p class="why">Watch link for the flywheel talk. Same day as Tobi’s viral post.</p>
+      <div class="tags"><span class="tag">talk</span></div>
+    </a>
+    <a class="card" href="https://x.com/Drewch/status/2094810812573446266" target="_blank" rel="noopener">
+      <div class="meta">@Drewch · 1 Sep 2026</div>
+      <h3 class="title">Continual learning via self-healing + on-policy self distillation</h3>
+      <p class="why">Names the methods under the flywheel: on-policy self-distillation, not just SFT.</p>
+      <div class="tags"><span class="tag">OPD</span></div>
+    </a>
+    <a class="card" href="https://x.com/ShopifyEng/status/2047339034498752986" target="_blank" rel="noopener">
+      <div class="meta">@ShopifyEng · 23 Apr 2026 · 1.5k likes · 1.2k bookmarks</div>
+      <h3 class="title">Fine-tuned Qwen3-32B for Shopify Flow — 2.2× faster, 68% cheaper</h3>
+      <p class="why">Reverse-engineered merchant automations as training data. Honest about bench-good / prod-bad failure modes.</p>
+      <div class="tags"><span class="tag">domain data</span><span class="tag">agents</span></div>
+    </a>
+  </div>
+</section>
+
+<section id="s3">
+  <div class="sec-head"><span class="idx">03</span><h2>Niche SLMs that beat frontier on one job</h2></div>
+  <p class="sec-intro">Closest cousins to Tobi: train small, pick a narrow task, publish a brutal head-to-head.</p>
+  <div class="stack">
+    <a class="card" href="https://x.com/Austen/status/2076745226387902925" target="_blank" rel="noopener">
+      <span class="tier">A-TIER</span>
+      <div class="meta">@Austen · 13 Jul 2026 · 1.2k likes · 869 bookmarks</div>
+      <h3 class="title">Challenge: train an SLM that beats frontier in some niche</h3>
+      <p class="quote">Not prompt engineering or building a harness, actually training a small model.</p>
+      <p class="why">Framing is the assignment. Thread continues with concrete wins.</p>
+      <div class="tags"><span class="tag hot">challenge</span><span class="tag">Gauntlet</span></div>
+    </a>
+    <a class="card" href="https://x.com/NathanZ721/status/2076733433686917475" target="_blank" rel="noopener">
+      <span class="tier">A-TIER</span>
+      <div class="meta">@NathanZ721 · 13 Jul 2026 · 441 likes · 278 bookmarks</div>
+      <h3 class="title">SVLM that only reads music: 98% in 10s vs frontier &lt;50% after hours</h3>
+      <p class="quote">Frontier models consume millions of tokens over hours… My model takes 10 seconds on one GPU to hit 98% accuracy.</p>
+      <p class="why">Pure custom-task win. Weights: <code>NathanZ721/omr-monophonic</code>.</p>
+      <div class="tags"><span class="tag good">custom task</span><span class="tag">vision-SLM</span></div>
+    </a>
+    <a class="card" href="https://x.com/Austen/status/2079255740745691497" target="_blank" rel="noopener">
+      <div class="meta">@Austen · 20 Jul 2026 · 84 likes · 71 bookmarks</div>
+      <h3 class="title">Qwen3-1.7B ZPD math recommender beats Opus-4.8 (96% vs 17% recall@16)</h3>
+      <p class="why">8× faster too. Same challenge series — niche curriculum recommendation.</p>
+      <div class="tags"><span class="tag">1.7B</span><span class="tag">education</span></div>
+    </a>
+    <a class="card" href="https://x.com/Davidstout/status/2086831158361264157" target="_blank" rel="noopener">
+      <span class="tier">A-TIER</span>
+      <div class="meta">@Davidstout · 10 Aug 2026 · 825 likes · 709 bookmarks</div>
+      <h3 class="title">TwiL-LM3 (3B) beats GPT-OSS-120B on 4/5 formal reasoning benches</h3>
+      <p class="quote">40× fewer parameters, 2.6× faster… specialized for deductive reasoning, structured outputs, tool calling.</p>
+      <p class="why">Specialist model family thesis, not general chat.</p>
+      <div class="tags"><span class="tag">3B</span><span class="tag">specialist</span></div>
+    </a>
+    <a class="card" href="https://x.com/svpino/status/2086889543253602482" target="_blank" rel="noopener">
+      <div class="meta">@svpino · 10 Aug 2026 · 143 likes · 128 bookmarks</div>
+      <h3 class="title">“Tiny, specialized, and open models are the future”</h3>
+      <p class="why">Clean amplification of TwiL with size/speed numbers for the 1.7B and 3B variants.</p>
+      <div class="tags"><span class="tag">amplify</span></div>
+    </a>
+  </div>
+</section>
+
+<section id="s4">
+  <div class="sec-head"><span class="idx">04</span><h2>Distill / multi-teacher into tiny students</h2></div>
+  <p class="sec-intro">Method tweets that explain how you get a tiny specialist without training from scratch.</p>
+  <div class="stack">
+    <a class="card" href="https://x.com/PavloMolchanov/status/2060053129660637370" target="_blank" rel="noopener">
+      <span class="tier">S-TIER</span>
+      <div class="meta">@PavloMolchanov (NVIDIA) · 28 May 2026 · 2.7k likes · 3.8k bookmarks · 1.4M views</div>
+      <h3 class="title">Distill Qwen3-4B + Phi-4-Mini + Llama-3B → Llama-3.2-1B</h3>
+      <p class="quote">Cross-tokenizer multi-teacher on-policy distillation. MMLU 32.05 → 46.32.</p>
+      <p class="why">Cutting-edge method for stuffing multiple teachers into one tiny student. Paper: arxiv 2605.21699.</p>
+      <div class="tags"><span class="tag hot">MOPD</span><span class="tag">1B</span></div>
+    </a>
+    <a class="card" href="https://x.com/askalphaxiv/status/2095253084884582766" target="_blank" rel="noopener">
+      <div class="meta">@askalphaxiv · 2 Sep 2026 · 271 likes · 217 bookmarks</div>
+      <h3 class="title">MOPD is becoming the 2026 post-training paradigm</h3>
+      <p class="why">Used in MiMo-V2-Flash, Kimi K3, DeepSeek-V4. Reading list of papers.</p>
+      <div class="tags"><span class="tag">survey</span></div>
+    </a>
+    <a class="card" href="https://x.com/Hesamation/status/2038642306434150427" target="_blank" rel="noopener">
+      <div class="meta">@Hesamation · 30 Mar 2026 · 1.9k likes · 1.7k bookmarks</div>
+      <h3 class="title">Qwen 3.5 27B distilled from Opus 4.6 — beats Sonnet 4.5 on SWE-bench, runs on 16GB</h3>
+      <p class="why">Distillation as the path to local specialist coding agents.</p>
+      <div class="tags"><span class="tag">distill</span><span class="tag">coding</span></div>
+    </a>
+    <a class="card" href="https://x.com/SergioPaniego/status/2090052408940666888" target="_blank" rel="noopener">
+      <div class="meta">@SergioPaniego (HF) · 19 Aug 2026</div>
+      <h3 class="title">OPD in TRL 40× faster — 4B student +39 AIME from 235B teacher</h3>
+      <p class="why">Practical tooling for on-policy distillation at student scale.</p>
+      <div class="tags"><span class="tag">TRL</span><span class="tag">OPD</span></div>
+    </a>
+  </div>
+</section>
+
+<section id="s5">
+  <div class="sec-head"><span class="idx">05</span><h2>On-device / DIY recipe bangers</h2></div>
+  <p class="sec-intro">Same thesis for individuals: synthetic data + LoRA + tiny base + quantize.</p>
+  <div class="stack">
+    <a class="card" href="https://x.com/h100envy/status/2077784077604692440" target="_blank" rel="noopener">
+      <span class="tier">A-TIER</span>
+      <div class="meta">@h100envy · 16 Jul 2026 · 7.2k likes · 15.8k bookmarks</div>
+      <h3 class="title">Gemma 270M: 46% → 90% on-phone in 21 minutes</h3>
+      <p class="quote">pick Gemma 270M → synthetic task data → LoRA → int4 → Pixel @ 2000 tok/s. How a 270M beats a 70B on your task offline.</p>
+      <p class="why">The consumer-scale version of Tobi’s thesis. Massive bookmark count = people saving the recipe.</p>
+      <div class="tags"><span class="tag hot">recipe</span><span class="tag">270M</span><span class="tag">LoRA</span></div>
+    </a>
+    <a class="card" href="https://x.com/fahdmirza/status/2029076692510371856" target="_blank" rel="noopener">
+      <div class="meta">@fahdmirza · 4 Mar 2026 · 687 likes · 863 bookmarks</div>
+      <h3 class="title">Qwen3.5 0.8B Unsloth LoRA on a 200-row custom dataset, local</h3>
+      <p class="why">Shows how little data you need when the task is narrow. Same base size family as Shopify’s 0.8B.</p>
+      <div class="tags"><span class="tag">Unsloth</span><span class="tag">0.8B</span></div>
+    </a>
+    <a class="card" href="https://x.com/tobi/status/2016777002758656232" target="_blank" rel="noopener">
+      <div class="meta">@tobi · 29 Jan 2026 · 144 likes · 117 bookmarks</div>
+      <h3 class="title">QMD natively trained query extender (read the finetune folder)</h3>
+      <p class="why">Earlier Tobi SLM: custom task = query expansion. Companion: Unsloth+GEPA, 4× on 1.7B / 40× on 0.6B.</p>
+      <div class="tags"><span class="tag">QMD</span><span class="tag">personal</span></div>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <span class="k">The model is the exhaust. The recursive loop is the engine.</span>
+  Search method: tiny/specialized/0.XB synonyms · finetuned stems · min_faves · from:tobi|ShopifyEng|Austen|PavloMolchanov|Davidstout|ramin_m_h · semantic near Tobi phrasing.
+  Saved at <code>docs/research/x-slm-bangers-2026-09-05.html</code>.
+</footer>
+</div>
+</body>
+</html>
