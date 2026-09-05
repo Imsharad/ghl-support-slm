@@ -1,0 +1,32 @@
+{
+  "repo_id": "bitext/Bitext-customer-support-llm-chatbot-training-dataset",
+  "revision": "430d1a89bd93bd1fa23c16f29dd53e73f0087443",
+  "source_filename": "Bitext_Sample_Customer_Support_Training_Dataset_27K_responses-v11.csv",
+  "local_path": "data/raw/bitext.csv",
+  "sha256": "6f81102b0100b97b8468eb04368033a23206bf1fde9d53500d5806ec1001a434",
+  "row_count": 26872,
+  "row_count_expected": 26872,
+  "row_count_matches_expected": true,
+  "downloaded_at": "2026-09-05 22:34 IST",
+  "columns": [
+    "flags",
+    "instruction",
+    "category",
+    "intent",
+    "response"
+  ],
+  "license": {
+    "spdx": "CDLA-Sharing-1.0",
+    "hf_id": "cdla-sharing-1.0",
+    "url": "https://cdla.dev/sharing-1-0/",
+    "pdf": "https://cdla.io/wp-content/uploads/sites/52/2017/10/CDLA-Sharing-v1.0.pdf",
+    "dataset_card": "https://huggingface.co/datasets/bitext/Bitext-customer-support-llm-chatbot-training-dataset",
+    "text": "Community Data License Agreement \u2013 Sharing, Version 1.0. Data is provided under this Agreement by each of the Data Providers. Section 2 grants a worldwide, non-exclusive, irrevocable right to Use and Publish Data, subject to Section 3: if You Publish Data You Receive or Enhanced Data, it must be Published under this same unmodified Agreement, with attribution preserved, and without further restrictions. Results of Computational Use are not required to be shared (Section 3.5). Full text: https://cdla.dev/sharing-1-0/"
+  },
+  "mirror_of": "kaggle.com/datasets/bitext/bitext-gen-ai-chatbot-customer-support-dataset",
+  "profiled_at": "2026-09-05 22:36 IST",
+  "n_intents": 27,
+  "n_categories": 11,
+  "n_over_512_chatml_tokens": 10,
+  "tokenizer_id": "Qwen/Qwen2.5-1.5B-Instruct"
+}

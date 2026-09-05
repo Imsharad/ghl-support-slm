@@ -1,0 +1,137 @@
+[
+  {
+    "intent": "cancel_order",
+    "category": "ORDER",
+    "example": "question about cancelling order {{Order Number}}"
+  },
+  {
+    "intent": "change_order",
+    "category": "ORDER",
+    "example": "I have to remove an item from order {{Order Number}}"
+  },
+  {
+    "intent": "change_shipping_address",
+    "category": "SHIPPING",
+    "example": "I need help trying to change my shipping address"
+  },
+  {
+    "intent": "check_cancellation_fee",
+    "category": "CANCEL",
+    "example": "I don't know how I can check the cancellation fee"
+  },
+  {
+    "intent": "check_invoice",
+    "category": "INVOICE",
+    "example": "help me finding invoice #85632"
+  },
+  {
+    "intent": "check_payment_methods",
+    "category": "PAYMENT",
+    "example": "assistance to check what payment methods you accept"
+  },
+  {
+    "intent": "check_refund_policy",
+    "category": "REFUND",
+    "example": "I want assistance checking how long refunds take"
+  },
+  {
+    "intent": "complaint",
+    "category": "FEEDBACK",
+    "example": "help me filing a complaint"
+  },
+  {
+    "intent": "contact_customer_service",
+    "category": "CONTACT",
+    "example": "I don't know what I need to do to contact customer service"
+  },
+  {
+    "intent": "contact_human_agent",
+    "category": "CONTACT",
+    "example": "transfer to me an agent"
+  },
+  {
+    "intent": "create_account",
+    "category": "ACCOUNT",
+    "example": "problem with creating a gold account"
+  },
+  {
+    "intent": "delete_account",
+    "category": "ACCOUNT",
+    "example": "closing  platinum account"
+  },
+  {
+    "intent": "delivery_options",
+    "category": "DELIVERY",
+    "example": "I don't know what to do to check the options for delivery"
+  },
+  {
+    "intent": "delivery_period",
+    "category": "DELIVERY",
+    "example": "I call to check when my delivery is going to arrive"
+  },
+  {
+    "intent": "edit_account",
+    "category": "ACCOUNT",
+    "example": "I need assistance editing the information on my user"
+  },
+  {
+    "intent": "get_invoice",
+    "category": "INVOICE",
+    "example": "I don't know what I need to do to get invoice #85632"
+  },
+  {
+    "intent": "get_refund",
+    "category": "REFUND",
+    "example": "when can I expect a refund"
+  },
+  {
+    "intent": "newsletter_subscription",
+    "category": "SUBSCRIPTION",
+    "example": "I need assistance subscribing to your company newsletter"
+  },
+  {
+    "intent": "payment_issue",
+    "category": "PAYMENT",
+    "example": "I want help reporting a payment issue"
+  },
+  {
+    "intent": "place_order",
+    "category": "ORDER",
+    "example": "I try to make an order"
+  },
+  {
+    "intent": "recover_password",
+    "category": "ACCOUNT",
+    "example": "I have a question about a password recovery"
+  },
+  {
+    "intent": "registration_problems",
+    "category": "ACCOUNT",
+    "example": "help me report an issue with registrations"
+  },
+  {
+    "intent": "review",
+    "category": "FEEDBACK",
+    "example": "I need help leaving a review for a service"
+  },
+  {
+    "intent": "set_up_shipping_address",
+    "category": "SHIPPING",
+    "example": "I want help to set a different shipping address up"
+  },
+  {
+    "intent": "switch_account",
+    "category": "ACCOUNT",
+    "example": "I want help to use the {{Account Category}} account"
+  },
+  {
+    "intent": "track_order",
+    "category": "ORDER",
+    "example": "I try to track order {{Order Number}}"
+  },
+  {
+    "intent": "track_refund",
+    "category": "REFUND",
+    "example": "I expect a refund of {{Refund Amount}} dollars"
+  }
+]
