@@ -24,8 +24,8 @@
     "note": "3be07c2 verified 23:05 IST; awaits H1 approval then seal"
   },
   "B4": {
-    "state": "running",
-    "note": "reassigned Opus -> Grok 23:05 IST (Opus is the critical path, Grok idle)"
+    "state": "done",
+    "note": "d2e43bd verified 23:12 IST, 5 tests pass"
   },
   "C2": {
     "state": "pending",
