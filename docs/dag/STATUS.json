@@ -136,8 +136,8 @@
     "note": "d573366 verified 00:38 IST 2026-09-06 by Fable: splits group lists byte-identical, strict ok, 26 tests; 221 train responses keep \"the number your order number\", patch requested in place"
   },
   "G0": {
-    "state": "running",
-    "note": "opened 00:32 IST 2026-09-06 to use Sol idle time while B1b runs; dispatched to Sol"
+    "state": "done",
+    "note": "536f937 verified 00:52 IST 2026-09-06 by Fable: 12 cited paths exist, prompt and bench table match sources, 11 markers. For G1: markers at README lines 70 (B1b numbers, now final after the-number patch), 136 (label should be E1 tuned bench), 162 (D1 is done; fill from docs/TRAINING.md)"
   },
   "D2L": {
     "state": "running",
