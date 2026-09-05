@@ -124,7 +124,7 @@
     "note": ""
   },
   "D0": {
-    "state": "running",
-    "note": "probe relaunched detached 23:58 IST; MPS result in .scratch/d0_run.log at 00:00 IST 2026-09-06: 2.567 s/step, 512 tok, mb1, peak 4.09 GB, loss finite; CPU pass told to stop; doc + commit pending"
+    "state": "done",
+    "note": "affd2e7 verified 00:08 IST 2026-09-06 by Fable: docs/LOCAL_QLORA_PROBE.md, MPS 2.567 s/step, 4.09 GB peak, random-token caveat present, probe procs gone"
   }
 }
