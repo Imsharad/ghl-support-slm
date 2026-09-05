@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-06 00:21 IST",
+  "generated_at": "2026-09-06 00:34 IST",
   "channel": "04861c85-e907-4639-9075-7c474cbd8b51",
   "thread": "1981860808e7d870aa450555e16a336f0c9d20b710a0fee98e401b96ebf5c593",
   "share_target": {
@@ -8,12 +8,12 @@
     "grok": 0.25
   },
   "share_actual": {
-    "opus": 0.29,
-    "sol": 0.38,
-    "grok": 0.33
+    "opus": 0.32,
+    "sol": 0.36,
+    "grok": 0.32
   },
   "counts": {
-    "opus": 7,
+    "opus": 8,
     "sol": 9,
     "grok": 8
   },
@@ -323,6 +323,22 @@
         "eval/results/tuned-test-raw.jsonl",
         "eval/results/*-auto.json",
         "docs/SELECTION.md"
+      ]
+    },
+    {
+      "id": "D2L",
+      "worker": "opus",
+      "phase": "D",
+      "title": "Local insurance training run on mps (train-t4 config, detached)",
+      "due": "Sun 2026-09-06 08:00",
+      "est": 6.0,
+      "deps": [
+        "D1",
+        "B1b"
+      ],
+      "paths": [
+        "train/runs/local-t4/",
+        "docs/LOCAL_RUN.md"
       ]
     },
     {

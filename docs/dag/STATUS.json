@@ -44,8 +44,8 @@
     "note": "aac92f6 verified 00:22 IST 2026-09-06 by Fable: 54 rows, 20 entries, 6 critical fails on base, 2 truncations; surfaced B1 wording defect"
   },
   "D1": {
-    "state": "running",
-    "note": "Opus told 00:05 IST 2026-09-06 to stage train.py against CONTRACTS section 3 schema while B1 (Grok) lands"
+    "state": "done",
+    "note": "2d43dfc+7542fda verified 00:38 IST 2026-09-06 by Fable: 26 tests, real mps smoke with resume proven; tests/fixtures/train_smoke accepted as D1 path"
   },
   "D3": {
     "state": "pending",
@@ -128,15 +128,19 @@
     "note": "affd2e7 verified 00:08 IST 2026-09-06 by Fable: docs/LOCAL_QLORA_PROBE.md, MPS 2.567 s/step, 4.09 GB peak, random-token caveat present, probe procs gone"
   },
   "C5": {
-    "state": "pending",
-    "note": "paused 00:25 IST at 215/2270 rows; restarts after B1b since test-split text changes"
+    "state": "running",
+    "note": "restarted 00:40 IST 2026-09-06 on B1b text; Sol"
   },
   "B1b": {
-    "state": "running",
-    "note": "opened 00:25 IST 2026-09-06 from C4 finding; dispatched to Grok"
+    "state": "done",
+    "note": "d573366 verified 00:38 IST 2026-09-06 by Fable: splits group lists byte-identical, strict ok, 26 tests; 221 train responses keep \"the number your order number\", patch requested in place"
   },
   "G0": {
     "state": "running",
     "note": "opened 00:32 IST 2026-09-06 to use Sol idle time while B1b runs; dispatched to Sol"
+  },
+  "D2L": {
+    "state": "running",
+    "note": "opened 00:40 IST 2026-09-06 as Colab insurance; dispatched to Opus"
   }
 }

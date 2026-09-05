@@ -439,6 +439,28 @@ Do:
 Verify: selection.json exists and cites dev numbers only; both test raw files have 270 rows; the auto-metrics comparison has an interval.
 """,
     ),
+    dict(
+        id="D2L", worker="opus", phase="D", title="Local insurance training run on mps (train-t4 config, detached)",
+        due="Sun 2026-09-06 08:00", est=6.0, deps=["D1", "B1b"],
+        paths=["train/runs/local-t4/", "docs/LOCAL_RUN.md"],
+        brief="""
+Block 0 (Colab GPU) is still unanswered at 00:40 IST Sunday. D0 measured 2.57 s per 512-token pass on this Mac, so the
+free-T4 config (cap_train 8000, one epoch) is about 5.7 h here. Run it overnight as insurance so D3 has a real adapter by
+morning whatever happens with Colab. If Colab lands, the Colab run is the main run and this is the documented fallback.
+
+Do:
+- Launch detached (Popen with start_new_session, log to `train/runs/local-t4/train.log`), `--device mps`, `--data-dir data/processed`,
+  `configs/train-t4.yaml` unchanged except output dir `train/runs/local-t4/`. Confirm with pgrep from a later call, then post
+  the PID, the first logged step time, and the projected finish in IST. Do not wait in-turn.
+- Keep the checkpoint cadence from the config so a crash loses at most 100 optimizer steps; resume with the D1 path if it dies.
+- When it finishes, run `tools/check_run.py train/runs/local-t4 --max-memory-gb 12 --device mps`, plot curves, and write
+  `docs/LOCAL_RUN.md`: config, wall time, peak memory, final train/val loss, checkpoint list. Commit the doc and curves.png only;
+  the run directory stays untracked.
+- Ollama will be serving Sol's C5 run at the same time; that is expected, do not stop it.
+
+Verify: check_run PASS; LOCAL_RUN.md committed; the adapter path reported so D3 can pick it up.
+""",
+    ),
     # ---------------- Phase E: export and final proof ----------------
     dict(
         id="E1", worker="sol", phase="E", title="Merge, tuned Q8 GGUF, manifest, fetch/check tools, Hub push",
