@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-06 04:45 IST",
+  "generated_at": "2026-09-06 04:52 IST",
   "channel": "04861c85-e907-4639-9075-7c474cbd8b51",
   "thread": "1981860808e7d870aa450555e16a336f0c9d20b710a0fee98e401b96ebf5c593",
   "share_target": {
@@ -326,18 +326,26 @@
       "phase": "D",
       "title": "Checkpoint selection and Bitext test generation",
       "due": "Mon 2026-09-07 10:30",
-      "est": 1.5,
+      "est": 3.0,
       "deps": [
-        "D2",
+        "D2L",
         "B4",
-        "C1"
+        "C1b",
+        "C5"
       ],
       "paths": [
         "artifacts/selection.json",
-        "train/runs/main/",
-        "eval/results/base-test-raw.jsonl",
+        "train/runs/local-t4/",
+        "eval/sample_test.py",
+        "eval/run_sample.py",
+        "eval/results/test-sample.json",
+        "eval/results/test-sample-refs.jsonl",
+        "eval/results/base-test-sample-raw.jsonl",
         "eval/results/tuned-test-raw.jsonl",
-        "eval/results/*-auto.json",
+        "eval/results/dev-*-raw.jsonl",
+        "eval/results/dev-*-judgments.jsonl",
+        "eval/results/base-test-sample-auto.json",
+        "eval/results/tuned-test-auto.json",
         "docs/SELECTION.md"
       ]
     },
