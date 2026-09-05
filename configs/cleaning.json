@@ -37,6 +37,16 @@
     }
   ],
   "placeholder_reject_name_regex": "(phone|e-?mail|\\burl\\b|hours?|hotline|website|toll-?free|social media|company\\s*name|companyname|\\bpolicy\\b|timeframe|opening time|closing time|business hours|working hours|support days|\\bchannel\\b|feature\\s*\\d|explanation of|platform\\s*\\d|city\\s*\\d|\\bclaims\\b|complaint |refund time|shipping time|delivery time|\\beta\\b|cut-?off|guarantee period|number of days|representative name|store location|store address|online store|retail stores|marketplace|\\bhandle\\b|live chat support|contact method|\\bdepartment\\b|ticket number|start time|end time|portal info|page url|helpline|hotline|login page url|support page|help center|claims website|free customer support number|customer support contact|company phone|company support|registration support phone|product reviews email|feedback email|payment issue (phone|email)|refund hotline|refund helpline)",
+  "placeholder_id_style": [
+    "order number",
+    "invoice number",
+    "tracking number",
+    "account number",
+    "account id",
+    "account type",
+    "account category",
+    "refund amount"
+  ],
   "placeholder_replace": {
     "Order Number": "your order number",
     "order number": "your order number",

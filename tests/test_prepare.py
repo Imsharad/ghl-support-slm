@@ -75,7 +75,9 @@ def test_placeholder_tokens_absent_from_outputs() -> None:
     assert reject_id is None
     assert "{{" not in inst
     assert "{{" not in resp
-    assert "your order number" in inst
+    assert inst == "question about cancelling my order"
+    assert "your order" in resp
+    assert "your your" not in resp
     assert "placeholder_order_number" in applied
     assert "replace_placeholders" in applied
 
@@ -156,6 +158,81 @@ def test_cap_train_keeps_whole_groups_and_balances_intents() -> None:
     assert by_intent["a"] == 6
     assert by_intent["b"] == 6
     assert all(count == 3 for count in by_group.values())
+
+
+def test_id_placeholder_four_frames_both_voices() -> None:
+    frames = [
+        ("cancel order number {{Order Number}}", "number", "order number"),
+        ("cancel order {{Order Number}}", "noun", "order"),
+        ("cancel the {{Order Number}}", "the", "order number"),
+        ("cancel {{Order Number}}", "standalone", "order number"),
+    ]
+    for raw, frame, noun in frames:
+        counts = prepare.empty_frame_counts()
+        inst, resp, _applied, reject_id = prepare.apply_cleaning(
+            raw, raw, CLEANING, frame_counts=counts
+        )
+        assert reject_id is None
+        assert inst == f"cancel my {noun}"
+        assert resp == f"cancel your {noun}"
+        assert counts["instruction"][frame] == 1
+        assert counts["response"][frame] == 1
+        assert "{{" not in inst
+        assert "{{" not in resp
+
+    typo_inst, typo_resp, _, reject_id = prepare.apply_cleaning(
+        "cancel oorder {{Order Number}}",
+        "cancel oorder {{Order Number}}",
+        CLEANING,
+    )
+    assert reject_id is None
+    assert typo_inst == "cancel oorder my order number"
+    assert typo_resp == "cancel oorder your order number"
+
+    inst, resp, _, reject_id = prepare.apply_cleaning(
+        "paid {{Currency Symbol}}{{Refund Amount}}",
+        "the {{Currency Symbol}}{{Refund Amount}} compensation",
+        CLEANING,
+    )
+    assert reject_id is None
+    assert "{{" not in inst and "{{" not in resp
+    assert inst == "paid my refund amount"
+    assert resp == "your refund amount compensation"
+    assert "the your" not in resp
+
+
+def test_processed_instructions_have_no_assistant_voice_or_double_article() -> None:
+    import re
+
+    bad_voice = re.compile(
+        r"\b(order|purchase|number)\s+your order number", re.IGNORECASE
+    )
+    double_article = re.compile(r"\bthe (my|your)\b")
+    cases = [
+        "question about cancelling order {{Order Number}}",
+        "question about canceling purchase {{Order Number}}",
+        "I can't afford purchase {{Order Number}}",
+        "the {{Order Number}} is late",
+        "the order number {{Order Number}}",
+        "i have a question about cancelling oorder {{Order Number}}",
+    ]
+    for instruction in cases:
+        inst, resp, _, reject_id = prepare.apply_cleaning(
+            instruction, "Find order {{Order Number}}.", CLEANING
+        )
+        assert reject_id is None
+        assert bad_voice.search(inst) is None
+        assert double_article.search(inst) is None
+        assert double_article.search(resp) is None
+        assert "your order number" not in inst.lower()
+
+    if (PROCESSED_DIR / "train.jsonl").exists():
+        for name in prepare.SPLIT_NAMES:
+            for row in prepare.load_jsonl(PROCESSED_DIR / f"{name}.jsonl"):
+                inst = row["instruction"]
+                blob = inst + "\n" + row["response"]
+                assert bad_voice.search(inst) is None, row["id"]
+                assert double_article.search(blob) is None, row["id"]
 
 
 @pytest.mark.skipif(not SPLITS_PATH.exists(), reason="run data/prepare.py first")

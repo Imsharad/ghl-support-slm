@@ -48,6 +48,17 @@ SEED = 42
 MAX_LENGTH = 512
 NEAR_COLLAPSE_SHARE = 0.50
 PLACEHOLDER_RE = re.compile(r"\{\{([^{}]+)\}\}")
+FROZEN_SPLITS_COMMIT = "24ab0d9"
+NUMBER_HEADS = "order|purchase|invoice|tracking|account"
+NOUN_HEADS = "order|purchase|invoice|account"
+ID_FRAME_NAMES = ("number", "noun", "the", "standalone")
+_NUMBER_PREFIX = re.compile(
+    rf"(?i)(?P<consumed>(?:(?:\bthe|\bmy|\byour)\s+)?\b(?P<head>{NUMBER_HEADS})\s+number\s+)$"
+)
+_NOUN_PREFIX = re.compile(
+    rf"(?i)(?P<consumed>(?:(?:\bthe|\bmy|\byour)\s+)?\b(?P<head>{NOUN_HEADS})\s+)$"
+)
+_THE_PREFIX = re.compile(r"(?i)(?P<consumed>\bthe)\s+$")
 IST = timezone(timedelta(hours=5, minutes=30))
 RESIDUAL_RISK = (
     "Average-linkage clusters at cosine distance 1 - threshold, then exact "
@@ -163,6 +174,10 @@ def load_cleaning(path: Path = CLEANING_PATH) -> dict:
     if not isinstance(replace_map, dict):
         raise ValueError("placeholder_replace must be an object")
     payload["_replace_map"] = {str(k): str(v) for k, v in replace_map.items()}
+    id_style = payload.get("placeholder_id_style", [])
+    if not isinstance(id_style, list):
+        raise ValueError("placeholder_id_style must be a list")
+    payload["_id_style"] = {str(item).casefold() for item in id_style}
     return payload
 
 
@@ -202,30 +217,92 @@ def placeholder_decision(name: str, cleaning: dict) -> tuple[str, str]:
     return "replace", wording
 
 
-def replace_placeholders(text: str, cleaning: dict) -> tuple[str | None, list[str], str | None]:
+def id_style_phrase(mapped: str, cleaning: dict) -> str | None:
+    if not mapped.lower().startswith("your "):
+        return None
+    phrase = mapped[5:].strip()
+    if phrase.casefold() in cleaning.get("_id_style", set()):
+        return phrase.casefold()
+    return None
+
+
+def apply_id_frame(prefix: str, possessive: str, noun_phrase: str) -> tuple[str, str, str]:
+    """Consume a preceding frame and return (kept_prefix, replacement, frame_name)."""
+    match = _NUMBER_PREFIX.search(prefix)
+    if match:
+        head = match.group("head").casefold()
+        return prefix[: match.start()], f"{possessive} {head} number", "number"
+    match = _NOUN_PREFIX.search(prefix)
+    if match:
+        head = match.group("head").casefold()
+        return prefix[: match.start()], f"{possessive} {head}", "noun"
+    match = _THE_PREFIX.search(prefix)
+    if match:
+        return prefix[: match.start()], f"{possessive} {noun_phrase}", "the"
+    return prefix, f"{possessive} {noun_phrase}", "standalone"
+
+
+def empty_frame_counts() -> dict[str, dict[str, int]]:
+    return {
+        field: {name: 0 for name in ID_FRAME_NAMES}
+        for field in ("instruction", "response")
+    }
+
+
+def replace_placeholders(
+    text: str,
+    cleaning: dict,
+    *,
+    field: str,
+    frame_counts: dict[str, dict[str, int]] | None = None,
+) -> tuple[str | None, list[str], str | None]:
     applied: list[str] = []
     reject_id: str | None = None
-
-    def _sub(match: re.Match[str]) -> str:
-        nonlocal reject_id
+    possessive = "my" if field == "instruction" else "your"
+    counts = frame_counts[field] if frame_counts is not None else None
+    pieces: list[str] = []
+    last = 0
+    for match in PLACEHOLDER_RE.finditer(text):
         name = match.group(1)
         action, value = placeholder_decision(name, cleaning)
         if action == "reject":
             reject_id = value
-            return match.group(0)
+            break
+        pieces.append(text[last : match.start()])
+        prefix = "".join(pieces)
+        phrase = id_style_phrase(value, cleaning)
+        if phrase is not None:
+            prefix, replacement, frame = apply_id_frame(prefix, possessive, phrase)
+            if counts is not None:
+                counts[frame] += 1
+        elif value.lower().startswith("your "):
+            other = value[5:].strip().casefold()
+            the_match = _THE_PREFIX.search(prefix)
+            if the_match:
+                prefix = prefix[: the_match.start()]
+                replacement = f"{possessive} {other}"
+                if counts is not None:
+                    counts["the"] += 1
+            else:
+                replacement = f"{possessive} {other}"
+                if counts is not None:
+                    counts["standalone"] += 1
+        else:
+            replacement = value
         applied.append(placeholder_rule_id(name))
-        return value
-
-    rewritten = PLACEHOLDER_RE.sub(_sub, text)
+        pieces = [prefix, replacement]
+        last = match.end()
     if reject_id is not None:
         return None, applied, reject_id
-    return collapse_ws(rewritten), applied, None
+    pieces.append(text[last:])
+    return collapse_ws("".join(pieces)), applied, None
 
 
 def apply_cleaning(
     instruction: str,
     response: str,
     cleaning: dict,
+    frame_counts: dict[str, dict[str, int]] | None = None,
 ) -> tuple[str, str, list[str], str | None]:
     """Return cleaned instruction/response, applied rule ids, or a reject rule id."""
     applied: list[str] = []
@@ -244,10 +321,14 @@ def apply_cleaning(
                 continue
             return instruction, response, applied, rule_id
         if action == "replace_placeholders":
-            new_inst, inst_rules, reject = replace_placeholders(instruction, cleaning)
+            new_inst, inst_rules, reject = replace_placeholders(
+                instruction, cleaning, field="instruction", frame_counts=frame_counts
+            )
             if reject is not None:
                 return instruction, response, applied, reject
-            new_resp, resp_rules, reject = replace_placeholders(response, cleaning)
+            new_resp, resp_rules, reject = replace_placeholders(
+                response, cleaning, field="response", frame_counts=frame_counts
+            )
             if reject is not None:
                 return instruction, response, applied, reject
             instruction = new_inst or ""
@@ -624,6 +705,59 @@ def get_collator() -> Any:
     return AssistantOnlyCollator(get_tokenizer(), max_length=MAX_LENGTH)
 
 
+def load_frozen_assignment() -> dict[str, dict] | None:
+    """id -> {group_id, split, instruction, response} from the last prepare run."""
+    paths = [PROCESSED_DIR / f"{name}.jsonl" for name in SPLIT_NAMES]
+    if not all(path.exists() for path in paths):
+        return None
+    mapping: dict[str, dict] = {}
+    for name in SPLIT_NAMES:
+        for row in load_jsonl(PROCESSED_DIR / f"{name}.jsonl"):
+            mapping[str(row["id"])] = {
+                "group_id": str(row["group_id"]),
+                "split": name,
+                "instruction": str(row["instruction"]),
+                "response": str(row["response"]),
+            }
+    return mapping
+
+
+def load_frozen_group_lists() -> dict[str, list[str]]:
+    import subprocess
+
+    payload = json.loads(
+        subprocess.check_output(
+            ["git", "show", f"{FROZEN_SPLITS_COMMIT}:data/splits.json"],
+            cwd=ROOT,
+        )
+    )
+    return {name: list(payload[name]["groups"]) for name in SPLIT_NAMES}
+
+
+def intent_stats_from_records(records: list[dict]) -> dict[str, dict]:
+    by_intent: dict[str, list[str]] = defaultdict(list)
+    for rec in records:
+        by_intent[str(rec["intent"])].append(str(rec["group_id"]))
+    stats: dict[str, dict] = {}
+    for intent in sorted(by_intent):
+        gids = by_intent[intent]
+        counts: dict[str, int] = defaultdict(int)
+        for gid in gids:
+            counts[gid] += 1
+        n_rows = len(gids)
+        largest = max(counts.values()) if counts else 0
+        stats[intent] = {
+            "intent": intent,
+            "rows": n_rows,
+            "groups": len(counts),
+            "largest": largest,
+            "largest_share": round(largest / n_rows, 4) if n_rows else 0.0,
+            "near_collapse": bool(n_rows and largest / n_rows >= NEAR_COLLAPSE_SHARE),
+            "collapsed": bool(len(counts) == 1),
+        }
+    return stats
+
+
 def prepare(*, cap_train: int | None = None, collator: Any | None = None) -> dict:
     grouping = load_json(GROUPING_PATH)
     cleaning = load_cleaning()
@@ -634,13 +768,14 @@ def prepare(*, cap_train: int | None = None, collator: Any | None = None) -> dic
 
     raw = load_csv()
     rule_counts: dict[str, int] = defaultdict(int)
+    frame_counts = empty_frame_counts()
     kept: list[dict] = []
     rejected: list[dict] = []
     for rec in raw.to_dict("records"):
         instruction = str(rec["instruction"])
         response = str(rec["response"])
         cleaned_inst, cleaned_resp, applied, reject_id = apply_cleaning(
-            instruction, response, cleaning
+            instruction, response, cleaning, frame_counts=frame_counts
         )
         if reject_id is not None:
             rule_counts[reject_id] += 1
@@ -657,8 +792,8 @@ def prepare(*, cap_train: int | None = None, collator: Any | None = None) -> dic
                 "instruction": cleaned_inst,
                 "response": cleaned_resp,
                 "cleaning": list(dict.fromkeys(applied)),
-                "norm_instruction": normalize(cleaned_inst),
-                "resp_template": response_template(cleaned_resp),
+                "norm_instruction": normalize(instruction),
+                "resp_template": response_template(response),
             }
         )
 
@@ -682,11 +817,56 @@ def prepare(*, cap_train: int | None = None, collator: Any | None = None) -> dic
             print(f"token-count {i}/{len(kept)} overlength={overlength}")
     print(f"cleaned={len(kept)} overlength={overlength} kept={len(token_kept)} rejected={len(rejected)}")
 
-    print(f"embedding {model_id} n={len(token_kept)}")
-    vectors = embed([rec["norm_instruction"] for rec in token_kept], model_id)
-    token_kept, intent_stats = assign_group_ids(token_kept, vectors, grouping)
-    split_groups_map, coverage = split_groups(token_kept, seed=seed)
-    split_of = {gid: name for name, gids in split_groups_map.items() for gid in gids}
+    frozen = load_frozen_assignment()
+    frozen_groups = load_frozen_group_lists()
+    text_changed = {name: 0 for name in SPLIT_NAMES}
+    vectors: np.ndarray | None = None
+    if frozen is not None:
+        kept_ids = {rec["id"] for rec in token_kept}
+        frozen_ids = set(frozen)
+        if kept_ids != frozen_ids:
+            extra = sorted(kept_ids - frozen_ids)
+            missing = sorted(frozen_ids - kept_ids)
+            raise SystemExit(
+                "B1b abort: kept-id set moved versus frozen processed files; "
+                f"extra={extra[:8]} missing={missing[:8]}"
+            )
+        split_of = {}
+        for rec in token_kept:
+            prior = frozen[rec["id"]]
+            rec["group_id"] = prior["group_id"]
+            split_of[rec["group_id"]] = prior["split"]
+            if rec["instruction"] != prior["instruction"] or rec["response"] != prior["response"]:
+                text_changed[prior["split"]] += 1
+        split_groups_map = {name: list(frozen_groups[name]) for name in SPLIT_NAMES}
+        computed_groups: dict[str, set[str]] = {name: set() for name in SPLIT_NAMES}
+        for rec in token_kept:
+            computed_groups[frozen[rec["id"]]["split"]].add(rec["group_id"])
+        for name in SPLIT_NAMES:
+            if computed_groups[name] != set(frozen_groups[name]):
+                raise SystemExit(
+                    f"B1b abort: {name} group set moved versus {FROZEN_SPLITS_COMMIT}"
+                )
+        intent_stats = intent_stats_from_records(token_kept)
+        coverage = [
+            {
+                "intent": intent,
+                "groups": intent_stats[intent]["groups"],
+                "missing_splits": [],
+            }
+            for intent in intent_stats
+        ]
+        print(
+            "grouping pinned to "
+            f"{FROZEN_SPLITS_COMMIT}; text changed "
+            + " ".join(f"{name}={text_changed[name]}" for name in SPLIT_NAMES)
+        )
+    else:
+        print(f"embedding {model_id} n={len(token_kept)}")
+        vectors = embed([rec["norm_instruction"] for rec in token_kept], model_id)
+        token_kept, intent_stats = assign_group_ids(token_kept, vectors, grouping)
+        split_groups_map, coverage = split_groups(token_kept, seed=seed)
+        split_of = {gid: name for name, gids in split_groups_map.items() for gid in gids}
 
     split_rows: dict[str, list[dict]] = {name: [] for name in SPLIT_NAMES}
     for rec in token_kept:
@@ -713,7 +893,11 @@ def prepare(*, cap_train: int | None = None, collator: Any | None = None) -> dic
     SPLITS_PATH.write_text(json.dumps(split_payload, indent=2) + "\n", encoding="utf-8")
 
     cross = intersections(split_rows)
-    nn = nearest_cross_split(token_kept, vectors, split_of, threshold)
+    if vectors is None:
+        prev_audit = load_json(AUDIT_PATH) if AUDIT_PATH.exists() else {}
+        nn = prev_audit.get("nearest_cross_split_cosine", {})
+    else:
+        nn = nearest_cross_split(token_kept, vectors, split_of, threshold)
     near = [s for s in intent_stats.values() if s["near_collapse"]]
     missing_coverage = [c for c in coverage if c["missing_splits"]]
     per_intent_splits: dict[str, dict[str, int]] = defaultdict(lambda: {n: 0 for n in SPLIT_NAMES})
@@ -763,9 +947,13 @@ def prepare(*, cap_train: int | None = None, collator: Any | None = None) -> dic
         "nearest_cross_split_cosine": nn,
         "rejected_rule_ids_present": all("rule_id" in row and row["rule_id"] for row in rejected),
         "residual_risk": RESIDUAL_RISK,
+        "placeholder_frames": frame_counts,
+        "rows_text_changed": text_changed,
+        "grouping_pinned_to": FROZEN_SPLITS_COMMIT if frozen is not None else None,
         "readme_note": (
             "B1 cannot edit README.md. If near_collapse_intents is nonempty, "
-            "G1 must copy those intents and shares into the data/splits section."
+            "G1 must copy those intents and shares into the data/splits section. "
+            "B1b frame counts live in placeholder_frames."
         ),
     }
     AUDIT_PATH.write_text(json.dumps(audit, indent=2) + "\n", encoding="utf-8")
