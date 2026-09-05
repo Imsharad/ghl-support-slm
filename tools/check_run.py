@@ -206,7 +206,8 @@ def main() -> int:
         for item in failures:
             print(f"  - {item}", file=sys.stderr)
         return 1
-    print("\nPASS: run directory is complete and the adapter reloads")
+    reload_note = "" if args.no_generate else " and the adapter reloads"
+    print(f"\nPASS: run directory is complete{reload_note}")
     return 0
 
 
