@@ -52,8 +52,8 @@
     "note": ""
   },
   "E1": {
-    "state": "pending",
-    "note": ""
+    "state": "running",
+    "note": "tools half (merge.py, fetch/check_artifacts.py, manifest schema) dispatched 23:35 IST against base Q8; merge/convert/push waits on D3"
   },
   "E2": {
     "state": "pending",
