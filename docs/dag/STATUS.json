@@ -133,7 +133,7 @@
   },
   "B1b": {
     "state": "done",
-    "note": "d573366 verified 00:38 IST 2026-09-06 by Fable: splits group lists byte-identical, strict ok, 26 tests; 221 train responses keep \"the number your order number\", patch requested in place"
+    "note": "d573366 + 0af0f15 verified 00:40 IST 2026-09-06 by Fable: splits byte-identical to 24ab0d9, strict ok, 26 tests; 30 train responses still \"with number your order number\", generalised number frame requested"
   },
   "G0": {
     "state": "done",
@@ -141,6 +141,6 @@
   },
   "D2L": {
     "state": "running",
-    "note": "opened 00:40 IST 2026-09-06 as Colab insurance; dispatched to Opus"
+    "note": "launched 00:35:47 IST; process gone by 00:37 with no traceback (log ends after model load, resource_tracker shutdown warning); Opus alerted 00:41 IST to relaunch detached"
   }
 }
