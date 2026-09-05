@@ -129,7 +129,7 @@
   },
   "C5": {
     "state": "running",
-    "note": "restarted 00:40 IST 2026-09-06 on B1b text; Sol"
+    "note": "Sol process died at 535/2270 around 00:49 IST (10-min Bash cap shape); raw file intact; Sol told to relaunch detached and resume"
   },
   "B1b": {
     "state": "done",
@@ -141,10 +141,10 @@
   },
   "D2L": {
     "state": "running",
-    "note": "launched 00:35:47 IST; process gone by 00:37 with no traceback (log ends after model load, resource_tracker shutdown warning); Opus alerted 00:41 IST to relaunch detached"
+    "note": "Opus relaunch 00:45:57 died again within 2 min (same shape); Fable launched detached via .scratch/d2l_run.sh at 00:57 IST"
   },
   "C1b": {
-    "state": "running",
-    "note": "opened 00:45 IST 2026-09-06 (owed follow-up from D1 report); dispatched to Grok"
+    "state": "done",
+    "note": "5fe967e verified 00:56 IST 2026-09-06 by Fable: 28 tests, --adapter path with PeftModel and adapter_sha256 per row"
   }
 }
