@@ -125,7 +125,7 @@
   },
   "R-G": {
     "state": "pending",
-    "note": ""
+    "note": "README and links pass done 3d3868c by Fable 00:35 IST 2026-09-07: remote https://github.com/Imsharad/ghl-support-slm (private, pushed by Sonnet at c1a3895), README line 54 and submission.json repo_url filled, fresh-clone cut row and 'What is real' flipped, 27B-class base noted in s2, check_submission handles a private repo via gh and checks the tag on origin; 29 tests pass; check_submission fails only on tag v1 (created at H4 with the Loom fill) and loom_url. Waits on H3 Loom."
   },
   "D0": {
     "state": "done",
