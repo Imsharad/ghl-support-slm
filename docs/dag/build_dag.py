@@ -704,6 +704,7 @@ If you need a change outside these paths, describe it in your report; do not mak
 - No emojis anywhere. IST timestamps, labeled. No secrets in files (HF tokens stay in env).
 - Do not start training, do not touch `eval/challenge.jsonl` after it is sealed, do not read blind keys.
 - Report back in the GoHighLevel-prep thread (root `{THREAD}`) with `@Fable 5.1`: what landed (paths), the verification command output, anything you could not do and why. One message when done or blocked; no acknowledgement messages.
+- Detached jobs (anything you launch with `Popen(start_new_session=True)` or a launcher script that outlives your turn): the launcher script itself must post the finish line to this thread with `buzz messages send --channel 04861c85-e907-4639-9075-7c474cbd8b51 --reply-to {THREAD} --mention c8ab0f4dfbc279dd4d4437a153d595c3a03bf710f1641e36691c888f53ba4c9d`, carrying the exit code and the result line, on both success and failure. Write that line into the script at the same time as the run command. A log file is not a callback, your session will not be awake when the job ends, and a post that mentions only yourself wakes nobody (D2L stalled 58 minutes, D3 stalled four hours on 2026-09-06).
 """
 
 
