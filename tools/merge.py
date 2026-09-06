@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 import torch
+from huggingface_hub import snapshot_download
 from peft import PeftConfig, PeftModel
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -20,6 +21,13 @@ VERSIONS_PATH = ROOT / "configs" / "versions.json"
 PROMPT_PATH = ROOT / "configs" / "prompt.txt"
 DEFAULT_ADAPTER_PATH = ROOT / "artifacts" / "adapter"
 DEFAULT_OUTPUT_PATH = ROOT / "artifacts" / "merged"
+TOKENIZER_FILES = (
+    "tokenizer.json",
+    "tokenizer_config.json",
+    "merges.txt",
+    "vocab.json",
+    "special_tokens_map.json",
+)
 
 
 def parse_args() -> argparse.Namespace:
@@ -99,6 +107,21 @@ def merge(adapter_path: Path, output_path: Path, *, local_files_only: bool) -> N
     try:
         merged.save_pretrained(temporary, safe_serialization=True, max_shard_size="2GB")
         tokenizer.save_pretrained(temporary)
+        # Transformers may rewrite tokenizer_config.json using its current schema.
+        # Preserve the tokenizer files from the exact pinned base snapshot so the
+        # pinned llama.cpp converter sees the same, revision-stable inputs as C3.
+        snapshot = Path(
+            snapshot_download(
+                repo_id,
+                revision=revision,
+                local_files_only=local_files_only,
+                allow_patterns=list(TOKENIZER_FILES),
+            )
+        )
+        for filename in TOKENIZER_FILES:
+            source = snapshot / filename
+            if source.is_file():
+                shutil.copyfile(source, temporary / filename)
         shutil.copyfile(PROMPT_PATH, temporary / "prompt.txt")
         temporary.rename(output_path)
     finally:
