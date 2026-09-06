@@ -64,8 +64,8 @@
     "note": "21b50f2 verified 13:03 IST 2026-09-06 by Fable: both raw files CHECK PASS 54/54 zero errors (base 4 truncated, tuned 2), ids == sealed set, tags ghl-base/ghl-support, sheet 54 items all paired with raw answers, A==base 27/54, no identical pairs, score columns blank, blind-key.json ignored and not committed; sheet opened for shark (H2)"
   },
   "E3": {
-    "state": "pending",
-    "note": ""
+    "state": "done",
+    "note": "Run by Fable at shark's request (not Opus) 17:20 to 17:40 IST. score.py --final --require-complete on the adjudicated sheet: n=54 base 0.296 tuned 0.130 diff -16.67 points ci95 [-33.3, 0.0] base critical 2 tuned critical 8 win/tie/loss 18/7/29 verdict negative. docs/RESULTS.md (headline, provenance disclosure, per-kind/intent, D3 auto-metrics, F1 bench) and docs/FAILURES.md (ch-017 Loom pick, ch-025, ch-001, data-grounded causes). Nothing retuned or reselected. 29 tests pass at f15cac2."
   },
   "F1": {
     "state": "done",
@@ -96,8 +96,8 @@
     "note": "shark approved all 54 cards unchanged 12:50 IST 2026-09-06 (event 467c3229); no edits JSON needed"
   },
   "H2": {
-    "state": "in_progress",
-    "note": "sheet blank until 14:05 IST (unescaped newline in blind.py f-string killed the script); Opus fixed out-of-node in 1054eb7, verified 14:07 IST by Fable: headless render 54 cards + onboarding panel + export button, script parses, blind-key.json aab54626 and blind-sheet.csv 26b38bb6 byte-identical to 21b50f2, key still ignored/uncommitted, 28 tests pass. Reopened for shark; waiting on blind-sheet-scored.csv. Second out-of-node page edit 0176863 (Opus, 16:23 IST): full red-list panel (109 critical lines from the sealed set in 6 families) + why critical excludes pass; verified 16:25 IST by Fable: headless render 54 cards / 6 families / 109 lines, one script block parses, key aab54626 and csv 26b38bb6 still byte-identical, key still ignored/uncommitted, 29 tests pass, no per-item model text on the page. Still waiting on blind-sheet-scored.csv. 16:49 IST: at shark's request Fable ran a Gemini 3.8 Flash first pass over all 54 cards (two passes, A/B swapped; outputs untracked in eval/results/llm-judge/, key never read, nothing unblinded). Pending shark's call: Flash as second opinion beside hand scores (RESULTS.md stays human-scored) or Flash replaces with review of 12 splits + 11 criticals and disclosure. blind-sheet-scored.csv still untouched"
+    "state": "done",
+    "note": "sheet blank until 14:05 IST (unescaped newline in blind.py f-string killed the script); Opus fixed out-of-node in 1054eb7, verified 14:07 IST by Fable: headless render 54 cards + onboarding panel + export button, script parses, blind-key.json aab54626 and blind-sheet.csv 26b38bb6 byte-identical to 21b50f2, key still ignored/uncommitted, 28 tests pass. Reopened for shark; waiting on blind-sheet-scored.csv. Second out-of-node page edit 0176863 (Opus, 16:23 IST): full red-list panel (109 critical lines from the sealed set in 6 families) + why critical excludes pass; verified 16:25 IST by Fable: headless render 54 cards / 6 families / 109 lines, one script block parses, key aab54626 and csv 26b38bb6 still byte-identical, key still ignored/uncommitted, 29 tests pass, no per-item model text on the page. Still waiting on blind-sheet-scored.csv. 16:49 IST: at shark's request Fable ran a Gemini 3.8 Flash first pass over all 54 cards (two passes, A/B swapped; outputs untracked in eval/results/llm-judge/, key never read, nothing unblinded). Pending shark's call: Flash as second opinion beside hand scores (RESULTS.md stays human-scored) or Flash replaces with review of 12 splits + 11 criticals and disclosure. blind-sheet-scored.csv still untouched 17:17 IST: shark chose option 2 and delegated the review ('do everything for me', event b2c364de). Fable read all 54 cards against RUBRIC.md with the Flash reason line beside each, resolved the 12 splits, changed 13 fields on 12 cards vs Flash pass 1 (eval/results/llm-judge/adjudication.json), wrote eval/results/blind-sheet-scored.csv (answers byte-identical to blind-sheet.csv, verified by score.py hash check). Not human-scored; RESULTS.md says so."
   },
   "H3": {
     "state": "pending",
