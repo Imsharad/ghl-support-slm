@@ -36,9 +36,40 @@ system prompt, a 256-token limit, and the existing adapter answers from
 | Merged fp16 vs tuned Q8 in Ollama | 8/10 | None; only `dv-003` and `dv-004` differ in wording |
 
 The fp16 merge therefore did not meet the hoped-for token-exact parity. The
-divergence begins at fp16 merge/save rather than Q8 conversion: Q8 reproduces
-eight of ten merged-fp16 answers exactly. This drift is disclosed rather than
-treated as adapter-only evidence.
+gap is caused by the two dtype paths, not by evidence of an incorrect merge:
+`eval/run.py` loads the pinned base with `dtype="auto"`, whose model config
+selects bfloat16, and applies the LoRA without merging; `tools/merge.py` loads
+the base in float16 before merging and saving it. Those two rounding paths can
+change greedy token choices. Q8 then reproduces eight of ten merged-fp16
+answers exactly, so the quantization step contributes little additional drift.
+
+## Served-model metrics
+
+The served-model comparison uses the same 270 sampled test IDs and 270 distinct
+groups on every side. Base Q8 and tuned Q8 both run through Ollama with greedy
+decoding; the fp16 column is D3's unmerged bfloat16-base-plus-adapter result and
+is included to show export drift. Metrics were generated at 2026-09-06 11:03
+IST with 2,000 paired group-bootstrap resamples, seed 42.
+
+| Metric | Base Q8, Ollama | Tuned adapter, bf16 path (D3) | Tuned Q8, Ollama | Tuned Q8 minus base Q8, 95% CI |
+|---|---:|---:|---:|---|
+| ROUGE-L F1 mean | 0.2153 | 0.3659 | 0.3667 | +0.1515 [+0.1380, +0.1662] |
+| MiniLM cosine mean | 0.6741 | 0.8315 | 0.8288 | +0.1547 [+0.1335, +0.1766] |
+| Placeholder rate | 0.0000 | 0.0000 | 0.0000 | |
+| Truncated rate | 0.1037 | 0.0259 | 0.0222 | |
+| Mean generated tokens | 107.8 | 91.8 | 91.8 | |
+
+The tuned Q8 result retains the bf16 adapter's reference-overlap gain on the
+same serving path as the base, so precision and runtime differences do not
+explain the headline improvement. These automated metrics show that tuning
+learned the Bitext response register; they do not establish correctness or
+safety, which remain the job of the sealed blind evaluation.
+
+Files: `eval/results/base-test-sample-raw.jsonl`,
+`eval/results/tuned-q8-test-raw.jsonl`, and
+`eval/results/tuned-q8-test-auto.json`. The base-side recomputation was written
+to `.scratch/e1b-base-auto.json`; its headline values exactly match the existing
+`eval/results/base-test-sample-auto.json`, which was not modified.
 
 ## Artifact hashes
 
