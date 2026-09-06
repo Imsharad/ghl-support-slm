@@ -1,0 +1,21 @@
+{
+  "challenge_sha256": "76e24d3430715da2bb77cda21f4020882ec4b330ee082733c44e17ee7c0573e6",
+  "challenge_path": "eval/challenge.jsonl",
+  "rows": 54,
+  "draft_sha256": "76e24d3430715da2bb77cda21f4020882ec4b330ee082733c44e17ee7c0573e6",
+  "edits_applied": "none: shark approved all 54 cards unchanged",
+  "approved_by": "shark",
+  "approval_event": "467c3229d4816bf25cfb424cb1d778c74aac4fb9ecba9fcf3ab1e784f74615cb",
+  "approved_at": "2026-09-06 12:50 IST",
+  "sealed_by": "Fable 5.1",
+  "sealed_at": "2026-09-06 12:51 IST",
+  "review_page_commit": "97360b6",
+  "split_sha256": {
+    "train": "307c59da350336a7bc603c5b2221043099df828ef55e1d409095868c4d51c6a7",
+    "val": "b5f2e52d0d327cabd7cf8f83097c634c2f1132f6274e344d1677b05f02b304d3",
+    "test": "ef864aace40157971664c067b12972fddc448ba24729a3a6f8658015faee20af"
+  },
+  "split_seed": 42,
+  "split_threshold": 0.86,
+  "rule": "eval/challenge.jsonl must not change after this seal; eval/blind.py refuses a mismatching hash"
+}
