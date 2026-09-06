@@ -72,12 +72,12 @@
     "note": "5c8e52c verified 23:30 IST by Fable: ollama self-test PASS rerun, 5 tests pass, bench block 30/30"
   },
   "G1": {
-    "state": "pending",
-    "note": "dispatched to Opus 17:50 IST 2026-09-06 with addendum (local-t4 curves, negative verdict, changed provenance disclosure, Hub URL, remote pending, G0 marker lines)"
+    "state": "done",
+    "note": "59a08bc verified 18:25 IST 2026-09-06 by Fable: commit touches README.md + docs/curves.png only, png sha 0683dac4 == train/runs/local-t4/curves.png; markers left: only [PENDING remote] line 54; 52 local refs resolve, 3 remote 200; no chars above U+2100; section 1 leads with the negative verdict, numbers match summary.jsonl (16/54, 7/54, -16.7, [-33.3, 0.0], 2 vs 8, 18/7/29); provenance subsection in s4 and first disclosure in s7; Colab Pro bought-and-unused in s7; 29 tests pass at 210f0eb. Opus's RESULTS.md row-order finding confirmed by direct count (tuned 11/13/9, train 250/43/3632; Rest assured 9 contain, 0 open) and patched by Fable. Stale cells to flip at remote fill / after G2: s7 cut table fresh-clone and Loom rows, 'What is real' last sentence."
   },
   "G2": {
     "state": "pending",
-    "note": ""
+    "note": "dispatched to Sol 18:30 IST 2026-09-06 (G1 done at 59a08bc); no remote yet, clone from the local path; README line 54 [PENDING remote] is known"
   },
   "G3": {
     "state": "done",
