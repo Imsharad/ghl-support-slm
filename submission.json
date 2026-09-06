@@ -1,0 +1,15 @@
+{
+  "repo_url": "[PENDING remote]",
+  "tag": "[PENDING remote]",
+  "hub": {
+    "repo": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4",
+    "adapter": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/tree/main/artifacts/adapter",
+    "merged": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/tree/main/artifacts/merged",
+    "base_gguf": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/blob/main/artifacts/base-q8.gguf",
+    "tuned_gguf": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/blob/main/artifacts/tuned-q8.gguf"
+  },
+  "loom_url": null,
+  "readme": "README.md",
+  "contact": "im.sharad.jain@gmail.com",
+  "submitted_at": null
+}
