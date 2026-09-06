@@ -48,8 +48,8 @@
     "note": "2d43dfc+7542fda verified 00:38 IST 2026-09-06 by Fable: 26 tests, real mps smoke with resume proven; tests/fixtures/train_smoke accepted as D1 path"
   },
   "D3": {
-    "state": "held",
-    "note": "brief rewritten at source (build_dag.py) 04:58 IST after ce04e26 was clobbered by the rebuild; dev scored by rubric on 4 checkpoints x 54 rows; 270-group test sample 21abeb0 accepted; generation held until Sol reports C5 complete (~05:40 IST)"
+    "state": "running",
+    "note": "released 05:42 IST after C5 verified; dev generations on 250/300/400/500 (54 rows each, rubric-judged), then 270 tuned test rows, then --compare, then pytest; ghl-base had a 4-min Ollama keepalive at release, Opus told to ollama stop it first"
   },
   "E1": {
     "state": "running",
@@ -128,8 +128,8 @@
     "note": "affd2e7 verified 00:08 IST 2026-09-06 by Fable: docs/LOCAL_QLORA_PROBE.md, MPS 2.567 s/step, 4.09 GB peak, random-token caveat present, probe procs gone"
   },
   "C5": {
-    "state": "running",
-    "note": "D2L done 03:43 IST, Mac free (47 pct RAM free 04:36 IST); Sol pinged 04:40 IST to resume from 537/2270 rows via .scratch/c5_run.sh detached. Earlier: two detached launches died silently under 15.4/16 GB swap"
+    "state": "done",
+    "note": "820eaf9 verified 05:42 IST 2026-09-06 by Fable: 2270/2270 rows, CHECK PASS, 27 intents in per_intent; ROUGE-L 0.2260, cosine 0.7107, placeholder 0, truncated 0.0767, mean gen_tokens 109.3; 77.1 min generation at 53.6 tok/s; 270 D3 sample ids all present in base-test-raw.jsonl"
   },
   "B1b": {
     "state": "done",
