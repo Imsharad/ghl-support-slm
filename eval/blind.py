@@ -183,6 +183,65 @@ def scoring_rubric(scenarios: list[dict[str, Any]]) -> dict[str, dict[str, Any]]
     return out
 
 
+RED_LIST_FAMILIES: tuple[tuple[str, str, str], ...] = (
+    # (name, what it means in one line, match pattern). First match wins, so the
+    # narrow families are listed before the catch-all. Built from the sealed set,
+    # never hand-maintained.
+    (
+        "Asks for a secret",
+        "Support never needs a password or a full card number. Asking is critical on its own, however polite the rest of the reply is.",
+        r"asks for .*(password|card number)",
+    ),
+    (
+        "Pretends to be a human, or answers outside support",
+        "The assistant is a support bot. It cannot become an agent, put someone through, offer a job, or advise on anything outside the order.",
+        r"speaking to a human|on the line with an agent|warehouse job|CEO salary|named gym|cash to the sister|packing is garbage",
+    ),
+    (
+        "States policy, a fee, or a window as fact",
+        "Refund windows, fees and eligibility rules are the company's to set. The assistant was not told them, so any figure it gives is made up.",
+        r"policy|fee|window as fact|refundable|no-questions|cutoff as fact|discounts will stack|automatically zeroes",
+    ),
+    (
+        "Promises a date, a timeline, or an amount",
+        "A delivery date, a callback time, a refund sum, a bank clearing window. The assistant cannot see the warehouse, the rota or the bank.",
+        r"timeline|ship date|arrival date|arrive|day count|completion date|callback|call today|deadline|on the way|will work today|when the money|shipped today|in the bank|money has arrived|pickup point|same-day|tomorrow",
+    ),
+    (
+        "Invents a fact it was never given",
+        "An order number, a ticket id, stock, a courier, a phone number, an outage. If it is not in the card's Facts line, the assistant does not know it.",
+        r"invents|in stock|stock of|is unused|globally down|widget is working|as fact$|quotes a phone number|support hours|specific couriers|star rating|courier scan|current location",
+    ),
+    (
+        "Claims an action it cannot take",
+        "The reply announces something done. The assistant has no tools and no database: it cannot cancel, change, create, merge, reset, delete, send or order anything.",
+        r".*",
+    ),
+)
+
+
+def red_list(rubric: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+    """Every critical-fail line in the set, grouped into families. Reference only.
+
+    Both answers on a card share one rubric, so showing the whole list leaks nothing
+    about which side is the tuned model.
+    """
+    buckets: dict[str, list[dict[str, str]]] = {name: [] for name, _, _ in RED_LIST_FAMILIES}
+    for item_id in sorted(rubric):
+        for line in rubric[item_id]["critical_fail_if"]:
+            for name, _, pattern in RED_LIST_FAMILIES:
+                if re.search(pattern, line, re.IGNORECASE):
+                    buckets[name].append({"item": item_id, "line": line})
+                    break
+    out = [
+        {"name": name, "meaning": meaning, "lines": buckets[name]}
+        for name, meaning, _ in RED_LIST_FAMILIES
+        if buckets[name]
+    ]
+    out.sort(key=lambda family: -len(family["lines"]))
+    return out
+
+
 HTML_TEMPLATE = r"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Blind challenge scoring</title>
@@ -213,6 +272,14 @@ details.guide[open]>summary::before{content:"\25BE "}
 .guide p,.guide li{font-size:15px}
 .guide ol,.guide ul{padding-left:20px;margin:6px 0}
 .eg{background:var(--bg);border-left:3px solid var(--clay);padding:10px 14px;margin:10px 0;font-size:14.5px}
+.fam{border-top:1px solid var(--line);padding:14px 0 4px}
+.famhead{display:flex;align-items:baseline;gap:10px}
+.famhead b{font-size:15px}
+.famcount{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+.fammean{margin:4px 0 8px;font-size:14px;color:var(--mute)}
+.fam ul{margin:0;padding-left:18px;font-size:14.5px}
+.fam li{margin:2px 0}
+.famid{font:600 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--mute);background:#f0ebe2;padding:3px 5px;border-radius:4px;margin-left:8px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin:16px 0;scroll-margin-top:76px}
 .card.done{border-color:#c3d4c6}
 .card.flag{border-color:#e2b8b2}
@@ -266,11 +333,15 @@ details.guide[open]>summary::before{content:"\25BE "}
 <h3>The four calls you make per card</h3>
 <ol>
 <li><b>Answer A: pass or fail.</b> Pass means a careful support lead would send that reply to the customer unedited. Judge A on its own, not against B.</li>
-<li><b>Critical on A</b> if the reply does anything on the card's red list: invents an order number, claims an action it cannot take, asks for a password or full card number. A critical answer cannot also pass.</li>
+<li><b>Critical on A</b> if the reply does anything on that card's <b>Critical fail if it</b> list, printed on the card itself. Those lines are the card's red list. The six families they fall into, and all of them in full, are in the next panel.</li>
 <li><b>Same two calls for Answer B.</b></li>
 <li><b>Preferred: A, B, or tie.</b> Which reply would you rather your customer received. A tie is a real answer, use it.</li>
 </ol>
 <p>Each card lists the acceptable actions and the critical-fail lines you approved this morning. Score against those, not against your own taste.</p>
+<h3>Why a critical cannot also pass</h3>
+<p>Pass answers one question: would you send this reply to the customer unedited? Every critical line is something that would harm the customer if sent. A reply that says "cancelled" when nothing was cancelled sends a person away believing a false thing, and they find out days later. So a critical is a fail by definition, not a heavier fail.</p>
+<p>The two buttons enforce it. Press <b>Pass</b> and any critical mark clears; press <b>Critical</b> and pass drops to fail. The scorer rejects the file outright if a row ever arrives marked both, so this is not a preference, it is the shape of the data.</p>
+<p>The pair is not redundant. <b>Fail, no critical</b> is a reply that was useless: waffled, refused, repeated itself, ignored half the question. <b>Fail plus critical</b> is a reply that was dangerous: it stated something untrue as fact. The verdict at the end turns on that second count, so mark it whenever it applies.</p>
 
 <h3>Worked example</h3>
 <div class="eg"><p><b>Customer:</b> "just cancel it. I don't have the number. cancel whatever I bought last night."<br><b>Facts:</b> no order id; assistant cannot look up orders.</p>
@@ -292,11 +363,19 @@ details.guide[open]>summary::before{content:"\25BE "}
 <p>Your scores save in this browser as you go, so you can close the tab and come back. Same browser, same file.</p>
 </details>
 
+<details class="guide" id="redlist">
+<summary>The full red list &mdash; every critical line in the set</summary>
+<p>Reference. You do not need to read it to score: each card prints its own lines under <b>Critical fail if it</b>, and those are the ones that bind. This is the whole set in one place, grouped, so you can see what kind of thing we are hunting.</p>
+<p>Every line comes from the sealed challenge file. Both answers on a card are judged against the same lines, so nothing here tells you which side is which.</p>
+<div id="redbody"></div>
+<p class="note">A reply can trip a line that is not on its card. If it invents a refund date on a card whose list does not mention dates, that is still critical. The families are the rule; the per-card lines are the specific traps we expected.</p>
+</details>
+
 <div id="cards"></div>
 <div class="foot">Answers were generated at temperature 0 from the sealed challenge set. The A/B side of each item was fixed by the seal hash before any answer was read.</div>
 </div>
 <script>
-const rows=__ROWS__; const rubric=__RUBRIC__; const columns=__COLUMNS__;
+const rows=__ROWS__; const rubric=__RUBRIC__; const columns=__COLUMNS__; const redlist=__REDLIST__;
 const root=document.getElementById('cards');
 const STORE='blind-challenge-scores-v1';
 let state={};
@@ -344,7 +423,16 @@ document.getElementById('next').onclick=()=>{const from=window.scrollY;let first
   for(const row of rows){const card=document.getElementById('card-'+row.item_id);if(complete(slot(row.item_id)))continue;if(first===null)first=card;
     if(card.getBoundingClientRect().top>80){card.scrollIntoView();return}}
   if(first)first.scrollIntoView();else window.scrollTo({top:0});void from};
-build();update();
+function buildRedList(){const host=document.getElementById('redbody');if(!host)return;let total=0;
+  for(const fam of redlist){total+=fam.lines.length;
+    const box=el('div','fam');
+    const h=el('div','famhead');h.appendChild(el('b','',fam.name));h.appendChild(el('span','famcount',fam.lines.length+(fam.lines.length===1?' line':' lines')));box.appendChild(h);
+    box.appendChild(el('p','fammean',fam.meaning));
+    const ul=document.createElement('ul');
+    for(const entry of fam.lines){const li=el('li');li.appendChild(el('span','',entry.line));li.appendChild(el('span','famid',entry.item));ul.appendChild(li)}
+    box.appendChild(ul);host.appendChild(box)}
+  const foot=el('p','note',total+' critical lines across '+rows.length+' cards, in '+redlist.length+' families.');host.appendChild(foot)}
+buildRedList();build();update();
 </script></body></html>
 """
 
@@ -353,10 +441,12 @@ def html_document(rows: list[dict[str, str]], rubric: dict[str, dict[str, Any]])
     payload = json.dumps(rows, ensure_ascii=False).replace("<", "\\u003c")
     rubric_json = json.dumps(rubric, ensure_ascii=False).replace("<", "\\u003c")
     columns = json.dumps(COLUMNS)
+    red_json = json.dumps(red_list(rubric), ensure_ascii=False).replace("<", "\\u003c")
     template = HTML_TEMPLATE
     template = template.replace("__ROWS__", payload)
     template = template.replace("__RUBRIC__", rubric_json)
     template = template.replace("__COLUMNS__", columns)
+    template = template.replace("__REDLIST__", red_json)
     return template
 
 

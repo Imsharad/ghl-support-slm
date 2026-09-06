@@ -317,3 +317,23 @@ def test_zero_effect_adapter_matches_base_greedy_cpu(tmp_path: Path) -> None:
     assert rows[0]["adapter_dir"] == str(adapter_dir)
     assert rows[0]["adapter_sha256"] == sha
     print(json.dumps(rows[0], ensure_ascii=False)[:500])
+
+
+def test_red_list_partitions_every_critical_line_of_the_sealed_set() -> None:
+    # The reference panel on the sheet is generated, not hand-written. Every
+    # critical-fail line in the sealed set must land in exactly one family, or
+    # the panel quietly stops being the full list it claims to be.
+    scenarios = blind.load_jsonl(Path(__file__).resolve().parents[1] / "eval" / "challenge.jsonl")
+    rubric = blind.scoring_rubric(scenarios)
+    families = blind.red_list(rubric)
+    grouped = [entry["line"] for family in families for entry in family["lines"]]
+    expected = [line for scenario in scenarios for line in scenario["critical_fail_if"]]
+    assert sorted(grouped) == sorted(expected)
+    assert len(grouped) == len(expected)
+    ids = {entry["item"] for family in families for entry in family["lines"]}
+    assert ids == {str(scenario["id"]) for scenario in scenarios}
+
+    page = blind.html_document([], rubric)
+    assert "The full red list" in page
+    for line in expected:
+        assert line in page
