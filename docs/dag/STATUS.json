@@ -84,16 +84,16 @@
     "note": ""
   },
   "H0": {
-    "state": "pending",
-    "note": ""
+    "state": "done",
+    "note": "superseded: no Colab run needed (D2L local training replaced D2); HF token supplied 11:20 IST and Hub push verified 22/22"
   },
   "D2": {
-    "state": "pending",
-    "note": ""
+    "state": "done",
+    "note": "superseded by D2L (local mps run, checkpoint-400); no Colab run"
   },
   "H1": {
-    "state": "pending",
-    "note": ""
+    "state": "done",
+    "note": "shark approved all 54 cards unchanged 12:50 IST 2026-09-06 (event 467c3229); no edits JSON needed"
   },
   "H2": {
     "state": "pending",
@@ -112,12 +112,12 @@
     "note": "22:52 IST"
   },
   "R-B": {
-    "state": "pending",
-    "note": ""
+    "state": "done",
+    "note": "sealed 12:51 IST 2026-09-06 by Fable: eval/challenge.jsonl byte-identical to draft (sha 76e24d34), eval/SEAL.json carries challenge + train/val/test split hashes; blind.py sealed_hash check passes; E2 dispatched to Grok"
   },
   "CP1": {
-    "state": "pending",
-    "note": ""
+    "state": "done",
+    "note": "folded into the D3/E1 verification notes (D2 superseded by D2L); no separate thread post"
   },
   "CP2": {
     "state": "pending",
