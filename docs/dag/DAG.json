@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-06 10:32 IST",
+  "generated_at": "2026-09-06 10:52 IST",
   "channel": "04861c85-e907-4639-9075-7c474cbd8b51",
   "thread": "1981860808e7d870aa450555e16a336f0c9d20b710a0fee98e401b96ebf5c593",
   "share_target": {
@@ -8,13 +8,13 @@
     "grok": 0.25
   },
   "share_actual": {
-    "opus": 0.31,
-    "sol": 0.35,
-    "grok": 0.35
+    "opus": 0.3,
+    "sol": 0.37,
+    "grok": 0.33
   },
   "counts": {
     "opus": 8,
-    "sol": 9,
+    "sol": 10,
     "grok": 9
   },
   "nodes": [
@@ -385,6 +385,22 @@
         "serve/Modelfile",
         "tools/fetch_artifacts.py",
         "tools/check_artifacts.py",
+        "docs/EXPORT.md"
+      ]
+    },
+    {
+      "id": "E1b",
+      "worker": "sol",
+      "phase": "E",
+      "title": "Tuned answers on the 270 test sample through Ollama Q8 (served-model metrics)",
+      "due": "Sun 2026-09-06 13:30",
+      "est": 0.75,
+      "deps": [
+        "E1"
+      ],
+      "paths": [
+        "eval/results/tuned-q8-test-raw.jsonl",
+        "eval/results/tuned-q8-test-auto.json",
         "docs/EXPORT.md"
       ]
     },

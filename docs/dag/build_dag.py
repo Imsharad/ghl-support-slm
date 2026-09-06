@@ -530,6 +530,29 @@ Verify: `uv run python tools/check_artifacts.py --manifest artifacts/manifest.js
 """,
     ),
     dict(
+        id="E1b", worker="sol", phase="E", title="Tuned answers on the 270 test sample through Ollama Q8 (served-model metrics)",
+        due="Sun 2026-09-06 13:30", est=0.75, deps=["E1"],
+        paths=["eval/results/tuned-q8-test-raw.jsonl", "eval/results/tuned-q8-test-auto.json", "docs/EXPORT.md"],
+        brief="""
+D3 compared base Q8 (Ollama) against the tuned adapter in bf16 transformers, so the reported gap is adapter plus precision plus
+serving stack. E1 showed the served `ghl-support` Q8 model matches the bf16 adapter answers on only 2 of 10 dev items. Score the
+model graders will actually run, through the same path as the base, so the README can report one apples-to-apples number.
+
+Do:
+- `uv run python eval/run_sample.py --model tuned --backend ollama --check-complete --output eval/results/tuned-q8-test-raw.jsonl`
+  (270 sampled test ids, `ghl-support`, serial, temperature 0). Nothing else loaded; do not load transformers. Detached launcher
+  with the finish-line post (rule below).
+- `uv run python eval/auto_metrics.py --raw eval/results/base-test-sample-raw.jsonl --refs eval/results/test-sample-refs.jsonl
+  --compare eval/results/tuned-q8-test-raw.jsonl --out .scratch/e1b-base-auto.json --out-compare eval/results/tuned-q8-test-auto.json`.
+  Do not overwrite `eval/results/base-test-sample-auto.json`; confirm the scratch base file carries the same headline numbers.
+- `docs/EXPORT.md`: add a "Served-model metrics" section with the base Q8 vs tuned Q8 table (ROUGE-L, cosine, truncated, mean tokens,
+  deltas with CI) next to D3's bf16 numbers, and one paragraph naming the cause of the E1 parity gap: `eval/run.py` loads the base
+  with `dtype="auto"` (the pinned config says bfloat16) and applies the LoRA unmerged, while `tools/merge.py` merges in float16.
+
+Verify: `--check-complete` PASS on 270 rows, zero errors; `uv run pytest -q`; report the served-model table and the deltas.
+""",
+    ),
+    dict(
         id="E2", worker="grok", phase="E", title="Generate 54 challenge answers x 2 models and the blind sheet",
         due="Mon 2026-09-07 13:30", est=1.0, deps=["E1", "C1", "H1"],
         paths=["eval/results/base-challenge-raw.jsonl", "eval/results/tuned-challenge-raw.jsonl",
