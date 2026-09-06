@@ -80,8 +80,8 @@
     "note": ""
   },
   "G3": {
-    "state": "pending",
-    "note": "reassigned Opus -> Grok and unblocked from G1 (deps now E3/F1/E1) 17:45 IST 2026-09-06 so it runs in parallel; dispatched to Grok 17:50 IST; README no-TODO check expected to fail until G1 lands; repo_url/tag [PENDING remote]"
+    "state": "done",
+    "note": "b531ffb verified 18:10 IST 2026-09-06 by Fable: commit touches only the 4 owned paths; demo.py exit 0 in 21.6 s against live ghl-base/ghl-support (ch-017, ch-025, ch-014 probe, headline verdict negative, ch-017 failure block); check_submission exit 1 failed=4, all expected (repo_url, tag, loom_url, README [PENDING remote] line 54), Hub 5/5 HTTP 200, manifest 22/22; 29 tests pass at b531ffb (247 s). Remaining fills: remote URL + tag (Fable, after shark's go), loom_url after H3."
   },
   "H0": {
     "state": "done",
