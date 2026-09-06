@@ -284,6 +284,7 @@ def _build_zero_effect_adapter(directory: Path) -> Path:
 
 
 def test_zero_effect_adapter_matches_base_greedy_cpu(tmp_path: Path) -> None:
+    pytest.importorskip("peft", reason="install the train extra first")
     adapter_dir = _build_zero_effect_adapter(tmp_path / "zero-lora")
     sha = eval_run.adapter_weights_sha256(adapter_dir)
     assert len(sha) == 64

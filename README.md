@@ -605,6 +605,10 @@ Run these steps from the repository root in dependency order.
    uv run pytest -q
    ```
 
+   Two tests skip at this point: the split-leakage check needs the processed splits from step 2,
+   and the zero-effect adapter check needs `peft` from the train extra in step 3. Rerun
+   `uv run pytest -q` after step 3 for the full suite.
+
 2. Fetch the pinned dataset, build the processed splits, then verify their frozen hashes and
    intersections:
 

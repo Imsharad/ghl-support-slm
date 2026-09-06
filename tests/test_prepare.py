@@ -276,7 +276,10 @@ def test_processed_instructions_have_no_assistant_voice_or_double_article() -> N
                 assert fable_leftover.search(blob) is None, row["id"]
 
 
-@pytest.mark.skipif(not SPLITS_PATH.exists(), reason="run data/prepare.py first")
+@pytest.mark.skipif(
+    not SPLITS_PATH.exists() or not (PROCESSED_DIR / "train.jsonl").exists(),
+    reason="run data/prepare.py first",
+)
 def test_frozen_splits_have_no_group_leakage() -> None:
     splits = json.loads(SPLITS_PATH.read_text(encoding="utf-8"))
     split_rows = {
