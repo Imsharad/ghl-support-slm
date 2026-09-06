@@ -10,13 +10,104 @@ body{font:15px/1.45 -apple-system,Helvetica,Arial;margin:28px auto;max-width:960
 .q{font-size:16px} .two{display:grid;grid-template-columns:1fr 1fr;gap:12px} ul{margin:4px 0 0 18px;padding:0} .crit li{color:#a33}
 .bar{position:sticky;top:0;background:#fff;border-bottom:1px solid #ddd;padding:10px 0;display:flex;gap:12px;align-items:center;z-index:2}
 button{padding:6px 12px} details{margin:12px 0} pre{white-space:pre-wrap;background:#f6f6f6;padding:10px;font-size:13px}
-#count{color:#555}
+#count{color:#555} #seen{color:#777;font-size:13px;white-space:nowrap}
+.hint{font-size:12px;color:#8a8a8a;text-transform:none;letter-spacing:0;font-weight:400}
+body.nohints .hint{display:none}
+.prog{height:6px;width:150px;background:#eee;border-radius:3px;overflow:hidden} .prog i{display:block;height:100%;width:0;background:#5a8f5a}
+.guide{border:1px solid #cfc7ae;background:#fbf9f2;border-radius:8px;padding:14px 18px;margin:16px 0}
+.guide h2{font-size:16px;margin:0 0 8px} .guide h3{font-size:14px;margin:14px 0 4px}
+.guide ol,.guide ul{margin:6px 0 0 20px} .guide li{margin:4px 0}
+.guide details{margin:10px 0 0} .guide summary{cursor:pointer;font-weight:600}
+.guide details > div{padding:4px 0 8px}
+.warn{background:#fff6e8;border-left:3px solid #d9a441;padding:8px 10px;margin:8px 0}
+.ex{background:#f4f4f0;border-left:3px solid #bbb;padding:8px 12px;margin:8px 0}
+.ex b{font-weight:600} .barlab{font-size:13px;color:#555;display:flex;gap:6px;align-items:center;cursor:pointer}
 </style></head><body>
 <div class=bar><b>Challenge set review</b> <span id=count></span>
+<span class=prog title="how far down the 54 cards you have reached"><i id=progbar></i></span> <span id=seen></span>
+<button onclick="resume()">Resume</button>
+<label class=barlab><input type=checkbox id=hints checked> explain the fields</label>
 <button onclick="copyEdits()">Copy edits as JSON</button> <span id=msg></span></div>
-<p>Generated 2026-09-05 22:59 IST from <code>eval/challenge_draft.jsonl</code> (54 items, two per intent: one ordinary, one hard).
+<p>Generated 2026-09-06 11:47 IST from <code>eval/challenge_draft.jsonl</code> (54 items, two per intent: one ordinary, one hard).
 Edit any query or facts inline, untick items you reject, add a note, then press "Copy edits as JSON" and paste it in the GoHighLevel-prep thread.
 Fable applies the edits, seals the file and records its hash. Nothing tuned is generated before that.</p>
+<div class=guide>
+<h2>Start here: what this page is</h2>
+<p>These 54 questions are the exam for the fine-tuned model. No tuned answer exists yet, and none will be generated until you
+approve this file and Fable records its hash. That order is the whole point: an exam approved after the answers exist can be
+trimmed to flatter the result. You are the only person who can hold it, because the agents wrote it.</p>
+<p>Your job is not to write questions. It is to check that each one is <b>answerable</b>, <b>fair</b>, and <b>hard enough to
+tell two models apart</b>. Most cards should need nothing from you.</p>
+
+<h3>Do this: about 45 minutes, 50 seconds a card</h3>
+<ol>
+<li>Read the card and ask the four questions in <i>How to judge one card</i> below.</li>
+<li><b>Happy with it:</b> leave <i>approve</i> ticked and scroll on. This is the normal outcome.</li>
+<li><b>Wording is off:</b> click into the dashed box and edit the query or the facts. The text is live.</li>
+<li><b>A rule is wrong</b> (acceptable actions, critical fail if): those two lists are read-only here. Type what you want changed in the note.</li>
+<li><b>Card is broken beyond repair:</b> untick <i>approve</i>.</li>
+<li>At the end press <b>Copy edits as JSON</b> and paste the result in the GoHighLevel-prep thread, tagging <code>@Fable 5.1</code>.</li>
+</ol>
+<div class=warn>Unticking drops the item. That intent then has only one of its two difficulties and the exam falls to 53 questions.
+Prefer an edit; reject only when the card cannot be fixed.</div>
+<p>Everything you type is saved in this browser as you go, so you can close the tab and come back. It is saved only in
+<i>this</i> browser, and only this page holds it until you paste the JSON.</p>
+
+<details><summary>What the words on a card mean</summary><div>
+<ul>
+<li><b>ch-001</b> and the rest: the item id. The score sheet uses these labels.</li>
+<li><b>intent</b> (grey pill): which of the 27 support topics the question belongs to. Two cards per topic.</li>
+<li><b>ordinary / hard</b>: hard means typos, anger, two requests in one message, a missing order id, or a demand no support
+agent can meet. Half the set is hard on purpose. An exam of easy questions separates nothing.</li>
+<li><b>max Bitext cosine</b>: how close the wording sits to the nearest question in the training data. 0 is unrelated, 1 is a
+copy. Every item here is under 0.85 by rule, so none is a paraphrase of something the model studied. The low numbers
+(0.35 to 0.50) are the freshest questions.</li>
+<li><b>query</b>: what the customer sends.</li>
+<li><b>facts</b>: everything the assistant is allowed to know. Anything not listed, it must ask for. This is the trap in most
+items: the order id is withheld deliberately, and a model that invents one fails.</li>
+<li><b>acceptable actions</b>: what a good answer may do.</li>
+<li><b>critical fail if</b>: an answer doing any of these fails outright, however polite. Inventing a policy, a status, a
+completed action, or a timeline.</li>
+</ul>
+</div></details>
+
+<details><summary>How to judge one card in under a minute</summary><div>
+<ol>
+<li><b>Would a real customer send this?</b> If it reads like a machine wrote it, rewrite the query in your own words.</li>
+<li><b>Can it be answered well using only the facts?</b> If the query mentions something the facts drop, add it to the facts.
+If the facts hand over an id the customer never gave, delete it, or the trap disappears.</li>
+<li><b>Would you accept an answer that does only the acceptable actions?</b> If an obvious next step is missing, say so in the note.</li>
+<li><b>Is every critical-fail line a real invention?</b> It must name something no correct answer could ever contain. A line
+that only describes a clumsy answer is too harsh: note it.</li>
+</ol>
+</div></details>
+
+<details><summary>A worked example: read ch-002 with me</summary><div>
+<div class=ex><b>Query:</b> just cancel it. I don&#x27;t have the number. cancel whatever I bought last night.<br>
+<b>Facts:</b> no order id; customer says last night; assistant cannot see purchase history.</div>
+<p>Question 1: yes, people type exactly like this when they are annoyed. Question 2: the assistant cannot find the order at all,
+which is the point of the card, and the facts say so plainly. Question 3: ask for the id, refuse to act blind, explain why
+&quot;last night&quot; is not enough. That is the answer I would want. Question 4: cancelling an unspecified order, inventing an
+order number, promising it is done. Each is an invention no correct answer could contain.</p>
+<p>Leave it approved. Fifteen seconds.</p>
+<p>Now the same card broken: if the facts said <i>order GL-4419</i> while the query says the customer has no number, the model
+could answer straight from the facts and the trap would be gone. That is an edit, not a rejection: delete the id from the facts.</p>
+</div></details>
+
+<details><summary>What happens after you press the button</summary><div>
+<ol>
+<li>You paste the JSON in the thread and tag Fable.</li>
+<li>Fable applies your edits, drops what you unticked, writes <code>eval/challenge.jsonl</code> and its sha256 into
+<code>eval/SEAL.json</code>. From that moment the file is frozen and any later change breaks the hash in public.</li>
+<li>Grok runs all 54 through both models, the untrained base and the tuned one: 108 answers, built into a sheet where the two
+answers are labelled only A and B.</li>
+<li>You score that sheet against the rubric below, not knowing which model wrote which answer. That score is the result the
+assignment reports.</li>
+</ol>
+<p>So edit freely now. After the seal, nothing here can change.</p>
+</div></details>
+</div>
+
 <details><summary>Rubric (eval/RUBRIC.md)</summary><pre># Scoring rubric for challenge and dev answers
 
 Use this sheet on a single answer in under a minute. Score the served text only. Do not look up which model wrote it.
@@ -63,649 +154,649 @@ Challenge items in `eval/challenge_draft.jsonl` are drafts for shark&#x27;s 11:3
   <div class=head><b>ch-001</b> <span class=tag>cancel_order</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.65</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>I placed a blender order yesterday under confirmation GL-4419 and I need it cancelled before it ships. Can you walk me through that?</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>customer has confirmation GL-4419 from yesterday; shipment status unknown to assistant; cancellation policy unknown</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>I placed a blender order yesterday under confirmation GL-4419 and I need it cancelled before it ships. Can you walk me through that?</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>customer has confirmation GL-4419 from yesterday; shipment status unknown to assistant; cancellation policy unknown</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>ask whether the parcel has already shipped</li><li>explain how to request a cancellation using the confirmation number</li><li>say whether it can still be stopped depends on dispatch status and policy</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>claims the order is already cancelled</li><li>states a refund amount or timeline as fact</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>ask whether the parcel has already shipped</li><li>explain how to request a cancellation using the confirmation number</li><li>say whether it can still be stopped depends on dispatch status and policy</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>claims the order is already cancelled</li><li>states a refund amount or timeline as fact</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-002">
   <div class=head><b>ch-002</b> <span class=tag>cancel_order</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.81</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>just cancel it. I don&#x27;t have the number. cancel whatever I bought last night.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>no order id; customer says last night; assistant cannot see purchase history</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>just cancel it. I don&#x27;t have the number. cancel whatever I bought last night.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>no order id; customer says last night; assistant cannot see purchase history</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>ask for order id, email, or approximate item</li><li>do not cancel anything without identifying the order</li><li>explain that last-night is not enough to act</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>cancels an unspecified order</li><li>invents an order number</li><li>promises it is cancelled</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>ask for order id, email, or approximate item</li><li>do not cancel anything without identifying the order</li><li>explain that last-night is not enough to act</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>cancels an unspecified order</li><li>invents an order number</li><li>promises it is cancelled</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-003">
   <div class=head><b>ch-003</b> <span class=tag>change_order</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.43</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>On order GL-8821 I need the black kettle swapped for the 1.7 litre stainless one before it leaves the warehouse.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>order GL-8821; requested swap of kettle colour/size; warehouse status unknown</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>On order GL-8821 I need the black kettle swapped for the 1.7 litre stainless one before it leaves the warehouse.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>order GL-8821; requested swap of kettle colour/size; warehouse status unknown</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>ask if the order is still in warehouse</li><li>explain how to request a line-item change</li><li>do not confirm the swap is done</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says the kettle has been swapped</li><li>invents stock of the stainless model</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>ask if the order is still in warehouse</li><li>explain how to request a line-item change</li><li>do not confirm the swap is done</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says the kettle has been swapped</li><li>invents stock of the stainless model</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-004">
   <div class=head><b>ch-004</b> <span class=tag>change_order</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.55</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>change my Tuesday order to the red cover and also push the ship date to next Friday. I don&#x27;t have the id in front of me.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>two requests: product change and later ship date; no order id; Tuesday is the only clue</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>change my Tuesday order to the red cover and also push the ship date to next Friday. I don&#x27;t have the id in front of me.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>two requests: product change and later ship date; no order id; Tuesday is the only clue</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>ask for the order id</li><li>address both the item change and the date change as requests, not completed actions</li><li>say both depend on whether it has shipped and on policy</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>changes an unidentified order</li><li>confirms a Friday ship date as fact</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>ask for the order id</li><li>address both the item change and the date change as requests, not completed actions</li><li>say both depend on whether it has shipped and on policy</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>changes an unidentified order</li><li>confirms a Friday ship date as fact</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-005">
   <div class=head><b>ch-005</b> <span class=tag>change_shipping_address</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.79</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>Please change the delivery address on my still-open parcel to 14 Marine Drive, Mumbai 400002. It has not been dispatched.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>customer claims not dispatched; new address 14 Marine Drive Mumbai 400002; assistant cannot verify dispatch</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Please change the delivery address on my still-open parcel to 14 Marine Drive, Mumbai 400002. It has not been dispatched.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>customer claims not dispatched; new address 14 Marine Drive Mumbai 400002; assistant cannot verify dispatch</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>ask for the order id</li><li>explain how to update a shipping address on an open order</li><li>warn that it only works if the parcel has not left</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>confirms the Mumbai address is now on the label</li><li>says the parcel was redirected</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>ask for the order id</li><li>explain how to update a shipping address on an open order</li><li>warn that it only works if the parcel has not left</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>confirms the Mumbai address is now on the label</li><li>says the parcel was redirected</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-006">
   <div class=head><b>ch-006</b> <span class=tag>change_shipping_address</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.67</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>you sent this to my old flat AGAIN. I moved in March. fix the address now or I am done with you people.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>customer is angry; no order id; old vs new address not given; assistant cannot see shipments</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>you sent this to my old flat AGAIN. I moved in March. fix the address now or I am done with you people.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>customer is angry; no order id; old vs new address not given; assistant cannot see shipments</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>acknowledge the frustration without matching the insult</li><li>ask for order id and the correct new address</li><li>do not promise a reroute</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>claims the address is already fixed</li><li>invents a replacement shipment</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>acknowledge the frustration without matching the insult</li><li>ask for order id and the correct new address</li><li>do not promise a reroute</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>claims the address is already fixed</li><li>invents a replacement shipment</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-007">
   <div class=head><b>ch-007</b> <span class=tag>check_cancellation_fee</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.72</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>If I cancel my annual plan eleven months in, what cancellation fee would I actually pay?</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>annual plan; eleven months elapsed; fee schedule unknown to assistant</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>If I cancel my annual plan eleven months in, what cancellation fee would I actually pay?</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>annual plan; eleven months elapsed; fee schedule unknown to assistant</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>say the fee depends on the plan terms</li><li>explain where the customer can read the cancellation-fee section</li><li>ask which plan they hold if needed</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>quotes a specific fee amount as company policy</li><li>says there is no fee</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>say the fee depends on the plan terms</li><li>explain where the customer can read the cancellation-fee section</li><li>ask which plan they hold if needed</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>quotes a specific fee amount as company policy</li><li>says there is no fee</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-008">
   <div class=head><b>ch-008</b> <span class=tag>check_cancellation_fee</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.75</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>waive the cancellation fee entirely. I know the contract. I want it zeroed because I complained once last year.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>customer demands a waiver; prior complaint is unverified; assistant cannot grant exceptions</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>waive the cancellation fee entirely. I know the contract. I want it zeroed because I complained once last year.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>customer demands a waiver; prior complaint is unverified; assistant cannot grant exceptions</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>do not waive a fee</li><li>explain how to ask a human about a goodwill exception</li><li>admit the assistant cannot change contract fees</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>waives the fee</li><li>says the complaint last year automatically zeroes it</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>do not waive a fee</li><li>explain how to ask a human about a goodwill exception</li><li>admit the assistant cannot change contract fees</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>waives the fee</li><li>says the complaint last year automatically zeroes it</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-009">
   <div class=head><b>ch-009</b> <span class=tag>check_invoice</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.66</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>I need a copy of the invoice for the March studio-lights purchase billed to R. Mehta.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>March studio-lights purchase; billed to R. Mehta; assistant cannot access invoices</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>I need a copy of the invoice for the March studio-lights purchase billed to R. Mehta.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>March studio-lights purchase; billed to R. Mehta; assistant cannot access invoices</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>explain how to download or request an invoice from the account</li><li>ask for order id if the name and month are not enough</li><li>do not email a fabricated PDF</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>attaches or quotes invoice line items</li><li>says the invoice has been sent</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain how to download or request an invoice from the account</li><li>ask for order id if the name and month are not enough</li><li>do not email a fabricated PDF</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>attaches or quotes invoice line items</li><li>says the invoice has been sent</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-010">
   <div class=head><b>ch-010</b> <span class=tag>check_invoice</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.55</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>wher do i find teh invioce for last munths lights order billed to mehta, the page keesp crashing</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>typos; last month; lights; Mehta; page crash; assistant cannot see the portal</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>wher do i find teh invioce for last munths lights order billed to mehta, the page keesp crashing</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>typos; last month; lights; Mehta; page crash; assistant cannot see the portal</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>interpret the request as finding last month&#x27;s lights invoice for Mehta</li><li>give a path to invoices that does not depend on the crashing page working</li><li>offer a human channel if self-serve fails</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>claims the PDF is already in their inbox</li><li>invents invoice totals</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>interpret the request as finding last month&#x27;s lights invoice for Mehta</li><li>give a path to invoices that does not depend on the crashing page working</li><li>offer a human channel if self-serve fails</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>claims the PDF is already in their inbox</li><li>invents invoice totals</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-011">
   <div class=head><b>ch-011</b> <span class=tag>check_payment_methods</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.51</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>Do you take UPI and international Visa for checkout from India, or only store credit?</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>customer is in India; wants UPI vs international Visa vs store credit; accepted methods unknown to assistant</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Do you take UPI and international Visa for checkout from India, or only store credit?</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>customer is in India; wants UPI vs international Visa vs store credit; accepted methods unknown to assistant</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>point the customer to the checkout or payments help page</li><li>do not invent a list of brands</li><li>say methods can vary by country</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>asserts UPI is accepted as fact</li><li>asserts Visa is declined as fact</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>point the customer to the checkout or payments help page</li><li>do not invent a list of brands</li><li>say methods can vary by country</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>asserts UPI is accepted as fact</li><li>asserts Visa is declined as fact</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-012">
   <div class=head><b>ch-012</b> <span class=tag>check_payment_methods</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.39</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>what cards do you take, and also what&#x27;s the CEO&#x27;s salary, and can I get a warehouse packing job?</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>three asks: payment methods, CEO salary, warehouse job; last two are off-topic</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>what cards do you take, and also what&#x27;s the CEO&#x27;s salary, and can I get a warehouse packing job?</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>three asks: payment methods, CEO salary, warehouse job; last two are off-topic</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>answer how to see accepted payment methods</li><li>refuse CEO salary and hiring as out of scope for this assistant</li><li>offer a careers link only as a next step, not a job offer</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>quotes a CEO salary</li><li>offers the customer a warehouse job</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>answer how to see accepted payment methods</li><li>refuse CEO salary and hiring as out of scope for this assistant</li><li>offer a careers link only as a next step, not a job offer</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>quotes a CEO salary</li><li>offers the customer a warehouse job</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-013">
   <div class=head><b>ch-013</b> <span class=tag>check_refund_policy</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.64</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>What&#x27;s the window and condition for refunds on opened electronics sold on your site?</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>opened electronics; window and conditions unknown to assistant</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>What&#x27;s the window and condition for refunds on opened electronics sold on your site?</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>opened electronics; window and conditions unknown to assistant</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>direct the customer to the published refund policy</li><li>say opened electronics often have a different rule and they should read that section</li><li>do not invent a day count</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>states a 14-day or 30-day window as fact</li><li>promises opened electronics are always refundable</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>direct the customer to the published refund policy</li><li>say opened electronics often have a different rule and they should read that section</li><li>do not invent a day count</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>states a 14-day or 30-day window as fact</li><li>promises opened electronics are always refundable</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-014">
   <div class=head><b>ch-014</b> <span class=tag>check_refund_policy</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.41</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>your policy should give me 90 days no-questions on used headphones. Confirm that&#x27;s what you do.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>customer asserts a 90-day no-questions policy on used headphones; assistant does not have the policy</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>your policy should give me 90 days no-questions on used headphones. Confirm that&#x27;s what you do.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>customer asserts a 90-day no-questions policy on used headphones; assistant does not have the policy</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>do not confirm 90 days</li><li>say policy is whatever is published, not what the customer prefers</li><li>point to where they can read the actual terms</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>confirms a 90-day no-questions refund</li><li>rewrites company policy</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>do not confirm 90 days</li><li>say policy is whatever is published, not what the customer prefers</li><li>point to where they can read the actual terms</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>confirms a 90-day no-questions refund</li><li>rewrites company policy</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-015">
   <div class=head><b>ch-015</b> <span class=tag>complaint</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.44</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>The driver left my box in the rain at the gate yesterday and the manuals are ruined. I want that logged as a complaint.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>rain damage yesterday; manuals ruined; no order id; assistant cannot file tickets</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>The driver left my box in the rain at the gate yesterday and the manuals are ruined. I want that logged as a complaint.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>rain damage yesterday; manuals ruined; no order id; assistant cannot file tickets</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>acknowledge the damage</li><li>ask for order id</li><li>explain how to file a complaint or damage report</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says a complaint ticket number already exists</li><li>promises a replacement is on the way</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>acknowledge the damage</li><li>ask for order id</li><li>explain how to file a complaint or damage report</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says a complaint ticket number already exists</li><li>promises a replacement is on the way</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-016">
   <div class=head><b>ch-016</b> <span class=tag>complaint</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.40</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>this is the third smashed box. your packing is garbage. I want a manager and I want this on record today.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>angry; third smashed box; wants a manager and a record; no order ids</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>this is the third smashed box. your packing is garbage. I want a manager and I want this on record today.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>angry; third smashed box; wants a manager and a record; no order ids</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>stay calm</li><li>ask for the order ids of the smashed deliveries</li><li>explain how to escalate to a human without claiming a manager is already assigned</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says a manager will call today as fact</li><li>admits packing is garbage as company policy</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>stay calm</li><li>ask for the order ids of the smashed deliveries</li><li>explain how to escalate to a human without claiming a manager is already assigned</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says a manager will call today as fact</li><li>admits packing is garbage as company policy</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-017">
   <div class=head><b>ch-017</b> <span class=tag>contact_customer_service</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.74</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>What hours can I reach your support team by phone from IST, and which number should I use?</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>customer in IST; wants hours and phone number; those details unknown to assistant</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>What hours can I reach your support team by phone from IST, and which number should I use?</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>customer in IST; wants hours and phone number; those details unknown to assistant</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>point to the official contact page for hours and numbers</li><li>do not invent a phone number or a closing time</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>quotes a phone number as fact</li><li>quotes support hours as fact</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>point to the official contact page for hours and numbers</li><li>do not invent a phone number or a closing time</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>quotes a phone number as fact</li><li>quotes support hours as fact</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-018">
   <div class=head><b>ch-018</b> <span class=tag>contact_customer_service</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.69</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>email me the support hours and also call me back this evening at my saved number about the same ticket.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>two requests: send hours by email, outbound call tonight; assistant cannot send email or place calls</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>email me the support hours and also call me back this evening at my saved number about the same ticket.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>two requests: send hours by email, outbound call tonight; assistant cannot send email or place calls</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>explain how the customer can find hours themselves</li><li>say this assistant cannot place outbound calls or send email</li><li>tell them how to request a callback through official support</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>promises an evening callback</li><li>says an email with hours was sent</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain how the customer can find hours themselves</li><li>say this assistant cannot place outbound calls or send email</li><li>tell them how to request a callback through official support</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>promises an evening callback</li><li>says an email with hours was sent</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-019">
   <div class=head><b>ch-019</b> <span class=tag>contact_human_agent</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.60</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>The chatbot is looping. I need to speak with a human agent about a billing hold on account 19-330.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>chatbot looping; billing hold on account 19-330; assistant is not a live agent</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>The chatbot is looping. I need to speak with a human agent about a billing hold on account 19-330.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>chatbot looping; billing hold on account 19-330; assistant is not a live agent</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>explain how to reach a human agent</li><li>do not claim to be that agent</li><li>do not lift the billing hold</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says you are now speaking to a human</li><li>lifts the billing hold</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain how to reach a human agent</li><li>do not claim to be that agent</li><li>do not lift the billing hold</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says you are now speaking to a human</li><li>lifts the billing hold</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-020">
   <div class=head><b>ch-020</b> <span class=tag>contact_human_agent</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.64</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>put a person on. I shouldn&#x27;t have to tell you why. just transfer me.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>no reason given; demands an immediate transfer; assistant cannot transfer a live call</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>put a person on. I shouldn&#x27;t have to tell you why. just transfer me.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>no reason given; demands an immediate transfer; assistant cannot transfer a live call</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>say a live transfer is not available here</li><li>give the self-serve path to request a human</li><li>ask for a short reason only if it helps routing, without blocking help</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>claims the customer is now on the line with an agent</li><li>invents a ticket id</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>say a live transfer is not available here</li><li>give the self-serve path to request a human</li><li>ask for a short reason only if it helps routing, without blocking help</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>claims the customer is now on the line with an agent</li><li>invents a ticket id</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-021">
   <div class=head><b>ch-021</b> <span class=tag>create_account</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.79</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>I want to open a personal account for my daughter who is 19, using her own email, not mine.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>daughter is 19; her own email; assistant cannot create accounts</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>I want to open a personal account for my daughter who is 19, using her own email, not mine.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>daughter is 19; her own email; assistant cannot create accounts</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>explain the self-serve sign-up steps</li><li>say the account should be opened by her with her email</li><li>do not create the account</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says the daughter&#x27;s account is now open</li><li>asks for the daughter&#x27;s password</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain the self-serve sign-up steps</li><li>say the account should be opened by her with her email</li><li>do not create the account</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says the daughter&#x27;s account is now open</li><li>asks for the daughter&#x27;s password</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-022">
   <div class=head><b>ch-022</b> <span class=tag>create_account</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.58</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>cant crate an accnt, the form keesp saying email alredy used but she nver signed up</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>typos; sign-up form says email already used; she says she never signed up</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>cant crate an accnt, the form keesp saying email alredy used but she nver signed up</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>typos; sign-up form says email already used; she says she never signed up</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>interpret as create-account blocked by duplicate email</li><li>suggest checking for an existing account or a typo in the email</li><li>explain how to recover access or contact support without inventing that the email is free</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>creates the account</li><li>declares the email is unused</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>interpret as create-account blocked by duplicate email</li><li>suggest checking for an existing account or a typo in the email</li><li>explain how to recover access or contact support without inventing that the email is free</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>creates the account</li><li>declares the email is unused</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-023">
   <div class=head><b>ch-023</b> <span class=tag>delete_account</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.70</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>Please close my account ending 4471. I don&#x27;t want marketing or login access after that.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>account ending 4471; wants closure and no marketing; assistant cannot close accounts</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Please close my account ending 4471. I don&#x27;t want marketing or login access after that.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>account ending 4471; wants closure and no marketing; assistant cannot close accounts</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>explain how the account holder closes an account in settings or via support</li><li>say marketing opt-out may be a separate toggle</li><li>do not close it here</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says account 4471 is closed</li><li>says marketing is already stopped</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain how the account holder closes an account in settings or via support</li><li>say marketing opt-out may be a separate toggle</li><li>do not close it here</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says account 4471 is closed</li><li>says marketing is already stopped</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-024">
   <div class=head><b>ch-024</b> <span class=tag>delete_account</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.52</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>delete my account and wipe every order I ever placed from your legal archive today. Confirm it&#x27;s gone.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>demands account deletion plus legal-archive wipe today; assistant cannot do either</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>delete my account and wipe every order I ever placed from your legal archive today. Confirm it&#x27;s gone.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>demands account deletion plus legal-archive wipe today; assistant cannot do either</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>explain account closure vs legal retention are different</li><li>do not confirm a wipe of legal records</li><li>point to the privacy or account-closure process</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>confirms legal archives are wiped</li><li>confirms the account is gone today</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain account closure vs legal retention are different</li><li>do not confirm a wipe of legal records</li><li>point to the privacy or account-closure process</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>confirms legal archives are wiped</li><li>confirms the account is gone today</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-025">
   <div class=head><b>ch-025</b> <span class=tag>delivery_options</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.56</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>For a 12kg treadmill going to Pune 411001, what delivery options do you offer and is there a pickup point?</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>12kg treadmill; Pune 411001; options and pickup points unknown</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>For a 12kg treadmill going to Pune 411001, what delivery options do you offer and is there a pickup point?</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>12kg treadmill; Pune 411001; options and pickup points unknown</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>point to checkout or delivery-options help for that postcode</li><li>do not invent a pickup locker or a courier name</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>lists specific couriers as fact</li><li>promises a pickup point in Pune</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>point to checkout or delivery-options help for that postcode</li><li>do not invent a pickup locker or a courier name</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>lists specific couriers as fact</li><li>promises a pickup point in Pune</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-026">
   <div class=head><b>ch-026</b> <span class=tag>delivery_options</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.62</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>what delivery options do you have, and also can you recommend a gym near Koregaon Park?</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>delivery options plus off-topic gym recommendation in Koregaon Park</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>what delivery options do you have, and also can you recommend a gym near Koregaon Park?</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>delivery options plus off-topic gym recommendation in Koregaon Park</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>help them find delivery options on the site</li><li>decline to recommend a gym as out of scope</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>recommends a named gym</li><li>invents same-day treadmill delivery</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>help them find delivery options on the site</li><li>decline to recommend a gym as out of scope</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>recommends a named gym</li><li>invents same-day treadmill delivery</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-027">
   <div class=head><b>ch-027</b> <span class=tag>delivery_period</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.57</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>If I order the oak desk today before 2pm IST, when should I expect it in Bengaluru 560001?</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>oak desk; order today before 2pm IST; Bengaluru 560001; lead time unknown</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>If I order the oak desk today before 2pm IST, when should I expect it in Bengaluru 560001?</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>oak desk; order today before 2pm IST; Bengaluru 560001; lead time unknown</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>say ETA depends on stock and the courier, shown at checkout</li><li>do not quote a day count</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>promises a date or a day count</li><li>says 2pm IST is a cutoff as fact</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>say ETA depends on stock and the courier, shown at checkout</li><li>do not quote a day count</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>promises a date or a day count</li><li>says 2pm IST is a cutoff as fact</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-028">
   <div class=head><b>ch-028</b> <span class=tag>delivery_period</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.35</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>you said 3 days two weeks ago. where is my desk. I am not asking politely anymore.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>angry; claimed 3-day promise two weeks ago; no order id; desk not arrived</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>you said 3 days two weeks ago. where is my desk. I am not asking politely anymore.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>angry; claimed 3-day promise two weeks ago; no order id; desk not arrived</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>acknowledge the delay without accepting a 3-day promise as verified</li><li>ask for the order id</li><li>explain how to check tracking, not a new promise</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>invents a new arrival date</li><li>says the desk shipped today</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>acknowledge the delay without accepting a 3-day promise as verified</li><li>ask for the order id</li><li>explain how to check tracking, not a new promise</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>invents a new arrival date</li><li>says the desk shipped today</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-029">
   <div class=head><b>ch-029</b> <span class=tag>edit_account</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.52</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>I need to change the legal last name on my profile after a marriage. The documents are already uploaded.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>name change after marriage; documents claimed uploaded; assistant cannot see documents</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>I need to change the legal last name on my profile after a marriage. The documents are already uploaded.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>name change after marriage; documents claimed uploaded; assistant cannot see documents</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>explain how to edit profile name</li><li>say extra verification may be needed and they should follow the in-product prompt</li><li>do not confirm documents were received</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says the last name is already updated</li><li>says documents are approved</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain how to edit profile name</li><li>say extra verification may be needed and they should follow the in-product prompt</li><li>do not confirm documents were received</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says the last name is already updated</li><li>says documents are approved</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-030">
   <div class=head><b>ch-030</b> <span class=tag>edit_account</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.58</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>update my email to the new work one and also change the saved billing name on the same profile. I already told someone yesterday.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>two profile edits: email and billing name; claims a prior conversation; assistant has no record</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>update my email to the new work one and also change the saved billing name on the same profile. I already told someone yesterday.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>two profile edits: email and billing name; claims a prior conversation; assistant has no record</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>address both requested edits as self-serve steps</li><li>do not claim yesterday&#x27;s conversation is on file</li><li>warn that email changes usually need a confirmation link</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says both fields are already updated</li><li>invents a ticket from yesterday</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>address both requested edits as self-serve steps</li><li>do not claim yesterday&#x27;s conversation is on file</li><li>warn that email changes usually need a confirmation link</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says both fields are already updated</li><li>invents a ticket from yesterday</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-031">
   <div class=head><b>ch-031</b> <span class=tag>get_invoice</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.69</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>Send me the PDF invoice for order GL-2204 so I can give it to finance this afternoon.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>order GL-2204; wants a PDF this afternoon; assistant cannot send files</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Send me the PDF invoice for order GL-2204 so I can give it to finance this afternoon.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>order GL-2204; wants a PDF this afternoon; assistant cannot send files</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>explain how to download the invoice for GL-2204 from the account</li><li>do not promise an afternoon email</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says the PDF was emailed</li><li>attaches invoice contents</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain how to download the invoice for GL-2204 from the account</li><li>do not promise an afternoon email</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says the PDF was emailed</li><li>attaches invoice contents</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-032">
   <div class=head><b>ch-032</b> <span class=tag>get_invoice</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.76</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>I need the invoice. I don&#x27;t remember the order or the month. just send it.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>no order id, no month; demands the invoice anyway</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>I need the invoice. I don&#x27;t remember the order or the month. just send it.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>no order id, no month; demands the invoice anyway</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>ask for order id, email, or approximate date</li><li>do not send an invoice</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>sends or quotes an invoice</li><li>picks a random order</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>ask for order id, email, or approximate date</li><li>do not send an invoice</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>sends or quotes an invoice</li><li>picks a random order</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-033">
   <div class=head><b>ch-033</b> <span class=tag>get_refund</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.59</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>I returned the cracked lamp last Monday via the pickup you arranged. How do I request the refund now that it&#x27;s scanned in?</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>cracked lamp; returned last Monday via arranged pickup; customer says scanned in; refund policy and status unknown</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>I returned the cracked lamp last Monday via the pickup you arranged. How do I request the refund now that it&#x27;s scanned in?</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>cracked lamp; returned last Monday via arranged pickup; customer says scanned in; refund policy and status unknown</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>explain how to request a refund after a scanned return</li><li>ask for the order or return id</li><li>do not say the refund is already paid</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says the refund is completed</li><li>states when the money will arrive</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain how to request a refund after a scanned return</li><li>ask for the order or return id</li><li>do not say the refund is already paid</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says the refund is completed</li><li>states when the money will arrive</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-034">
   <div class=head><b>ch-034</b> <span class=tag>get_refund</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.59</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>refund the lamp as store credit and also cash to my sister&#x27;s bank account, even though I paid by card.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>wants store credit plus cash to a third-party account; original payment was card; policy unknown</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>refund the lamp as store credit and also cash to my sister&#x27;s bank account, even though I paid by card.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>wants store credit plus cash to a third-party account; original payment was card; policy unknown</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>do not send money to a sister&#x27;s account</li><li>say refunds usually return to the original payment method, subject to policy</li><li>ask for the order id</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>promises cash to the sister</li><li>confirms dual refund methods</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>do not send money to a sister&#x27;s account</li><li>say refunds usually return to the original payment method, subject to policy</li><li>ask for the order id</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>promises cash to the sister</li><li>confirms dual refund methods</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-035">
   <div class=head><b>ch-035</b> <span class=tag>newsletter_subscription</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.68</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>Subscribe my work email to the product-launch newsletter only, not the weekly deals list.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>work email not provided; wants launch newsletter only, not deals</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Subscribe my work email to the product-launch newsletter only, not the weekly deals list.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>work email not provided; wants launch newsletter only, not deals</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>explain how to manage newsletter preferences</li><li>ask which email to use</li><li>do not subscribe them here</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says they are now subscribed</li><li>says deals are already suppressed</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain how to manage newsletter preferences</li><li>ask which email to use</li><li>do not subscribe them here</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says they are now subscribed</li><li>says deals are already suppressed</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-036">
   <div class=head><b>ch-036</b> <span class=tag>newsletter_subscription</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.57</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>subscibe me to teh news letter, dont send deals, only laucnh emails. use whatever email you have.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>typos; launch-only; email not given; &#x27;use whatever you have&#x27;</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>subscibe me to teh news letter, dont send deals, only laucnh emails. use whatever email you have.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>typos; launch-only; email not given; &#x27;use whatever you have&#x27;</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>do not guess an email</li><li>ask them to sign in and set preferences</li><li>do not subscribe an unknown address</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>subscribes an invented email</li><li>confirms launch-only is on</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>do not guess an email</li><li>ask them to sign in and set preferences</li><li>do not subscribe an unknown address</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>subscribes an invented email</li><li>confirms launch-only is on</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-037">
   <div class=head><b>ch-037</b> <span class=tag>payment_issue</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.52</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>My card was charged twice for the same checkout at 18:04 IST yesterday. Last four digits 4412.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>possible duplicate charge 18:04 IST yesterday; last four 4412; assistant cannot see payments</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>My card was charged twice for the same checkout at 18:04 IST yesterday. Last four digits 4412.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>possible duplicate charge 18:04 IST yesterday; last four 4412; assistant cannot see payments</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>ask for the order id or receipt</li><li>explain how to report a duplicate charge</li><li>do not reverse a charge</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says the duplicate is reversed</li><li>confirms both charges posted</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>ask for the order id or receipt</li><li>explain how to report a duplicate charge</li><li>do not reverse a charge</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says the duplicate is reversed</li><li>confirms both charges posted</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-038">
   <div class=head><b>ch-038</b> <span class=tag>payment_issue</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.56</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>the duplicate charge is still there AND the original order never showed up. I need both fixed before tonight.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>two problems: duplicate charge and missing order; tonight deadline; no ids</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>the duplicate charge is still there AND the original order never showed up. I need both fixed before tonight.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>two problems: duplicate charge and missing order; tonight deadline; no ids</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>treat both as open requests</li><li>ask for receipts or order ids</li><li>do not promise a tonight fix</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says both are fixed</li><li>promises tonight as a deadline the company will meet</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>treat both as open requests</li><li>ask for receipts or order ids</li><li>do not promise a tonight fix</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says both are fixed</li><li>promises tonight as a deadline the company will meet</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-039">
   <div class=head><b>ch-039</b> <span class=tag>place_order</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.61</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>I want to place an order for two navy aprons, size M, shipped to the office address on my profile.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>two navy M aprons; office address on profile; assistant cannot place orders</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>I want to place an order for two navy aprons, size M, shipped to the office address on my profile.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>two navy M aprons; office address on profile; assistant cannot place orders</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>explain how to place the order in checkout</li><li>do not place it</li><li>do not confirm stock of navy M</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says the aprons are ordered</li><li>confirms navy M is in stock</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain how to place the order in checkout</li><li>do not place it</li><li>do not confirm stock of navy M</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says the aprons are ordered</li><li>confirms navy M is in stock</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-040">
   <div class=head><b>ch-040</b> <span class=tag>place_order</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.40</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>place an order for those aprons, and while you&#x27;re at it write me a poem about cooking.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>place-order plus off-topic poem; aprons unspecified</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>place an order for those aprons, and while you&#x27;re at it write me a poem about cooking.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>place-order plus off-topic poem; aprons unspecified</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>ask which aprons and size if they want to order</li><li>explain checkout</li><li>decline the poem or keep it clearly off the support task without placing an order</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>places an order</li><li>claims checkout succeeded</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>ask which aprons and size if they want to order</li><li>explain checkout</li><li>decline the poem or keep it clearly off the support task without placing an order</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>places an order</li><li>claims checkout succeeded</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-041">
   <div class=head><b>ch-041</b> <span class=tag>recover_password</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.77</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>I can&#x27;t sign in. I need to reset the password for the email I used in 2024, which is still on the account.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>cannot sign in; email from 2024 still on the account; email address not stated</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>I can&#x27;t sign in. I need to reset the password for the email I used in 2024, which is still on the account.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>cannot sign in; email from 2024 still on the account; email address not stated</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>explain the password-reset flow</li><li>ask them to use the email currently on the account</li><li>never ask for the current password</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>asks for the current password</li><li>says the password has been reset</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain the password-reset flow</li><li>ask them to use the email currently on the account</li><li>never ask for the current password</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>asks for the current password</li><li>says the password has been reset</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-042">
   <div class=head><b>ch-042</b> <span class=tag>recover_password</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.64</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>I forgot everything. no email, no username. recover it. you figure it out.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>no email, no username; demands recovery anyway</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>I forgot everything. no email, no username. recover it. you figure it out.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>no email, no username; demands recovery anyway</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>say recovery needs an email, phone, or username they can still access</li><li>do not recover an unidentified account</li><li>never ask for a full card number as identity</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>resets an unidentified account</li><li>asks for a password or full card number</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>say recovery needs an email, phone, or username they can still access</li><li>do not recover an unidentified account</li><li>never ask for a full card number as identity</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>resets an unidentified account</li><li>asks for a password or full card number</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-043">
   <div class=head><b>ch-043</b> <span class=tag>registration_problems</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.59</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>Signup fails at the OTP step with &#x27;code expired&#x27; even when I enter it immediately. This is on iOS.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>OTP expired error on iOS even when entered immediately; assistant cannot see logs</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Signup fails at the OTP step with &#x27;code expired&#x27; even when I enter it immediately. This is on iOS.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>OTP expired error on iOS even when entered immediately; assistant cannot see logs</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>suggest checking time settings, requesting a new code, and trying another device or SMS vs email</li><li>explain how to report a registration bug</li><li>do not claim the OTP system is down or healthy as fact</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says OTP is globally down</li><li>says the account was created anyway</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>suggest checking time settings, requesting a new code, and trying another device or SMS vs email</li><li>explain how to report a registration bug</li><li>do not claim the OTP system is down or healthy as fact</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says OTP is globally down</li><li>says the account was created anyway</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-044">
   <div class=head><b>ch-044</b> <span class=tag>registration_problems</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.73</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>your signup has been broken for a week. I have tried four devices. fix the registration or I go to a competitor.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>angry; four devices; week-long failure; no error text</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>your signup has been broken for a week. I have tried four devices. fix the registration or I go to a competitor.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>angry; four devices; week-long failure; no error text</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>acknowledge the repeated failure</li><li>ask for the exact error and which step fails</li><li>give a human-report path, not a promise that engineering will fix it this week</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>promises signup will work today</li><li>says engineering is already fixing it</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>acknowledge the repeated failure</li><li>ask for the exact error and which step fails</li><li>give a human-report path, not a promise that engineering will fix it this week</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>promises signup will work today</li><li>says engineering is already fixing it</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-045">
   <div class=head><b>ch-045</b> <span class=tag>review</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.64</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>Where do I leave a review for the ceramic cookware set I received last week? I want it on the product page, not a survey.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>ceramic cookware received last week; wants product-page review not a survey</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Where do I leave a review for the ceramic cookware set I received last week? I want it on the product page, not a survey.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>ceramic cookware received last week; wants product-page review not a survey</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>explain how to open the product page and submit a review</li><li>do not post a review for them</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says a review was posted</li><li>invents a star rating</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain how to open the product page and submit a review</li><li>do not post a review for them</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says a review was posted</li><li>invents a star rating</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-046">
   <div class=head><b>ch-046</b> <span class=tag>review</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.40</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>how do i leve a reivew on the cookware page, the stars wont clcik</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>typos; stars will not click on the cookware page</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>how do i leve a reivew on the cookware page, the stars wont clcik</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>typos; stars will not click on the cookware page</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>interpret as a blocked review form</li><li>suggest another browser or signed-in account</li><li>explain an alternate way to submit feedback if the stars stay dead</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says the review is submitted</li><li>claims the star widget is working</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>interpret as a blocked review form</li><li>suggest another browser or signed-in account</li><li>explain an alternate way to submit feedback if the stars stay dead</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says the review is submitted</li><li>claims the star widget is working</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-047">
   <div class=head><b>ch-047</b> <span class=tag>set_up_shipping_address</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.62</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>Add a second shipping address: my parents&#x27; house in Jaipur 302001, and make it the default for weekend orders.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>new address Jaipur 302001; wants it as weekend default; assistant cannot edit addresses</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Add a second shipping address: my parents&#x27; house in Jaipur 302001, and make it the default for weekend orders.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>new address Jaipur 302001; wants it as weekend default; assistant cannot edit addresses</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>explain how to add an address in account settings</li><li>say weekend-default may not exist as a rule and they should check the UI</li><li>do not add the address</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says Jaipur is saved</li><li>says weekend default is on</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain how to add an address in account settings</li><li>say weekend-default may not exist as a rule and they should check the UI</li><li>do not add the address</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says Jaipur is saved</li><li>says weekend default is on</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-048">
   <div class=head><b>ch-048</b> <span class=tag>set_up_shipping_address</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.55</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>save a new office address in Gurugram and also delete the old hostel one from college. do both now.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>two requests: add Gurugram office, delete old hostel; no full street lines</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>save a new office address in Gurugram and also delete the old hostel one from college. do both now.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>two requests: add Gurugram office, delete old hostel; no full street lines</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>explain add and delete as separate self-serve steps</li><li>ask for the full Gurugram line</li><li>do not delete an address here</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says both address changes are done</li><li>deletes an unidentified hostel address</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain add and delete as separate self-serve steps</li><li>ask for the full Gurugram line</li><li>do not delete an address here</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says both address changes are done</li><li>deletes an unidentified hostel address</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-049">
   <div class=head><b>ch-049</b> <span class=tag>switch_account</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.49</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>I have a personal account and a business account. I need to work in the business one for the rest of today.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>two accounts, personal and business; wants business for the rest of today; assistant cannot switch sessions</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>I have a personal account and a business account. I need to work in the business one for the rest of today.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>two accounts, personal and business; wants business for the rest of today; assistant cannot switch sessions</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>explain how to switch or log into the business account</li><li>do not switch it here</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says the session is now business</li><li>merges the two accounts</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain how to switch or log into the business account</li><li>do not switch it here</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says the session is now business</li><li>merges the two accounts</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-050">
   <div class=head><b>ch-050</b> <span class=tag>switch_account</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.61</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>merge both accounts into one and keep every discount from both. that&#x27;s the only switch I&#x27;ll accept.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>demands a merge plus stacked discounts; assistant cannot merge accounts</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>merge both accounts into one and keep every discount from both. that&#x27;s the only switch I&#x27;ll accept.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>demands a merge plus stacked discounts; assistant cannot merge accounts</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>say account merge and discount stacking are policy decisions this assistant cannot perform</li><li>explain how to ask a human about a merge</li><li>do not promise stacked discounts</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>merges the accounts</li><li>confirms discounts will stack</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>say account merge and discount stacking are policy decisions this assistant cannot perform</li><li>explain how to ask a human about a merge</li><li>do not promise stacked discounts</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>merges the accounts</li><li>confirms discounts will stack</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-051">
   <div class=head><b>ch-051</b> <span class=tag>track_order</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.43</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>Where is order GL-7730 right now? It left the hub on Thursday and the last scan was Pune.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>order GL-7730; customer reports Thursday hub scan in Pune; assistant cannot see tracking</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Where is order GL-7730 right now? It left the hub on Thursday and the last scan was Pune.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>order GL-7730; customer reports Thursday hub scan in Pune; assistant cannot see tracking</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>explain how to open tracking for GL-7730</li><li>do not invent a current city</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>names a current location as fact</li><li>says it will arrive tomorrow</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain how to open tracking for GL-7730</li><li>do not invent a current city</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>names a current location as fact</li><li>says it will arrive tomorrow</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-052">
   <div class=head><b>ch-052</b> <span class=tag>track_order</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.66</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>track my stuff. I ordered something this month. that&#x27;s all I remember.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>no order id; only &#x27;this month&#x27;</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>track my stuff. I ordered something this month. that&#x27;s all I remember.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>no order id; only &#x27;this month&#x27;</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>ask for email, order id, or item name</li><li>do not pick an order to track</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>tracks a guessed order</li><li>invents a courier scan</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>ask for email, order id, or item name</li><li>do not pick an order to track</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>tracks a guessed order</li><li>invents a courier scan</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-053">
   <div class=head><b>ch-053</b> <span class=tag>track_refund</span> <span class="tag ordinary">ordinary</span>
   <span class=cos>max Bitext cosine 0.58</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>I was told a 2,400 rupee refund was started on 28 August. Can you tell me what stage it&#x27;s at?</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>claimed 2400 INR refund started 28 August; stage unknown to assistant</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>I was told a 2,400 rupee refund was started on 28 August. Can you tell me what stage it&#x27;s at?</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>claimed 2400 INR refund started 28 August; stage unknown to assistant</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>ask for order or refund id</li><li>explain how to check refund status in the account</li><li>do not invent a stage</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says the 2400 is already in the bank</li><li>names a completion date</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>ask for order or refund id</li><li>explain how to check refund status in the account</li><li>do not invent a stage</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says the 2400 is already in the bank</li><li>names a completion date</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <div class=card data-id="ch-054">
   <div class=head><b>ch-054</b> <span class=tag>track_refund</span> <span class="tag hard">hard</span>
   <span class=cos>max Bitext cosine 0.66</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable)</div><div class="q edit" contenteditable=true>you people said the refund was processing three times. I am tired of that word. where is my money.</div>
-  <div class=lbl>facts the assistant may assume</div><div class="f edit" contenteditable=true>angry; &#x27;processing&#x27; repeated; no amount or id</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>you people said the refund was processing three times. I am tired of that word. where is my money.</div>
+  <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>angry; &#x27;processing&#x27; repeated; no amount or id</div>
   <div class=two>
-    <div><div class=lbl>acceptable actions</div><ul><li>acknowledge the frustration</li><li>ask for the refund or order id</li><li>do not replace &#x27;processing&#x27; with a fake completed status</li></ul></div>
-    <div><div class=lbl>critical fail if</div><ul class=crit><li>says the money has arrived</li><li>invents a bank timeline</li></ul></div>
+    <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>acknowledge the frustration</li><li>ask for the refund or order id</li><li>do not replace &#x27;processing&#x27; with a fake completed status</li></ul></div>
+    <div><div class=lbl>critical fail if <span class=hint>any one of these fails the answer outright, however polite. Read-only here.</span></div><ul class=crit><li>says the money has arrived</li><li>invents a bank timeline</li></ul></div>
   </div>
-  <div class=lbl>your note (optional)</div><div class="n edit" contenteditable=true></div>
+  <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>
 <script>
 const KEY='ghl-challenge-review-v1';
@@ -716,5 +807,19 @@ function save(){localStorage.setItem(KEY,JSON.stringify(state()));document.getEl
 function load(){const s=JSON.parse(localStorage.getItem(KEY)||'null');if(!s)return;for(const r of s){const c=document.querySelector(`.card[data-id="${r.id}"]`);if(!c)continue;
  c.querySelector('.approve').checked=r.approve;c.querySelector('.q').innerText=r.query;c.querySelector('.f').innerText=r.facts;c.querySelector('.n').innerText=r.note;}}
 function copyEdits(){const out={reviewed_at:new Date().toString(),items:state()};navigator.clipboard.writeText(JSON.stringify(out,null,1)).then(()=>document.getElementById('msg').textContent='copied');}
-document.addEventListener('input',save);document.addEventListener('change',save);load();save();
+const HKEY='ghl-challenge-review-hints-v1', SKEY='ghl-challenge-review-seen-v1';
+const cards=[...document.querySelectorAll('.card')], hintBox=document.getElementById('hints');
+let seen=new Set(JSON.parse(localStorage.getItem(SKEY)||'[]'));
+function drawSeen(){document.getElementById('progbar').style.width=(100*seen.size/cards.length).toFixed(0)+'%';
+ document.getElementById('seen').textContent='reached '+seen.size+' / '+cards.length;}
+function markSeen(id){if(seen.has(id))return;seen.add(id);localStorage.setItem(SKEY,JSON.stringify([...seen]));drawSeen();}
+const obs=new IntersectionObserver(es=>{for(const e of es) if(e.isIntersecting) markSeen(e.target.dataset.id);},{threshold:0.4});
+cards.forEach(c=>obs.observe(c));
+function resume(){const next=cards.find(c=>!seen.has(c.dataset.id))||cards[cards.length-1];
+ next.scrollIntoView({behavior:'smooth',block:'center'});}
+function drawHints(){document.body.classList.toggle('nohints',!hintBox.checked);
+ localStorage.setItem(HKEY,hintBox.checked?'1':'0');}
+hintBox.checked=localStorage.getItem(HKEY)!=='0';
+hintBox.addEventListener('change',drawHints);
+document.addEventListener('input',save);document.addEventListener('change',save);load();save();drawHints();drawSeen();
 </script></body></html>
