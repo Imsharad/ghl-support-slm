@@ -633,6 +633,22 @@ Do:
 - Every number in the README must be traceable to a file in the repo; cite the file next to each table.
 
 Verify: every link in README resolves (run a link checker over local paths and Hub URLs); no TODO strings remain; `uv run pytest -q` passes.
+
+Addendum 2026-09-06 17:45 IST (Fable), facts that changed after this brief was written:
+- Training was the local MPS run `train/runs/local-t4` (D2L), not Colab; there is no `train/runs/main`. Copy `train/runs/local-t4/curves.png`
+  to `docs/curves.png`. Sources: `docs/TRAINING.md`, `docs/SELECTION.md` (checkpoint-400 kept; 400 vs 500 tie), `docs/LOCAL_QLORA_PROBE.md`.
+- The challenge verdict is negative: `docs/RESULTS.md` (base 16/54 pass, tuned 7/54, diff -16.7 points, ci95 [-33.3, 0.0], criticals 2 vs 8,
+  base 29 / tie 7 / tuned 18) and `docs/FAILURES.md` (ch-017, ch-025, ch-001). The README leads with that result in section 1; no softening.
+  Held-out Bitext stays the secondary: ROUGE-L 0.3667 vs 0.2153, cosine 0.8288 vs 0.6741 through served Q8 (E1b), the same as bf16.
+- Provenance disclosure changed: the blind sheet was NOT hand-scored. Gemini 3.8 Flash scored it twice (A/B swapped), Fable adjudicated all 54
+  cards against RUBRIC.md (13 fields changed on 12 cards, `eval/results/llm-judge/adjudication.json`), key read only by score.py after the sheet
+  was final. Shark drafted and approved the challenge set (H1, 12:50 IST). RESULTS.md section 2 carries this sentence; it must survive into
+  README section 4 and section 7 verbatim in meaning.
+- Hub: `https://huggingface.co/seekingtroooth/ghl-support-qlora-t4`, public, 22/22 hashes verified 11:25 IST against `artifacts/manifest.json`.
+  There is no GitHub remote yet; write the repo URL as `[PENDING remote]`, Fable fills it.
+- G0 left `[PENDING ...]` markers at README lines 9, 35, 70, 74, 115-117, 136, 140, 162, 181; every one goes. Line 136's label should read as the
+  E1 tuned bench (`serve/bench_results.json` ghl-support block). Colab Pro was bought but unused; say so in section 7 next to the "do not spend
+  money" line from `docs/ASSIGNMENT.md`.
 """,
     ),
     dict(
@@ -654,8 +670,8 @@ Verify: transcript ends with the curl JSON showing a nonempty answer; deviation 
 """,
     ),
     dict(
-        id="G3", worker="opus", phase="G", title="Loom shot list, demo driver, submission.json, check_submission",
-        due="Tue 2026-09-08 13:30", est=1.0, deps=["G1"],
+        id="G3", worker="grok", phase="G", title="Loom shot list, demo driver, submission.json, check_submission",
+        due="Tue 2026-09-08 13:30", est=1.0, deps=["E3", "F1", "E1"],
         paths=["docs/LOOM_SHOTLIST.md", "serve/demo.py", "submission.json", "tools/check_submission.py"],
         brief="""
 Make the 3-minute recording mechanical for shark at 14:00 IST Tuesday.
@@ -670,6 +686,16 @@ Do:
   README has no TODO. Exit nonzero otherwise.
 
 Verify: `uv run python serve/demo.py` runs end to end; `check_submission.py` fails only on the Loom placeholder.
+
+Addendum 2026-09-06 17:45 IST (Fable): reassigned from Opus to Grok and unblocked from G1 so it runs in parallel with the README.
+- Inputs that exist now: `eval/results/summary.jsonl` (one verdict row), `docs/FAILURES.md` (Loom pick is ch-017), `serve/bench_results.json`,
+  `artifacts/manifest.json`, Hub repo `https://huggingface.co/seekingtroooth/ghl-support-qlora-t4` (22/22 files verified 11:25 IST).
+  Tags: `ghl-base` and `ghl-support`. Demo queries: use the two challenge items ch-017 and ch-025 verbatim from `eval/challenge.jsonl`
+  (sealed; read only) plus one policy probe you pick from the same file.
+- The verdict is negative (base 16/54, tuned 7/54, criticals 2 vs 8). demo.py prints it as it is; do not soften wording.
+- There is no git remote yet. Put `"[PENDING remote]"` in `submission.json` for `repo_url` and `tag`; `check_submission.py` must
+  report those as failures alongside the Loom placeholder until Fable fills them.
+- `check_submission.py`'s README no-TODO check will fail until G1 lands; report it as expected, do not edit README.md.
 """,
     ),
 ]

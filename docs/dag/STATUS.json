@@ -73,7 +73,7 @@
   },
   "G1": {
     "state": "pending",
-    "note": ""
+    "note": "dispatched to Opus 17:50 IST 2026-09-06 with addendum (local-t4 curves, negative verdict, changed provenance disclosure, Hub URL, remote pending, G0 marker lines)"
   },
   "G2": {
     "state": "pending",
@@ -81,7 +81,7 @@
   },
   "G3": {
     "state": "pending",
-    "note": ""
+    "note": "reassigned Opus -> Grok and unblocked from G1 (deps now E3/F1/E1) 17:45 IST 2026-09-06 so it runs in parallel; dispatched to Grok 17:50 IST; README no-TODO check expected to fail until G1 lands; repo_url/tag [PENDING remote]"
   },
   "H0": {
     "state": "done",
@@ -120,8 +120,8 @@
     "note": "folded into the D3/E1 verification notes (D2 superseded by D2L); no separate thread post"
   },
   "CP2": {
-    "state": "pending",
-    "note": ""
+    "state": "done",
+    "note": "Checkpoint 2 posted by Fable 17:32 IST 2026-09-06 in the Flash-scores thread (event 7fc7d781 chain): verdict negative, base 16/54 vs tuned 7/54, criticals 2 vs 8, ci95 [-33.3, 0.0]; provenance LLM-judged with adjudication, not human-scored; nothing retuned. Open ask to shark: GitHub target for the remote (gh is logged in as Imsharad)."
   },
   "R-G": {
     "state": "pending",

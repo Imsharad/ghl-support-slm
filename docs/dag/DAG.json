@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-06 17:28 IST",
+  "generated_at": "2026-09-06 17:39 IST",
   "channel": "04861c85-e907-4639-9075-7c474cbd8b51",
   "thread": "1981860808e7d870aa450555e16a336f0c9d20b710a0fee98e401b96ebf5c593",
   "share_target": {
@@ -8,14 +8,14 @@
     "grok": 0.25
   },
   "share_actual": {
-    "opus": 0.3,
+    "opus": 0.26,
     "sol": 0.37,
-    "grok": 0.33
+    "grok": 0.37
   },
   "counts": {
-    "opus": 8,
+    "opus": 7,
     "sol": 10,
-    "grok": 9
+    "grok": 10
   },
   "nodes": [
     {
@@ -492,13 +492,15 @@
     },
     {
       "id": "G3",
-      "worker": "opus",
+      "worker": "grok",
       "phase": "G",
       "title": "Loom shot list, demo driver, submission.json, check_submission",
       "due": "Tue 2026-09-08 13:30",
       "est": 1.0,
       "deps": [
-        "G1"
+        "E3",
+        "F1",
+        "E1"
       ],
       "paths": [
         "docs/LOOM_SHOTLIST.md",
