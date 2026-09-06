@@ -29,7 +29,7 @@ uv run python serve/inference.py --backend ollama --model ghl-base --self-test
 
 `--self-test` always uses the password-reset demo query. It fails on an empty answer or language asking the customer to disclose a password, full payment-card detail, PIN, CVV, or security code.
 
-After the tuned artifact lands, create `ghl-support` from `serve/Modelfile` and substitute that tag in the commands above.
+The tuned Q8 artifact is available as `ghl-support`, created from `serve/Modelfile`; substitute that tag in the commands above to serve it.
 
 ## Plain Transformers route
 
@@ -51,16 +51,17 @@ The reproducible benchmark command is:
 uv run python serve/bench.py --requests 30 --concurrency 1 --check --model ghl-base
 ```
 
-The script unloads the model with `keep_alive: 0`, times the first cold request, performs five unreported warmups, then sends the first 30 fixed rows of `eval/dev.jsonl` serially. It records every request's prompt tokens, generated tokens, end-to-end latency, Ollama generation rate, and native timing fields. `--check` fails if a request fails, a field is missing, or the requested row count is not present. Results are written to `serve/bench_results.json` under the model tag so the later `ghl-support` run does not replace the base result.
+The script unloads the model with `keep_alive: 0`, times the first cold request, performs five unreported warmups, then sends the first 30 fixed rows of `eval/dev.jsonl` serially. It records every request's prompt tokens, generated tokens, end-to-end latency, Ollama generation rate, and native timing fields. `--check` fails if a request fails, a field is missing, or the requested row count is not present. Results are written to `serve/bench_results.json` under the model tag so one model's run does not replace the other's result.
 
 Generation tokens per second is `eval_count / eval_duration`. Total throughput is generated tokens divided by wall time across the 30 measured serial requests; it includes prompt evaluation and request overhead. Cold load is Ollama's reported `load_duration`; cold first-request latency is separately measured end to end.
 
-## Measured `ghl-base` result
+## Measured Ollama results
 
-Measured 2026-09-05 23:21:44 IST on an Apple M1 Pro with 16 GiB unified memory, macOS arm64, and Ollama 0.24.0:
+Measured on an Apple M1 Pro with 16 GiB unified memory, macOS arm64, and Ollama 0.24.0. The base run was measured 2026-09-05 23:21:44 IST and the tuned run 2026-09-06 13:06:09 IST.
 
 | Model | Requests | Failures | p50 latency | p95 latency | Mean generation | Total throughput | Cold load | Cold first request |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | `ghl-base` Q8_0 | 30 | 0 | 1,348 ms | 3,337 ms | 66.79 tok/s | 60.69 tok/s | 894 ms | 2,892 ms |
+| `ghl-support` Q8_0 | 30 | 0 | 1,428 ms | 2,942 ms | 65.86 tok/s | 60.89 tok/s | 2,296 ms | 4,262 ms |
 
-The measured window generated 2,687 tokens in 44.272 seconds. These are local single-user numbers, not a concurrency or capacity claim. The `ghl-support` row will be added after the tuned Q8 artifact is built.
+The base measured window generated 2,687 tokens in 44.272 seconds; the tuned window generated 2,927 tokens in 48.071 seconds. These are local single-user numbers, not a concurrency or capacity claim.

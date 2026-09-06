@@ -366,5 +366,373 @@
         "error": null
       }
     ]
+  },
+  "ghl-support": {
+    "measured_at": "2026-09-06 13:06:09 IST",
+    "model": "ghl-support",
+    "backend": "ollama",
+    "dev_file": "eval/dev.jsonl",
+    "warmup_requests": 5,
+    "concurrency": 1,
+    "decoding": {
+      "temperature": 0,
+      "top_p": 1.0,
+      "repeat_penalty": 1.0,
+      "max_new_tokens": 256,
+      "num_ctx": 2048,
+      "seed": 42
+    },
+    "ollama_version": "ollama version is 0.24.0",
+    "hardware": {
+      "platform": "macOS-26.5-arm64-arm-64bit",
+      "machine": "arm64",
+      "processor": "Apple M1 Pro",
+      "logical_cpu_count": 10,
+      "memory_bytes": 17179869184
+    },
+    "summary": {
+      "request_count": 30,
+      "failure_count": 0,
+      "p50_end_to_end_ms": 1428.14,
+      "p95_end_to_end_ms": 2942.103,
+      "mean_generation_tokens_s": 65.855,
+      "total_generated_tokens": 2927,
+      "measured_wall_seconds": 48.071,
+      "total_tokens_per_wall_second": 60.889,
+      "cold_load_ms": 2296.166,
+      "cold_first_request_ms": 4261.804
+    },
+    "requests": [
+      {
+        "id": "dv-001",
+        "prompt_tokens": 86,
+        "generated_tokens": 114,
+        "end_to_end_ms": 1860.449,
+        "generation_tokens_s": 65.745,
+        "load_ms": 56.349,
+        "prompt_eval_ms": 54.747,
+        "generation_ms": 1733.963,
+        "error": null
+      },
+      {
+        "id": "dv-002",
+        "prompt_tokens": 77,
+        "generated_tokens": 86,
+        "end_to_end_ms": 1430.971,
+        "generation_tokens_s": 65.613,
+        "load_ms": 57.245,
+        "prompt_eval_ms": 43.116,
+        "generation_ms": 1310.721,
+        "error": null
+      },
+      {
+        "id": "dv-003",
+        "prompt_tokens": 79,
+        "generated_tokens": 89,
+        "end_to_end_ms": 1502.914,
+        "generation_tokens_s": 65.35,
+        "load_ms": 82.979,
+        "prompt_eval_ms": 41.891,
+        "generation_ms": 1361.894,
+        "error": null
+      },
+      {
+        "id": "dv-004",
+        "prompt_tokens": 87,
+        "generated_tokens": 63,
+        "end_to_end_ms": 1075.236,
+        "generation_tokens_s": 66.327,
+        "load_ms": 56.855,
+        "prompt_eval_ms": 57.25,
+        "generation_ms": 949.835,
+        "error": null
+      },
+      {
+        "id": "dv-005",
+        "prompt_tokens": 86,
+        "generated_tokens": 86,
+        "end_to_end_ms": 1425.31,
+        "generation_tokens_s": 65.942,
+        "load_ms": 56.341,
+        "prompt_eval_ms": 51.746,
+        "generation_ms": 1304.167,
+        "error": null
+      },
+      {
+        "id": "dv-006",
+        "prompt_tokens": 89,
+        "generated_tokens": 64,
+        "end_to_end_ms": 1093.594,
+        "generation_tokens_s": 66.105,
+        "load_ms": 57.441,
+        "prompt_eval_ms": 57.179,
+        "generation_ms": 968.162,
+        "error": null
+      },
+      {
+        "id": "dv-007",
+        "prompt_tokens": 79,
+        "generated_tokens": 110,
+        "end_to_end_ms": 1784.98,
+        "generation_tokens_s": 65.769,
+        "load_ms": 55.928,
+        "prompt_eval_ms": 41.84,
+        "generation_ms": 1672.519,
+        "error": null
+      },
+      {
+        "id": "dv-008",
+        "prompt_tokens": 78,
+        "generated_tokens": 54,
+        "end_to_end_ms": 919.476,
+        "generation_tokens_s": 66.353,
+        "load_ms": 57.197,
+        "prompt_eval_ms": 39.786,
+        "generation_ms": 813.826,
+        "error": null
+      },
+      {
+        "id": "dv-009",
+        "prompt_tokens": 76,
+        "generated_tokens": 62,
+        "end_to_end_ms": 1046.75,
+        "generation_tokens_s": 66.199,
+        "load_ms": 57.354,
+        "prompt_eval_ms": 42.993,
+        "generation_ms": 936.57,
+        "error": null
+      },
+      {
+        "id": "dv-010",
+        "prompt_tokens": 74,
+        "generated_tokens": 72,
+        "end_to_end_ms": 1198.957,
+        "generation_tokens_s": 65.989,
+        "load_ms": 57.355,
+        "prompt_eval_ms": 39.741,
+        "generation_ms": 1091.099,
+        "error": null
+      },
+      {
+        "id": "dv-011",
+        "prompt_tokens": 80,
+        "generated_tokens": 131,
+        "end_to_end_ms": 2153.466,
+        "generation_tokens_s": 64.576,
+        "load_ms": 57.082,
+        "prompt_eval_ms": 44.458,
+        "generation_ms": 2028.624,
+        "error": null
+      },
+      {
+        "id": "dv-012",
+        "prompt_tokens": 75,
+        "generated_tokens": 65,
+        "end_to_end_ms": 1096.169,
+        "generation_tokens_s": 66.268,
+        "load_ms": 56.449,
+        "prompt_eval_ms": 42.632,
+        "generation_ms": 980.869,
+        "error": null
+      },
+      {
+        "id": "dv-013",
+        "prompt_tokens": 74,
+        "generated_tokens": 110,
+        "end_to_end_ms": 1792.318,
+        "generation_tokens_s": 65.852,
+        "load_ms": 66.988,
+        "prompt_eval_ms": 39.489,
+        "generation_ms": 1670.414,
+        "error": null
+      },
+      {
+        "id": "dv-014",
+        "prompt_tokens": 75,
+        "generated_tokens": 227,
+        "end_to_end_ms": 3599.915,
+        "generation_tokens_s": 65.427,
+        "load_ms": 58.218,
+        "prompt_eval_ms": 44.131,
+        "generation_ms": 3469.523,
+        "error": null
+      },
+      {
+        "id": "dv-015",
+        "prompt_tokens": 81,
+        "generated_tokens": 122,
+        "end_to_end_ms": 1970.272,
+        "generation_tokens_s": 65.704,
+        "load_ms": 56.918,
+        "prompt_eval_ms": 40.244,
+        "generation_ms": 1856.822,
+        "error": null
+      },
+      {
+        "id": "dv-016",
+        "prompt_tokens": 76,
+        "generated_tokens": 88,
+        "end_to_end_ms": 1445.772,
+        "generation_tokens_s": 66.016,
+        "load_ms": 56.752,
+        "prompt_eval_ms": 43.628,
+        "generation_ms": 1333.018,
+        "error": null
+      },
+      {
+        "id": "dv-017",
+        "prompt_tokens": 79,
+        "generated_tokens": 141,
+        "end_to_end_ms": 2266.542,
+        "generation_tokens_s": 65.564,
+        "load_ms": 57.863,
+        "prompt_eval_ms": 40.048,
+        "generation_ms": 2150.563,
+        "error": null
+      },
+      {
+        "id": "dv-018",
+        "prompt_tokens": 73,
+        "generated_tokens": 53,
+        "end_to_end_ms": 905.487,
+        "generation_tokens_s": 66.382,
+        "load_ms": 57.223,
+        "prompt_eval_ms": 40.617,
+        "generation_ms": 798.409,
+        "error": null
+      },
+      {
+        "id": "dv-019",
+        "prompt_tokens": 83,
+        "generated_tokens": 152,
+        "end_to_end_ms": 2439.759,
+        "generation_tokens_s": 65.492,
+        "load_ms": 56.54,
+        "prompt_eval_ms": 42.217,
+        "generation_ms": 2320.901,
+        "error": null
+      },
+      {
+        "id": "dv-020",
+        "prompt_tokens": 73,
+        "generated_tokens": 78,
+        "end_to_end_ms": 1296.003,
+        "generation_tokens_s": 65.943,
+        "load_ms": 57.922,
+        "prompt_eval_ms": 41.932,
+        "generation_ms": 1182.839,
+        "error": null
+      },
+      {
+        "id": "dv-021",
+        "prompt_tokens": 76,
+        "generated_tokens": 132,
+        "end_to_end_ms": 2143.808,
+        "generation_tokens_s": 65.152,
+        "load_ms": 58.275,
+        "prompt_eval_ms": 39.528,
+        "generation_ms": 2026.023,
+        "error": null
+      },
+      {
+        "id": "dv-022",
+        "prompt_tokens": 73,
+        "generated_tokens": 75,
+        "end_to_end_ms": 1255.518,
+        "generation_tokens_s": 65.801,
+        "load_ms": 58.436,
+        "prompt_eval_ms": 40.16,
+        "generation_ms": 1139.794,
+        "error": null
+      },
+      {
+        "id": "dv-023",
+        "prompt_tokens": 83,
+        "generated_tokens": 59,
+        "end_to_end_ms": 996.115,
+        "generation_tokens_s": 66.375,
+        "load_ms": 56.75,
+        "prompt_eval_ms": 40.219,
+        "generation_ms": 888.884,
+        "error": null
+      },
+      {
+        "id": "dv-024",
+        "prompt_tokens": 77,
+        "generated_tokens": 88,
+        "end_to_end_ms": 1452.428,
+        "generation_tokens_s": 65.735,
+        "load_ms": 56.69,
+        "prompt_eval_ms": 44.04,
+        "generation_ms": 1338.717,
+        "error": null
+      },
+      {
+        "id": "dv-025",
+        "prompt_tokens": 80,
+        "generated_tokens": 211,
+        "end_to_end_ms": 3353.112,
+        "generation_tokens_s": 65.378,
+        "load_ms": 58.045,
+        "prompt_eval_ms": 41.762,
+        "generation_ms": 3227.399,
+        "error": null
+      },
+      {
+        "id": "dv-026",
+        "prompt_tokens": 74,
+        "generated_tokens": 75,
+        "end_to_end_ms": 1250.309,
+        "generation_tokens_s": 66.016,
+        "load_ms": 57.262,
+        "prompt_eval_ms": 44.573,
+        "generation_ms": 1136.084,
+        "error": null
+      },
+      {
+        "id": "dv-027",
+        "prompt_tokens": 80,
+        "generated_tokens": 38,
+        "end_to_end_ms": 676.814,
+        "generation_tokens_s": 67.181,
+        "load_ms": 58.382,
+        "prompt_eval_ms": 44.319,
+        "generation_ms": 565.636,
+        "error": null
+      },
+      {
+        "id": "dv-028",
+        "prompt_tokens": 73,
+        "generated_tokens": 80,
+        "end_to_end_ms": 1321.919,
+        "generation_tokens_s": 65.995,
+        "load_ms": 55.955,
+        "prompt_eval_ms": 41.442,
+        "generation_ms": 1212.211,
+        "error": null
+      },
+      {
+        "id": "dv-029",
+        "prompt_tokens": 77,
+        "generated_tokens": 135,
+        "end_to_end_ms": 2185.7,
+        "generation_tokens_s": 65.462,
+        "load_ms": 66.843,
+        "prompt_eval_ms": 39.678,
+        "generation_ms": 2062.25,
+        "error": null
+      },
+      {
+        "id": "dv-030",
+        "prompt_tokens": 76,
+        "generated_tokens": 67,
+        "end_to_end_ms": 1129.579,
+        "generation_tokens_s": 65.94,
+        "load_ms": 57.969,
+        "prompt_eval_ms": 42.66,
+        "generation_ms": 1016.073,
+        "error": null
+      }
+    ]
   }
 }
