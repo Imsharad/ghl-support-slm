@@ -51,7 +51,7 @@ train:
   checkpoint_fractions: [0.5, 1.0]  # mid-epoch and end-of-epoch adapters for the dev comparison
 
 hub:
-  repo_id: sharadja/ghl-support-qlora
+  repo_id: seekingtroooth/ghl-support-qlora
   private: true
   push_checkpoints: true          # needs HF_TOKEN in the environment; skipped with a warning if unset
 

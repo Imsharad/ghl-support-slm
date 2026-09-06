@@ -51,7 +51,7 @@ train:
   checkpoint_fractions: [0.5, 1.0]
 
 hub:
-  repo_id: sharadja/ghl-support-qlora-t4
+  repo_id: seekingtroooth/ghl-support-qlora-t4
   private: true
   push_checkpoints: true
 

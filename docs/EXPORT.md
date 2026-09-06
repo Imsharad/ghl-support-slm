@@ -85,16 +85,16 @@ URLs are in `artifacts/manifest.json`.
 ## Hub upload
 
 The local export is complete, but `HF_TOKEN` was not present at export time, so
-the URLs in the manifest remain expected destinations until the owner runs:
+the URLs in the manifest remain expected destinations until the owner runs the commands below. The Hub namespace is `seekingtroooth`, the account that owns the write token; a `sharadja` namespace does not exist on the Hub. Never paste the token into this file or any tracked file; keep it in the environment or in `hf auth login`:
 
 ```sh
 export HF_TOKEN='<write token>'
-uv run hf upload sharadja/ghl-support-qlora-t4 artifacts/adapter artifacts/adapter --no-private --token "$HF_TOKEN" --commit-message 'Upload selected adapter'
-uv run hf upload sharadja/ghl-support-qlora-t4 artifacts/merged artifacts/merged --token "$HF_TOKEN" --commit-message 'Upload merged fp16 model'
-uv run hf upload sharadja/ghl-support-qlora-t4 artifacts/base-q8.gguf artifacts/base-q8.gguf --token "$HF_TOKEN" --commit-message 'Upload base Q8 GGUF'
-uv run hf upload sharadja/ghl-support-qlora-t4 artifacts/tuned-q8.gguf artifacts/tuned-q8.gguf --token "$HF_TOKEN" --commit-message 'Upload tuned Q8 GGUF'
-uv run hf upload sharadja/ghl-support-qlora-t4 artifacts/manifest.json artifacts/manifest.json --token "$HF_TOKEN" --commit-message 'Upload artifact manifest'
-uv run hf repos settings sharadja/ghl-support-qlora-t4 --public --token "$HF_TOKEN"
+uv run hf upload seekingtroooth/ghl-support-qlora-t4 artifacts/adapter artifacts/adapter --no-private --token "$HF_TOKEN" --commit-message 'Upload selected adapter'
+uv run hf upload seekingtroooth/ghl-support-qlora-t4 artifacts/merged artifacts/merged --token "$HF_TOKEN" --commit-message 'Upload merged fp16 model'
+uv run hf upload seekingtroooth/ghl-support-qlora-t4 artifacts/base-q8.gguf artifacts/base-q8.gguf --token "$HF_TOKEN" --commit-message 'Upload base Q8 GGUF'
+uv run hf upload seekingtroooth/ghl-support-qlora-t4 artifacts/tuned-q8.gguf artifacts/tuned-q8.gguf --token "$HF_TOKEN" --commit-message 'Upload tuned Q8 GGUF'
+uv run hf upload seekingtroooth/ghl-support-qlora-t4 artifacts/manifest.json artifacts/manifest.json --token "$HF_TOKEN" --commit-message 'Upload artifact manifest'
+uv run hf repos settings seekingtroooth/ghl-support-qlora-t4 --public --token "$HF_TOKEN"
 ```
 
 After upload, verify from a clean target directory with
