@@ -75,7 +75,7 @@ Counts from `eval/results/*-challenge-raw.jsonl` and `data/processed/train.jsonl
 | | base answers (54) | tuned answers (54) | training split (17,701 rows) |
 |---|---:|---:|---:|
 | admits a missing fact ("I don't have access", "I'm not able to", "I can't") | 17 | 0 | 24 |
-| opens with a Bitext template ("I'm on it!", "I'm on the same wavelength", "Rest assured") | 0 | 13 + 11 + 9 | 250 + 43 + 3,632 |
+| uses a Bitext template phrase ("I'm on it", "I'm on the same wavelength", "Rest assured"; the first two as openers, the third anywhere in the answer) | 0 | 11 + 13 + 9 | 250 + 43 + 3,632 |
 | refuses outright ("I can't assist with that") | 5 | 0 | 0 |
 
 The training data has almost no rows in which the assistant says it does not know something (24 of 17,701; 17 of the 8,000 rows the T4 config trains on). It has thousands of confident first-person company sentences. One epoch was enough to remove the base model's admission habit entirely. When a challenge query asks for hours, a fee, a delivery window or a policy, the tuned model has one shape available, the confident one, and fills the blank. `docs/FAILURES.md` walks through three cases with the intent counts behind each.
