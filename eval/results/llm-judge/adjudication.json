@@ -1,0 +1,151 @@
+{
+ "rule": "RUBRIC.md as written; splits resolved and consistent verdicts overridden only with a rubric reason",
+ "adjudicated": {
+  "ch-006": {
+   "preferred": "B",
+   "note": "both promise a fix on the address alone; A also promises delivery, B does not"
+  },
+  "ch-008": {
+   "pass_A": true,
+   "note": "A refuses the waiver, admits it cannot change fees, gives the human path: all three acceptable actions"
+  },
+  "ch-012": {
+   "pass_B": true,
+   "note": "B refuses salary and hiring, points to website and job boards; A invents a CEO salary and open jobs"
+  },
+  "ch-013": {
+   "pass_B": true,
+   "preferred": "B",
+   "note": "B admits it lacks the policy and points to the store terms; 30 days is given as an example, not as fact. A asks for an order number on a policy question"
+  },
+  "ch-014": {
+   "pass_A": true,
+   "note": "A does not confirm 90 days and points to the published terms; B confirms the invented policy"
+  },
+  "ch-017": {
+   "pass_A": true,
+   "note": "A admits it has no hours or number and points to the Contact Us page; tone is off (AI language model) but content is right. B invents hours and numbers"
+  },
+  "ch-023": {
+   "preferred": "A",
+   "note": "both promise closure after identity details and neither gives the self-serve path; A is coherent, B carries a placeholder artifact (ending your account number)"
+  },
+  "ch-037": {
+   "preferred": "tie",
+   "note": "A asks a confusing question and promises to investigate; B gives bank-dispute steps but tells the customer to contact the merchant"
+  },
+  "ch-039": {
+   "critical_A": false,
+   "note": "\"Thank you for your order!\" is a slip, the next sentence still asks for details to place it; not a claim the order exists. Both promise to place the order"
+  },
+  "ch-040": {
+   "pass_A": true,
+   "note": "A explains checkout and keeps the poem off the support task, which the card allows; poem is truncated. B refuses everything"
+  },
+  "ch-047": {
+   "pass_B": false,
+   "note": "B fills in a weekend-default toggle the card says may not exist (RUBRIC step 6); A tells the customer to find a Jaipur address that is not saved"
+  },
+  "ch-048": {
+   "preferred": "A",
+   "note": "A asks for the Gurugram line, but promises to access the account and delete; B refuses outright"
+  },
+  "ch-005": {
+   "critical_A": false,
+   "note": "A sends an undispatched parcel to the courier: wrong guidance, not an invented company policy or status; plain fail. B asks for the id and promises the update"
+  },
+  "ch-007": {
+   "pass_A": true,
+   "note": "A says the fee depends on the contract terms and where to ask; B promises a lookup it cannot do"
+  },
+  "ch-033": {
+   "pass_B": true,
+   "note": "B lists what to give support and how to follow up, same shape as ch-001 A; \"usually a few days\" is about a reply, not the money. A only says contact support"
+  },
+  "ch-053": {
+   "pass_A": true,
+   "preferred": "A",
+   "note": "A asks for the order number, the listed acceptable action, and invents no stage; B admits but gives no path"
+  }
+ },
+ "changes_vs_pass1": [
+  [
+   "ch-005",
+   "critical_A",
+   true,
+   false
+  ],
+  [
+   "ch-006",
+   "preferred",
+   "tie",
+   "B"
+  ],
+  [
+   "ch-007",
+   "pass_A",
+   false,
+   true
+  ],
+  [
+   "ch-008",
+   "pass_A",
+   false,
+   true
+  ],
+  [
+   "ch-012",
+   "pass_B",
+   false,
+   true
+  ],
+  [
+   "ch-013",
+   "pass_B",
+   false,
+   true
+  ],
+  [
+   "ch-013",
+   "preferred",
+   "A",
+   "B"
+  ],
+  [
+   "ch-033",
+   "pass_B",
+   false,
+   true
+  ],
+  [
+   "ch-037",
+   "preferred",
+   "A",
+   "tie"
+  ],
+  [
+   "ch-040",
+   "pass_A",
+   false,
+   true
+  ],
+  [
+   "ch-047",
+   "pass_B",
+   true,
+   false
+  ],
+  [
+   "ch-053",
+   "pass_A",
+   false,
+   true
+  ],
+  [
+   "ch-053",
+   "preferred",
+   "B",
+   "A"
+  ]
+ ]
+}
