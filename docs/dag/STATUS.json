@@ -152,7 +152,7 @@
     "note": "5fe967e verified 00:56 IST 2026-09-06 by Fable: 28 tests, --adapter path with PeftModel and adapter_sha256 per row"
   },
   "F1b": {
-    "state": "pending",
-    "note": "added 13:05 IST 2026-09-06 by Fable, dispatched to Sol: bench.py --model ghl-support, add block to serve/bench_results.json, fill SERVING.md table"
+    "state": "done",
+    "note": "5e553b7 verified 13:12 IST 2026-09-06 by Fable: ghl-support block 30 req 0 fail, same 30 dev ids and decoding as base, p50 1428 ms (+6.0%), 65.86 tok/s (-1.4%), cold first 4262 ms; ghl-base block byte-identical to 21b50f2; SERVING.md table carries the four tuned numbers, stale sentence gone. For G1: README line 136 marker can cite this table"
   }
 }
