@@ -60,8 +60,8 @@
     "note": "added 10:55 IST 2026-09-06 by Fable, dispatched to Sol: tuned Q8 through Ollama on the 270 test sample so base and tuned are scored on the same path | generation finished 11:02 IST, 270/270 CHECK PASS (launcher post); Fable scratch compare 11:03 IST: tuned Q8 ROUGE-L +0.1515 [0.138,0.166], cosine +0.1547 [0.134,0.177], truncated 0.104 -> 0.022; compare file + EXPORT.md pending from Sol | e531b6f (was e382ec4 before the token purge) verified 11:08 IST by Fable: 3 files only, tuned Q8 auto deltas identical to Fable scratch compare (rouge -0.15147, cosine -0.15470 stored as base-minus-tuned), base-test-sample-auto.json untouched, EXPORT.md carries Served-model metrics + dtype cause; served Q8 = bf16 headline (0.3667/0.8288 vs 0.3659/0.8315)"
   },
   "E2": {
-    "state": "pending",
-    "note": ""
+    "state": "done",
+    "note": "21b50f2 verified 13:03 IST 2026-09-06 by Fable: both raw files CHECK PASS 54/54 zero errors (base 4 truncated, tuned 2), ids == sealed set, tags ghl-base/ghl-support, sheet 54 items all paired with raw answers, A==base 27/54, no identical pairs, score columns blank, blind-key.json ignored and not committed; sheet opened for shark (H2)"
   },
   "E3": {
     "state": "pending",
@@ -150,5 +150,9 @@
   "C1b": {
     "state": "done",
     "note": "5fe967e verified 00:56 IST 2026-09-06 by Fable: 28 tests, --adapter path with PeftModel and adapter_sha256 per row"
+  },
+  "F1b": {
+    "state": "pending",
+    "note": "added 13:05 IST 2026-09-06 by Fable, dispatched to Sol: bench.py --model ghl-support, add block to serve/bench_results.json, fill SERVING.md table"
   }
 }
