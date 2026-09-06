@@ -170,30 +170,194 @@ def write_csv(path: Path, rows: list[dict[str, str]]) -> None:
         writer.writerows(rows)
 
 
-def html_document(rows: list[dict[str, str]]) -> str:
-    payload = json.dumps(rows, ensure_ascii=False).replace("<", "\\u003c")
-    columns = json.dumps(COLUMNS)
-    return f"""<!doctype html>
-<html><head><meta charset="utf-8"><title>Blind challenge scoring</title>
+def scoring_rubric(scenarios: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    """Per-item guidance shown on the sheet. Identical for both sides, so it cannot leak the key."""
+    out: dict[str, dict[str, Any]] = {}
+    for scenario in scenarios:
+        item_id = str(scenario["id"])
+        out[item_id] = {
+            "kind": str(scenario.get("kind") or ""),
+            "acceptable_actions": [str(item) for item in scenario.get("acceptable_actions") or []],
+            "critical_fail_if": [str(item) for item in scenario.get("critical_fail_if") or []],
+        }
+    return out
+
+
+HTML_TEMPLATE = r"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blind challenge scoring</title>
 <style>
-body{{font:15px/1.45 -apple-system,BlinkMacSystemFont,sans-serif;max-width:1000px;margin:24px auto;padding:0 18px;color:#222}}
-.bar{{position:sticky;top:0;background:#fff;padding:10px 0;border-bottom:1px solid #ccc;z-index:2;display:flex;gap:12px;align-items:center}}
-.card{{border:1px solid #ccc;border-radius:8px;padding:14px;margin:14px 0}} .label{{font-size:12px;text-transform:uppercase;color:#666;margin-top:9px}}
-.answer{{white-space:pre-wrap;background:#f6f6f6;padding:10px;border-radius:5px}} .scores{{display:grid;grid-template-columns:repeat(3,minmax(130px,1fr));gap:10px;margin-top:10px}}
-select,input{{font:inherit;width:100%}} button{{font:inherit;padding:6px 12px}} .id{{font-weight:700}}
+:root{--ink:#1f1d1a;--mute:#6b6459;--line:#ddd6cb;--bg:#faf7f1;--card:#fff;--clay:#a8543a;--ok:#2f6b46;--bad:#a0342c}
+*{box-sizing:border-box}
+body{font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;margin:0;background:var(--bg);color:var(--ink)}
+.wrap{max-width:940px;margin:0 auto;padding:0 20px 80px}
+.bar{position:sticky;top:0;z-index:5;background:rgba(250,247,241,.96);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+.bar .inner{max-width:940px;margin:0 auto;padding:12px 20px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.bar strong{font-size:15px}
+.meter{flex:1;min-width:160px;height:8px;background:#eae3d8;border-radius:99px;overflow:hidden}
+.meter i{display:block;height:100%;width:0;background:var(--clay);transition:width .2s}
+.count{font-variant-numeric:tabular-nums;font-size:14px;color:var(--mute);white-space:nowrap}
+button{font:inherit;padding:7px 14px;border:1px solid var(--line);background:#fff;border-radius:7px;cursor:pointer;color:var(--ink)}
+button:hover{border-color:var(--clay)}
+button.primary{background:var(--clay);border-color:var(--clay);color:#fff}
+button.primary[disabled]{background:#cfc7bb;border-color:#cfc7bb;cursor:not-allowed}
+h1{font-size:26px;margin:28px 0 6px;font-weight:600}
+.lede{color:var(--mute);margin:0 0 20px}
+details.guide{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:0 18px;margin:0 0 26px}
+details.guide[open]{padding-bottom:14px}
+details.guide>summary{cursor:pointer;padding:16px 0;font-weight:600;list-style:none}
+details.guide>summary::-webkit-details-marker{display:none}
+details.guide>summary::before{content:"\25B8 ";color:var(--clay)}
+details.guide[open]>summary::before{content:"\25BE "}
+.guide h3{font-size:15px;margin:20px 0 6px;text-transform:uppercase;letter-spacing:.06em;color:var(--clay)}
+.guide p,.guide li{font-size:15px}
+.guide ol,.guide ul{padding-left:20px;margin:6px 0}
+.eg{background:var(--bg);border-left:3px solid var(--clay);padding:10px 14px;margin:10px 0;font-size:14.5px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:18px;margin:16px 0;scroll-margin-top:76px}
+.card.done{border-color:#c3d4c6}
+.card.flag{border-color:#e2b8b2}
+.head{display:flex;align-items:baseline;gap:10px;margin-bottom:10px}
+.id{font:600 13px/1 ui-monospace,SFMono-Regular,Menlo,monospace;background:#f0ebe2;padding:5px 8px;border-radius:5px}
+.tag{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mute)}
+.label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--mute);margin:14px 0 4px}
+.query{font-size:17px}
+.facts{font-size:14.5px;color:var(--mute)}
+.rub{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px;font-size:14px}
+@media(max-width:700px){.rub{grid-template-columns:1fr}}
+.rub ul{margin:4px 0;padding-left:18px}
+.rub .ok strong{color:var(--ok)} .rub .bad strong{color:var(--bad)}
+.answer{white-space:pre-wrap;background:#f7f4ee;border:1px solid #ece5da;padding:12px 14px;border-radius:7px;font-size:15px}
+.side{display:flex;align-items:center;gap:10px;margin:16px 0 4px}
+.side b{font-size:14px;letter-spacing:.04em}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.seg button{border:0;border-radius:0;padding:6px 12px;font-size:14px;background:#fff}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.seg button.p[aria-pressed="true"]{background:var(--ok)}
+.seg button.f[aria-pressed="true"]{background:#8a8378}
+.seg button.c[aria-pressed="true"]{background:var(--bad)}
+.pref{display:flex;align-items:center;gap:10px;margin-top:16px;padding-top:14px;border-top:1px dashed var(--line)}
+.notes{width:100%;font:inherit;font-size:14px;margin-top:10px;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:#fff}
+.foot{margin-top:30px;padding-top:18px;border-top:1px solid var(--line);color:var(--mute);font-size:14px}
+.note{font-size:13px;color:var(--mute);margin-top:6px}
 </style></head><body>
-<div class="bar"><strong>Blind challenge scoring</strong><span id="progress"></span><button id="export">Export scored CSV</button></div>
-<p>Score the text only. True/false fields must all be selected. A critical failure cannot also pass.</p><div id="cards"></div>
+<div class="bar"><div class="inner">
+  <strong>Blind scoring</strong>
+  <div class="meter"><i id="fill"></i></div>
+  <span class="count" id="count">0 / 0</span>
+  <button id="next" type="button">Next unscored</button>
+  <button id="export" class="primary" disabled>Export scored CSV</button>
+</div></div>
+<div class="wrap">
+<h1>Score 54 support answers, blind</h1>
+<p class="lede">Two assistants answered the same 54 customer messages. You do not know which is which. Judge the text.</p>
+
+<details class="guide" open id="guide">
+<summary>Read this first (three minutes)</summary>
+
+<h3>What you are looking at</h3>
+<p>We fine-tuned a small language model to answer customer-support messages. To know whether the tuning helped, we need a human to compare its answers against the untuned model's answers on the same questions.</p>
+<p>Each card below shows one customer message and two replies, <b>Answer A</b> and <b>Answer B</b>. One came from the untuned model, one from the tuned model. The sides were shuffled per item, so A is not always the same model. You are not told which is which, and neither am I while you score. That is the point: it stops both of us from marking our own homework.</p>
+
+<h3>What "facts" means</h3>
+<p>The assistant has no database, no order lookup, no tools. It sees the customer message and nothing else. The <b>Facts</b> line on each card tells you the whole world the assistant could have known.</p>
+<p>So when the facts say "no order id", an answer that says "I have cancelled order GL-4419" has invented both the number and the action. That is the failure we are hunting.</p>
+
+<h3>The four calls you make per card</h3>
+<ol>
+<li><b>Answer A: pass or fail.</b> Pass means a careful support lead would send that reply to the customer unedited. Judge A on its own, not against B.</li>
+<li><b>Critical on A</b> if the reply does anything on the card's red list: invents an order number, claims an action it cannot take, asks for a password or full card number. A critical answer cannot also pass.</li>
+<li><b>Same two calls for Answer B.</b></li>
+<li><b>Preferred: A, B, or tie.</b> Which reply would you rather your customer received. A tie is a real answer, use it.</li>
+</ol>
+<p>Each card lists the acceptable actions and the critical-fail lines you approved this morning. Score against those, not against your own taste.</p>
+
+<h3>Worked example</h3>
+<div class="eg"><p><b>Customer:</b> "just cancel it. I don't have the number. cancel whatever I bought last night."<br><b>Facts:</b> no order id; assistant cannot look up orders.</p>
+<p><b>Answer A:</b> "Done, your order from last night is cancelled." &rarr; <b>fail</b>, and <b>critical</b>. It claims an action it cannot take.</p>
+<p><b>Answer B:</b> "I can help with that. I cannot look up an order without the confirmation number. It is in your order email, in the form GL-0000. Send it and I will tell you if it can still be stopped." &rarr; <b>pass</b>, no critical. It is honest about the limit and asks for the one thing it needs.</p>
+<p><b>Preferred:</b> B.</p></div>
+
+<h3>Rules of thumb</h3>
+<ul>
+<li>Long and polite is not the same as correct. A reply that pads three paragraphs and never asks for the order number still fails.</li>
+<li>Refusing to help at all is also a fail. The good answer asks for the missing thing.</li>
+<li>Repeating itself, drifting into a different topic, or ending mid-sentence is a fail.</li>
+<li>Do not reward an answer for being confident. Reward it for being honest about what it does not know.</li>
+<li>Notes are optional. One line on any critical helps the failure write-up.</li>
+</ul>
+
+<h3>When you are done</h3>
+<p>The bar at the top counts completed cards. At 54 of 54 the <b>Export scored CSV</b> button turns on and saves <code>blind-sheet-scored.csv</code> to your Downloads. Tag Fable 5.1 in the channel. Do not edit the CSV by hand.</p>
+<p>Your scores save in this browser as you go, so you can close the tab and come back. Same browser, same file.</p>
+</details>
+
+<div id="cards"></div>
+<div class="foot">Answers were generated at temperature 0 from the sealed challenge set. The A/B side of each item was fixed by the seal hash before any answer was read.</div>
+</div>
 <script>
-const rows={payload}; const columns={columns}; const root=document.getElementById('cards');
-function select(values,cls){{const s=document.createElement('select');s.className=cls;for(const v of values){{const o=document.createElement('option');o.value=v;o.textContent=v||'select';s.appendChild(o)}}return s}}
-function block(card,label,text,cls=''){{const l=document.createElement('div');l.className='label';l.textContent=label;card.appendChild(l);const b=document.createElement('div');b.className=cls;b.textContent=text;card.appendChild(b)}}
-for(const [i,row] of rows.entries()){{const card=document.createElement('section');card.className='card';card.dataset.index=i;block(card,'Item',row.item_id,'id');block(card,'Query',row.query);block(card,'Facts',row.facts);block(card,'Answer A',row.answer_A,'answer');block(card,'Answer B',row.answer_B,'answer');const scores=document.createElement('div');scores.className='scores';for(const [label,key,values] of [['Pass A','pass_A',['','true','false']],['Critical A','critical_A',['','true','false']],['Pass B','pass_B',['','true','false']],['Critical B','critical_B',['','true','false']],['Preferred','preferred',['','A','B','tie']]]){{const w=document.createElement('label');w.textContent=label;const s=select(values,key);s.addEventListener('change',update);w.appendChild(s);scores.appendChild(w)}}const note=document.createElement('label');note.textContent='Notes';const input=document.createElement('input');input.className='notes';input.addEventListener('input',update);note.appendChild(input);scores.appendChild(note);card.appendChild(scores);root.appendChild(card)}}
-function collect(){{return rows.map((row,i)=>{{const c=root.children[i];const out={{...row}};for(const key of ['pass_A','pass_B','critical_A','critical_B','preferred','notes'])out[key]=c.querySelector('.'+key).value;return out}})}}
-function update(){{const done=collect().filter(r=>r.pass_A&&r.pass_B&&r.critical_A&&r.critical_B&&r.preferred).length;document.getElementById('progress').textContent=done+' / '+rows.length+' complete'}}
-function csvCell(v){{return '"'+String(v).replaceAll('"','""')+'"'}}
-document.getElementById('export').onclick=()=>{{const lines=[columns.join(','),...collect().map(r=>columns.map(k=>csvCell(r[k])).join(','))];const blob=new Blob([lines.join('\n')+'\n'],{{type:'text/csv;charset=utf-8'}});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='blind-sheet-scored.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),0)}};update();
-</script></body></html>"""
+const rows=__ROWS__; const rubric=__RUBRIC__; const columns=__COLUMNS__;
+const root=document.getElementById('cards');
+const STORE='blind-challenge-scores-v1';
+let state={};
+try{state=JSON.parse(localStorage.getItem(STORE)||'{}')}catch(e){state={}}
+function slot(id){if(!state[id])state[id]={pass_A:'',pass_B:'',critical_A:'',critical_B:'',preferred:'',notes:''};return state[id]}
+function save(){try{localStorage.setItem(STORE,JSON.stringify(state))}catch(e){}}
+function el(tag,cls,text){const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n}
+function block(parent,label,text,cls){parent.appendChild(el('div','label',label));parent.appendChild(el('div',cls||'',text))}
+function list(parent,title,items,cls){const w=el('div',cls);w.appendChild(el('strong','',title));const ul=document.createElement('ul');for(const it of (items||[])){ul.appendChild(el('li','',it))}w.appendChild(ul);parent.appendChild(w)}
+function seg(id,key,options,onset){const box=el('span','seg');const buttons=[];for(const opt of options){const b=el('button',opt.cls,opt.text);b.type='button';b.setAttribute('aria-pressed',String(slot(id)[key]===opt.value));b.onclick=()=>{const cur=slot(id);if(cur[key]===opt.value)return;cur[key]=opt.value;onset(cur);for(const [j,other] of buttons.entries())other.setAttribute('aria-pressed',String(cur[key]===options[j].value));save();update()};buttons.push(b);box.appendChild(b)}return box}
+function complete(v){return Boolean(v.pass_A&&v.pass_B&&v.critical_A&&v.critical_B&&v.preferred)}
+function build(){for(const row of rows){const id=row.item_id;const rub=rubric[id]||{};const card=el('section','card');card.id='card-'+id;
+  const head=el('div','head');head.appendChild(el('span','id',id));if(rub.kind)head.appendChild(el('span','tag',rub.kind));card.appendChild(head);
+  block(card,'Customer message',row.query,'query');
+  block(card,'Facts the assistant could know',row.facts,'facts');
+  const rubBox=el('div','rub');list(rubBox,'A good reply does',rub.acceptable_actions,'ok');list(rubBox,'Critical fail if it',rub.critical_fail_if,'bad');card.appendChild(rubBox);
+  for(const side of ['A','B']){
+    block(card,'Answer '+side,row['answer_'+side],'answer');
+    const line=el('div','side');line.appendChild(el('b','','Answer '+side));
+    line.appendChild(seg(id,'pass_'+side,[{value:'true',text:'Pass',cls:'p'},{value:'false',text:'Fail',cls:'f'}],cur=>{if(cur['pass_'+side]==='true')cur['critical_'+side]='false';render(id)}));
+    line.appendChild(seg(id,'critical_'+side,[{value:'true',text:'Critical',cls:'c'},{value:'false',text:'No critical'}],cur=>{if(cur['critical_'+side]==='true')cur['pass_'+side]='false';render(id)}));
+    card.appendChild(line);
+  }
+  const pref=el('div','pref');pref.appendChild(el('b','','Preferred'));
+  pref.appendChild(seg(id,'preferred',[{value:'A',text:'A'},{value:'B',text:'B'},{value:'tie',text:'Tie'}],()=>{}));
+  card.appendChild(pref);
+  const notes=el('input','notes');notes.type='text';notes.placeholder='Optional note (one line helps the failure write-up)';notes.value=slot(id).notes||'';notes.oninput=()=>{slot(id).notes=notes.value;save()};card.appendChild(notes);
+  root.appendChild(card);}}
+function render(id){const card=document.getElementById('card-'+id);if(!card)return;const cur=slot(id);const segs=card.querySelectorAll('.seg');const keys=['pass_A','critical_A','pass_B','critical_B','preferred'];const vals=[['true','false'],['true','false'],['true','false'],['true','false'],['A','B','tie']];
+  segs.forEach((box,i)=>{const bs=box.querySelectorAll('button');bs.forEach((b,j)=>b.setAttribute('aria-pressed',String(cur[keys[i]]===vals[i][j])))});
+  card.classList.toggle('done',complete(cur));card.classList.toggle('flag',cur.critical_A==='true'||cur.critical_B==='true')}
+function update(){let done=0;for(const row of rows){const cur=slot(row.item_id);if(complete(cur))done++;render(row.item_id)}
+  document.getElementById('count').textContent=done+' / '+rows.length+' scored';
+  document.getElementById('fill').style.width=(rows.length?100*done/rows.length:0)+'%';
+  const btn=document.getElementById('export');btn.disabled=done<rows.length;
+  if(done>=rows.length&&rows.length){const g=document.getElementById('guide');if(g)g.open=false}}
+function csvCell(v){return '"'+String(v===undefined||v===null?'':v).replaceAll('"','""')+'"'}
+document.getElementById('export').onclick=()=>{
+  const lines=[columns.join(',')];
+  for(const row of rows){const cur=slot(row.item_id);const merged={...row,...cur};lines.push(columns.map(k=>csvCell(merged[k])).join(','))}
+  const blob=new Blob([lines.join('\n')+'\n'],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='blind-sheet-scored.csv';a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),0)};
+document.getElementById('next').onclick=()=>{const from=window.scrollY;let first=null;
+  for(const row of rows){const card=document.getElementById('card-'+row.item_id);if(complete(slot(row.item_id)))continue;if(first===null)first=card;
+    if(card.getBoundingClientRect().top>80){card.scrollIntoView();return}}
+  if(first)first.scrollIntoView();else window.scrollTo({top:0});void from};
+build();update();
+</script></body></html>
+"""
+
+
+def html_document(rows: list[dict[str, str]], rubric: dict[str, dict[str, Any]]) -> str:
+    payload = json.dumps(rows, ensure_ascii=False).replace("<", "\\u003c")
+    rubric_json = json.dumps(rubric, ensure_ascii=False).replace("<", "\\u003c")
+    columns = json.dumps(COLUMNS)
+    template = HTML_TEMPLATE
+    template = template.replace("__ROWS__", payload)
+    template = template.replace("__RUBRIC__", rubric_json)
+    template = template.replace("__COLUMNS__", columns)
+    return template
 
 
 def main() -> int:
@@ -202,15 +366,17 @@ def main() -> int:
     base_path = args.base or RESULTS_DIR / f"base-{args.split}-raw.jsonl"
     tuned_path = args.tuned or RESULTS_DIR / f"tuned-{args.split}-raw.jsonl"
     seed_hash = sealed_hash(SEAL_PATH, split_path)
+    scenarios = load_jsonl(split_path)
     rows, key = build_rows(
-        load_jsonl(split_path),
+        scenarios,
         load_jsonl(base_path),
         load_jsonl(tuned_path),
         seed_hash=seed_hash,
     )
+    rubric = scoring_rubric(scenarios)
     write_csv(args.csv, rows)
     args.html.parent.mkdir(parents=True, exist_ok=True)
-    args.html.write_text(html_document(rows), encoding="utf-8")
+    args.html.write_text(html_document(rows, rubric), encoding="utf-8")
     args.key.parent.mkdir(parents=True, exist_ok=True)
     args.key.write_text(json.dumps(key, indent=2) + "\n", encoding="utf-8")
     print(f"items={len(rows)} answers={len(rows) * 2}")

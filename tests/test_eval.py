@@ -145,6 +145,8 @@ def test_blind_rows_are_deterministic_balanced_and_render_in_html() -> None:
             "facts": "facts",
             "intent": "x",
             "kind": "ordinary",
+            "acceptable_actions": [f"ask for detail {i}"],
+            "critical_fail_if": [f"invent detail {i}"],
         }
         for i in range(1, 5)
     ]
@@ -161,10 +163,18 @@ def test_blind_rows_are_deterministic_balanced_and_render_in_html() -> None:
     assert rows_a == rows_b
     assert key_a == key_b
     assert sum(item["model_A"] == "base" for item in key_a["items"].values()) == 2
-    page = blind.html_document(rows_a)
+    rubric = blind.scoring_rubric(scenarios)
+    page = blind.html_document(rows_a, rubric)
     assert "Blind challenge scoring" in page
     for row in rows_a:
         assert row["answer_A"] in page and row["answer_B"] in page
+        assert f"ask for detail {int(row['item_id'][3:])}" in page
+        assert f"invent detail {int(row['item_id'][3:])}" in page
+    # A newline escape inside the emitted JS must stay escaped. Writing it as a real
+    # newline breaks the string literal, and the whole sheet renders blank.
+    script = page.split("<script>", 1)[1].split("</script>", 1)[0]
+    assert "join('\\n')" in script
+    assert "join('\n')" not in script
 
 
 def test_run_records_failure_then_resumes_by_id(tmp_path: Path) -> None:
