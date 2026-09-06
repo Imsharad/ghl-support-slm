@@ -1,6 +1,6 @@
 {
-  "repo_url": "[PENDING remote]",
-  "tag": "[PENDING remote]",
+  "repo_url": "https://github.com/Imsharad/ghl-support-slm",
+  "tag": "v1",
   "hub": {
     "repo": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4",
     "adapter": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/tree/main/artifacts/adapter",

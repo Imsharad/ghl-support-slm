@@ -3,9 +3,11 @@
 
 Checks, in order:
   1. submission.json parses and has the required fields.
-  2. Every concrete URL returns HTTP 200 without auth (repo_url, Hub links, Loom).
+  2. Every concrete URL returns HTTP 200 without auth (repo_url, Hub links, Loom). A private
+     GitHub repo_url passes only when `gh` can see it, and prints a reminder that the reviewer
+     needs collaborator access.
   3. loom_url is a nonempty HTTP(S) URL (null or a placeholder fails).
-  4. tag exists as a local git tag (placeholders fail).
+  4. tag exists as a local git tag and on the `origin` remote (placeholders fail).
   5. artifacts/manifest.json hashes match the local files.
   6. README has no TODO / FIXME / [PENDING markers.
 
@@ -182,6 +184,29 @@ def check_url(label: str, url: str, failures: list[str]) -> None:
         print(f"PASS url {label} HTTP {status} {url}")
 
 
+def github_private_visible(url: str) -> bool:
+    """True when `url` is a GitHub repo that the local `gh` login can see and it is private."""
+    parsed = urlparse(url)
+    if parsed.netloc.lower() != "github.com":
+        return False
+    parts = [part for part in parsed.path.split("/") if part]
+    if len(parts) != 2:
+        return False
+    owner, repo = parts
+    result = subprocess.run(
+        ["gh", "repo", "view", f"{owner}/{repo}", "--json", "isPrivate"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode != 0:
+        return False
+    try:
+        return bool(json.loads(result.stdout).get("isPrivate"))
+    except (json.JSONDecodeError, AttributeError):
+        return False
+
+
 def check_repo_url(value: Any, failures: list[str]) -> None:
     if is_placeholder(value):
         failures.append(f"repo_url is a placeholder: {value!r}")
@@ -189,7 +214,19 @@ def check_repo_url(value: Any, failures: list[str]) -> None:
     if not isinstance(value, str) or not is_http_url(value):
         failures.append(f"repo_url is not a public HTTP(S) URL: {value!r}")
         return
-    check_url("repo_url", value, failures)
+    try:
+        status = http_status(value)
+    except RuntimeError as exc:
+        failures.append(f"repo_url unreachable: {exc}")
+        return
+    if status in (200, 206):
+        print(f"PASS url repo_url HTTP {status} {value}")
+        return
+    if status == 404 and github_private_visible(value):
+        print(f"PASS url repo_url private GitHub repo visible to gh {value}")
+        print("NOTE repo_url is private: the reviewer's GitHub account must be added as a collaborator")
+        return
+    failures.append(f"repo_url returned HTTP {status} without auth: {value}")
 
 
 def check_loom(value: Any, failures: list[str]) -> None:
@@ -220,6 +257,20 @@ def check_tag(root: Path, value: Any, failures: list[str]) -> None:
         failures.append(f"git tag does not exist: {value!r}")
         return
     print(f"PASS tag {value} {result.stdout.strip()}")
+    remote = subprocess.run(
+        ["git", "ls-remote", "--tags", "origin", f"refs/tags/{value}"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if remote.returncode != 0:
+        failures.append(f"git tag remote check failed: {remote.stderr.strip()}")
+        return
+    if not remote.stdout.strip():
+        failures.append(f"git tag {value!r} is not on origin (push it with `git push origin {value}`)")
+        return
+    print(f"PASS tag {value} on origin")
 
 
 def check_readme(root: Path, value: Any, failures: list[str]) -> None:

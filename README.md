@@ -51,7 +51,8 @@ admitted one in 17 of 54 challenge answers; the tuned model in 0.
 
 - Weights and adapter: <https://huggingface.co/seekingtroooth/ghl-support-qlora-t4> (public; adapter,
   merged fp16, both GGUFs, manifest).
-- Repository: `[PENDING remote]`
+- Repository: <https://github.com/Imsharad/ghl-support-slm> (private; reviewer access is granted on
+  request, and tag `v1` marks the submitted commit).
 - Loss curves: [`docs/curves.png`](docs/curves.png). Training log: [`docs/TRAINING.md`](docs/TRAINING.md).
 
 ## 2. Model and method choices, and why
@@ -103,7 +104,10 @@ Why these choices:
   that base and tuned can both be imported into one Ollama instance on a 16 GB laptop and compared
   through a single endpoint. It ships a native ChatML template with an explicit system turn, so
   training, the Transformers route and the Ollama route share one template and can be checked for
-  parity rather than assumed equal.
+  parity rather than assumed equal. A 27B-class open base (Qwen3.8-27B, also Apache-2.0) was
+  considered and set aside: about 28 GB at Q8 and roughly 20 GB of GPU memory for QLoRA at 512
+  tokens, so it fits neither a free T4 nor this laptop, and the brief asks for a small model served
+  on your own hardware.
 - **QLoRA over full fine-tuning.** 18.5M trainable parameters instead of 1.5B fit a free T4 or this
   Mac's MPS device with the base frozen in 4-bit. The shipped adapter is 74 MB against 3.1 GB of
   merged fp16 weights, so base-versus-tuned is one frozen base plus a named delta rather than two
@@ -535,7 +539,7 @@ These are its cuts, each one a real reduction in evidence:
 | Epoch comparison | One epoch, optionally two, pick on dev | One epoch; checkpoints every 100 steps plus the halfway mark, four of them scored on dev (250, 300, 400, 500) | No two-epoch comparison. `docs/SELECTION.md` suggests it would have made things worse, not better. |
 | Threshold calibration | 100 labelled candidate pairs | 40 pairs in a 30-minute box | Weaker leakage argument, quantified: recall 0.46 at the chosen threshold, 3,693 cross-split pairs above it. |
 | Training rows | Full 17,701-row grouped split on a cloud GPU | 8,000-row group-aware cap, one epoch, on this Mac | The corpus problem in section 4 is a coverage problem, and a larger sample of the same corpus would not have added the missing "I don't know" rows. Untested. |
-| Fresh-clone check | Clone on a clean machine | Reduced to a clone into a temp directory on this Mac with a fresh venv; **not yet run as of 2026-09-06** | No portability proof yet, and when it runs it will be same OS and same warm Hugging Face cache. |
+| Fresh-clone check | Clone on a clean machine | A clone into a temp directory on this Mac with a fresh venv, serving steps only; run 2026-09-06, transcript in [`docs/FRESH_CLONE_TRANSCRIPT.md`](docs/FRESH_CLONE_TRANSCRIPT.md) | Same OS and same machine, so it proves the instructions, not portability. It also caught a README defect (two tests failed after a serve-only install), fixed since. |
 | Concurrency bench | Concurrency 4, labelled optional | Serial only | No concurrency number at all. Section 6 says so. |
 | Loom | 4 minutes | 3 minutes, 5 shots; **not recorded as of 2026-09-06** | Nothing material once recorded. |
 
@@ -567,9 +571,9 @@ Every number in this README comes from a file in this repository, cited next to 
 was run: a pinned dataset with deterministic cleaning and frozen split hashes, a training run with a
 resume proof, a checkpoint selection with all four candidates' scores written down, a sealed
 evaluation set generated after the seal, a served HTTP endpoint, and a benchmark script that fails
-rather than silently reporting a partial run. Section 8 is the path from a clone to those numbers;
-the fresh-clone run that would prove it end to end is the one item in the cut table still
-outstanding. The verdict is negative and is reported as negative.
+rather than silently reporting a partial run. Section 8 is the path from a clone to those numbers, and
+[`docs/FRESH_CLONE_TRANSCRIPT.md`](docs/FRESH_CLONE_TRANSCRIPT.md) is a run of its serving steps
+from a fresh clone on the same machine. The verdict is negative and is reported as negative.
 
 ### What I would revisit for production
 
