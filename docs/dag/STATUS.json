@@ -96,8 +96,8 @@
     "note": "shark approved all 54 cards unchanged 12:50 IST 2026-09-06 (event 467c3229); no edits JSON needed"
   },
   "H2": {
-    "state": "pending",
-    "note": ""
+    "state": "in_progress",
+    "note": "sheet blank until 14:05 IST (unescaped newline in blind.py f-string killed the script); Opus fixed out-of-node in 1054eb7, verified 14:07 IST by Fable: headless render 54 cards + onboarding panel + export button, script parses, blind-key.json aab54626 and blind-sheet.csv 26b38bb6 byte-identical to 21b50f2, key still ignored/uncommitted, 28 tests pass. Reopened for shark; waiting on blind-sheet-scored.csv"
   },
   "H3": {
     "state": "pending",
