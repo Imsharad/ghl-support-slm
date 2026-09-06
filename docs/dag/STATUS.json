@@ -1,150 +1,150 @@
 {
-  "A1": {
-    "state": "done",
-    "note": "a211c5e verified 22:40 IST; readme moved to docs/ASSIGNMENT.md"
-  },
-  "A2": {
-    "state": "done",
-    "note": "ae7fc5f verified 22:50 IST"
-  },
-  "A3": {
-    "state": "done",
-    "note": "51d9bf5 committed by Fable 22:50 IST (Sol's files)"
-  },
-  "B2": {
-    "state": "done",
-    "note": "0e95878 linkage=average; 23:00 IST"
-  },
-  "B1": {
-    "state": "done",
-    "note": "24ab0d9 verified 00:14 IST 2026-09-06 by Fable: audit --strict ok, 7 prepare tests, schema matches CONTRACTS s3, 0 placeholders in test; cancel_order 80% one group, 64/1/1"
-  },
-  "B3": {
-    "state": "done",
-    "note": "3be07c2 verified 23:05 IST; awaits H1 approval then seal"
-  },
-  "B4": {
-    "state": "done",
-    "note": "d2e43bd verified 23:12 IST, 5 tests pass"
-  },
-  "C2": {
-    "state": "done",
-    "note": "59e6fdb verified 23:57 IST by Fable: 6 prompt tests, render CLI sample matches Modelfile.base rendering"
-  },
-  "C1": {
-    "state": "done",
-    "note": "2baa00c verified 00:10 IST 2026-09-06 by Fable: 24 tests, live dry run 3/3 with resume, CHECK PASS; --adapter follow-up tracked as C1b"
-  },
-  "C3": {
-    "state": "done",
-    "note": "1a6499d + 2bf3d99 verified 23:57 IST by Fable: five-row CONVERSION.md, tokenizer and raw/chat parity all match, 11 tests pass"
-  },
-  "C4": {
-    "state": "done",
-    "note": "aac92f6 verified 00:22 IST 2026-09-06 by Fable: 54 rows, 20 entries, 6 critical fails on base, 2 truncations; surfaced B1 wording defect"
-  },
-  "D1": {
-    "state": "done",
-    "note": "2d43dfc+7542fda verified 00:38 IST 2026-09-06 by Fable: 26 tests, real mps smoke with resume proven; tests/fixtures/train_smoke accepted as D1 path"
-  },
-  "D3": {
-    "state": "running",
-    "note": "195d701 checkpoint selection verified 06:10 IST by Fable: 216 judgments recomputed 9/12/13/12 passes, 14/18/20/18 criticals, no pass+critical rows, ids match raw; checkpoint-400 kept under the pre-registered rule (pass rate, criticals, earlier step); 400 vs 500 recorded as a tie in SELECTION.md. Tuned test rows generating on checkpoint-400 (41/270 at 06:06 IST), then --compare, then pytest"
-  },
-  "E1": {
-    "state": "running",
-    "note": "3d4e940 tools half verified 23:48 IST by Fable: check/fetch PASS on base Q8, bad-sha exit 1, 5 tests pass; merge/convert/Modelfile/EXPORT.md wait on D3"
-  },
-  "E2": {
-    "state": "pending",
-    "note": ""
-  },
-  "E3": {
-    "state": "pending",
-    "note": ""
-  },
-  "F1": {
-    "state": "done",
-    "note": "5c8e52c verified 23:30 IST by Fable: ollama self-test PASS rerun, 5 tests pass, bench block 30/30"
-  },
-  "G1": {
-    "state": "pending",
-    "note": ""
-  },
-  "G2": {
-    "state": "pending",
-    "note": ""
-  },
-  "G3": {
-    "state": "pending",
-    "note": ""
-  },
-  "H0": {
-    "state": "pending",
-    "note": ""
-  },
-  "D2": {
-    "state": "pending",
-    "note": ""
-  },
-  "H1": {
-    "state": "pending",
-    "note": ""
-  },
-  "H2": {
-    "state": "pending",
-    "note": ""
-  },
-  "H3": {
-    "state": "pending",
-    "note": ""
-  },
-  "H4": {
-    "state": "pending",
-    "note": ""
-  },
-  "R-A": {
-    "state": "done",
-    "note": "22:52 IST"
-  },
-  "R-B": {
-    "state": "pending",
-    "note": ""
-  },
-  "CP1": {
-    "state": "pending",
-    "note": ""
-  },
-  "CP2": {
-    "state": "pending",
-    "note": ""
-  },
-  "R-G": {
-    "state": "pending",
-    "note": ""
-  },
-  "D0": {
-    "state": "done",
-    "note": "affd2e7 verified 00:08 IST 2026-09-06 by Fable: docs/LOCAL_QLORA_PROBE.md, MPS 2.567 s/step, 4.09 GB peak, random-token caveat present, probe procs gone"
-  },
-  "C5": {
-    "state": "done",
-    "note": "820eaf9 verified 05:42 IST 2026-09-06 by Fable: 2270/2270 rows, CHECK PASS, 27 intents in per_intent; ROUGE-L 0.2260, cosine 0.7107, placeholder 0, truncated 0.0767, mean gen_tokens 109.3; 77.1 min generation at 53.6 tok/s; 270 D3 sample ids all present in base-test-raw.jsonl"
-  },
-  "B1b": {
-    "state": "done",
-    "note": "d573366 + 0af0f15 + c19ee89 verified 00:45 IST 2026-09-06 by Fable: leftover regex 0 hits in all splits, 0 braces, group lists byte-identical to 24ab0d9, strict ok, 26 tests"
-  },
-  "G0": {
-    "state": "done",
-    "note": "536f937 verified 00:52 IST 2026-09-06 by Fable: 12 cited paths exist, prompt and bench table match sources, 11 markers. For G1: markers at README lines 70 (B1b numbers, now final after the-number patch), 136 (label should be E1 tuned bench), 162 (D1 is done; fill from docs/TRAINING.md)"
-  },
-  "D2L": {
-    "state": "done",
-    "note": "training finished 03:43 IST 2026-09-06 exit 0: 500 opt steps in 10028.9 s, final train 0.7943 val 0.6517, peak 8.24 GB, checkpoints 100/200/250/300/400/500 under train/runs/local-t4 (untracked). Opus still owes check_run, plot_curves, docs/LOCAL_RUN.md; D3 scores these checkpoints instead of a Colab zip | 0c3ee1b verified 04:50 IST by Fable: check_run PASS (note: check 4 reloads a checkpoint, so it needs one-model clearance), curves.png, docs/LOCAL_RUN.md; val curve is 32 fixed rows, trend only | 58353a7 loss.csv + config.json; D2L closed"
-  },
-  "C1b": {
-    "state": "done",
-    "note": "5fe967e verified 00:56 IST 2026-09-06 by Fable: 28 tests, --adapter path with PeftModel and adapter_sha256 per row"
-  }
+ "A1": {
+  "state": "done",
+  "note": "a211c5e verified 22:40 IST; readme moved to docs/ASSIGNMENT.md"
+ },
+ "A2": {
+  "state": "done",
+  "note": "ae7fc5f verified 22:50 IST"
+ },
+ "A3": {
+  "state": "done",
+  "note": "51d9bf5 committed by Fable 22:50 IST (Sol's files)"
+ },
+ "B2": {
+  "state": "done",
+  "note": "0e95878 linkage=average; 23:00 IST"
+ },
+ "B1": {
+  "state": "done",
+  "note": "24ab0d9 verified 00:14 IST 2026-09-06 by Fable: audit --strict ok, 7 prepare tests, schema matches CONTRACTS s3, 0 placeholders in test; cancel_order 80% one group, 64/1/1"
+ },
+ "B3": {
+  "state": "done",
+  "note": "3be07c2 verified 23:05 IST; awaits H1 approval then seal"
+ },
+ "B4": {
+  "state": "done",
+  "note": "d2e43bd verified 23:12 IST, 5 tests pass"
+ },
+ "C2": {
+  "state": "done",
+  "note": "59e6fdb verified 23:57 IST by Fable: 6 prompt tests, render CLI sample matches Modelfile.base rendering"
+ },
+ "C1": {
+  "state": "done",
+  "note": "2baa00c verified 00:10 IST 2026-09-06 by Fable: 24 tests, live dry run 3/3 with resume, CHECK PASS; --adapter follow-up tracked as C1b"
+ },
+ "C3": {
+  "state": "done",
+  "note": "1a6499d + 2bf3d99 verified 23:57 IST by Fable: five-row CONVERSION.md, tokenizer and raw/chat parity all match, 11 tests pass"
+ },
+ "C4": {
+  "state": "done",
+  "note": "aac92f6 verified 00:22 IST 2026-09-06 by Fable: 54 rows, 20 entries, 6 critical fails on base, 2 truncations; surfaced B1 wording defect"
+ },
+ "D1": {
+  "state": "done",
+  "note": "2d43dfc+7542fda verified 00:38 IST 2026-09-06 by Fable: 26 tests, real mps smoke with resume proven; tests/fixtures/train_smoke accepted as D1 path"
+ },
+ "D3": {
+  "state": "done",
+  "note": "195d701 checkpoint selection verified 06:10 IST by Fable: 216 judgments recomputed 9/12/13/12 passes, 14/18/20/18 criticals, no pass+critical rows, ids match raw; checkpoint-400 kept under the pre-registered rule (pass rate, criticals, earlier step); 400 vs 500 recorded as a tie in SELECTION.md. Tuned test rows generating on checkpoint-400 (41/270 at 06:06 IST), then --compare, then pytest | d2c39bd closed by Fable 10:45 IST: tuned rows 270/270 CHECK PASS (06:26 IST), compare ROUGE-L +0.1506 [0.1368,0.1652], cosine +0.1574 [0.1365,0.1793], truncated 0.104 -> 0.026, pytest 28 passed; Opus silent after 06:06 IST so Fable ran compare, SELECTION.md addendum and commit"
+ },
+ "E1": {
+  "state": "running",
+  "note": "3d4e940 tools half verified 23:48 IST by Fable: check/fetch PASS on base Q8, bad-sha exit 1, 5 tests pass; merge/convert/Modelfile/EXPORT.md wait on D3 | second half dispatched to Sol 10:50 IST 2026-09-06 (D3 done, adapter train/runs/local-t4/checkpoint-400); HF_TOKEN not set in env"
+ },
+ "E2": {
+  "state": "pending",
+  "note": ""
+ },
+ "E3": {
+  "state": "pending",
+  "note": ""
+ },
+ "F1": {
+  "state": "done",
+  "note": "5c8e52c verified 23:30 IST by Fable: ollama self-test PASS rerun, 5 tests pass, bench block 30/30"
+ },
+ "G1": {
+  "state": "pending",
+  "note": ""
+ },
+ "G2": {
+  "state": "pending",
+  "note": ""
+ },
+ "G3": {
+  "state": "pending",
+  "note": ""
+ },
+ "H0": {
+  "state": "pending",
+  "note": ""
+ },
+ "D2": {
+  "state": "pending",
+  "note": ""
+ },
+ "H1": {
+  "state": "pending",
+  "note": ""
+ },
+ "H2": {
+  "state": "pending",
+  "note": ""
+ },
+ "H3": {
+  "state": "pending",
+  "note": ""
+ },
+ "H4": {
+  "state": "pending",
+  "note": ""
+ },
+ "R-A": {
+  "state": "done",
+  "note": "22:52 IST"
+ },
+ "R-B": {
+  "state": "pending",
+  "note": ""
+ },
+ "CP1": {
+  "state": "pending",
+  "note": ""
+ },
+ "CP2": {
+  "state": "pending",
+  "note": ""
+ },
+ "R-G": {
+  "state": "pending",
+  "note": ""
+ },
+ "D0": {
+  "state": "done",
+  "note": "affd2e7 verified 00:08 IST 2026-09-06 by Fable: docs/LOCAL_QLORA_PROBE.md, MPS 2.567 s/step, 4.09 GB peak, random-token caveat present, probe procs gone"
+ },
+ "C5": {
+  "state": "done",
+  "note": "820eaf9 verified 05:42 IST 2026-09-06 by Fable: 2270/2270 rows, CHECK PASS, 27 intents in per_intent; ROUGE-L 0.2260, cosine 0.7107, placeholder 0, truncated 0.0767, mean gen_tokens 109.3; 77.1 min generation at 53.6 tok/s; 270 D3 sample ids all present in base-test-raw.jsonl"
+ },
+ "B1b": {
+  "state": "done",
+  "note": "d573366 + 0af0f15 + c19ee89 verified 00:45 IST 2026-09-06 by Fable: leftover regex 0 hits in all splits, 0 braces, group lists byte-identical to 24ab0d9, strict ok, 26 tests"
+ },
+ "G0": {
+  "state": "done",
+  "note": "536f937 verified 00:52 IST 2026-09-06 by Fable: 12 cited paths exist, prompt and bench table match sources, 11 markers. For G1: markers at README lines 70 (B1b numbers, now final after the-number patch), 136 (label should be E1 tuned bench), 162 (D1 is done; fill from docs/TRAINING.md)"
+ },
+ "D2L": {
+  "state": "done",
+  "note": "training finished 03:43 IST 2026-09-06 exit 0: 500 opt steps in 10028.9 s, final train 0.7943 val 0.6517, peak 8.24 GB, checkpoints 100/200/250/300/400/500 under train/runs/local-t4 (untracked). Opus still owes check_run, plot_curves, docs/LOCAL_RUN.md; D3 scores these checkpoints instead of a Colab zip | 0c3ee1b verified 04:50 IST by Fable: check_run PASS (note: check 4 reloads a checkpoint, so it needs one-model clearance), curves.png, docs/LOCAL_RUN.md; val curve is 32 fixed rows, trend only | 58353a7 loss.csv + config.json; D2L closed"
+ },
+ "C1b": {
+  "state": "done",
+  "note": "5fe967e verified 00:56 IST 2026-09-06 by Fable: 28 tests, --adapter path with PeftModel and adapter_sha256 per row"
+ }
 }
