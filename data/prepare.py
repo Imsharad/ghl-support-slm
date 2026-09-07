@@ -1119,8 +1119,17 @@ def prepare(
     split_payload: dict[str, Any] = {"seed": seed, "threshold": threshold}
     for name in SPLIT_NAMES:
         digest = write_jsonl(paths.processed_dir / f"{name}.jsonl", split_rows[name])
+        groups = list(split_groups_map[name])
+        if name == "train" and n_admissions:
+            # V2 only: admission rows carry their own group ids and live in train,
+            # so the record claims them too; audit_only compares this list to the
+            # file. No admissions (v1) leaves the list untouched.
+            groups = sorted(set(groups) | {
+                str(row["group_id"]) for row in split_rows["train"]
+                if str(row.get("flags", "")) == SYNTH_ADMISSION_FLAG
+            })
         split_payload[name] = {
-            "groups": split_groups_map[name],
+            "groups": groups,
             "rows": len(split_rows[name]),
             "sha256": digest,
         }

@@ -246,3 +246,25 @@ working 285d60849f0c470cc2012b2cd65ecfdcf15a44d092680460e9af4bfc84c33ca7
 
 Rule counts and `placeholder_frames` also match `data/audit.json` exactly. `uv run python data/prepare.py --audit-only --strict` prints `audit-only ok train=17701 val=2477 test=2270` and `strict: hashes and intersections match`, unchanged. `tests/test_prepare.py::test_default_mode_split_hashes_match_the_seal` asserts the default split sha256 equal `eval/SEAL.json` `split_sha256`.
 
+
+
+## 10. Admission rows (V2-A1, A2), 2026-09-08 01:30 IST
+
+Author: `grok-4.5-build` through `grok -p` (decision 11), stateless call from an empty cwd, JSON schema, `--verbatim`, no tools, no web; the Flash author of decision 5 was abandoned after five runs died silent on this Mac (18:44 to 19:09 IST Mon). Generator `tools/admissions.py` at `4b6cfc3`; every review line carries the model id, the batch id and the prompt sha256.
+
+| stage | rows | file (sha256 prefix) |
+|---|---:|---|
+| model calls (batches), all runs | 264 | `data/v2/admission_review.jsonl` (ae1825198be658bb) |
+| lint rejects, all runs | 362 | same; top: batch:duplicate_6gram_cross_cell 84, query:time_or_duration 70, answer:price_word 64, answer:time_or_duration 41, query:price_word 41 |
+| accepted by lint and cross-cell 6-gram dedup | 340 | `data/v2/admissions_raw.jsonl` (6f7d6058eb46cd2b) |
+| A2 accepted / rejected (`grok-4.5-build`, eight checks, `tools/admission_review.py`) | 259 / 81 | `data/v2/admission_review_a2.jsonl` (2e86d23d2aee1cf7); top reasons: source_not_named 34, actions_multiple 25, intent_mismatch 9, policy_claim 8 |
+| leakage: quarantined (cosine >= 0.80 or shared 6-gram against `challenge.jsonl`, `dev.jsonl`, `challenge_v2.jsonl`, v2 val and test) | 53 | `data/v2/admissions_quarantine.jsonl`; reasons {"answer:cosine>=0.80": 12, "answer:shared_6gram": 1, "query:cosine>=0.80": 46, "query:shared_6gram": 4}; max cosine 0.9627 |
+| assembled, flagged `SYNTH_ADMISSION`, train only, exempt from the cap | 206 | `data/v2/admissions.jsonl` (0f326ff937c9711a) |
+
+Per intent, assembled: cancel_order 11, change_order 8, change_shipping_address 5, check_cancellation_fee 6, check_invoice 10, check_payment_methods 8, check_refund_policy 14, complaint 3, contact_customer_service 16, contact_human_agent 7, create_account 8, delete_account 9, delivery_options 6, delivery_period 7, edit_account 5, get_invoice 5, get_refund 6, newsletter_subscription 5, payment_issue 10, place_order 6, recover_password 8, registration_problems 7, review 8, set_up_shipping_address 1, switch_account 2, track_order 12, track_refund 13. Every intent has at least one row (decision 10); the 440 target and the 300-row band were not reached, and no row was edited to get closer. Query styles in the raw set: anger 47, no_identifier 36, ordinary 167, two_requests 43, typos 47.
+
+Closer audit (`tools/closer_audit.py`, rule pre-registered 18:46 IST Mon): the first 307 rows read CONCENTRATED on intent span (the have-to-hand checklist and the "here is a message you can send" opener in 6 to 9 intents). Remedy as pre-registered: the scenario line assigns the closing step per example and the have-to-hand list may name only that intent's facts (`4b6cfc3`); 54 cells regenerated in round one, 9 in round two (decision 13 caps it at two rounds). Final raw set: 340 distinct closing sentences of 340 rows, NOT_CONCENTRATED. Two prompt hashes exist in the review lines, one per prompt version.
+
+Lint exemption (decision 12): `fee`, `fees`, `charge`, `charges` for `check_cancellation_fee` and `password`, `passwords` for `recover_password`, because both intents closed at zero when their own noun was banned; the A2 reviewer rejects an answer that asks for a credential.
+
+Split with admissions: `wrote train=21132 val=2753 test=3085 groups=4877`; `data/prepare.py --audit-only --out data/v2 --strict` passes; the train record in `data/v2/splits.json` now lists the admission group ids (prepare.py, this node). v1 default output unchanged: `audit-only ok train=17701 val=2477 test=2270`, `strict: hashes and intersections match`.

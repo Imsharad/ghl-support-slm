@@ -1,0 +1,134 @@
+{
+  "checked_rows": 259,
+  "accepted": 206,
+  "quarantined": 53,
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "cosine_cap": 0.8,
+  "ngram_n": 6,
+  "against_sources": {
+    "challenge.jsonl": 54,
+    "dev.jsonl": 54,
+    "challenge_v2.jsonl": 54,
+    "v2/val.jsonl": 2753,
+    "v2/test.jsonl": 3085
+  },
+  "against_texts": 6000,
+  "reason_counts": {
+    "answer:cosine>=0.80": 12,
+    "answer:shared_6gram": 1,
+    "query:cosine>=0.80": 46,
+    "query:shared_6gram": 4
+  },
+  "per_intent": {
+    "cancel_order": {
+      "accepted": 11,
+      "quarantined": 3
+    },
+    "change_order": {
+      "accepted": 8,
+      "quarantined": 0
+    },
+    "change_shipping_address": {
+      "accepted": 5,
+      "quarantined": 3
+    },
+    "check_cancellation_fee": {
+      "accepted": 6,
+      "quarantined": 0
+    },
+    "check_invoice": {
+      "accepted": 10,
+      "quarantined": 4
+    },
+    "check_payment_methods": {
+      "accepted": 8,
+      "quarantined": 9
+    },
+    "check_refund_policy": {
+      "accepted": 14,
+      "quarantined": 4
+    },
+    "complaint": {
+      "accepted": 3,
+      "quarantined": 0
+    },
+    "contact_customer_service": {
+      "accepted": 16,
+      "quarantined": 0
+    },
+    "contact_human_agent": {
+      "accepted": 7,
+      "quarantined": 0
+    },
+    "create_account": {
+      "accepted": 8,
+      "quarantined": 0
+    },
+    "delete_account": {
+      "accepted": 9,
+      "quarantined": 0
+    },
+    "delivery_options": {
+      "accepted": 6,
+      "quarantined": 10
+    },
+    "delivery_period": {
+      "accepted": 7,
+      "quarantined": 4
+    },
+    "edit_account": {
+      "accepted": 5,
+      "quarantined": 0
+    },
+    "get_invoice": {
+      "accepted": 5,
+      "quarantined": 0
+    },
+    "get_refund": {
+      "accepted": 6,
+      "quarantined": 4
+    },
+    "newsletter_subscription": {
+      "accepted": 5,
+      "quarantined": 1
+    },
+    "payment_issue": {
+      "accepted": 10,
+      "quarantined": 0
+    },
+    "place_order": {
+      "accepted": 6,
+      "quarantined": 0
+    },
+    "recover_password": {
+      "accepted": 8,
+      "quarantined": 0
+    },
+    "registration_problems": {
+      "accepted": 7,
+      "quarantined": 4
+    },
+    "review": {
+      "accepted": 8,
+      "quarantined": 0
+    },
+    "set_up_shipping_address": {
+      "accepted": 1,
+      "quarantined": 5
+    },
+    "switch_account": {
+      "accepted": 2,
+      "quarantined": 0
+    },
+    "track_order": {
+      "accepted": 12,
+      "quarantined": 0
+    },
+    "track_refund": {
+      "accepted": 13,
+      "quarantined": 2
+    }
+  },
+  "max_cosine_overall": 0.9627,
+  "accepted_sha256": "5a89b064dcdaec3e0a2a2898a0f154048ec08e76ee86cc2e16a249046ae4ebd3"
+}

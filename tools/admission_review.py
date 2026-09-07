@@ -225,6 +225,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--report", default=str(ROOT / "docs" / "v2" / "ADMISSION_REVIEW_A2.md"))
     parser.add_argument("--batch", type=int, default=6, help="rows per reviewer call")
     parser.add_argument("--parallel", type=int, default=6)
+    parser.add_argument("--prior", default=None,
+                        help="earlier verdict jsonl; rows whose query_sha256 already has a verdict reuse it unreviewed")
     parser.add_argument("--apply-to", default=None,
                         help="also write the accepted rows, in input order and unedited, to this jsonl")
     args = parser.parse_args(argv)
@@ -232,10 +234,21 @@ def main(argv: list[str] | None = None) -> int:
     rows = admissions.read_jsonl(input_path)
     input_sha = sha(input_path.read_text(encoding="utf-8"))
     intents = admissions.load_intents()
-    indexed = list(enumerate(rows))
-    batches = [indexed[i:i + args.batch] for i in range(0, len(indexed), args.batch)]
-    print(f"rows={len(rows)} batches={len(batches)} reviewer={REVIEW_MODEL} parallel={args.parallel}", flush=True)
+    prior: dict[str, dict] = {}
+    if args.prior and Path(args.prior).exists():
+        for line in admissions.read_jsonl(Path(args.prior)):
+            if line.get("verdict") in ("accept", "reject") and "review_failed" not in line.get("reasons", []):
+                prior[line["query_sha256"]] = line
     lines: list[dict] = []
+    indexed = []
+    for index, row in enumerate(rows):
+        hit = prior.get(sha(row["query"]))
+        if hit and hit.get("intent") == row["intent"]:
+            lines.append({**hit, "line": index})
+        else:
+            indexed.append((index, row))
+    batches = [indexed[i:i + args.batch] for i in range(0, len(indexed), args.batch)]
+    print(f"rows={len(rows)} reused={len(lines)} to_review={len(indexed)} batches={len(batches)} reviewer={REVIEW_MODEL} parallel={args.parallel}", flush=True)
     with ThreadPoolExecutor(max_workers=args.parallel) as pool:
         futures = {pool.submit(review_batch, intents, batch): batch for batch in batches}
         done = 0
