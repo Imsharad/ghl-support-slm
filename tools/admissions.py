@@ -563,11 +563,41 @@ def cmd_generate(args: argparse.Namespace) -> int:
     )
     partial_rows = Path(args.partial_rows)
     partial_review = Path(args.partial_review)
-    for stale in (partial_rows, partial_review):
-        if stale.exists():
-            stale.unlink()
     accepted: list[dict] = []
     review: list[dict] = []
+    if args.resume and partial_rows.exists():
+        # This machine kills the run at unpredictable times. A relaunch keeps the
+        # cells an earlier attempt already banked and only redoes what is missing;
+        # a cell counts as done only when it has its full quota on disk.
+        prior_rows = read_jsonl(partial_rows)
+        prior_review = read_jsonl(partial_review) if partial_review.exists() else []
+        have: dict[tuple[str, str], int] = {}
+        for row in prior_rows:
+            key = (str(row["intent"]), str(row["style"]))
+            have[key] = have.get(key, 0) + 1
+        done_cells = {
+            (intent, style)
+            for intent, _, style, want in cells
+            if have.get((intent, style), 0) >= want
+        }
+        accepted = [
+            row for row in prior_rows
+            if (str(row["intent"]), str(row["style"])) in done_cells
+        ]
+        review = [
+            line for line in prior_review
+            if (str(line.get("intent")), str(line.get("style"))) in done_cells
+        ]
+        cells = [cell for cell in cells if (cell[0], cell[2]) not in done_cells]
+        print(
+            f"resume: {len(done_cells)} cells already banked, {len(accepted)} rows kept, "
+            f"{len(cells)} cells left",
+            flush=True,
+        )
+    else:
+        for stale in (partial_rows, partial_review):
+            if stale.exists():
+                stale.unlink()
     done = 0
     with ThreadPoolExecutor(max_workers=args.parallel) as pool:
         future_cell = {
@@ -836,6 +866,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     gen.add_argument("--review", default=str(REVIEW_PATH))
     gen.add_argument("--batch", type=int, default=10, help="rows per model call (8-12)")
     gen.add_argument("--parallel", type=int, default=4, help="concurrent calls, max 16")
+    gen.add_argument("--resume", action="store_true",
+                     help="keep cells an earlier attempt banked; redo only what is missing")
     gen.add_argument("--partial-rows", default=str(PARTIAL_ROWS_PATH))
     gen.add_argument("--partial-review", default=str(PARTIAL_REVIEW_PATH))
     gen.add_argument("--attempts", type=int, default=6, help="regeneration rounds per cell")
