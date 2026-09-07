@@ -15,7 +15,7 @@ import sys
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, NamedTuple
 
 import numpy as np
 import pandas as pd
@@ -30,6 +30,28 @@ CLEANING_PATH = ROOT / "configs" / "cleaning.json"
 PROCESSED_DIR = ROOT / "data" / "processed"
 SPLITS_PATH = ROOT / "data" / "splits.json"
 AUDIT_PATH = ROOT / "data" / "audit.json"
+
+
+class OutPaths(NamedTuple):
+    """Where a run writes. V1_PATHS is the default everywhere; v2 passes its own."""
+
+    processed_dir: Path
+    splits_path: Path
+    audit_path: Path
+
+
+V1_PATHS = OutPaths(PROCESSED_DIR, SPLITS_PATH, AUDIT_PATH)
+
+
+def out_paths(out_dir: str | None) -> OutPaths:
+    """--out data/v2 -> processed data/processed/v2/, splits and audit under data/v2/."""
+    if out_dir is None:
+        return V1_PATHS
+    base = (ROOT / out_dir).resolve()
+    if base == (ROOT / "data").resolve():
+        return V1_PATHS
+    return OutPaths(PROCESSED_DIR / base.name, base / "splits.json", base / "audit.json")
+
 
 CSV_COLUMNS = ["flags", "instruction", "category", "intent", "response"]
 ROW_KEYS = [
@@ -118,6 +140,12 @@ def placeholder_rule_id(name: str) -> str:
     return f"placeholder_{slug or 'unnamed'}"
 
 
+def substitution_rule_id(name: str) -> str:
+    """Own prefix, so a v2 audit separates substituted rows from v1's replacements."""
+    slug = re.sub(r"[^a-z0-9]+", "_", name.lower()).strip("_")
+    return f"substitute_{slug or 'unnamed'}"
+
+
 class DSU:
     def __init__(self, n: int) -> None:
         self.parent = list(range(n))
@@ -184,7 +212,32 @@ def load_cleaning(path: Path = CLEANING_PATH) -> dict:
     if not isinstance(id_style, list):
         raise ValueError("placeholder_id_style must be a list")
     payload["_id_style"] = {str(item).casefold() for item in id_style}
+    payload["_substitutions"] = compile_substitutions(payload.get("substitutions"))
     return payload
+
+
+def compile_substitutions(block: Any) -> dict[str, dict]:
+    """placeholder -> {phrase, consume}. Empty when configs/cleaning.json has no v2 block."""
+    if block is None:
+        return {}
+    if not isinstance(block, dict):
+        raise ValueError("substitutions must be an object")
+    entries = block.get("entries", [])
+    if not isinstance(entries, list):
+        raise ValueError("substitutions.entries must be a list")
+    table: dict[str, dict] = {}
+    for entry in entries:
+        name = str(entry["placeholder"])
+        phrase = str(entry["phrase"])
+        check_substitution_phrase(name, phrase)
+        if name in table:
+            raise ValueError(f"substitutions lists {name!r} twice")
+        consume = entry.get("consume")
+        table[name] = {
+            "phrase": phrase,
+            "consume": re.compile(str(consume)) if consume else None,
+        }
+    return table
 
 
 def match_field(rule: dict, instruction: str, response: str) -> str:
@@ -204,11 +257,71 @@ def timeline_supplied(match: re.Match[str], instruction: str) -> bool:
     return all(num in inst_nums for num in nums)
 
 
-def placeholder_decision(name: str, cleaning: dict) -> tuple[str, str]:
-    """Return ('replace', wording) or ('reject', rule_id)."""
+_SUB_WORD = re.compile(r"[A-Za-z0-9][A-Za-z0-9'\u2019-]*")
+_SUB_TAIL = re.compile(r"(?:[A-Za-z0-9'\u2019-]+[ \t]+)*[A-Za-z0-9'\u2019-]+\s*\Z")
+_SUB_SENTENCE_END = re.compile(r"(?:^|[.!?:\n])\s*\Z")
+_SUB_LEADING_DET = re.compile(r"(?i)\A(?:the|our|your|a|an)\s")
+_SUB_TRAILING_DET = re.compile(r"(?i)\b(?:the|our|your|a|an)\s+\Z")
+_SUB_FORBIDDEN = re.compile(
+    r"\d"                                     # any digit: a count, a price, a duration
+    r"|https?://|www\.|\.com|\.net|\.org"    # a URL
+    r"|@"                                      # an email address
+    r"|[$\u00a3\u20ac\u20b9]"                 # a price
+    r"|\b(?:one|two|three|four|five|six|seven|eight|nine|ten|dozen|several|few)\s+"
+    r"(?:hour|hours|day|days|minute|minutes|week|weeks|month|months|business)"
+    r"|\b(?:within|guarantee|policy|free of charge|no charge|refundable|24/7|always)\b",
+    re.IGNORECASE,
+)
+
+
+def check_substitution_phrase(placeholder: str, phrase: str) -> None:
+    """A phrase may point at a page. It may not state a number, a duration, a price or a URL."""
+    if not phrase.strip():
+        raise ValueError(f"substitution for {placeholder!r} is empty")
+    bad = _SUB_FORBIDDEN.search(phrase)
+    if bad:
+        raise ValueError(
+            f"substitution for {placeholder!r} asserts a fact: {bad.group(0)!r} in {phrase!r}"
+        )
+
+
+def drop_duplicate_lead(prefix: str, phrase: str) -> str:
+    """'...on our ' + 'our website' -> '...on '. Only whole trailing words are dropped."""
+    words = list(_SUB_WORD.finditer(prefix))
+    parts = phrase.split()
+    for k in range(min(len(parts), len(words)), 0, -1):
+        start = words[-k].start()
+        if not _SUB_TAIL.fullmatch(prefix[start:]):
+            continue
+        if [m.group(0).casefold() for m in words[-k:]] == [w.casefold() for w in parts[:k]]:
+            return prefix[:start]
+    return prefix
+
+
+def merge_substitution(
+    prefix: str, phrase: str, consume: re.Pattern[str] | None
+) -> tuple[str, str]:
+    """Attach a substitution to the text before it. Returns (prefix, replacement)."""
+    if consume is not None:
+        prefix = consume.sub("", prefix)
+    if _SUB_LEADING_DET.match(phrase):
+        # "during our " + "the hours ..." -> "during the hours ...". The phrase brings its own.
+        prefix = _SUB_TRAILING_DET.sub("", prefix)
+    prefix = drop_duplicate_lead(prefix, phrase)
+    if _SUB_SENTENCE_END.search(prefix) and phrase[:1].islower():
+        phrase = phrase[0].upper() + phrase[1:]
+    return prefix, phrase
+
+
+def placeholder_decision(
+    name: str, cleaning: dict, *, substitute: bool = False
+) -> tuple[str, str]:
+    """Return ('replace', wording), ('substitute', placeholder name) or ('reject', rule_id)."""
     mapping = cleaning["_replace_map"]
     if name in mapping:
         return "replace", mapping[name]
+    if substitute and name in cleaning["_substitutions"]:
+        return "substitute", name
     reject_name = cleaning.get("_reject_name")
     if reject_name is not None and reject_name.search(name):
         return "reject", "reject_placeholder_no_neutral_wording"
@@ -267,6 +380,8 @@ def replace_placeholders(
     *,
     field: str,
     frame_counts: dict[str, dict[str, int]] | None = None,
+    substitute: bool = False,
+    substitution_counts: dict[str, int] | None = None,
 ) -> tuple[str | None, list[str], str | None]:
     applied: list[str] = []
     reject_id: str | None = None
@@ -276,12 +391,21 @@ def replace_placeholders(
     last = 0
     for match in PLACEHOLDER_RE.finditer(text):
         name = match.group(1)
-        action, value = placeholder_decision(name, cleaning)
+        action, value = placeholder_decision(name, cleaning, substitute=substitute)
         if action == "reject":
             reject_id = value
             break
         pieces.append(text[last : match.start()])
         prefix = "".join(pieces)
+        if action == "substitute":
+            entry = cleaning["_substitutions"][value]
+            prefix, replacement = merge_substitution(prefix, entry["phrase"], entry["consume"])
+            if substitution_counts is not None:
+                substitution_counts[value] += 1
+            applied.append(substitution_rule_id(name))
+            pieces = [prefix, replacement]
+            last = match.end()
+            continue
         phrase = id_style_phrase(value, cleaning)
         if phrase is not None:
             prefix, replacement, frame = apply_id_frame(prefix, possessive, phrase)
@@ -315,6 +439,9 @@ def apply_cleaning(
     response: str,
     cleaning: dict,
     frame_counts: dict[str, dict[str, int]] | None = None,
+    *,
+    substitute: bool = False,
+    substitution_counts: dict[str, int] | None = None,
 ) -> tuple[str, str, list[str], str | None]:
     """Return cleaned instruction/response, applied rule ids, or a reject rule id."""
     applied: list[str] = []
@@ -334,12 +461,22 @@ def apply_cleaning(
             return instruction, response, applied, rule_id
         if action == "replace_placeholders":
             new_inst, inst_rules, reject = replace_placeholders(
-                instruction, cleaning, field="instruction", frame_counts=frame_counts
+                instruction,
+                cleaning,
+                field="instruction",
+                frame_counts=frame_counts,
+                substitute=substitute,
+                substitution_counts=substitution_counts,
             )
             if reject is not None:
                 return instruction, response, applied, reject
             new_resp, resp_rules, reject = replace_placeholders(
-                response, cleaning, field="response", frame_counts=frame_counts
+                response,
+                cleaning,
+                field="response",
+                frame_counts=frame_counts,
+                substitute=substitute,
+                substitution_counts=substitution_counts,
             )
             if reject is not None:
                 return instruction, response, applied, reject
@@ -646,15 +783,15 @@ def intersections(split_rows: dict[str, list[dict]]) -> dict:
     }
 
 
-def audit_only(strict: bool) -> int:
-    if not SPLITS_PATH.exists():
-        print(f"missing {SPLITS_PATH}", file=sys.stderr)
+def audit_only(strict: bool, paths: OutPaths = V1_PATHS) -> int:
+    if not paths.splits_path.exists():
+        print(f"missing {paths.splits_path}", file=sys.stderr)
         return 1
-    splits = load_json(SPLITS_PATH)
+    splits = load_json(paths.splits_path)
     errors: list[str] = []
     split_rows: dict[str, list[dict]] = {}
     for name in SPLIT_NAMES:
-        path = PROCESSED_DIR / f"{name}.jsonl"
+        path = paths.processed_dir / f"{name}.jsonl"
         if not path.exists():
             errors.append(f"missing {path}")
             continue
@@ -717,14 +854,14 @@ def get_collator() -> Any:
     return AssistantOnlyCollator(get_tokenizer(), max_length=MAX_LENGTH)
 
 
-def load_frozen_assignment() -> dict[str, dict] | None:
+def load_frozen_assignment(processed_dir: Path = PROCESSED_DIR) -> dict[str, dict] | None:
     """id -> {group_id, split, instruction, response} from the last prepare run."""
-    paths = [PROCESSED_DIR / f"{name}.jsonl" for name in SPLIT_NAMES]
+    paths = [processed_dir / f"{name}.jsonl" for name in SPLIT_NAMES]
     if not all(path.exists() for path in paths):
         return None
     mapping: dict[str, dict] = {}
     for name in SPLIT_NAMES:
-        for row in load_jsonl(PROCESSED_DIR / f"{name}.jsonl"):
+        for row in load_jsonl(processed_dir / f"{name}.jsonl"):
             mapping[str(row["id"])] = {
                 "group_id": str(row["group_id"]),
                 "split": name,
@@ -770,7 +907,14 @@ def intent_stats_from_records(records: list[dict]) -> dict[str, dict]:
     return stats
 
 
-def prepare(*, cap_train: int | None = None, collator: Any | None = None) -> dict:
+def prepare(
+    *,
+    cap_train: int | None = None,
+    collator: Any | None = None,
+    substitute: bool = False,
+    paths: OutPaths = V1_PATHS,
+    pin_grouping: bool = True,
+) -> dict:
     grouping = load_json(GROUPING_PATH)
     cleaning = load_cleaning()
     threshold = float(grouping["cosine_threshold"])
@@ -781,13 +925,19 @@ def prepare(*, cap_train: int | None = None, collator: Any | None = None) -> dic
     raw = load_csv()
     rule_counts: dict[str, int] = defaultdict(int)
     frame_counts = empty_frame_counts()
+    substitution_counts: dict[str, int] = defaultdict(int)
     kept: list[dict] = []
     rejected: list[dict] = []
     for rec in raw.to_dict("records"):
         instruction = str(rec["instruction"])
         response = str(rec["response"])
         cleaned_inst, cleaned_resp, applied, reject_id = apply_cleaning(
-            instruction, response, cleaning, frame_counts=frame_counts
+            instruction,
+            response,
+            cleaning,
+            frame_counts=frame_counts,
+            substitute=substitute,
+            substitution_counts=substitution_counts,
         )
         if reject_id is not None:
             rule_counts[reject_id] += 1
@@ -829,8 +979,8 @@ def prepare(*, cap_train: int | None = None, collator: Any | None = None) -> dic
             print(f"token-count {i}/{len(kept)} overlength={overlength}")
     print(f"cleaned={len(kept)} overlength={overlength} kept={len(token_kept)} rejected={len(rejected)}")
 
-    frozen = load_frozen_assignment()
-    frozen_groups = load_frozen_group_lists()
+    frozen = load_frozen_assignment(paths.processed_dir) if pin_grouping else None
+    frozen_groups = load_frozen_group_lists() if pin_grouping else {}
     text_changed = {name: 0 for name in SPLIT_NAMES}
     vectors: np.ndarray | None = None
     if frozen is not None:
@@ -893,20 +1043,21 @@ def prepare(*, cap_train: int | None = None, collator: Any | None = None) -> dic
     for name in SPLIT_NAMES:
         split_rows[name].sort(key=lambda row: row["id"])
 
-    PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+    paths.processed_dir.mkdir(parents=True, exist_ok=True)
+    paths.splits_path.parent.mkdir(parents=True, exist_ok=True)
     split_payload: dict[str, Any] = {"seed": seed, "threshold": threshold}
     for name in SPLIT_NAMES:
-        digest = write_jsonl(PROCESSED_DIR / f"{name}.jsonl", split_rows[name])
+        digest = write_jsonl(paths.processed_dir / f"{name}.jsonl", split_rows[name])
         split_payload[name] = {
             "groups": split_groups_map[name],
             "rows": len(split_rows[name]),
             "sha256": digest,
         }
-    SPLITS_PATH.write_text(json.dumps(split_payload, indent=2) + "\n", encoding="utf-8")
+    paths.splits_path.write_text(json.dumps(split_payload, indent=2) + "\n", encoding="utf-8")
 
     cross = intersections(split_rows)
     if vectors is None:
-        prev_audit = load_json(AUDIT_PATH) if AUDIT_PATH.exists() else {}
+        prev_audit = load_json(paths.audit_path) if paths.audit_path.exists() else {}
         nn = prev_audit.get("nearest_cross_split_cosine", {})
     else:
         nn = nearest_cross_split(token_kept, vectors, split_of, threshold)
@@ -968,7 +1119,13 @@ def prepare(*, cap_train: int | None = None, collator: Any | None = None) -> dic
             "B1b frame counts live in placeholder_frames."
         ),
     }
-    AUDIT_PATH.write_text(json.dumps(audit, indent=2) + "\n", encoding="utf-8")
+    if substitute:
+        # v2 only. Appended after readme_note so the default audit stays byte-identical.
+        audit["placeholder_mode"] = "substitute"
+        audit["substitution_counts"] = dict(sorted(substitution_counts.items()))
+        audit["substitutions_total"] = sum(substitution_counts.values())
+        audit["substitution_placeholders_used"] = len(substitution_counts)
+    paths.audit_path.write_text(json.dumps(audit, indent=2) + "\n", encoding="utf-8")
     print(
         "wrote "
         f"train={len(split_rows['train'])} val={len(split_rows['val'])} "
@@ -1005,15 +1162,47 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="exit nonzero on hash or intersection mismatch.",
     )
+    parser.add_argument(
+        "--placeholder-mode",
+        choices=("reject", "substitute"),
+        default="reject",
+        help=(
+            "reject (default, v1): a placeholder with no neutral wording rejects the row. "
+            "substitute (v2): use configs/cleaning.json substitutions first, reject only "
+            "what has no honest neutral phrase."
+        ),
+    )
+    parser.add_argument(
+        "--out",
+        default=None,
+        help=(
+            "write splits.json and audit.json under this directory and the jsonl under "
+            "data/processed/<basename>/. Default: data/ and data/processed/ (v1)."
+        ),
+    )
     return parser.parse_args()
 
 
 def main() -> int:
     args = parse_args()
+    paths = out_paths(args.out)
     if args.audit_only:
-        return audit_only(strict=args.strict)
-    prepare(cap_train=args.cap_train)
-    return audit_only(strict=True)
+        return audit_only(strict=args.strict, paths=paths)
+    substitute = args.placeholder_mode == "substitute"
+    if substitute and paths == V1_PATHS:
+        print(
+            "refusing to write v1 paths in substitute mode; pass --out (for example --out data/v2)",
+            file=sys.stderr,
+        )
+        return 1
+    # The v2 kept-id set differs from v1, so the pinned grouping cannot apply.
+    prepare(
+        cap_train=args.cap_train,
+        substitute=substitute,
+        paths=paths,
+        pin_grouping=not substitute,
+    )
+    return audit_only(strict=True, paths=paths)
 
 
 if __name__ == "__main__":

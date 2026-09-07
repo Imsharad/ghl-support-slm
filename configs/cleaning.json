@@ -148,5 +148,619 @@
     "Order/Invoice Number": "your order or invoice number",
     "Customer ID": "your customer id",
     "Case Number": "your case number"
+  },
+  "substitutions": {
+    "version": 2,
+    "used_by": "data/prepare.py --placeholder-mode substitute. The default reject mode never reads this key, so v1 output is unchanged.",
+    "rule": "A phrase asserts no fact: no number, time, duration, price, URL, email address, or policy claim. It only points at a page the surrounding answer already points at.",
+    "consume": "Optional regex removed from the text immediately before the placeholder. A phrase that starts with a determiner also drops a trailing determiner ('during our ' + 'the hours ...' -> 'during the hours ...'), and a duplicated leading word ('on our ' + 'our website') is dropped, both automatically by data/prepare.py.",
+    "rows_field": "rows recovered, measured by the v2 run on 2026-09-07. A row is attributed to the first placeholder that rejected it in v1, so the entries sum to the 4,318 rows recovered. 0 means the placeholder appears only alongside an earlier one.",
+    "entries": [
+      {
+        "placeholder": "Customer Support Hours",
+        "phrase": "the hours shown on our contact page",
+        "rows": 1168
+      },
+      {
+        "placeholder": "Customer Service Hours",
+        "phrase": "the hours shown on our contact page",
+        "rows": 4
+      },
+      {
+        "placeholder": "Customer Assistance Hours",
+        "phrase": "the hours shown on our contact page",
+        "rows": 2
+      },
+      {
+        "placeholder": "Business Hours",
+        "phrase": "the hours shown on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Working Hours",
+        "phrase": "the hours shown on our contact page",
+        "rows": 0
+      },
+      {
+        "placeholder": "Support Hours",
+        "phrase": "the hours shown on our contact page",
+        "rows": 0
+      },
+      {
+        "placeholder": "Customer Support Days",
+        "phrase": "the days shown on our contact page",
+        "rows": 0
+      },
+      {
+        "placeholder": "Customer Support Opening Time",
+        "phrase": "the opening time shown on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Opening Time",
+        "phrase": "the opening time shown on our contact page",
+        "rows": 0
+      },
+      {
+        "placeholder": "Customer Support Start Time",
+        "phrase": "the opening time shown on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Customer Support Closing Time",
+        "phrase": "the closing time shown on our contact page",
+        "rows": 0
+      },
+      {
+        "placeholder": "Closing Time",
+        "phrase": "the closing time shown on our contact page",
+        "rows": 0
+      },
+      {
+        "placeholder": "Customer Support End Time",
+        "phrase": "the closing time shown on our contact page",
+        "rows": 0
+      },
+      {
+        "placeholder": "Customer Support Phone Number",
+        "phrase": "the number on our contact page",
+        "rows": 808
+      },
+      {
+        "placeholder": "Customer Assistance Phone Number",
+        "phrase": "the number on our contact page",
+        "rows": 2
+      },
+      {
+        "placeholder": "Company Phone Number",
+        "phrase": "the number on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Support Phone Number",
+        "phrase": "the number on our contact page",
+        "rows": 0
+      },
+      {
+        "placeholder": "Customer Support Contact Number",
+        "phrase": "the number on our contact page",
+        "rows": 0
+      },
+      {
+        "placeholder": "Registration Support Phone Number",
+        "phrase": "the number on our contact page",
+        "rows": 0
+      },
+      {
+        "placeholder": "customer_support_phone_number",
+        "phrase": "the number on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Claims Contact Number",
+        "phrase": "the number on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Payment Issue Phone Number",
+        "phrase": "the number on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Free Customer Support Number",
+        "phrase": "the number on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Customer Support Hotline",
+        "phrase": "the number on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Complaint Hotline Number",
+        "phrase": "the number on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Refund Helpline Number",
+        "phrase": "the number on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Refund Hotline Number",
+        "phrase": "the number on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Toll-Free Number",
+        "phrase": "the number on our contact page",
+        "rows": 11
+      },
+      {
+        "placeholder": "Customer Service Toll-Free Number",
+        "phrase": "the number on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Customer Support Toll-Free Number",
+        "phrase": "the number on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Customer Support Email",
+        "phrase": "the address on our contact page",
+        "rows": 29
+      },
+      {
+        "placeholder": "Customer Service Email",
+        "phrase": "the address on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Customer Service Email Address",
+        "phrase": "the address on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Customer Assistance Email",
+        "phrase": "the address on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Customer Assistance Email Address",
+        "phrase": "the address on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Feedback Email",
+        "phrase": "the address on our contact page",
+        "rows": 3
+      },
+      {
+        "placeholder": "Feedback Email Address",
+        "phrase": "the address on our contact page",
+        "rows": 8
+      },
+      {
+        "placeholder": "Product Feedback Email",
+        "phrase": "the address on our contact page",
+        "rows": 2
+      },
+      {
+        "placeholder": "Product Reviews Email",
+        "phrase": "the address on our contact page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Complaint Email Address",
+        "phrase": "the address on our contact page",
+        "rows": 0
+      },
+      {
+        "placeholder": "Consumer Complaint Email Address",
+        "phrase": "the address on our contact page",
+        "rows": 0
+      },
+      {
+        "placeholder": "Customer Claims Email Address",
+        "phrase": "the address on our contact page",
+        "rows": 0
+      },
+      {
+        "placeholder": "Payment Issue Email",
+        "phrase": "the address on our contact page",
+        "rows": 0
+      },
+      {
+        "placeholder": "Website URL",
+        "phrase": "our website",
+        "consume": "(?i)\\s+at\\s*$",
+        "rows": 360
+      },
+      {
+        "placeholder": "Platform URL",
+        "phrase": "our website",
+        "consume": "(?i)\\s+at\\s*$",
+        "rows": 1
+      },
+      {
+        "placeholder": "Customer Support Website",
+        "phrase": "our website",
+        "consume": "(?i)\\s+at\\s*$",
+        "rows": 1
+      },
+      {
+        "placeholder": "Claims Website URL",
+        "phrase": "our website",
+        "consume": "(?i)\\s+at\\s*$",
+        "rows": 0
+      },
+      {
+        "placeholder": "Contact Page URL",
+        "phrase": "our contact page",
+        "consume": "(?i)\\s+at\\s*$",
+        "rows": 0
+      },
+      {
+        "placeholder": "Online Store",
+        "phrase": "our online store",
+        "rows": 1
+      },
+      {
+        "placeholder": "Online Marketplace",
+        "phrase": "our online marketplace",
+        "rows": 0
+      },
+      {
+        "placeholder": "Online Company Portal Info",
+        "phrase": "online portal",
+        "rows": 1050
+      },
+      {
+        "placeholder": "Login Page URL",
+        "phrase": "login page",
+        "rows": 397
+      },
+      {
+        "placeholder": "Login URL",
+        "phrase": "login page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Login page URL",
+        "phrase": "login page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Platform Login URL",
+        "phrase": "login page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Account Recovery Page URL",
+        "phrase": "account recovery page",
+        "rows": 52
+      },
+      {
+        "placeholder": "Password Recovery Page URL",
+        "phrase": "password recovery page",
+        "rows": 5
+      },
+      {
+        "placeholder": "Password Reset Page URL",
+        "phrase": "password reset page",
+        "rows": 2
+      },
+      {
+        "placeholder": "Profile Recovery Page URL",
+        "phrase": "profile recovery page",
+        "rows": 4
+      },
+      {
+        "placeholder": "User Profile Page URL",
+        "phrase": "profile page",
+        "rows": 1
+      },
+      {
+        "placeholder": "PIN Reset Page URL",
+        "phrase": "PIN reset page",
+        "rows": 1
+      },
+      {
+        "placeholder": "PIN Recovery Page URL",
+        "phrase": "PIN recovery page",
+        "rows": 1
+      },
+      {
+        "placeholder": "PIN Retrieval Page URL",
+        "phrase": "PIN retrieval page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Key Recovery Page URL",
+        "phrase": "key recovery page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Access Key Reset Page URL",
+        "phrase": "access key reset page",
+        "rows": 1
+      },
+      {
+        "placeholder": "User Key Retrieval Page URL",
+        "phrase": "key retrieval page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Support Page URL",
+        "phrase": "support page",
+        "rows": 2
+      },
+      {
+        "placeholder": "Company Support Page URL",
+        "phrase": "support page",
+        "rows": 1
+      },
+      {
+        "placeholder": "Help Center URL",
+        "phrase": "help center",
+        "rows": 2
+      },
+      {
+        "placeholder": "Help Center",
+        "phrase": "help center",
+        "rows": 1
+      },
+      {
+        "placeholder": "Live Chat Support",
+        "phrase": "live chat",
+        "rows": 8
+      },
+      {
+        "placeholder": "Customer Support Live Chat URL",
+        "phrase": "live chat",
+        "rows": 0
+      },
+      {
+        "placeholder": "Online Customer Support Channel",
+        "phrase": "online support channel",
+        "rows": 3
+      },
+      {
+        "placeholder": "Support Channel",
+        "phrase": "support channel",
+        "rows": 1
+      },
+      {
+        "placeholder": "Contact Channel",
+        "phrase": "contact channel",
+        "rows": 0
+      },
+      {
+        "placeholder": "Contact Method",
+        "phrase": "contact method",
+        "rows": 2
+      },
+      {
+        "placeholder": "Company Support Channels",
+        "phrase": "support channels",
+        "rows": 1
+      },
+      {
+        "placeholder": "Company Name",
+        "phrase": "our company",
+        "rows": 40
+      },
+      {
+        "placeholder": "CompanyName",
+        "phrase": "our company",
+        "rows": 1
+      },
+      {
+        "placeholder": "Store Location",
+        "phrase": "stores",
+        "rows": 317
+      },
+      {
+        "placeholder": "Store Address",
+        "phrase": "store address",
+        "rows": 0
+      },
+      {
+        "placeholder": "Retail Stores",
+        "phrase": "retail stores",
+        "rows": 0
+      }
+    ],
+    "no_neutral_phrase": [
+      {
+        "placeholder": "Standard Shipping Time",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Expedited Shipping Time",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Express Shipping Time",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Delivery Time",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Standard Delivery Time",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Estimated Delivery Time",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Min Delivery Time",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Max Delivery Time",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Express Delivery Time",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Expedited Delivery Time",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Shipping Cut-off Time",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "ETA",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Timeframe",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Account Closure Timeframe",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Number of Days",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "number of days",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Product/Service Defect Refund Time",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Cancellation Refund Time",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Duplicate Charges Refund Time",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Non-receipt of Goods Refund Time",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Event Cancellation Refund Time",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Unauthorized Charges Refund Time",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "X-day/money back guarantee period",
+        "reason": "any wording states a duration or a deadline the model cannot know"
+      },
+      {
+        "placeholder": "Cancellation Policy",
+        "reason": "any wording states a policy the model cannot know"
+      },
+      {
+        "placeholder": "Refund Policy",
+        "reason": "any wording states a policy the model cannot know"
+      },
+      {
+        "placeholder": "Return Policy",
+        "reason": "any wording states a policy the model cannot know"
+      },
+      {
+        "placeholder": "Feature 1",
+        "reason": "names a specific product feature, third-party platform or city"
+      },
+      {
+        "placeholder": "Feature 2",
+        "reason": "names a specific product feature, third-party platform or city"
+      },
+      {
+        "placeholder": "Feature 3",
+        "reason": "names a specific product feature, third-party platform or city"
+      },
+      {
+        "placeholder": "Explanation of Feature 1",
+        "reason": "names a specific product feature, third-party platform or city"
+      },
+      {
+        "placeholder": "Explanation of Feature 2",
+        "reason": "names a specific product feature, third-party platform or city"
+      },
+      {
+        "placeholder": "Explanation of Feature 3",
+        "reason": "names a specific product feature, third-party platform or city"
+      },
+      {
+        "placeholder": "Review Platform 1",
+        "reason": "names a specific product feature, third-party platform or city"
+      },
+      {
+        "placeholder": "Review Platform 2",
+        "reason": "names a specific product feature, third-party platform or city"
+      },
+      {
+        "placeholder": "E-commerce Platform 1",
+        "reason": "names a specific product feature, third-party platform or city"
+      },
+      {
+        "placeholder": "E-commerce Platform 2",
+        "reason": "names a specific product feature, third-party platform or city"
+      },
+      {
+        "placeholder": "Support Channel 1",
+        "reason": "names a specific product feature, third-party platform or city"
+      },
+      {
+        "placeholder": "Support Channel 2",
+        "reason": "names a specific product feature, third-party platform or city"
+      },
+      {
+        "placeholder": "City 1",
+        "reason": "names a specific product feature, third-party platform or city"
+      },
+      {
+        "placeholder": "City 2",
+        "reason": "names a specific product feature, third-party platform or city"
+      },
+      {
+        "placeholder": "City 3",
+        "reason": "names a specific product feature, third-party platform or city"
+      },
+      {
+        "placeholder": "Social Media Handles",
+        "reason": "names a specific product feature, third-party platform or city"
+      },
+      {
+        "placeholder": "Social Media Platform",
+        "reason": "names a specific product feature, third-party platform or city"
+      },
+      {
+        "placeholder": "Company Representative Name",
+        "reason": "names a person, department or identifier the model cannot know"
+      },
+      {
+        "placeholder": "Claims Department",
+        "reason": "names a person, department or identifier the model cannot know"
+      },
+      {
+        "placeholder": "Customer Support Ticket Number",
+        "reason": "names a person, department or identifier the model cannot know"
+      },
+      {
+        "placeholder": "proceed to our website and click on the 'Contact Us' button / dial our customer support number / reach out to our live chat support",
+        "reason": "the placeholder body is a sentence, not a slot"
+      }
+    ]
   }
 }

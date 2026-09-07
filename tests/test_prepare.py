@@ -299,3 +299,120 @@ def test_frozen_splits_have_no_group_leakage() -> None:
             assert "{{" not in row["instruction"]
             assert "{{" not in row["response"]
             assert row["n_tokens"] <= prepare.MAX_LENGTH
+
+
+# --- v2: substitute instead of reject (V2-B1) --------------------------------
+
+
+def test_default_mode_split_hashes_match_the_seal() -> None:
+    """The regression guard for v1: prepare's default output is the sealed evidence."""
+    seal = json.loads((ROOT / "eval" / "SEAL.json").read_text(encoding="utf-8"))
+    splits = json.loads(SPLITS_PATH.read_text(encoding="utf-8"))
+    expected = seal["split_sha256"]
+    for name in prepare.SPLIT_NAMES:
+        assert splits[name]["sha256"] == expected[name], name
+    if (PROCESSED_DIR / "train.jsonl").exists():
+        for name in prepare.SPLIT_NAMES:
+            digest = prepare.sha256_file(PROCESSED_DIR / f"{name}.jsonl")
+            assert digest == expected[name], name
+
+
+def test_substitute_mode_is_off_by_default() -> None:
+    """A row that v1 rejects still rejects when the flag is absent."""
+    response = "We are open during {{Customer Support Hours}}."
+    _i, _r, _a, reject_id = prepare.apply_cleaning("when are you open", response, CLEANING)
+    assert reject_id == "reject_placeholder_no_neutral_wording"
+
+
+def test_substitute_mode_recovers_the_row() -> None:
+    counts: dict[str, int] = {}
+    from collections import defaultdict
+
+    counts = defaultdict(int)
+    inst, resp, applied, reject_id = prepare.apply_cleaning(
+        "when are you open",
+        "We are open during {{Customer Support Hours}}.",
+        CLEANING,
+        substitute=True,
+        substitution_counts=counts,
+    )
+    assert reject_id is None
+    assert resp == "We are open during the hours shown on our contact page."
+    assert "substitute_customer_support_hours" in applied
+    assert counts["Customer Support Hours"] == 1
+    assert "{{" not in inst + resp
+
+
+def test_substitute_phrases_assert_no_fact() -> None:
+    """No number, duration, price, URL, email or policy claim in any phrase."""
+    block = json.loads((ROOT / "configs" / "cleaning.json").read_text(encoding="utf-8"))
+    entries = block["substitutions"]["entries"]
+    assert entries
+    for entry in entries:
+        prepare.check_substitution_phrase(entry["placeholder"], entry["phrase"])
+    with pytest.raises(ValueError):
+        prepare.check_substitution_phrase("Delivery Time", "3 to 5 business days")
+    with pytest.raises(ValueError):
+        prepare.check_substitution_phrase("Website URL", "https://example.com")
+
+
+def test_substitute_mode_leaves_no_double_determiner() -> None:
+    cases = [
+        ("contact us during our {{Customer Support Hours}}.",
+         "contact us during the hours shown on our contact page."),
+        ("the Live Chat feature on our {{Website URL}}.",
+         "the Live Chat feature on our website."),
+        ("reach us on our website at {{Website URL}}.",
+         "reach us on our website."),
+        ("Log in to your {{Online Company Portal Info}} using your credentials.",
+         "Log in to your online portal using your credentials."),
+        ("Collect items from one of our {{Store Location}}.",
+         "Collect items from one of our stores."),
+        ('Head over to the "{{Login Page URL}}" of our platform.',
+         'Head over to the "login page" of our platform.'),
+        ("{{Website URL}} is where you start.",
+         "Our website is where you start."),
+    ]
+    for response, expected in cases:
+        _i, resp, _a, reject_id = prepare.apply_cleaning(
+            "hello", response, CLEANING, substitute=True
+        )
+        assert reject_id is None, response
+        assert resp == expected, (response, resp)
+
+
+def test_substitute_mode_still_rejects_what_has_no_neutral_phrase() -> None:
+    for response in (
+        "Delivery takes {{Standard Delivery Time}}.",
+        "See our {{Cancellation Policy}}.",
+        "Try {{Feature 1}}.",
+    ):
+        _i, _r, _a, reject_id = prepare.apply_cleaning(
+            "hello", response, CLEANING, substitute=True
+        )
+        assert reject_id == "reject_placeholder_no_neutral_wording", response
+
+
+def test_substitute_mode_leaves_the_other_reject_rules_alone() -> None:
+    cases = [
+        ("I want a refund", "I have refunded the payment. Call {{Customer Support Phone Number}}.",
+         "reject_completed_action"),
+        ("where is my order", "It ships within 3 business days from {{Store Location}}.",
+         "reject_invented_timeline"),
+        ("help", "Please send me your password and call {{Customer Support Phone Number}}.",
+         "reject_request_credentials"),
+    ]
+    for instruction, response, expected in cases:
+        _i, _r, _a, reject_id = prepare.apply_cleaning(
+            instruction, response, CLEANING, substitute=True
+        )
+        assert reject_id == expected, response
+
+
+def test_out_paths_keeps_v1_as_the_default() -> None:
+    assert prepare.out_paths(None) == prepare.V1_PATHS
+    assert prepare.out_paths("data") == prepare.V1_PATHS
+    v2 = prepare.out_paths("data/v2")
+    assert v2.processed_dir == PROCESSED_DIR / "v2"
+    assert v2.splits_path == ROOT / "data" / "v2" / "splits.json"
+    assert v2.audit_path == ROOT / "data" / "v2" / "audit.json"
