@@ -17,6 +17,7 @@ from zoneinfo import ZoneInfo
 
 import yaml
 
+from eval.blind import sealed_hash
 from train.render import SYSTEM_PROMPT, render_prompt
 
 
@@ -24,9 +25,11 @@ ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = ROOT / "configs" / "eval.yaml"
 VERSIONS_PATH = ROOT / "configs" / "versions.json"
 RESULTS_DIR = ROOT / "eval" / "results"
+CHALLENGE_PATH = ROOT / "eval" / "challenge.jsonl"
+SEAL_PATH = ROOT / "eval" / "SEAL.json"
 SPLIT_PATHS = {
     "dev": ROOT / "eval" / "dev.jsonl",
-    "challenge": ROOT / "eval" / "challenge.jsonl",
+    "challenge": CHALLENGE_PATH,
     "test": ROOT / "data" / "processed" / "test.jsonl",
 }
 MAX_NEW_TOKENS = 256
@@ -50,6 +53,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model", required=True, choices=("base", "tuned"))
     parser.add_argument("--backend", required=True, choices=("ollama", "transformers"))
     parser.add_argument("--split", required=True, choices=tuple(SPLIT_PATHS))
+    parser.add_argument("--challenge", type=Path, default=CHALLENGE_PATH)
+    parser.add_argument("--seal", type=Path, default=SEAL_PATH)
     parser.add_argument("--limit", type=int)
     parser.add_argument("--check-complete", action="store_true")
     parser.add_argument("--output", type=Path)
@@ -460,6 +465,14 @@ def assert_complete(expected_ids: set[str], output_rows: list[dict[str, Any]]) -
         raise ValueError(f"missing output ids: {missing}")
 
 
+def split_path_for(*, split: str, challenge: Path, seal: Path) -> Path:
+    """Resolve the requested split and verify a challenge against its seal."""
+    if split != "challenge":
+        return SPLIT_PATHS[split]
+    sealed_hash(seal, challenge)
+    return challenge
+
+
 def main() -> int:
     args = parse_args()
     if args.limit is not None and args.limit < 1:
@@ -469,7 +482,12 @@ def main() -> int:
     )
     adapter_sha = adapter_weights_sha256(adapter_dir) if adapter_dir is not None else None
     config = load_config()
-    all_items = load_jsonl(SPLIT_PATHS[args.split])
+    split_path = split_path_for(
+        split=args.split,
+        challenge=args.challenge,
+        seal=args.seal,
+    )
+    all_items = load_jsonl(split_path)
     selected = all_items[: args.limit] if args.limit is not None else all_items
     if not selected:
         raise ValueError(f"split {args.split} has no items")
