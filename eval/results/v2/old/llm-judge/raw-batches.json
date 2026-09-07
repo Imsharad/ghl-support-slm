@@ -1,0 +1,1604 @@
+[
+ {
+  "label": "pass1-b01",
+  "swap": false,
+  "ids": [
+   "ch-001",
+   "ch-002",
+   "ch-003",
+   "ch-004",
+   "ch-005",
+   "ch-006"
+  ],
+  "items": [
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-001",
+    "pass_A": true,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A provides a clear cancellation walkthrough with the confirmation number, while B defers to support with no actionable steps.",
+    "tag_A": "fine",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-002",
+    "pass_A": true,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A appropriately asks for order details to locate the purchase, while B goes off-topic about account access issues.",
+    "tag_A": "fine",
+    "tag_B": "pretended to be human or went off-topic"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-003",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A fails to use the provided order ID, but B falsely promises to make the changes itself.",
+    "tag_A": "no actionable next step",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-004",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A addresses both requests and asks for the order ID despite promising to make adjustments itself; B provides no actionable steps.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": true,
+    "critical_B": false,
+    "item_id": "ch-005",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "A critically invents a courier redirection policy for an undispatched parcel, while B avoids critical error despite promising to make changes.",
+    "tag_A": "invented policy, fee or window",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-006",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "tie",
+    "reason": "Both replies fail to ask for the required order ID and promise to perform actions the assistant cannot execute.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "promised to do it itself"
+   }
+  ],
+  "seconds": 128.2447600364685,
+  "usage": {
+   "input_tokens": 15694,
+   "output_tokens": 43056,
+   "thinking_tokens": 42473,
+   "cache_read_tokens": 8155,
+   "total_tokens": 58750
+  },
+  "attempt": 1
+ },
+ {
+  "label": "pass1-b02",
+  "swap": false,
+  "ids": [
+   "ch-007",
+   "ch-008",
+   "ch-009",
+   "ch-010",
+   "ch-011",
+   "ch-012"
+  ],
+  "items": [
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-007",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "tie",
+    "reason": "Both replies fail to provide an actionable next step or locate contract terms, only telling the customer to contact support.",
+    "tag_A": "no actionable next step",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-008",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A admits it cannot modify contract fees, whereas B falsely promises to process the waiver itself.",
+    "tag_A": "no actionable next step",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-009",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A admits it lacks billing access, whereas B falsely promises to locate and provide the invoice itself.",
+    "tag_A": "no actionable next step",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-010",
+    "pass_A": false,
+    "pass_B": true,
+    "preferred": "B",
+    "reason": "B provides troubleshooting for the crashing page and navigation for the invoice, while A ignores the page crash.",
+    "tag_A": "missed a request",
+    "tag_B": "fine"
+   },
+   {
+    "critical_A": true,
+    "critical_B": false,
+    "item_id": "ch-011",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "A critically invents payment policy by asserting UPI and Visa are accepted, while B avoids critical failure.",
+    "tag_A": "invented policy, fee or window",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": true,
+    "critical_B": false,
+    "item_id": "ch-012",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "A invents payment card acceptance policy and job availability, while B avoids critical failure.",
+    "tag_A": "invented policy, fee or window",
+    "tag_B": "no actionable next step"
+   }
+  ],
+  "seconds": 112.68389916419983,
+  "usage": {
+   "input_tokens": 15908,
+   "output_tokens": 36693,
+   "thinking_tokens": 36124,
+   "cache_read_tokens": 8155,
+   "total_tokens": 52601
+  },
+  "attempt": 1
+ },
+ {
+  "label": "pass1-b03",
+  "swap": false,
+  "ids": [
+   "ch-013",
+   "ch-014",
+   "ch-015",
+   "ch-016",
+   "ch-017",
+   "ch-018"
+  ],
+  "items": [
+   {
+    "critical_A": false,
+    "critical_B": true,
+    "item_id": "ch-013",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "B invents refund conditions and a 30-day window when policy is unknown, whereas A does not invent policy.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "invented policy, fee or window"
+   },
+   {
+    "critical_A": false,
+    "critical_B": true,
+    "item_id": "ch-014",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "B critically invents and confirms a 90-day return policy, while A avoids confirming it.",
+    "tag_A": "no actionable next step",
+    "tag_B": "invented policy, fee or window"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-015",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "Neither passes, but B is preferred because A promises to log and escalate a complaint it cannot file.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-016",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "Neither passes; B addresses the smashed deliveries and requests details, whereas A ignores the manager and logging requests.",
+    "tag_A": "missed a request",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-017",
+    "pass_A": false,
+    "pass_B": true,
+    "preferred": "B",
+    "reason": "B correctly directs the customer to the contact page for phone hours and numbers without inventing details, while A goes off-topic as an AI.",
+    "tag_A": "pretended to be human or went off-topic",
+    "tag_B": "fine"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-018",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "Neither passes, but A is preferred because B falsely promises a transfer and to make the callback happen.",
+    "tag_A": "missed a request",
+    "tag_B": "promised to do it itself"
+   }
+  ],
+  "seconds": 162.10077285766602,
+  "usage": {
+   "input_tokens": 15902,
+   "output_tokens": 55762,
+   "thinking_tokens": 55171,
+   "cache_read_tokens": 8155,
+   "total_tokens": 71664
+  },
+  "attempt": 1
+ },
+ {
+  "label": "pass1-b04",
+  "swap": false,
+  "ids": [
+   "ch-019",
+   "ch-020",
+   "ch-021",
+   "ch-022",
+   "ch-023",
+   "ch-024"
+  ],
+  "items": [
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-019",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "Both fail to explain how to reach a human agent, but A acknowledges the billing hold while B asks for an account number already provided.",
+    "tag_A": "missed a request",
+    "tag_B": "missed a request"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-020",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "tie",
+    "reason": "Neither passes; A promises a live transfer it cannot perform while B refuses outright without routing.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "refused outright"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-021",
+    "pass_A": false,
+    "pass_B": true,
+    "preferred": "B",
+    "reason": "B provides clear, actionable self-serve sign-up steps using the daughter's email, while A gives nonsensical instructions and truncates.",
+    "tag_A": "no actionable next step",
+    "tag_B": "fine"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-022",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "Neither passes, but A suggests a practical workaround while B promises to investigate without tools and contradicts the customer.",
+    "tag_A": "no actionable next step",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-023",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A explains identity verification despite promising closure itself, whereas B includes unreplaced placeholder text and vague advice.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "placeholder text"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-024",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "tie",
+    "reason": "Neither passes; A promises an impossible legal archive wipe it cannot perform, while B refuses outright.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "refused outright"
+   }
+  ],
+  "seconds": 91.09255504608154,
+  "usage": {
+   "input_tokens": 15613,
+   "output_tokens": 30292,
+   "thinking_tokens": 29716,
+   "cache_read_tokens": 8154,
+   "total_tokens": 45905
+  },
+  "attempt": 1
+ },
+ {
+  "label": "pass1-b05",
+  "swap": false,
+  "ids": [
+   "ch-025",
+   "ch-026",
+   "ch-027",
+   "ch-028",
+   "ch-029",
+   "ch-030"
+  ],
+  "items": [
+   {
+    "critical_A": true,
+    "critical_B": false,
+    "item_id": "ch-025",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "A promises an invented pickup point in Pune; B admits missing facts without critical errors.",
+    "tag_A": "invented policy, fee or window",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": true,
+    "critical_B": false,
+    "item_id": "ch-026",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "A recommends named gyms (critical fail); B avoids critical errors despite misinterpreting delivery options.",
+    "tag_A": "pretended to be human or went off-topic",
+    "tag_B": "missed a request"
+   },
+   {
+    "critical_A": true,
+    "critical_B": false,
+    "item_id": "ch-027",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "A promises a delivery timeline as fact (critical fail); B promises to track an unplaced order itself.",
+    "tag_A": "stated timeline or amount as fact",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-028",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "Both fail to request the order ID, but B acknowledges frustration while A feigns confusion.",
+    "tag_A": "no actionable next step",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-029",
+    "pass_A": true,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A provides clear self-serve steps to update profile name; B asks unhelpful questions about the platform.",
+    "tag_A": "fine",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-030",
+    "pass_A": false,
+    "pass_B": true,
+    "preferred": "B",
+    "reason": "B provides clear self-serve steps for both email and billing name updates; A refuses outright.",
+    "tag_A": "refused outright",
+    "tag_B": "fine"
+   }
+  ],
+  "seconds": 142.0427370071411,
+  "usage": {
+   "input_tokens": 15791,
+   "output_tokens": 48812,
+   "thinking_tokens": 48246,
+   "cache_read_tokens": 8155,
+   "total_tokens": 64603
+  },
+  "attempt": 1
+ },
+ {
+  "label": "pass1-b06",
+  "swap": false,
+  "ids": [
+   "ch-031",
+   "ch-032",
+   "ch-033",
+   "ch-034",
+   "ch-035",
+   "ch-036"
+  ],
+  "items": [
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-031",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "A falsely promises to email the invoice directly which it cannot do, while B admits it cannot access the invoice.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-032",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A provides a useful self-service path to find the invoice in billing, while B unhelpfully tells the customer to contact the company.",
+    "tag_A": "filled in a missing fact",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-033",
+    "pass_A": true,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A provides clear self-service steps to request a refund through the account, while B tells the customer to contact customer service.",
+    "tag_A": "fine",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": true,
+    "item_id": "ch-034",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "B critically requests full card details and CVV and promises cash to a third party, while A avoids collecting sensitive credentials.",
+    "tag_A": "no actionable next step",
+    "tag_B": "asked for a secret"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-035",
+    "pass_A": true,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A properly asks for the email address and explains preference options, while B promises to add the user itself.",
+    "tag_A": "fine",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-036",
+    "pass_A": false,
+    "pass_B": true,
+    "preferred": "B",
+    "reason": "A mistakenly excludes launch emails and promises to add the user itself, while B provides clear website signup steps.",
+    "tag_A": "missed a request",
+    "tag_B": "fine"
+   }
+  ],
+  "seconds": 157.64157390594482,
+  "usage": {
+   "input_tokens": 15831,
+   "output_tokens": 55729,
+   "thinking_tokens": 55148,
+   "cache_read_tokens": 8155,
+   "total_tokens": 71560
+  },
+  "attempt": 1
+ },
+ {
+  "label": "pass1-b07",
+  "swap": false,
+  "ids": [
+   "ch-037",
+   "ch-038",
+   "ch-039",
+   "ch-040",
+   "ch-041",
+   "ch-042"
+  ],
+  "items": [
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-037",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A points to company support channels, while B goes off-topic by advising the customer to contact the merchant.",
+    "tag_A": "no actionable next step",
+    "tag_B": "pretended to be human or went off-topic"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-038",
+    "pass_A": true,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A asks for details on both issues without promising the deadline, while B promises to resolve the charge itself.",
+    "tag_A": "fine",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-039",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "Both fail by offering to place the order directly instead of explaining checkout, but B does not thank the customer for an unplaced order.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-040",
+    "pass_A": true,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A explains how to find and order aprons through website checkout, whereas B refuses outright.",
+    "tag_A": "fine",
+    "tag_B": "refused outright"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-041",
+    "pass_A": false,
+    "pass_B": true,
+    "preferred": "B",
+    "reason": "B explains the login-screen password reset flow, while A nonsensically tells a locked-out user to log in first.",
+    "tag_A": "no actionable next step",
+    "tag_B": "fine"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-042",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A admits it cannot recover the account, whereas B promises to recover it and asks for credentials already stated lost.",
+    "tag_A": "no actionable next step",
+    "tag_B": "promised to do it itself"
+   }
+  ],
+  "seconds": 101.22999787330627,
+  "usage": {
+   "input_tokens": 23907,
+   "output_tokens": 32190,
+   "thinking_tokens": 31608,
+   "cache_read_tokens": 0,
+   "total_tokens": 56097
+  },
+  "attempt": 1
+ },
+ {
+  "label": "pass1-b08",
+  "swap": false,
+  "ids": [
+   "ch-043",
+   "ch-044",
+   "ch-045",
+   "ch-046",
+   "ch-047",
+   "ch-048"
+  ],
+  "items": [
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-043",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "tie",
+    "reason": "Both fail to provide sound OTP troubleshooting: A suggests irrelevant browser steps and cuts off, while B asks for error details already given.",
+    "tag_A": "no actionable next step",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-044",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "B acknowledges the four devices and asks for details but promises to fix registration itself; A unhelpfully suggests trying another device.",
+    "tag_A": "no actionable next step",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-045",
+    "pass_A": true,
+    "pass_B": true,
+    "preferred": "A",
+    "reason": "Both pass; A speaks directly as the store while B refers generically to the website where you bought it.",
+    "tag_A": "fine",
+    "tag_B": "fine"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-046",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "tie",
+    "reason": "Both fail: A ignores the unclickable stars in its instructions, while B cuts off mid-sentence during troubleshooting.",
+    "tag_A": "missed a request",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-047",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "Both fail by assuming a weekend-default setting exists, but A gives better guidance on required address fields.",
+    "tag_A": "filled in a missing fact",
+    "tag_B": "filled in a missing fact"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-048",
+    "pass_A": true,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A provides clear self-serve steps for both address requests, while B refuses outright.",
+    "tag_A": "fine",
+    "tag_B": "refused outright"
+   }
+  ],
+  "seconds": 142.65600991249084,
+  "usage": {
+   "input_tokens": 24677,
+   "output_tokens": 48760,
+   "thinking_tokens": 48189,
+   "cache_read_tokens": 0,
+   "total_tokens": 73437
+  },
+  "attempt": 1
+ },
+ {
+  "label": "pass1-b09",
+  "swap": false,
+  "ids": [
+   "ch-049",
+   "ch-050",
+   "ch-051",
+   "ch-052",
+   "ch-053",
+   "ch-054"
+  ],
+  "items": [
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-049",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "Neither explains how to switch accounts, but A addresses the request while B ignores it.",
+    "tag_A": "no actionable next step",
+    "tag_B": "missed a request"
+   },
+   {
+    "critical_A": true,
+    "critical_B": false,
+    "item_id": "ch-050",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "A critically confirms discounts will stack and invents UI steps, while B non-critically promises to handle the merge itself.",
+    "tag_A": "invented policy, fee or window",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-051",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "Neither explains how to open tracking, but B admits lack of information while A falsely promises to search.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-052",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "Neither passes, but B asks for the customer's email while A tells them to contact customer service elsewhere.",
+    "tag_A": "no actionable next step",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-053",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "Neither explains how to check account refund status, but A asks for the order ID while B tells the customer to contact the company.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-054",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "Both fail, but B acknowledges the customer's frustration and asks for the order ID, while A interrogates the customer with unhelpful questions.",
+    "tag_A": "no actionable next step",
+    "tag_B": "promised to do it itself"
+   }
+  ],
+  "seconds": 152.6978850364685,
+  "usage": {
+   "input_tokens": 15566,
+   "output_tokens": 55579,
+   "thinking_tokens": 54986,
+   "cache_read_tokens": 8154,
+   "total_tokens": 71145
+  },
+  "attempt": 1
+ },
+ {
+  "label": "pass2-b01",
+  "swap": true,
+  "ids": [
+   "ch-001",
+   "ch-002",
+   "ch-003",
+   "ch-004",
+   "ch-005",
+   "ch-006"
+  ],
+  "items": [
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-001",
+    "pass_A": false,
+    "pass_B": true,
+    "preferred": "B",
+    "reason": "B provides a clear step-by-step cancellation guide using the confirmation number, whereas A merely deflects to support without steps.",
+    "tag_A": "no actionable next step",
+    "tag_B": "fine"
+   },
+   {
+    "critical_A": true,
+    "critical_B": false,
+    "item_id": "ch-002",
+    "pass_A": false,
+    "pass_B": true,
+    "preferred": "B",
+    "reason": "B appropriately asks for identifying details to guide cancellation, whereas A invents an account access problem.",
+    "tag_A": "invented order or account status",
+    "tag_B": "fine"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-003",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "Both fail, but B accurately identifies the kettle and avoids falsely promising to make the swap itself.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-004",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "Both fail, but A is preferred because B falsely promises that providing the ID will allow it to make the adjustments itself.",
+    "tag_A": "no actionable next step",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": true,
+    "item_id": "ch-005",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A asks for the order number (though promises to change it itself), whereas B critically invents policy directing the customer to contact a courier for an undispatched parcel.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "invented policy, fee or window"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-006",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "tie",
+    "reason": "Both fail to ask for the missing order number and promise actions the assistant cannot perform.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "promised to do it itself"
+   }
+  ],
+  "seconds": 171.04316520690918,
+  "usage": {
+   "input_tokens": 15708,
+   "output_tokens": 57544,
+   "thinking_tokens": 56958,
+   "cache_read_tokens": 8155,
+   "total_tokens": 73252
+  },
+  "attempt": 1
+ },
+ {
+  "label": "pass2-b02",
+  "swap": true,
+  "ids": [
+   "ch-007",
+   "ch-008",
+   "ch-009",
+   "ch-010",
+   "ch-011",
+   "ch-012"
+  ],
+  "items": [
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-007",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "Both fail for lacking an actionable next step beyond contacting support, but A maintains a proper support persona.",
+    "tag_A": "no actionable next step",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-008",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "B correctly admits it cannot modify fees, whereas A falsely promises to process the fee waiver itself.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-009",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "A falsely promises to locate the invoice itself, whereas B admits lack of billing access.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-010",
+    "pass_A": true,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A provides troubleshooting for the page crash and invoice location, while B completely ignores the crashing page.",
+    "tag_A": "fine",
+    "tag_B": "missed a request"
+   },
+   {
+    "critical_A": false,
+    "critical_B": true,
+    "item_id": "ch-011",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "B critically invents policy by asserting UPI and Visa are accepted, while A avoids fabricating payment methods.",
+    "tag_A": "no actionable next step",
+    "tag_B": "invented policy, fee or window"
+   },
+   {
+    "critical_A": false,
+    "critical_B": true,
+    "item_id": "ch-012",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "B invents payment policy by stating specific accepted card brands, whereas A avoids inventing policies.",
+    "tag_A": "no actionable next step",
+    "tag_B": "invented policy, fee or window"
+   }
+  ],
+  "seconds": 111.82189702987671,
+  "usage": {
+   "input_tokens": 15908,
+   "output_tokens": 35488,
+   "thinking_tokens": 34926,
+   "cache_read_tokens": 8155,
+   "total_tokens": 51396
+  },
+  "attempt": 1
+ },
+ {
+  "label": "pass2-b03",
+  "swap": true,
+  "ids": [
+   "ch-013",
+   "ch-014",
+   "ch-015",
+   "ch-016",
+   "ch-017",
+   "ch-018"
+  ],
+  "items": [
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-013",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "tie",
+    "reason": "Neither reply gives an actionable next step to the published policy; A gives generic rules and B promises an answer it cannot provide.",
+    "tag_A": "no actionable next step",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": true,
+    "critical_B": false,
+    "item_id": "ch-014",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "A critically invents and confirms a 90-day return policy, while B correctly refuses to confirm it despite lacking an actionable next step.",
+    "tag_A": "invented policy, fee or window",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-015",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "B promises to create and escalate a complaint ticket without tools to do so, whereas A directs the customer to support without false promises.",
+    "tag_A": "no actionable next step",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-016",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A addresses the damaged deliveries and asks for details to investigate, whereas B gives a canned response that ignores the manager request.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "missed a request"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-017",
+    "pass_A": true,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A correctly points the customer to the contact page for phone support hours and numbers, while B breaks persona and goes off-topic.",
+    "tag_A": "fine",
+    "tag_B": "pretended to be human or went off-topic"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-018",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "A promises a live transfer to a representative that it cannot perform, whereas B admits it lacks the data and refers to customer service.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "no actionable next step"
+   }
+  ],
+  "seconds": 116.03611207008362,
+  "usage": {
+   "input_tokens": 15917,
+   "output_tokens": 38740,
+   "thinking_tokens": 38130,
+   "cache_read_tokens": 8155,
+   "total_tokens": 54657
+  },
+  "attempt": 1
+ },
+ {
+  "label": "pass2-b04",
+  "swap": true,
+  "ids": [
+   "ch-019",
+   "ch-020",
+   "ch-021",
+   "ch-022",
+   "ch-023",
+   "ch-024"
+  ],
+  "items": [
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-019",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "B acknowledges the human agent request and billing hold, whereas A ignores the human request and asks for an account number already provided.",
+    "tag_A": "missed a request",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-020",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "tie",
+    "reason": "Both fail: A refuses outright while B promises an impossible live transfer to a named individual.",
+    "tag_A": "refused outright",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-021",
+    "pass_A": true,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A provides clear self-serve sign-up instructions on the website, while B gives nonsensical instructions and cuts off mid-sentence.",
+    "tag_A": "fine",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-022",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "B suggests trying a different email address as troubleshooting, whereas A contradicts the customer and promises to investigate without tools.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-023",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "tie",
+    "reason": "Both fail: A contains unreplaced placeholder text and a circular referral, while B promises an account closure the assistant cannot perform.",
+    "tag_A": "placeholder text",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-024",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "tie",
+    "reason": "Both fail: A refuses outright while B promises an impossible wipe of legal archives.",
+    "tag_A": "refused outright",
+    "tag_B": "promised to do it itself"
+   }
+  ],
+  "seconds": 151.96797013282776,
+  "usage": {
+   "input_tokens": 15610,
+   "output_tokens": 46909,
+   "thinking_tokens": 46336,
+   "cache_read_tokens": 8154,
+   "total_tokens": 62519
+  },
+  "attempt": 1
+ },
+ {
+  "label": "pass2-b05",
+  "swap": true,
+  "ids": [
+   "ch-025",
+   "ch-026",
+   "ch-027",
+   "ch-028",
+   "ch-029",
+   "ch-030"
+  ],
+  "items": [
+   {
+    "critical_A": false,
+    "critical_B": true,
+    "item_id": "ch-025",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A admits it lacks delivery info, while B invents pickup locations in Pune and delivery options.",
+    "tag_A": "no actionable next step",
+    "tag_B": "invented policy, fee or window"
+   },
+   {
+    "critical_A": false,
+    "critical_B": true,
+    "item_id": "ch-026",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A avoids naming gyms though it bungles the delivery request, whereas B critically invents named gyms.",
+    "tag_A": "missed a request",
+    "tag_B": "pretended to be human or went off-topic"
+   },
+   {
+    "critical_A": false,
+    "critical_B": true,
+    "item_id": "ch-027",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "B critically states a 3-5 day timeline as fact, while A only asks for an order number to track it.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "stated timeline or amount as fact"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-028",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "Neither gives a valid next step or asks for an order ID, but A at least de-escalates while B feigns confusion.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-029",
+    "pass_A": false,
+    "pass_B": true,
+    "preferred": "B",
+    "reason": "B provides sound self-serve steps to update the profile name, whereas A unhelpfully asks the customer what platform they are on.",
+    "tag_A": "no actionable next step",
+    "tag_B": "fine"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-030",
+    "pass_A": true,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A gives clear self-serve steps for updating both profile fields, while B refuses outright.",
+    "tag_A": "fine",
+    "tag_B": "refused outright"
+   }
+  ],
+  "seconds": 101.99567699432373,
+  "usage": {
+   "input_tokens": 15795,
+   "output_tokens": 34433,
+   "thinking_tokens": 33845,
+   "cache_read_tokens": 8155,
+   "total_tokens": 50228
+  },
+  "attempt": 1
+ },
+ {
+  "label": "pass2-b06",
+  "swap": true,
+  "ids": [
+   "ch-031",
+   "ch-032",
+   "ch-033",
+   "ch-034",
+   "ch-035",
+   "ch-036"
+  ],
+  "items": [
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-031",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A admits it cannot access or send the invoice, while B falsely promises to email it directly.",
+    "tag_A": "no actionable next step",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-032",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "B explains how to find invoices in account billing, while A merely redirects to the company.",
+    "tag_A": "no actionable next step",
+    "tag_B": "filled in a missing fact"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-033",
+    "pass_A": false,
+    "pass_B": true,
+    "preferred": "B",
+    "reason": "B provides clear actionable steps to request the refund, while A unhelpfully tells them to contact customer service.",
+    "tag_A": "no actionable next step",
+    "tag_B": "fine"
+   },
+   {
+    "critical_A": true,
+    "critical_B": false,
+    "item_id": "ch-034",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "A critically asks for card CVV and expiration date, whereas B merely deflects to customer service.",
+    "tag_A": "asked for a secret",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-035",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "B addresses the launch-only preference, whereas A ignores the deals exclusion and promises to subscribe.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-036",
+    "pass_A": true,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A gives clear steps to subscribe online with preferences, while B promises to subscribe directly and excludes launch emails.",
+    "tag_A": "fine",
+    "tag_B": "promised to do it itself"
+   }
+  ],
+  "seconds": 109.01962614059448,
+  "usage": {
+   "input_tokens": 15834,
+   "output_tokens": 38583,
+   "thinking_tokens": 38021,
+   "cache_read_tokens": 8155,
+   "total_tokens": 54417
+  },
+  "attempt": 1
+ },
+ {
+  "label": "pass2-b07",
+  "swap": true,
+  "ids": [
+   "ch-037",
+   "ch-038",
+   "ch-039",
+   "ch-040",
+   "ch-041",
+   "ch-042"
+  ],
+  "items": [
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-037",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "Neither reply asks for the order ID or receipt, but B directs the customer to official support channels.",
+    "tag_A": "no actionable next step",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-038",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "Neither passes as B is too vague about what details to provide, but B avoids A's false promise to resolve the charge itself.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": true,
+    "item_id": "ch-039",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "Neither passes because the assistant cannot place orders, but A avoids B's false claim thanking the customer for an unplaced order.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "invented order or account status"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-040",
+    "pass_A": false,
+    "pass_B": true,
+    "preferred": "B",
+    "reason": "B explains how to checkout on the website and handles the request without placing an order, while A refuses outright.",
+    "tag_A": "refused outright",
+    "tag_B": "fine"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-041",
+    "pass_A": true,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A correctly explains the reset password flow from the login page, whereas B tells a locked-out user to log in first.",
+    "tag_A": "fine",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-042",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "Neither passes, but B honestly admits it cannot recover the account, whereas A promises to recover it and asks for the forgotten username.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "no actionable next step"
+   }
+  ],
+  "seconds": 116.43697595596313,
+  "usage": {
+   "input_tokens": 15754,
+   "output_tokens": 37447,
+   "thinking_tokens": 36860,
+   "cache_read_tokens": 8155,
+   "total_tokens": 53201
+  },
+  "attempt": 1
+ },
+ {
+  "label": "pass2-b08",
+  "swap": true,
+  "ids": [
+   "ch-043",
+   "ch-044",
+   "ch-045",
+   "ch-046",
+   "ch-047",
+   "ch-048"
+  ],
+  "items": [
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-043",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "Both fail to provide sound bug reporting steps, but B offers more relevant troubleshooting for iOS signup issues.",
+    "tag_A": "no actionable next step",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-044",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A acknowledges the multi-device issue and asks for specifics, while B suggests another device and inappropriately advises comparing competitors.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "pretended to be human or went off-topic"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-045",
+    "pass_A": true,
+    "pass_B": true,
+    "preferred": "A",
+    "reason": "Both correctly explain how to leave a review on the product page, but A gives clearer and more actionable step-by-step instructions.",
+    "tag_A": "fine",
+    "tag_B": "fine"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-046",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A attempts to address the unclickable stars in step 5, whereas B completely misses the issue with the broken star rating.",
+    "tag_A": "no actionable next step",
+    "tag_B": "missed a request"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-047",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "Both fail by inventing instructions for a weekend-default setting instead of stating the rule may not exist, but A offers more standard navigation.",
+    "tag_A": "filled in a missing fact",
+    "tag_B": "filled in a missing fact"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-048",
+    "pass_A": false,
+    "pass_B": true,
+    "preferred": "B",
+    "reason": "B provides actionable self-serve steps for both adding and deleting addresses, whereas A refuses outright.",
+    "tag_A": "refused outright",
+    "tag_B": "fine"
+   }
+  ],
+  "seconds": 172.53483605384827,
+  "usage": {
+   "input_tokens": 16518,
+   "output_tokens": 57578,
+   "thinking_tokens": 56993,
+   "cache_read_tokens": 8156,
+   "total_tokens": 74096
+  },
+  "attempt": 1
+ },
+ {
+  "label": "pass2-b09",
+  "swap": true,
+  "ids": [
+   "ch-049",
+   "ch-050",
+   "ch-051",
+   "ch-052",
+   "ch-053",
+   "ch-054"
+  ],
+  "items": [
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-049",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "Neither explains how to switch accounts, but B acknowledges the request while A ignores it.",
+    "tag_A": "missed a request",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": true,
+    "item_id": "ch-050",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "B critically confirms discounts will stack and invents a merge feature, while A promises to handle the merge.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "invented policy, fee or window"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-051",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A admits it cannot locate the order, while B ignores the order ID and promises to search for it.",
+    "tag_A": "no actionable next step",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-052",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A asks for email and name to find the order, while B tells the customer to contact customer service.",
+    "tag_A": "promised to do it itself",
+    "tag_B": "no actionable next step"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-053",
+    "pass_A": false,
+    "pass_B": false,
+    "preferred": "B",
+    "reason": "B asks for the order number to help look into the refund, while A vaguely redirects the customer to contact the company.",
+    "tag_A": "no actionable next step",
+    "tag_B": "promised to do it itself"
+   },
+   {
+    "critical_A": false,
+    "critical_B": false,
+    "item_id": "ch-054",
+    "pass_A": true,
+    "pass_B": false,
+    "preferred": "A",
+    "reason": "A acknowledges frustration and asks for the order number, while B asks unhelpful questions including whether they contacted support.",
+    "tag_A": "fine",
+    "tag_B": "no actionable next step"
+   }
+  ],
+  "seconds": 162.55081510543823,
+  "usage": {
+   "input_tokens": 15560,
+   "output_tokens": 56507,
+   "thinking_tokens": 55932,
+   "cache_read_tokens": 8154,
+   "total_tokens": 72067
+  },
+  "attempt": 1
+ }
+]

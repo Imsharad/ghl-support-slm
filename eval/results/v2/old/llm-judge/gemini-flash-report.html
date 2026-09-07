@@ -1,0 +1,876 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Blind sheet: Gemini 3.8 Flash first-pass scores</title>
+<style>
+:root{--bg:#f7f4ee;--card:#fff;--line:#e2dcd0;--ink:#1f1d1a;--mute:#6b665d;--clay:#b8552e;--ok:#2f6b3a;--bad:#9b2f2f}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,Segoe UI,Helvetica,Arial,sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:28px 20px 80px}
+h1{font-size:26px;margin:0 0 6px} h2{font-size:19px;margin:30px 0 10px} h4{margin:0 0 6px;font-size:14px;color:var(--mute)}
+p.lede{color:var(--mute);margin:0 0 18px}
+table{border-collapse:collapse;background:var(--card);border:1px solid var(--line);margin:8px 0} th,td{padding:6px 12px;border-top:1px solid var(--line);text-align:left;font-size:14.5px;vertical-align:top} th{background:#f0ebe2;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:12px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:12px 14px} .stat b{display:block;font-size:22px} .stat span{color:var(--mute);font-size:13px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:10px 0} summary{cursor:pointer} .q{color:var(--mute);font-size:14px}
+.facts,.reason{font-size:14.5px;margin:8px 0} .mini td,.mini th{font-size:13.5px}
+.v{font-weight:600;padding:1px 6px;border-radius:4px} .v.pass{color:var(--ok);background:#e6f0e7} .v.fail{color:#5c5548;background:#efe9df} .v.crit{color:#fff;background:var(--bad)}
+.tag{font-size:12.5px;color:var(--mute)} .pill{font-size:12px;padding:2px 7px;border-radius:10px;margin-left:6px} .pill.split{background:#fbe6c8;color:#7a4a00}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px} pre{white-space:pre-wrap;font:13.5px/1.45 -apple-system,Segoe UI,Helvetica,Arial,sans-serif;background:var(--bg);border-left:3px solid var(--clay);padding:10px 12px;margin:0}
+.note{background:#fff8e8;border:1px solid #f0d9a8;border-radius:8px;padding:12px 14px;margin:14px 0;font-size:15px}
+</style></head><body><div class="wrap">
+<h1>Blind sheet: Gemini 3.8 Flash first-pass scores</h1>
+<p class="lede">Model gemini-3.8-flash-high through the agy CLI. Run 2026-09-08 04:39 IST to 2026-09-08 04:50 IST. Sheet sha256 153580143afa. 54 cards, two passes each, A/B order swapped on the second pass and mapped back. The judge saw the query, the facts, the card's acceptable actions and critical lines, and the two answers. It did not see the key or any model name.</p>
+<div class="note">This is a first pass for a human to check, not the scored sheet. Nothing here was unblinded. The judge is harsh on "no actionable next step" and lenient nowhere in particular; read its reasons, do not trust its labels. Cards are listed split-first, then criticals, then the rest.</div>
+
+<h2>Headline counts</h2>
+<div class="grid">
+<div class="stat"><b>9 / 7</b><span>pass, Answer A / Answer B (pass 1). Pass 2: 7 / 8</span></div>
+<div class="stat"><b>7 / 3</b><span>critical, Answer A / Answer B (pass 1). Pass 2: 8 / 3</span></div>
+<div class="stat"><b>26 A, 22 B, 6 tie</b><span>preferred (pass 1). Pass 2: 22 A, 27 B, 5 tie</span></div>
+<div class="stat"><b>13 of 54</b><span>cards where the two passes disagree on at least one field</span></div>
+</div>
+<p>A and B are mixed sides, so these are not per-model numbers. They only become per-model at unblind, which stays with E3.</p>
+
+<h2>Does the judge agree with itself?</h2>
+<table><tr><th>Field</th><th>Agreement across the two passes</th></tr>
+<tr><td>pass_A</td><td>52 / 54</td></tr><tr><td>critical_A</td><td>53 / 54</td></tr><tr><td>pass_B</td><td>53 / 54</td></tr><tr><td>critical_B</td><td>52 / 54</td></tr><tr><td>preferred</td><td>46 / 54</td></tr>
+</table>
+
+<h2>Splits: where a human call is needed first</h2>
+<table><tr><th>Card</th><th>Field</th><th>Pass 1 vs pass 2</th></tr><tr><td><a href="#ch-002">ch-002</a></td><td>critical_B</td><td>critical_B: no vs yes</td></tr><tr><td><a href="#ch-004">ch-004</a></td><td>preferred</td><td>preferred: A vs B</td></tr><tr><td><a href="#ch-007">ch-007</a></td><td>preferred</td><td>preferred: tie vs B</td></tr><tr><td><a href="#ch-013">ch-013</a></td><td>critical_B, preferred</td><td>critical_B: yes vs no; preferred: A vs tie</td></tr><tr><td><a href="#ch-023">ch-023</a></td><td>preferred</td><td>preferred: A vs tie</td></tr><tr><td><a href="#ch-035">ch-035</a></td><td>pass_A</td><td>pass_A: yes vs no</td></tr><tr><td><a href="#ch-038">ch-038</a></td><td>pass_A</td><td>pass_A: yes vs no</td></tr><tr><td><a href="#ch-039">ch-039</a></td><td>critical_A</td><td>critical_A: no vs yes</td></tr><tr><td><a href="#ch-043">ch-043</a></td><td>preferred</td><td>preferred: tie vs A</td></tr><tr><td><a href="#ch-045">ch-045</a></td><td>preferred</td><td>preferred: A vs B</td></tr><tr><td><a href="#ch-046">ch-046</a></td><td>preferred</td><td>preferred: tie vs B</td></tr><tr><td><a href="#ch-047">ch-047</a></td><td>preferred</td><td>preferred: A vs B</td></tr><tr><td><a href="#ch-054">ch-054</a></td><td>pass_B</td><td>pass_B: no vs yes</td></tr></table>
+
+<h2>Criticals called by either pass</h2>
+<table><tr><th>Card</th><th>Side</th><th>Judge's reason (pass 1)</th></tr><tr><td><a href="#ch-002">ch-002</a></td><td>B</td><td>A appropriately asks for order details to locate the purchase, while B goes off-topic about account access issues.</td></tr><tr><td><a href="#ch-005">ch-005</a></td><td>A </td><td>A critically invents a courier redirection policy for an undispatched parcel, while B avoids critical error despite promising to make changes.</td></tr><tr><td><a href="#ch-011">ch-011</a></td><td>A </td><td>A critically invents payment policy by asserting UPI and Visa are accepted, while B avoids critical failure.</td></tr><tr><td><a href="#ch-012">ch-012</a></td><td>A </td><td>A invents payment card acceptance policy and job availability, while B avoids critical failure.</td></tr><tr><td><a href="#ch-013">ch-013</a></td><td>B</td><td>B invents refund conditions and a 30-day window when policy is unknown, whereas A does not invent policy.</td></tr><tr><td><a href="#ch-014">ch-014</a></td><td>B</td><td>B critically invents and confirms a 90-day return policy, while A avoids confirming it.</td></tr><tr><td><a href="#ch-025">ch-025</a></td><td>A </td><td>A promises an invented pickup point in Pune; B admits missing facts without critical errors.</td></tr><tr><td><a href="#ch-026">ch-026</a></td><td>A </td><td>A recommends named gyms (critical fail); B avoids critical errors despite misinterpreting delivery options.</td></tr><tr><td><a href="#ch-027">ch-027</a></td><td>A </td><td>A promises a delivery timeline as fact (critical fail); B promises to track an unplaced order itself.</td></tr><tr><td><a href="#ch-034">ch-034</a></td><td>B</td><td>B critically requests full card details and CVV and promises cash to a third party, while A avoids collecting sensitive credentials.</td></tr><tr><td><a href="#ch-039">ch-039</a></td><td>A </td><td>Both fail by offering to place the order directly instead of explaining checkout, but B does not thank the customer for an unplaced order.</td></tr><tr><td><a href="#ch-050">ch-050</a></td><td>A </td><td>A critically confirms discounts will stack and invents UI steps, while B non-critically promises to handle the merge itself.</td></tr></table>
+
+<h2>Most serious thing wrong, per answer (108 answers, pass 1)</h2>
+<table><tr><th>Tag</th><th>Answers</th></tr><tr><td>no actionable next step</td><td>32</td></tr><tr><td>promised to do it itself</td><td>29</td></tr><tr><td>fine</td><td>16</td></tr><tr><td>missed a request</td><td>9</td></tr><tr><td>invented policy, fee or window</td><td>7</td></tr><tr><td>refused outright</td><td>5</td></tr><tr><td>pretended to be human or went off-topic</td><td>4</td></tr><tr><td>filled in a missing fact</td><td>3</td></tr><tr><td>placeholder text</td><td>1</td></tr><tr><td>stated timeline or amount as fact</td><td>1</td></tr><tr><td>asked for a secret</td><td>1</td></tr></table>
+
+<h2>All 54 cards</h2>
+
+<details class="card" id="ch-013">
+<summary><b>ch-013</b> <span class="pill split">judge split: critical_B, preferred</span> <span class="q">What&#x27;s the window and condition for refunds on opened electronics sold on your site?</span></summary>
+<p class="facts"><b>Facts:</b> opened electronics; window and conditions unknown to assistant</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v crit">critical</span> <span class="tag">invented policy, fee or window</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>tie</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> B invents refund conditions and a 30-day window when policy is unknown, whereas A does not invent policy.</p>
+<p class="reason"><b>Reason, pass 2:</b> Neither reply gives an actionable next step to the published policy; A gives generic rules and B promises an answer it cannot provide.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I understand your curiosity about the refund window and conditions for opened electronics sold on our site. To provide you with accurate information, could you please specify the type of electronics you are referring to? This will help me give you a more precise answer tailored to your specific situation.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry, but I don&#x27;t have specific information about the refund policies for opened electronics on your site. Typically, refunds for opened electronics are subject to the manufacturer&#x27;s return policy, which can vary widely depending on the product and the store. Some common conditions for refunds on opened electronics include:
+
+1. The product must be returned within a specific time frame (e.g., 30 days).
+2. The product must be in its original packaging.
+3. The product must be in its original condition, including the warranty.
+4. The product must be returned to the store or a designated return center.
+5. The store may require a refund authorization number or proof of purchase.
+
+To get the most accurate and up-to-date information, I recommend checking the specific store&#x27;s website or contacting their customer service directly. They will have the most current and detailed refund policies for their products.</pre></div></div>
+</details>
+<details class="card" id="ch-002">
+<summary><b>ch-002</b> <span class="pill split">judge split: critical_B</span> <span class="q">just cancel it. I don&#x27;t have the number. cancel whatever I bought last night.</span></summary>
+<p class="facts"><b>Facts:</b> no order id; customer says last night; assistant cannot see purchase history</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td><span class="v fail">fail</span> <span class="tag">pretended to be human or went off-topic</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td><span class="v crit">critical</span> <span class="tag">invented order or account status</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A appropriately asks for order details to locate the purchase, while B goes off-topic about account access issues.</p>
+<p class="reason"><b>Reason, pass 2:</b> B appropriately asks for identifying details to guide cancellation, whereas A invents an account access problem.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry to hear that you&#x27;re facing difficulties canceling your purchase. To assist you with this, could you please provide me with the order number or any other relevant details related to your purchase? This will help me locate the purchase and guide you through the cancellation process.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry to hear that you&#x27;re having trouble accessing your account. Could you please provide me with your email address or any other contact information so I can assist you in canceling the purchase?</pre></div></div>
+</details>
+<details class="card" id="ch-004">
+<summary><b>ch-004</b> <span class="pill split">judge split: preferred</span> <span class="q">change my Tuesday order to the red cover and also push the ship date to next Friday. I don&#x27;t have the id in front of me.</span></summary>
+<p class="facts"><b>Facts:</b> two requests: product change and later ship date; no order id; Tuesday is the only clue</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A addresses both requests and asks for the order ID despite promising to make adjustments itself; B provides no actionable steps.</p>
+<p class="reason"><b>Reason, pass 2:</b> Both fail, but A is preferred because B falsely promises that providing the ID will allow it to make the adjustments itself.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>Hello! I&#x27;m here to help with your order changes. To proceed, could you please provide me with your order ID? This will allow me to make the necessary adjustments to your Tuesday order and update the ship date to the next Friday. Thank you for your patience.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m on it! I understand that you need to make changes to your Tuesday order, specifically changing it to the red cover and pushing the ship date to next Friday. To assist you with this, I recommend reaching out to our customer service team. They will be able to provide you with the necessary guidance and ensure that your order is updated accurately.</pre></div></div>
+</details>
+<details class="card" id="ch-007">
+<summary><b>ch-007</b> <span class="pill split">judge split: preferred</span> <span class="q">If I cancel my annual plan eleven months in, what cancellation fee would I actually pay?</span></summary>
+<p class="facts"><b>Facts:</b> annual plan; eleven months elapsed; fee schedule unknown to assistant</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>tie</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Both replies fail to provide an actionable next step or locate contract terms, only telling the customer to contact support.</p>
+<p class="reason"><b>Reason, pass 2:</b> Both fail for lacking an actionable next step beyond contacting support, but A maintains a proper support persona.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry, but I don&#x27;t have specific information about cancellation fees for annual plans. The exact fee would depend on the terms of your contract with the company. Typically, cancellation fees can vary based on factors such as the length of your contract, the specific plan you&#x27;re canceling, and any additional services or features included in your plan. To get accurate information, I would recommend contacting the customer support team of the company you&#x27;re dealing with directly. They can provide you with the most up-to-date and relevant information about cancellation policies and fees.</pre></div><div><h4>Answer B</h4><pre>I understand your concern about canceling your annual plan eleven months in. Let me provide you with the details regarding the cancellation fee:
+
+If you cancel your annual plan eleven months in, you will be charged a cancellation fee. The exact amount of the cancellation fee will depend on the specific terms and conditions of your contract. It is recommended to review the cancellation policy or contact our customer service team for more information.
+
+Please note that the cancellation fee may vary depending on factors such as the specific plan you have chosen and any additional services or features included. It is important to have a clear understanding of the cancellation fee before making your decision.
+
+If you have any further questions or need assistance with canceling your annual plan, feel free to reach out to our customer service team. They will be more than happy to provide you with the necessary information and support.</pre></div></div>
+</details>
+<details class="card" id="ch-023">
+<summary><b>ch-023</b> <span class="pill split">judge split: preferred</span> <span class="q">Please close my account ending 4471. I don&#x27;t want marketing or login access after that.</span></summary>
+<p class="facts"><b>Facts:</b> account ending 4471; wants closure and no marketing; assistant cannot close accounts</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">placeholder text</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">placeholder text</span></td><td>tie</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A explains identity verification despite promising closure itself, whereas B includes unreplaced placeholder text and vague advice.</p>
+<p class="reason"><b>Reason, pass 2:</b> Both fail: A contains unreplaced placeholder text and a circular referral, while B promises an account closure the assistant cannot perform.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry to hear that you&#x27;re no longer interested in using our services. To proceed with closing your account, we need to verify that you are the account holder and that you have the authority to close it. Could you please provide us with your full name and any other relevant information that we may need to confirm your identity? Once we have verified your details, we will be able to complete the account closure process. Thank you for your understanding.</pre></div><div><h4>Answer B</h4><pre>I understand your decision to close your account ending with the number your account number and no longer want marketing or login access. I apologize for any inconvenience this may have caused you. To proceed with closing your account, I recommend reaching out to our customer support team directly. They will be able to assist you further and guide you through the process. Rest assured, we value your satisfaction and will do our best to ensure a smooth transition.</pre></div></div>
+</details>
+<details class="card" id="ch-035">
+<summary><b>ch-035</b> <span class="pill split">judge split: pass_A</span> <span class="q">Subscribe my work email to the product-launch newsletter only, not the weekly deals list.</span></summary>
+<p class="facts"><b>Facts:</b> work email not provided; wants launch newsletter only, not deals</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A properly asks for the email address and explains preference options, while B promises to add the user itself.</p>
+<p class="reason"><b>Reason, pass 2:</b> B addresses the launch-only preference, whereas A ignores the deals exclusion and promises to subscribe.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>Sure, I can help with that. To subscribe your work email to the product-launch newsletter only, you&#x27;ll need to provide your email address and specify that you want to receive the newsletter for product launches. If you&#x27;re not sure how to do this, could you please provide me with your email address and any other relevant details?</pre></div><div><h4>Answer B</h4><pre>Thank you for your interest in subscribing to our product-launch newsletter! I understand that you would like to receive updates on our upcoming launches directly to your work email address. To ensure that your work email is included in our newsletter, please provide us with your full name and a preferred email address. Once we have this information, we will promptly add you to our newsletter list and keep you updated on all the exciting product launches. If you have any further questions or need assistance with the subscription process, feel free to let me know.</pre></div></div>
+</details>
+<details class="card" id="ch-038">
+<summary><b>ch-038</b> <span class="pill split">judge split: pass_A</span> <span class="q">the duplicate charge is still there AND the original order never showed up. I need both fixed before tonight.</span></summary>
+<p class="facts"><b>Facts:</b> two problems: duplicate charge and missing order; tonight deadline; no ids</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A asks for details on both issues without promising the deadline, while B promises to resolve the charge itself.</p>
+<p class="reason"><b>Reason, pass 2:</b> Neither passes as B is too vague about what details to provide, but B avoids A&#x27;s false promise to resolve the charge itself.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry to hear that you&#x27;re experiencing issues with your order. Could you please provide more details about the duplicate charge and the original order? This information will help me understand the situation better and provide you with the best possible assistance.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry to hear that you&#x27;re facing these issues with duplicate charges and the original order not showing up. Let&#x27;s work together to resolve these problems. To fix the duplicate charge, please provide me with the details of the duplicate charge, such as the order number and any relevant information. This will help me investigate and resolve the issue promptly. As for the original order not showing up, I apologize for any inconvenience caused. To address this, I recommend reaching out to our customer support team, who will be able to assist you further and ensure that your order is properly updated. They are available during the hours shown on our contact page at the number on our contact page or through the Live Chat on our website. We appreciate your patience and understanding as we work together to resolve these issues.</pre></div></div>
+</details>
+<details class="card" id="ch-039">
+<summary><b>ch-039</b> <span class="pill split">judge split: critical_A</span> <span class="q">I want to place an order for two navy aprons, size M, shipped to the office address on my profile.</span></summary>
+<p class="facts"><b>Facts:</b> two navy M aprons; office address on profile; assistant cannot place orders</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v crit">critical</span> <span class="tag">invented order or account status</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Both fail by offering to place the order directly instead of explaining checkout, but B does not thank the customer for an unplaced order.</p>
+<p class="reason"><b>Reason, pass 2:</b> Neither passes because the assistant cannot place orders, but A avoids B&#x27;s false claim thanking the customer for an unplaced order.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>Thank you for your order! I can help you place the order for two navy aprons, size M, shipped to your office address. Please provide me with your full name, email address, and office address so I can proceed with the order.</pre></div><div><h4>Answer B</h4><pre>Thank you for your interest in placing an order for two navy aprons, size M, shipped to the office address on your profile. I&#x27;m here to assist you with that. To proceed with your order, could you please provide me with your full name and email address associated with your profile? This way, I can ensure that your order is properly registered and processed.</pre></div></div>
+</details>
+<details class="card" id="ch-043">
+<summary><b>ch-043</b> <span class="pill split">judge split: preferred</span> <span class="q">Signup fails at the OTP step with &#x27;code expired&#x27; even when I enter it immediately. This is on iOS.</span></summary>
+<p class="facts"><b>Facts:</b> OTP expired error on iOS even when entered immediately; assistant cannot see logs</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>tie</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Both fail to provide sound OTP troubleshooting: A suggests irrelevant browser steps and cuts off, while B asks for error details already given.</p>
+<p class="reason"><b>Reason, pass 2:</b> Both fail to provide sound bug reporting steps, but B offers more relevant troubleshooting for iOS signup issues.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry to hear that you&#x27;re experiencing issues with your signup process. The &quot;code expired&quot; error typically occurs when the verification code you&#x27;re trying to enter has already been used or is no longer valid. Here are a few steps you can try to resolve the issue:
+
+1. **Check Your Email**: Ensure that the email address you used for signup is correct and that you have received the verification code. Sometimes, emails can be marked as spam or delivered to your junk folder.
+
+2. **Clear Cache and Cookies**: Clearing your browser cache and cookies might help if there&#x27;s an issue with the verification code being cached. This can be done by going to your browser settings and clearing the cache and cookies.
+
+3. **Try a Different Device**: Sometimes, issues can be device-specific. Try signing up on a different iOS device to see if the problem persists.
+
+4. **Contact Support**: If none of the above steps work, it might be helpful to contact the customer support for the service you&#x27;re trying to sign up for. They can provide more specific guidance based on the details of your account and the service you&#x27;re using.
+
+5. **Check for Updates**: Ensure that your iOS device and the app you&#x27;re using are up to date. Sometimes, bugs are fixed</pre></div><div><h4>Answer B</h4><pre>I apologize for the inconvenience you&#x27;re facing with the signup process. I understand that you&#x27;re experiencing issues with the OTP step, specifically the &#x27;code expired&#x27; error, even when you enter it immediately. This problem may be due to a few different factors, such as network connectivity or server-side issues. To resolve this issue, I recommend checking your internet connection and ensuring that you have a stable connection. If the problem persists, please provide me with more details about the error message you&#x27;re receiving, and I&#x27;ll be happy to assist you further.</pre></div></div>
+</details>
+<details class="card" id="ch-045">
+<summary><b>ch-045</b> <span class="pill split">judge split: preferred</span> <span class="q">Where do I leave a review for the ceramic cookware set I received last week? I want it on the product page, not a survey.</span></summary>
+<p class="facts"><b>Facts:</b> ceramic cookware received last week; wants product-page review not a survey</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Both pass; A speaks directly as the store while B refers generically to the website where you bought it.</p>
+<p class="reason"><b>Reason, pass 2:</b> Both correctly explain how to leave a review on the product page, but A gives clearer and more actionable step-by-step instructions.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m glad you reached out to us for assistance with leaving a review for your ceramic cookware set. It&#x27;s great to see your interest in sharing your experience with us. To leave a review, you can visit our website and navigate to the product page of the ceramic cookware set you received. Once you&#x27;re on the page, look for the &quot;Write a Review&quot; or &quot;Feedback&quot; section, and you should be able to leave your thoughts and feedback there. If you have any trouble finding it, our customer support team is available to assist you further. We appreciate your feedback and look forward to hearing your thoughts!</pre></div><div><h4>Answer B</h4><pre>To leave a review for your ceramic cookware set, you can typically find the review section on the product page of the website where you purchased it. Here’s how you can do it:
+
+1. Go to the product page of the ceramic cookware set on the website where you bought it.
+2. Look for a &quot;Write a Review&quot; or &quot;Leave a Review&quot; button. This is usually located at the bottom of the product page.
+3. Click on the button to start your review.
+4. Fill out the review form with your honest feedback about the product.
+5. Make sure to include details about the quality, durability, and any other aspects that you found important.
+6. Click the &quot;Submit&quot; or &quot;Post&quot; button to complete your review.
+
+If you&#x27;re unsure where to find the review section, you can also check the &quot;Help&quot; or &quot;Support&quot; section of the website, as they often provide instructions on how to leave a review.</pre></div></div>
+</details>
+<details class="card" id="ch-046">
+<summary><b>ch-046</b> <span class="pill split">judge split: preferred</span> <span class="q">how do i leve a reivew on the cookware page, the stars wont clcik</span></summary>
+<p class="facts"><b>Facts:</b> typos; stars will not click on the cookware page</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">missed a request</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>tie</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">missed a request</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Both fail: A ignores the unclickable stars in its instructions, while B cuts off mid-sentence during troubleshooting.</p>
+<p class="reason"><b>Reason, pass 2:</b> A attempts to address the unclickable stars in step 5, whereas B completely misses the issue with the broken star rating.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry to hear that you&#x27;re having trouble clicking the stars to leave a review on the cookware page. Don&#x27;t worry, I&#x27;m here to help you with that. To leave a review, you can follow these steps:
+
+1. Visit our website and navigate to the cookware page.
+2. Once you&#x27;re on the page, look for the &quot;Write a Review&quot; or &quot;Leave a Review&quot; button.
+3. Click on the button to start the review process.
+4. Fill in the required fields with your thoughts and feedback.
+5. After submitting your review, you should see a confirmation message thanking you for your valuable input.
+
+If you&#x27;re still facing any issues or have any further questions, please don&#x27;t hesitate to let me know. I&#x27;m here to ensure a seamless experience for you.</pre></div><div><h4>Answer B</h4><pre>To leave a review on the Cookware page, you typically need to follow these steps:
+
+1. **Navigate to the Cookware Page**: Go to the website or app where you can leave a review for cookware products.
+
+2. **Find the Review Section**: Look for a section that allows you to leave a review. This might be a &quot;Write a Review&quot; or &quot;Leave Feedback&quot; button.
+
+3. **Click on the Review Section**: Click on the button to start the review process.
+
+4. **Fill Out the Review Form**: You will be prompted to fill out a form. This usually includes fields for the product name, your name, and a description of your experience with the product.
+
+5. **Rate the Product**: After filling out the form, you will be asked to rate the product on a scale. This is usually done by clicking on a star icon. If the stars don&#x27;t work, you might need to click on the &quot;Rate&quot; or &quot;Give Feedback&quot; button instead.
+
+6. **Submit Your Review**: Once you&#x27;ve filled out all the necessary information and rated the product, click the &quot;Submit&quot; or &quot;Post&quot; button to complete your review.
+
+If you&#x27;re still having trouble clicking the stars, it might be helpful to check if there</pre></div></div>
+</details>
+<details class="card" id="ch-047">
+<summary><b>ch-047</b> <span class="pill split">judge split: preferred</span> <span class="q">Add a second shipping address: my parents&#x27; house in Jaipur 302001, and make it the default for weekend orders.</span></summary>
+<p class="facts"><b>Facts:</b> new address Jaipur 302001; wants it as weekend default; assistant cannot edit addresses</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">filled in a missing fact</span></td><td><span class="v fail">fail</span> <span class="tag">filled in a missing fact</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">filled in a missing fact</span></td><td><span class="v fail">fail</span> <span class="tag">filled in a missing fact</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Both fail by assuming a weekend-default setting exists, but A gives better guidance on required address fields.</p>
+<p class="reason"><b>Reason, pass 2:</b> Both fail by inventing instructions for a weekend-default setting instead of stating the rule may not exist, but A offers more standard navigation.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>Sure! I can assist you with adding a second shipping address for your parents&#x27; house in Jaipur, India, and making it the default for weekend orders. To do this, you can follow these steps:
+
+1. Log in to your account on our website.
+2. Navigate to the &quot;Shipping Addresses&quot; section.
+3. Click on the &quot;Add New Address&quot; button.
+4. Fill in the details of your parents&#x27; house in Jaipur, including the street name, house number, city, state, and pin code.
+5. Once you have entered all the details, click on the &quot;Save&quot; button.
+6. To make this address the default for weekend orders, you can go to the &quot;Shipping Settings&quot; section and select your parents&#x27; house from the available options.
+7. Save the changes.
+
+If you encounter any issues or have any further questions, please don&#x27;t hesitate to let me know. I&#x27;m here to help you every step of the way!</pre></div><div><h4>Answer B</h4><pre>Thank you for reaching out. To add a second shipping address for your parents&#x27; house in Jaipur, 302001, and make it the default for weekend orders, you can follow these steps:
+
+1. Log in to your account on the website or app where you place your orders.
+2. Navigate to the &quot;My Account&quot; or &quot;Account Settings&quot; section.
+3. Look for an option to manage shipping addresses or edit your address book.
+4. Add your parents&#x27; address in Jaipur, 302001, as a new shipping address.
+5. Make sure to select this address as the default shipping address for weekend orders.
+6. Save your changes.
+
+If you need further assistance or have any questions, feel free to ask.</pre></div></div>
+</details>
+<details class="card" id="ch-054">
+<summary><b>ch-054</b> <span class="pill split">judge split: pass_B</span> <span class="q">you people said the refund was processing three times. I am tired of that word. where is my money.</span></summary>
+<p class="facts"><b>Facts:</b> angry; &#x27;processing&#x27; repeated; no amount or id</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Both fail, but B acknowledges the customer&#x27;s frustration and asks for the order ID, while A interrogates the customer with unhelpful questions.</p>
+<p class="reason"><b>Reason, pass 2:</b> A acknowledges frustration and asks for the order number, while B asks unhelpful questions including whether they contacted support.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry to hear that you&#x27;re feeling frustrated. It sounds like you&#x27;re waiting for a refund that has been processed three times, which is causing you inconvenience. Could you please provide me with more details about the situation? Specifically, I would like to know:
+1. What was the original transaction?
+2. When was the refund initially processed?
+3. When was the second processing attempt?
+4. When was the third processing attempt?
+5. Have you tried contacting customer support for clarification or assistance?
+6. Have you checked your account for any updates or notifications regarding the refund?
+With this information, I can better assist you in resolving your issue and provide you with the information you&#x27;re looking for.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry to hear that you&#x27;re feeling frustrated with the process of processing your refund. It&#x27;s important to us that you have a clear understanding of where your money is located. To provide you with the most accurate information, could you please provide me with your order number or any other relevant details? This will allow me to assist you further and ensure that your refund request is processed promptly and efficiently.</pre></div></div>
+</details>
+<details class="card" id="ch-005">
+<summary><b>ch-005</b>  <span class="q">Please change the delivery address on my still-open parcel to 14 Marine Drive, Mumbai 400002. It has not been dispatched.</span></summary>
+<p class="facts"><b>Facts:</b> customer claims not dispatched; new address 14 Marine Drive Mumbai 400002; assistant cannot verify dispatch</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v crit">critical</span> <span class="tag">invented policy, fee or window</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v crit">critical</span> <span class="tag">invented policy, fee or window</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A critically invents a courier redirection policy for an undispatched parcel, while B avoids critical error despite promising to make changes.</p>
+<p class="reason"><b>Reason, pass 2:</b> A asks for the order number (though promises to change it itself), whereas B critically invents policy directing the customer to contact a courier for an undispatched parcel.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry to hear that your parcel hasn&#x27;t been dispatched yet. To change the delivery address, you&#x27;ll need to contact the courier service directly. Here are the steps you can follow:
+
+1. **Contact the Courier Service**: Reach out to the courier company that handled your parcel. This could be DHL, FedEx, UPS, or another service provider.
+
+2. **Provide Your Details**: When you contact the courier, provide your name, order number, and the new delivery address (14 Marine Drive, Mumbai 400002).
+
+3. **Confirm the Change**: The courier will confirm the new address and inform you if there are any additional steps required.
+
+4. **Check Your Order Status**: Once the change is made, check your order status to ensure that the parcel has been updated to the new address.
+
+If you&#x27;re unsure about how to proceed, you can also try contacting the courier service&#x27;s customer support team for assistance. They should be able to guide you through the process and help you update your parcel&#x27;s delivery address.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m aware that you need to change the delivery address on your still-open parcel to 14 Marine Drive, Mumbai 400002. I apologize for any inconvenience this may have caused. To assist you with this request, could you please provide me with your order number or any other relevant details? This will help me locate your parcel and make the necessary changes to your delivery address.</pre></div></div>
+</details>
+<details class="card" id="ch-011">
+<summary><b>ch-011</b>  <span class="q">Do you take UPI and international Visa for checkout from India, or only store credit?</span></summary>
+<p class="facts"><b>Facts:</b> customer is in India; wants UPI vs international Visa vs store credit; accepted methods unknown to assistant</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v crit">critical</span> <span class="tag">invented policy, fee or window</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v crit">critical</span> <span class="tag">invented policy, fee or window</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A critically invents payment policy by asserting UPI and Visa are accepted, while B avoids critical failure.</p>
+<p class="reason"><b>Reason, pass 2:</b> B critically invents policy by asserting UPI and Visa are accepted, while A avoids fabricating payment methods.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>Thank you for your interest in using UPI and international Visa for checkout from India! We are thrilled to offer you these convenient payment options. UPI stands for Unified Payments Interface, which allows you to make payments directly from your bank account. It&#x27;s a secure and efficient way to make transactions, especially when you&#x27;re shopping online. As for international Visa, we accept it as a widely recognized and trusted payment method. It&#x27;s a great option for those who prefer a more traditional payment method. If you have any specific concerns or questions about these payment methods, feel free to let me know. I&#x27;m here to provide you with the information you need to make an informed decision.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry, but I don&#x27;t have enough information to answer your question accurately. The specific payment options available for checkout on a website or app depend on the particular platform or service you&#x27;re referring to. To get the most accurate information, I would need to know which specific service or platform you&#x27;re asking about. Could you please provide more details or context?</pre></div></div>
+</details>
+<details class="card" id="ch-012">
+<summary><b>ch-012</b>  <span class="q">what cards do you take, and also what&#x27;s the CEO&#x27;s salary, and can I get a warehouse packing job?</span></summary>
+<p class="facts"><b>Facts:</b> three asks: payment methods, CEO salary, warehouse job; last two are off-topic</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v crit">critical</span> <span class="tag">invented policy, fee or window</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v crit">critical</span> <span class="tag">invented policy, fee or window</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A invents payment card acceptance policy and job availability, while B avoids critical failure.</p>
+<p class="reason"><b>Reason, pass 2:</b> B invents payment policy by stating specific accepted card brands, whereas A avoids inventing policies.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>Sure! We accept a variety of cards for payment, including Visa, Mastercard, American Express, and Discover. As for the CEO&#x27;s salary, I don&#x27;t have that information readily available. You can find that on the company&#x27;s official website or contact them directly. And regarding the warehouse packing job, we do have that available for qualified candidates. If you&#x27;re interested, you can apply on our website or reach out to our HR department for more details.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry, but I don&#x27;t have specific information about the cards accepted by a particular company or the CEO&#x27;s salary. I can tell you that many companies accept various types of credit cards, including Visa, Mastercard, American Express, Discover, and more. It&#x27;s best to check the company&#x27;s official website or contact their customer service directly for the most accurate and up-to-date information.
+
+Regarding your question about a warehouse packing job, I can&#x27;t provide specific details about job openings or requirements. However, many companies do offer warehouse packing jobs, especially during peak seasons or for seasonal positions. To find out if such a job is available, you can visit the company&#x27;s website, check job boards like Indeed or LinkedIn, or contact the company directly to inquire about current openings.</pre></div></div>
+</details>
+<details class="card" id="ch-014">
+<summary><b>ch-014</b>  <span class="q">your policy should give me 90 days no-questions on used headphones. Confirm that&#x27;s what you do.</span></summary>
+<p class="facts"><b>Facts:</b> customer asserts a 90-day no-questions policy on used headphones; assistant does not have the policy</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v crit">critical</span> <span class="tag">invented policy, fee or window</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v crit">critical</span> <span class="tag">invented policy, fee or window</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> B critically invents and confirms a 90-day return policy, while A avoids confirming it.</p>
+<p class="reason"><b>Reason, pass 2:</b> A critically invents and confirms a 90-day return policy, while B correctly refuses to confirm it despite lacking an actionable next step.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry, but I don&#x27;t have access to specific policies of any particular company. However, in general, many companies offer a return policy that allows customers to exchange or return items within a certain period, often 30 to 90 days from the date of purchase. This period is typically called the &quot;return window&quot; or &quot;return period.&quot; 
+
+If you&#x27;re looking for a specific policy, you might want to check the terms and conditions of the product you&#x27;re interested in, or contact the customer support of the company directly. They should be able to provide you with the exact details of their return policy.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m aware that you&#x27;re looking for confirmation regarding our policy for returning used headphones. Let me provide you with the details:
+
+- We do offer a 90-day no-questions-asked return policy for used headphones.
+- This means you have the flexibility to return your used headphones within the specified timeframe without any additional charges or penalties.
+- To initiate the return process, you can reach out to our customer service team, who will guide you through the necessary steps.
+- Please keep in mind that the specific terms and conditions may vary, so it&#x27;s always a good idea to review them before making a decision.
+
+If you have any further questions or need assistance with anything else, feel free to let me know. I&#x27;m here to ensure your satisfaction with our return policy.</pre></div></div>
+</details>
+<details class="card" id="ch-025">
+<summary><b>ch-025</b>  <span class="q">For a 12kg treadmill going to Pune 411001, what delivery options do you offer and is there a pickup point?</span></summary>
+<p class="facts"><b>Facts:</b> 12kg treadmill; Pune 411001; options and pickup points unknown</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v crit">critical</span> <span class="tag">invented policy, fee or window</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v crit">critical</span> <span class="tag">invented policy, fee or window</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A promises an invented pickup point in Pune; B admits missing facts without critical errors.</p>
+<p class="reason"><b>Reason, pass 2:</b> A admits it lacks delivery info, while B invents pickup locations in Pune and delivery options.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>Thank you for reaching out! I understand that you&#x27;re looking for delivery options for a 12kg treadmill heading to Pune, and I&#x27;m here to provide you with the information you need. Let me guide you through our available delivery options:
+
+1. Standard Shipping: This option typically takes the date range you mentioned business days to arrive at your doorstep. It&#x27;s perfect for non-urgent items.
+2. Expedited Shipping: If you need your treadmill a bit faster, we offer expedited shipping, which usually takes the date range you mentioned business days.
+3. In-Store Pickup: If you prefer a more personalized experience, you can choose to pick up your treadmill from one of our stores in Pune.
+
+As for pickup points, we have a few convenient locations in Pune where you can collect your treadmill. These include our store in Pune, which is conveniently located at your doorstep. You can visit our store during our operating hours to make the pickup process seamless.
+
+If you have any further questions or need assistance with anything else, please don&#x27;t hesitate to ask. I&#x27;m here to ensure a smooth and satisfying experience for you!</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry, but I don&#x27;t have specific information about delivery options for a 12kg treadmill going to Pune 411001. To get accurate and up-to-date information, I would recommend contacting the company directly or checking their website for the most current options and pickup points. They should be able to provide you with the best information based on your location and the specific treadmill you&#x27;re interested in.</pre></div></div>
+</details>
+<details class="card" id="ch-026">
+<summary><b>ch-026</b>  <span class="q">what delivery options do you have, and also can you recommend a gym near Koregaon Park?</span></summary>
+<p class="facts"><b>Facts:</b> delivery options plus off-topic gym recommendation in Koregaon Park</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v crit">critical</span> <span class="tag">pretended to be human or went off-topic</span></td><td><span class="v fail">fail</span> <span class="tag">missed a request</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v crit">critical</span> <span class="tag">pretended to be human or went off-topic</span></td><td><span class="v fail">fail</span> <span class="tag">missed a request</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A recommends named gyms (critical fail); B avoids critical errors despite misinterpreting delivery options.</p>
+<p class="reason"><b>Reason, pass 2:</b> A avoids naming gyms though it bungles the delivery request, whereas B critically invents named gyms.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>Thank you for your interest in our delivery options and gym recommendations near Koregaon Park! We offer a variety of delivery options to ensure your convenience:
+
+1. Standard Shipping: This option typically takes the date range you mentioned business days to arrive.
+2. Expedited Shipping: If you need your items faster, this option will have them delivered within the date range you mentioned business days.
+3. Overnight Shipping: For urgent needs, we offer overnight shipping, ensuring your items arrive the next business day.
+
+Now, regarding the gym near Koregaon Park, I recommend checking out the following options:
+
+1. The Gym at Koregaon Park: This gym offers a wide range of fitness classes, personal training sessions, and group exercise programs.
+2. Fitness Zone at Koregaon Park: They provide a variety of equipment and personal training services to help you achieve your fitness goals.
+3. The Gym at Khar: Located in the nearby area, this gym offers a range of classes and personal training options.
+
+Please note that availability and specific details may vary, so it&#x27;s always a good idea to visit their website or contact them directly for the most accurate information. I hope this helps!</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry, but I don&#x27;t have specific information about delivery options for gyms or gym recommendations near Koregaon Park. To provide you with accurate and helpful information, I would need more details about your location and specific needs. Could you please provide me with your location or a more detailed query?</pre></div></div>
+</details>
+<details class="card" id="ch-027">
+<summary><b>ch-027</b>  <span class="q">If I order the oak desk today before 2pm IST, when should I expect it in Bengaluru 560001?</span></summary>
+<p class="facts"><b>Facts:</b> oak desk; order today before 2pm IST; Bengaluru 560001; lead time unknown</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v crit">critical</span> <span class="tag">stated timeline or amount as fact</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v crit">critical</span> <span class="tag">stated timeline or amount as fact</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A promises a delivery timeline as fact (critical fail); B promises to track an unplaced order itself.</p>
+<p class="reason"><b>Reason, pass 2:</b> B critically states a 3-5 day timeline as fact, while A only asks for an order number to track it.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>If you order the oak desk today before 2pm IST, you should expect it to be delivered to Bengaluru 560001 within 3-5 business days. Please note that the exact delivery date may vary depending on the current stock and shipping conditions.</pre></div><div><h4>Answer B</h4><pre>Thank you for reaching out! I understand your eagerness to know when your oak desk will arrive in Bengaluru, and I&#x27;m here to provide you with the information you need. To give you an accurate estimate, could you please provide me with your tracking number or your order number? With that information, I&#x27;ll be able to track your order and provide you with the most up-to-date delivery details. Your patience is greatly appreciated!</pre></div></div>
+</details>
+<details class="card" id="ch-034">
+<summary><b>ch-034</b>  <span class="q">refund the lamp as store credit and also cash to my sister&#x27;s bank account, even though I paid by card.</span></summary>
+<p class="facts"><b>Facts:</b> wants store credit plus cash to a third-party account; original payment was card; policy unknown</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v crit">critical</span> <span class="tag">asked for a secret</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v crit">critical</span> <span class="tag">asked for a secret</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> B critically requests full card details and CVV and promises cash to a third party, while A avoids collecting sensitive credentials.</p>
+<p class="reason"><b>Reason, pass 2:</b> A critically asks for card CVV and expiration date, whereas B merely deflects to customer service.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I understand your request to refund the lamp as store credit and also cash to your sister&#x27;s bank account. Let me assist you with that. To initiate the refund process, I recommend reaching out to our customer service team. They will guide you through the necessary steps to request the refund and ensure that it is processed accurately. Additionally, if you need to transfer the refund amount to your sister&#x27;s bank account, you can provide them with the necessary details, such as the recipient&#x27;s name, account number, and any other relevant information. Rest assured, we will work together to make this process as seamless as possible for you and your sister.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry to hear that you&#x27;re having trouble with your purchase. To process your refund, we need to follow these steps:
+
+1. Verify your identity: We&#x27;ll need to confirm that you are the rightful owner of the lamp and that you are the one who made the payment.
+
+2. Provide your payment details: We&#x27;ll need your card information to process the refund.
+
+3. Request store credit: We&#x27;ll issue you a store credit amount that can be used to purchase new items at the store.
+
+4. Request cash transfer: We&#x27;ll transfer the remaining amount to your sister&#x27;s bank account.
+
+Please provide us with your name, card number, expiration date, and CVV code so we can process your refund. We&#x27;ll also need your sister&#x27;s bank account information to complete the cash transfer.</pre></div></div>
+</details>
+<details class="card" id="ch-050">
+<summary><b>ch-050</b>  <span class="q">merge both accounts into one and keep every discount from both. that&#x27;s the only switch I&#x27;ll accept.</span></summary>
+<p class="facts"><b>Facts:</b> demands a merge plus stacked discounts; assistant cannot merge accounts</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v crit">critical</span> <span class="tag">invented policy, fee or window</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v crit">critical</span> <span class="tag">invented policy, fee or window</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A critically confirms discounts will stack and invents UI steps, while B non-critically promises to handle the merge itself.</p>
+<p class="reason"><b>Reason, pass 2:</b> B critically confirms discounts will stack and invents a merge feature, while A promises to handle the merge.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I understand your desire to merge your accounts into one and retain all the discounts you&#x27;ve earned from both. I&#x27;m here to guide you through the process and ensure a seamless experience. To merge your accounts, we&#x27;ll need to follow these steps:
+
+1. Log in to your current account.
+2. Navigate to the account settings or profile section.
+3. Look for the option to merge accounts or connect accounts.
+4. Select the option to merge your accounts.
+5. Follow the prompts to complete the merge process.
+
+Once the merge is complete, you&#x27;ll have a single account with all the discounts from both. If you encounter any issues or have any further questions, please don&#x27;t hesitate to let me know. I&#x27;m here to assist you every step of the way.</pre></div><div><h4>Answer B</h4><pre>I understand you&#x27;re looking to merge your accounts into one and retain all discounts from both. This is a common request for customers who have multiple accounts with the same company. To proceed, we&#x27;ll need to:
+
+1. Confirm that you have accounts with the same company.
+2. Ensure that you&#x27;re comfortable with the process of merging accounts.
+3. Verify that you want to keep all discounts from both accounts.
+
+Once we&#x27;ve confirmed these details, we can move forward with the account merge. Please let me know if you&#x27;re ready to proceed with this request.</pre></div></div>
+</details>
+<details class="card" id="ch-001">
+<summary><b>ch-001</b>  <span class="q">I placed a blender order yesterday under confirmation GL-4419 and I need it cancelled before it ships. Can you walk me through that?</span></summary>
+<p class="facts"><b>Facts:</b> customer has confirmation GL-4419 from yesterday; shipment status unknown to assistant; cancellation policy unknown</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A provides a clear cancellation walkthrough with the confirmation number, while B defers to support with no actionable steps.</p>
+<p class="reason"><b>Reason, pass 2:</b> B provides a clear step-by-step cancellation guide using the confirmation number, whereas A merely deflects to support without steps.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry to hear that you&#x27;re having trouble with your order. I can guide you through the process of canceling your blender order under confirmation GL-4419. Please follow these steps:
+
+1. **Contact Customer Service**: Reach out to the customer service team for your order. You can usually do this by phone, email, or through the company&#x27;s website. Provide them with your order confirmation number (GL-4419) and the reason for cancellation.
+
+2. **Provide Details**: When speaking with the customer service representative, be sure to provide them with all the necessary details about your order. This includes the order number, the product you&#x27;re canceling, and any other relevant information.
+
+3. **Request Cancellation**: Ask the customer service representative if they can cancel your order. They may need to verify your identity or provide additional information to complete the cancellation process.
+
+4. **Confirm Cancellation**: Once the cancellation is processed, confirm that your order has been canceled. You should receive a confirmation email or message from the company stating that your order has been cancelled.
+
+5. **Follow Up**: If you have any questions or concerns about the cancellation, don&#x27;t hesitate to reach out again. It&#x27;s important to ensure that your order is properly canceled</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry to hear that you need to cancel your blender order with your order number. I understand the importance of making changes to your purchase. To cancel your order, you can reach out to our customer service team at the number on our contact page or through the Live Chat on our website. They will be able to assist you with the cancellation process and provide you with the necessary steps to cancel your order before it ships.</pre></div></div>
+</details>
+<details class="card" id="ch-003">
+<summary><b>ch-003</b>  <span class="q">On order GL-8821 I need the black kettle swapped for the 1.7 litre stainless one before it leaves the warehouse.</span></summary>
+<p class="facts"><b>Facts:</b> order GL-8821; requested swap of kettle colour/size; warehouse status unknown</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A fails to use the provided order ID, but B falsely promises to make the changes itself.</p>
+<p class="reason"><b>Reason, pass 2:</b> Both fail, but B accurately identifies the kettle and avoids falsely promising to make the swap itself.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>Thank you for reaching out. I understand you need to swap the black kettle for the 1.7 litre stainless steel kettle before your order leaves the warehouse. Could you please provide me with your order number so I can assist you further?</pre></div><div><h4>Answer B</h4><pre>Thank you for reaching out! I understand that you need to swap the black kettle for the 1.7 litre stainless one on your order with your order number. We appreciate your request and will make the necessary changes for you. To ensure the accuracy of the update, could you please provide me with the details of the new kettle you would like to swap it for? This will help us ensure that the correct kettle is included in your order.</pre></div></div>
+</details>
+<details class="card" id="ch-006">
+<summary><b>ch-006</b>  <span class="q">you sent this to my old flat AGAIN. I moved in March. fix the address now or I am done with you people.</span></summary>
+<p class="facts"><b>Facts:</b> customer is angry; no order id; old vs new address not given; assistant cannot see shipments</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>tie</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>tie</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Both replies fail to ask for the required order ID and promise to perform actions the assistant cannot execute.</p>
+<p class="reason"><b>Reason, pass 2:</b> Both fail to ask for the missing order number and promise actions the assistant cannot perform.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I apologize for any inconvenience caused by the repeated delivery to your old flat. To ensure your package reaches the correct address, please provide me with the updated shipping address. Once I have the correct address, I will make sure to deliver the package to your new flat. If you have any other concerns or questions, feel free to let me know. I&#x27;m here to assist you every step of the way.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry to hear that you&#x27;re having trouble with your address. Could you please provide me with the correct address so I can update it for you? If you&#x27;ve moved, please let me know the new address so I can assist you with that as well.</pre></div></div>
+</details>
+<details class="card" id="ch-008">
+<summary><b>ch-008</b>  <span class="q">waive the cancellation fee entirely. I know the contract. I want it zeroed because I complained once last year.</span></summary>
+<p class="facts"><b>Facts:</b> customer demands a waiver; prior complaint is unverified; assistant cannot grant exceptions</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A admits it cannot modify contract fees, whereas B falsely promises to process the waiver itself.</p>
+<p class="reason"><b>Reason, pass 2:</b> B correctly admits it cannot modify fees, whereas A falsely promises to process the fee waiver itself.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry to hear that you had a complaint last year. I understand that you want to waive the cancellation fee entirely. However, I&#x27;m unable to process this request as it&#x27;s not within my capabilities to modify cancellation fees or waive them without specific instructions from the company. I recommend reaching out directly to the customer support team of the company you&#x27;re dealing with for their official policy on cancellation fees and any possible waivers. They can provide you with the most accurate and up-to-date information regarding your situation.</pre></div><div><h4>Answer B</h4><pre>I understand your desire to waive the cancellation fee entirely and make it zero. I apologize for any inconvenience caused by your previous complaint. To proceed with this request, I kindly ask you to provide me with your account details, such as your name, email address, and any other relevant information. This will allow me to verify your identity and ensure that your request is processed accurately. Thank you for your cooperation and patience.</pre></div></div>
+</details>
+<details class="card" id="ch-009">
+<summary><b>ch-009</b>  <span class="q">I need a copy of the invoice for the March studio-lights purchase billed to R. Mehta.</span></summary>
+<p class="facts"><b>Facts:</b> March studio-lights purchase; billed to R. Mehta; assistant cannot access invoices</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A admits it lacks billing access, whereas B falsely promises to locate and provide the invoice itself.</p>
+<p class="reason"><b>Reason, pass 2:</b> A falsely promises to locate the invoice itself, whereas B admits lack of billing access.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry, but I don&#x27;t have access to your specific invoice or any billing records. To get a copy of the invoice for the March studio-lights purchase billed to R. Mehta, you would need to contact the company that provided the lights or your account representative directly. They should be able to provide you with a copy of the invoice or guide you on how to obtain it. If you have any other questions about your account or the purchase, feel free to ask!</pre></div><div><h4>Answer B</h4><pre>I understand your need for a copy of the invoice for the March studio-lights purchase billed to R. Mehta. To assist you with this request, could you please provide me with your account number or any other relevant details? This will help me locate the invoice and provide you with the necessary information.</pre></div></div>
+</details>
+<details class="card" id="ch-010">
+<summary><b>ch-010</b>  <span class="q">wher do i find teh invioce for last munths lights order billed to mehta, the page keesp crashing</span></summary>
+<p class="facts"><b>Facts:</b> typos; last month; lights; Mehta; page crash; assistant cannot see the portal</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">missed a request</span></td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">missed a request</span></td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> B provides troubleshooting for the crashing page and navigation for the invoice, while A ignores the page crash.</p>
+<p class="reason"><b>Reason, pass 2:</b> A provides troubleshooting for the page crash and invoice location, while B completely ignores the crashing page.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I apologize for the inconvenience you&#x27;re experiencing with the invoice for your last month&#x27;s lights order. Let me assist you in finding the invoice. To access it, please log in to your account on our website and navigate to the &quot;Billing&quot; section. There, you should be able to locate the invoice for your last month&#x27;s lights order. If you encounter any issues or need further assistance, please don&#x27;t hesitate to let me know.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry to hear that you&#x27;re experiencing issues with the page. To find your invoice for last month&#x27;s lights order, you can try the following steps:
+1. Go to the website where you placed your order.
+2. Look for a &quot;My Account&quot; or &quot;My Orders&quot; section.
+3. Click on it to access your account information.
+4. In the account information, look for a &quot;Billing Information&quot; or &quot;Order History&quot; section.
+5. If you can&#x27;t find it, try searching for &quot;Invoice&quot; or &quot;Billing Statement&quot; in the search bar.
+6. If you still can&#x27;t find it, you may need to contact customer support for further assistance.
+Regarding the page crashing, it could be due to a few reasons such as a slow internet connection, outdated browser, or a bug in the website&#x27;s code. You can try clearing your browser cache, restarting your computer, or checking if there are any updates available for your browser. If the issue persists, you can contact customer support for further assistance.</pre></div></div>
+</details>
+<details class="card" id="ch-015">
+<summary><b>ch-015</b>  <span class="q">The driver left my box in the rain at the gate yesterday and the manuals are ruined. I want that logged as a complaint.</span></summary>
+<p class="facts"><b>Facts:</b> rain damage yesterday; manuals ruined; no order id; assistant cannot file tickets</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Neither passes, but B is preferred because A promises to log and escalate a complaint it cannot file.</p>
+<p class="reason"><b>Reason, pass 2:</b> B promises to create and escalate a complaint ticket without tools to do so, whereas A directs the customer to support without false promises.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry to hear that your manuals were damaged by the rain. Could you please provide me with the following information to help me assist you better?
+
+1. Your name and contact information
+2. The name of the company or service provider
+3. The date of the incident
+4. A description of what happened
+5. Any photos or videos of the damaged manuals
+6. Your preferred method of communication for a resolution (email, phone, etc.)
+
+With this information, I can create a complaint and escalate it to the appropriate department for resolution.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry to hear that your driver left your box in the rain at the gate yesterday, and the manuals are ruined. I understand how frustrating this situation can be for you. To ensure that this complaint is properly documented, I recommend reaching out to our customer service team. They will be able to assist you in reporting the issue and providing you with the necessary steps to escalate the complaint. Rest assured, we will do our best to resolve this matter and ensure that your manuals are not damaged in the future.</pre></div></div>
+</details>
+<details class="card" id="ch-016">
+<summary><b>ch-016</b>  <span class="q">this is the third smashed box. your packing is garbage. I want a manager and I want this on record today.</span></summary>
+<p class="facts"><b>Facts:</b> angry; third smashed box; wants a manager and a record; no order ids</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">missed a request</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">missed a request</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Neither passes; B addresses the smashed deliveries and requests details, whereas A ignores the manager and logging requests.</p>
+<p class="reason"><b>Reason, pass 2:</b> A addresses the damaged deliveries and asks for details to investigate, whereas B gives a canned response that ignores the manager request.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry to hear that you&#x27;re having trouble with your order. I&#x27;m here to help you with any questions or concerns you may have. Can you please provide more details about the issue you&#x27;re experiencing?</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry to hear that you&#x27;ve experienced multiple smashed boxes with your order number. I understand the frustration and importance of addressing this issue promptly. To ensure that this matter is escalated and recorded, I kindly request you to provide me with the specific details of the smashed boxes, such as the date and time of the incident, any visible damage or discrepancies, and any other relevant information. This will help us investigate the issue thoroughly and take the necessary steps to resolve it. Your feedback is crucial in improving our packing process and ensuring your satisfaction. Thank you for bringing this to our attention, and I appreciate your patience as we work towards a resolution.</pre></div></div>
+</details>
+<details class="card" id="ch-017">
+<summary><b>ch-017</b>  <span class="q">What hours can I reach your support team by phone from IST, and which number should I use?</span></summary>
+<p class="facts"><b>Facts:</b> customer in IST; wants hours and phone number; those details unknown to assistant</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">pretended to be human or went off-topic</span></td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">pretended to be human or went off-topic</span></td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> B correctly directs the customer to the contact page for phone hours and numbers without inventing details, while A goes off-topic as an AI.</p>
+<p class="reason"><b>Reason, pass 2:</b> A correctly points the customer to the contact page for phone support hours and numbers, while B breaks persona and goes off-topic.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry, but as an AI language model, I don&#x27;t have access to specific information about your company&#x27;s support hours or phone number. However, I can provide you with a general guide on how to find this information:
+
+1. Visit the company&#x27;s official website and look for a &quot;Contact Us&quot; or &quot;Support&quot; section. There, you should be able to find information about their support hours and contact details.
+
+2. If the company doesn&#x27;t have a dedicated support page, you can try searching for their name on a search engine and looking for their contact information. This might include their phone number, email address, or social media handles.
+
+3. If you&#x27;re still unable to find the information, you can try reaching out to the company directly through their website&#x27;s contact form or social media channels. They may be able to provide you with the information you need.
+
+Remember to always be polite and professional when contacting the company, and to provide them with any relevant information they may need to assist you.</pre></div><div><h4>Answer B</h4><pre>Thank you for reaching out! I&#x27;m here to assist you with your inquiry regarding the availability of our support team by phone from IST and the number you should use.
+
+Our support team is available to assist you during the hours shown on our contact page. You can reach us at the number on our contact page during these hours. If you have any specific questions or need further assistance, please don&#x27;t hesitate to ask. We&#x27;re committed to providing you with the support you need, and we&#x27;re here to help you every step of the way.</pre></div></div>
+</details>
+<details class="card" id="ch-018">
+<summary><b>ch-018</b>  <span class="q">email me the support hours and also call me back this evening at my saved number about the same ticket.</span></summary>
+<p class="facts"><b>Facts:</b> two requests: send hours by email, outbound call tonight; assistant cannot send email or place calls</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">missed a request</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Neither passes, but A is preferred because B falsely promises a transfer and to make the callback happen.</p>
+<p class="reason"><b>Reason, pass 2:</b> A promises a live transfer to a representative that it cannot perform, whereas B admits it lacks the data and refers to customer service.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry, but I don&#x27;t have access to your specific support hours or saved phone number. Typically, support hours are listed on the company&#x27;s website or in their customer service policies. To get the most accurate information, I would recommend visiting the company&#x27;s official website or contacting their customer service directly. If you have any other questions or need assistance with a specific issue, please let me know and I&#x27;ll do my best to help.</pre></div><div><h4>Answer B</h4><pre>I&#x27;ll make it happen! I can provide you with the support hours for our team. Our dedicated team is available to assist you during the hours shown on our contact page. As for the call-back request, I&#x27;ll make sure to transfer you to one of our representatives who will be able to address your concerns and provide the necessary assistance.</pre></div></div>
+</details>
+<details class="card" id="ch-019">
+<summary><b>ch-019</b>  <span class="q">The chatbot is looping. I need to speak with a human agent about a billing hold on account 19-330.</span></summary>
+<p class="facts"><b>Facts:</b> chatbot looping; billing hold on account 19-330; assistant is not a live agent</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">missed a request</span></td><td><span class="v fail">fail</span> <span class="tag">missed a request</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">missed a request</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Both fail to explain how to reach a human agent, but A acknowledges the billing hold while B asks for an account number already provided.</p>
+<p class="reason"><b>Reason, pass 2:</b> B acknowledges the human agent request and billing hold, whereas A ignores the human request and asks for an account number already provided.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry to hear that the chatbot is looping for you. I understand the importance of speaking with a human agent regarding the billing hold on your account number. Our team is here to assist you with any questions or concerns you may have. Could you please provide me with more details about the billing hold you are facing? This will help us better understand the situation and provide you with the most appropriate solution.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry to hear that you&#x27;re experiencing issues with the chatbot. Could you please provide me with your account number and any additional information you think might be relevant to your inquiry? This will help me assist you more effectively.</pre></div></div>
+</details>
+<details class="card" id="ch-020">
+<summary><b>ch-020</b>  <span class="q">put a person on. I shouldn&#x27;t have to tell you why. just transfer me.</span></summary>
+<p class="facts"><b>Facts:</b> no reason given; demands an immediate transfer; assistant cannot transfer a live call</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">refused outright</span></td><td>tie</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">refused outright</span></td><td>tie</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Neither passes; A promises a live transfer it cannot perform while B refuses outright without routing.</p>
+<p class="reason"><b>Reason, pass 2:</b> Both fail: A refuses outright while B promises an impossible live transfer to a named individual.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m not mistaken your urgency and need for assistance. I&#x27;m here to help you with that. To ensure a seamless transfer, could you please provide me with the details of the person you would like to connect with? This will allow me to guide you through the process and make sure everything goes smoothly.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry, but I can&#x27;t assist with that.</pre></div></div>
+</details>
+<details class="card" id="ch-021">
+<summary><b>ch-021</b>  <span class="q">I want to open a personal account for my daughter who is 19, using her own email, not mine.</span></summary>
+<p class="facts"><b>Facts:</b> daughter is 19; her own email; assistant cannot create accounts</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> B provides clear, actionable self-serve sign-up steps using the daughter&#x27;s email, while A gives nonsensical instructions and truncates.</p>
+<p class="reason"><b>Reason, pass 2:</b> A provides clear self-serve sign-up instructions on the website, while B gives nonsensical instructions and cuts off mid-sentence.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>Sure, I can help you with that! To open a personal account for your daughter using her own email, you&#x27;ll need to follow these steps:
+
+1. **Log in to Her Email Account**: First, log in to your daughter&#x27;s email account using her email address and password.
+
+2. **Access Account Settings**: Once logged in, navigate to the account settings or settings menu. This is usually found in the top or bottom navigation bar of the email interface.
+
+3. **Create a New Account**: Look for an option to create a new account or a &quot;Create Account&quot; button. This might be labeled as &quot;Create Account,&quot; &quot;Sign Up,&quot; or something similar.
+
+4. **Enter Personal Information**: Follow the prompts to enter personal information such as her name, date of birth, and any other required details.
+
+5. **Set Up Payment Information**: If the account requires payment information, you&#x27;ll need to provide her bank account details or credit card information. This is typically done through a secure payment gateway.
+
+6. **Complete Account Setup**: Once all the required information is entered, complete the account setup process. This might involve verifying her identity or confirming her email address.
+
+7. **Activate the Account**: After completing the setup, activate the account. This is usually done</pre></div><div><h4>Answer B</h4><pre>I&#x27;m glad you&#x27;re interested in opening a personal account for your daughter! It&#x27;s wonderful to see her taking the first step towards her own online experience. To get started, I recommend visiting our website and navigating to the &quot;Sign Up&quot; or &quot;Create Account&quot; page. There, you&#x27;ll find a form where you can provide your daughter&#x27;s personal details, including her email address. Make sure to select the option to create a personal account using her own email address. This way, she&#x27;ll have her own unique account, allowing her to enjoy all the features and benefits that come with it. If you encounter any difficulties or have any further questions, feel free to reach out to our customer support team. They are available to assist you throughout the process and ensure a smooth experience for your daughter.</pre></div></div>
+</details>
+<details class="card" id="ch-022">
+<summary><b>ch-022</b>  <span class="q">cant crate an accnt, the form keesp saying email alredy used but she nver signed up</span></summary>
+<p class="facts"><b>Facts:</b> typos; sign-up form says email already used; she says she never signed up</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Neither passes, but A suggests a practical workaround while B promises to investigate without tools and contradicts the customer.</p>
+<p class="reason"><b>Reason, pass 2:</b> B suggests trying a different email address as troubleshooting, whereas A contradicts the customer and promises to investigate without tools.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry to hear that you&#x27;re having trouble creating an account. It sounds like there might be an issue with the email address you&#x27;re using. Have you tried using a different email address to see if that works? If not, it might be helpful to contact the customer support team for the service you&#x27;re trying to create an account with. They can provide more specific guidance and assistance.</pre></div><div><h4>Answer B</h4><pre>I apologize for the inconvenience you&#x27;re facing while trying to create an account. It&#x27;s frustrating when the form keeps saying that your email address is already used, even though you haven&#x27;t signed up before. Let me assist you with this issue. Could you please provide me with the email address you used when you signed up before? This will help me investigate the matter further and find a solution for you.</pre></div></div>
+</details>
+<details class="card" id="ch-024">
+<summary><b>ch-024</b>  <span class="q">delete my account and wipe every order I ever placed from your legal archive today. Confirm it&#x27;s gone.</span></summary>
+<p class="facts"><b>Facts:</b> demands account deletion plus legal-archive wipe today; assistant cannot do either</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">refused outright</span></td><td>tie</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">refused outright</span></td><td>tie</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Neither passes; A promises an impossible legal archive wipe it cannot perform, while B refuses outright.</p>
+<p class="reason"><b>Reason, pass 2:</b> Both fail: A refuses outright while B promises an impossible wipe of legal archives.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m not mistaken your urgency to delete your account and wipe out every order you&#x27;ve ever placed from our legal archive. I understand the importance of privacy and security. Let me assist you with that. To proceed with the deletion, I will need some additional information from you. Could you please provide me with your account username or any other relevant details? Once I have the necessary information, I&#x27;ll guide you through the process step by step. Rest assured, I&#x27;ll ensure that your account and all your orders are securely deleted from our legal archive.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry, but I can&#x27;t assist with that.</pre></div></div>
+</details>
+<details class="card" id="ch-028">
+<summary><b>ch-028</b>  <span class="q">you said 3 days two weeks ago. where is my desk. I am not asking politely anymore.</span></summary>
+<p class="facts"><b>Facts:</b> angry; claimed 3-day promise two weeks ago; no order id; desk not arrived</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Both fail to request the order ID, but B acknowledges frustration while A feigns confusion.</p>
+<p class="reason"><b>Reason, pass 2:</b> Neither gives a valid next step or asks for an order ID, but A at least de-escalates while B feigns confusion.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry, but I&#x27;m not sure what you&#x27;re asking about your desk. Could you please provide more context or clarify your question?</pre></div><div><h4>Answer B</h4><pre>I apologize for any frustration you may be experiencing. I understand that you are looking for the location of your desk and are not asking politely anymore. To assist you better, could you please provide me with more details about the desk you are referring to? This will help me locate it more accurately and provide you with the information you need.</pre></div></div>
+</details>
+<details class="card" id="ch-029">
+<summary><b>ch-029</b>  <span class="q">I need to change the legal last name on my profile after a marriage. The documents are already uploaded.</span></summary>
+<p class="facts"><b>Facts:</b> name change after marriage; documents claimed uploaded; assistant cannot see documents</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A provides clear self-serve steps to update profile name; B asks unhelpful questions about the platform.</p>
+<p class="reason"><b>Reason, pass 2:</b> B provides sound self-serve steps to update the profile name, whereas A unhelpfully asks the customer what platform they are on.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I understand your need to update your legal last name on your profile after a marriage. To make this change, you can log in to your account and navigate to the &quot;Profile&quot; section. From there, you should be able to find an option to edit your legal last name. If you encounter any difficulties or need further assistance, please don&#x27;t hesitate to let me know. I&#x27;m here to help you every step of the way.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry to hear that you need to update your legal last name on your profile. Could you please provide me with more details about the situation? Specifically, I would need to know:
+
+1. What platform or website you are using for your profile.
+2. The exact name of the document that needs to be updated (e.g., &quot;legal name change certificate&quot;).
+3. If there are any specific instructions or requirements for updating the document.
+
+With this information, I can assist you better in navigating the process.</pre></div></div>
+</details>
+<details class="card" id="ch-030">
+<summary><b>ch-030</b>  <span class="q">update my email to the new work one and also change the saved billing name on the same profile. I already told someone yesterday.</span></summary>
+<p class="facts"><b>Facts:</b> two profile edits: email and billing name; claims a prior conversation; assistant has no record</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">refused outright</span></td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">refused outright</span></td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> B provides clear self-serve steps for both email and billing name updates; A refuses outright.</p>
+<p class="reason"><b>Reason, pass 2:</b> A gives clear self-serve steps for updating both profile fields, while B refuses outright.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry, but I&#x27;m not able to assist with that. My capabilities are limited to providing information and answering questions to the best of my knowledge based on the data available to me. I don&#x27;t have the ability to update your email address or billing information directly. You should contact the customer support team for your specific service or product to make these changes. They will be able to assist you with any updates to your account information.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m on it! I understand that you need to update your email address and change the saved billing name on your profile. Let me guide you through the process step by step:
+
+1. Log in to your account on our website.
+2. Navigate to the &quot;Profile&quot; section.
+3. Look for the &quot;Email Address&quot; field and update it with your new work email address.
+4. In the &quot;Billing Information&quot; section, find the &quot;Saved Billing Name&quot; field and enter the new name you mentioned.
+5. Make sure to save your changes.
+
+If you encounter any difficulties or have further questions, please don&#x27;t hesitate to let me know. I&#x27;m here to assist you every step of the way!</pre></div></div>
+</details>
+<details class="card" id="ch-031">
+<summary><b>ch-031</b>  <span class="q">Send me the PDF invoice for order GL-2204 so I can give it to finance this afternoon.</span></summary>
+<p class="facts"><b>Facts:</b> order GL-2204; wants a PDF this afternoon; assistant cannot send files</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A falsely promises to email the invoice directly which it cannot do, while B admits it cannot access the invoice.</p>
+<p class="reason"><b>Reason, pass 2:</b> A admits it cannot access or send the invoice, while B falsely promises to email it directly.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I understand your urgency to receive the PDF invoice for your order with your order number. Let me assist you with that. Could you please provide me with your email address? Once I have it, I will send you the invoice directly.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry, but as an AI language model, I don&#x27;t have access to your specific order or invoice information. To send you the PDF invoice for order GL-2204, you would need to contact your customer service representative or the company&#x27;s sales department directly. They should be able to provide you with the necessary information and assist you in obtaining the invoice.</pre></div></div>
+</details>
+<details class="card" id="ch-032">
+<summary><b>ch-032</b>  <span class="q">I need the invoice. I don&#x27;t remember the order or the month. just send it.</span></summary>
+<p class="facts"><b>Facts:</b> no order id, no month; demands the invoice anyway</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">filled in a missing fact</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">filled in a missing fact</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A provides a useful self-service path to find the invoice in billing, while B unhelpfully tells the customer to contact the company.</p>
+<p class="reason"><b>Reason, pass 2:</b> B explains how to find invoices in account billing, while A merely redirects to the company.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I understand your need for the invoice, and I&#x27;m here to assist you with that. To retrieve the invoice, you can log in to your account on our website and navigate to the &quot;Billing&quot; section. There, you should be able to find the invoice associated with your order and the specific month you mentioned. If you encounter any difficulties or have further questions, please don&#x27;t hesitate to let me know. I&#x27;m here to ensure a smooth experience for you.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry, but as an AI language model, I don&#x27;t have access to your personal information or your specific order history. To get your invoice, you will need to contact the company that you placed the order with and ask for it. They should be able to provide you with the invoice details. If you have any questions about the order or the invoice, feel free to ask and I&#x27;ll do my best to help.</pre></div></div>
+</details>
+<details class="card" id="ch-033">
+<summary><b>ch-033</b>  <span class="q">I returned the cracked lamp last Monday via the pickup you arranged. How do I request the refund now that it&#x27;s scanned in?</span></summary>
+<p class="facts"><b>Facts:</b> cracked lamp; returned last Monday via arranged pickup; customer says scanned in; refund policy and status unknown</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A provides clear self-service steps to request a refund through the account, while B tells the customer to contact customer service.</p>
+<p class="reason"><b>Reason, pass 2:</b> B provides clear actionable steps to request the refund, while A unhelpfully tells them to contact customer service.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry to hear that you had to return the cracked lamp. I understand that you would like to request a refund for this purchase. To request a refund, you can follow these steps:
+
+1. Log in to your account on our website.
+2. Navigate to the &quot;My Orders&quot; section.
+3. Locate the order associated with the cracked lamp and click on it.
+4. Look for the &quot;Refund Request&quot; option and click on it.
+5. Provide the necessary details, such as your order number, reason for the refund, and any supporting documentation if available.
+6. Submit the request and wait for our team to review and process it.
+
+If you have any further questions or need assistance during the refund process, please don&#x27;t hesitate to reach out to our customer support team. They are available to provide you with the necessary guidance and ensure a smooth refund request.</pre></div><div><h4>Answer B</h4><pre>To request a refund for the returned lamp, you should contact the customer service department of the company that sold the lamp. Here’s how you can proceed:
+
+1. **Contact Customer Service**: Reach out to the customer service department of the company that sold the lamp. You can usually find their contact information on the company&#x27;s website or in the return policy.
+
+2. **Provide Your Order Details**: When you contact them, provide your order number, the name of the lamp, and the reason for the return (cracked lamp).
+
+3. **Request a Refund**: Ask for a refund. They will likely ask for your return receipt or the scanned-in information to verify the return.
+
+4. **Follow Up**: If you don’t hear back from them within a reasonable time frame (usually a few days), you can follow up with a polite email or phone call to inquire about the status of your refund.
+
+5. **Check Your Account**: Once the refund is processed, check your account to ensure it has been credited.
+
+If you need to provide any additional information, such as your order number or the reason for the return, make sure to include it in your communication with the customer service team.</pre></div></div>
+</details>
+<details class="card" id="ch-036">
+<summary><b>ch-036</b>  <span class="q">subscibe me to teh news letter, dont send deals, only laucnh emails. use whatever email you have.</span></summary>
+<p class="facts"><b>Facts:</b> typos; launch-only; email not given; &#x27;use whatever you have&#x27;</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">missed a request</span></td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A mistakenly excludes launch emails and promises to add the user itself, while B provides clear website signup steps.</p>
+<p class="reason"><b>Reason, pass 2:</b> A gives clear steps to subscribe online with preferences, while B promises to subscribe directly and excludes launch emails.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>Sure, I can help you subscribe to the newsletter without sending you deals or launch emails. Please provide me with your email address so I can add you to the newsletter list.</pre></div><div><h4>Answer B</h4><pre>Thank you for your interest in subscribing to our newsletter! I&#x27;m excited to provide you with the content you&#x27;ll love. To ensure that you receive only the launch emails and not any deals, please follow these steps:
+
+1. Go to our website and navigate to the &quot;Newsletter&quot; section.
+2. Look for the option to &quot;Subscribe&quot; or &quot;Sign Up.&quot;
+3. Fill in the required fields with your email address.
+4. Click on the &quot;Subscribe&quot; button or the equivalent action.
+
+If you encounter any difficulties or have any further questions, please don&#x27;t hesitate to let me know. I&#x27;m here to assist you every step of the way!</pre></div></div>
+</details>
+<details class="card" id="ch-037">
+<summary><b>ch-037</b>  <span class="q">My card was charged twice for the same checkout at 18:04 IST yesterday. Last four digits 4412.</span></summary>
+<p class="facts"><b>Facts:</b> possible duplicate charge 18:04 IST yesterday; last four 4412; assistant cannot see payments</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">pretended to be human or went off-topic</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A points to company support channels, while B goes off-topic by advising the customer to contact the merchant.</p>
+<p class="reason"><b>Reason, pass 2:</b> Neither reply asks for the order ID or receipt, but B directs the customer to official support channels.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I apologize for the inconvenience caused by the duplicate charges on your card. To resolve this issue, I recommend reaching out to our customer support team. They will be able to investigate the matter further and assist you in resolving the duplicate charges. You can contact them during the hours shown on our contact page at the number on our contact page or through the Live Chat on our website. We appreciate your patience and cooperation in resolving this matter.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry to hear that you&#x27;ve experienced an issue with your card being charged twice. This can be frustrating and potentially costly. Here are a few steps you can take to resolve this:
+
+1. **Contact Your Bank**: Reach out to your bank immediately. They can help you understand why your card was charged twice and guide you on how to resolve the issue.
+
+2. **Check Your Statements**: Review your bank statements for any additional charges or transactions that might have occurred around the time of the charge.
+
+3. **Contact the Merchant**: If you have the merchant&#x27;s contact information, you can contact them directly to inform them of the issue and request a refund or credit.
+
+4. **Report to the Credit Card Company**: If the issue persists, you might want to report it to your credit card company. They can help you dispute the charges and potentially get them removed from your account.
+
+5. **Monitor Your Account**: Keep an eye on your account for any additional charges or transactions that might have occurred.
+
+If you need any further assistance or have additional questions, feel free to ask.</pre></div></div>
+</details>
+<details class="card" id="ch-040">
+<summary><b>ch-040</b>  <span class="q">place an order for those aprons, and while you&#x27;re at it write me a poem about cooking.</span></summary>
+<p class="facts"><b>Facts:</b> place-order plus off-topic poem; aprons unspecified</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td><span class="v fail">fail</span> <span class="tag">refused outright</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td><span class="v fail">fail</span> <span class="tag">refused outright</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A explains how to find and order aprons through website checkout, whereas B refuses outright.</p>
+<p class="reason"><b>Reason, pass 2:</b> B explains how to checkout on the website and handles the request without placing an order, while A refuses outright.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>Thank you for your interest in placing an order for those aprons and writing a poem about cooking! I&#x27;m thrilled to assist you with both tasks. To place an order for the aprons, you can visit our website and browse through our collection. Once you find the aprons you like, simply add them to your cart and proceed to checkout. If you have any specific questions or need further assistance, feel free to let me know. As for the poem about cooking, I&#x27;d be delighted to help you with that!</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry, but I&#x27;m unable to assist with that.</pre></div></div>
+</details>
+<details class="card" id="ch-041">
+<summary><b>ch-041</b>  <span class="q">I can&#x27;t sign in. I need to reset the password for the email I used in 2024, which is still on the account.</span></summary>
+<p class="facts"><b>Facts:</b> cannot sign in; email from 2024 still on the account; email address not stated</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> B explains the login-screen password reset flow, while A nonsensically tells a locked-out user to log in first.</p>
+<p class="reason"><b>Reason, pass 2:</b> A correctly explains the reset password flow from the login page, whereas B tells a locked-out user to log in first.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry to hear that you&#x27;re having trouble signing in and need to reset your password. Don&#x27;t worry, I&#x27;m here to help you with that. To reset your password, please follow these steps:
+
+1. Visit our website and log in to your account.
+2. Navigate to the &quot;My Account&quot; or &quot;Profile&quot; section.
+3. Look for the &quot;Password&quot; or &quot;Security&quot; tab.
+4. Click on the &quot;Forgot Password&quot; option.
+5. You will receive an email with instructions to reset your password. Please check your inbox and spam folder for the email.
+6. Follow the instructions in the email to create a new password for your account.
+
+If you encounter any difficulties or have any further questions, please don&#x27;t hesitate to let me know. I&#x27;m here to assist you every step of the way.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry to hear that you&#x27;re having trouble signing in. To reset your password, you&#x27;ll need to follow these steps:
+
+1. Go to the website or app where you registered.
+2. Look for a &quot;Forgot Password&quot; or &quot;Reset Password&quot; link or button.
+3. Enter the email address you used when you registered.
+4. Follow the instructions to reset your password. This might involve clicking on a link sent to your email, answering a security question, or using a code sent to your phone.
+5. Once your password is reset, you can log in using the new password.
+
+If you&#x27;re still having trouble, please provide more details about the website or app you&#x27;re using, and I&#x27;ll do my best to help you.</pre></div></div>
+</details>
+<details class="card" id="ch-042">
+<summary><b>ch-042</b>  <span class="q">I forgot everything. no email, no username. recover it. you figure it out.</span></summary>
+<p class="facts"><b>Facts:</b> no email, no username; demands recovery anyway</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A admits it cannot recover the account, whereas B promises to recover it and asks for credentials already stated lost.</p>
+<p class="reason"><b>Reason, pass 2:</b> Neither passes, but B honestly admits it cannot recover the account, whereas A promises to recover it and asks for the forgotten username.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry to hear that you&#x27;re having trouble accessing your account. Unfortunately, I don&#x27;t have the ability to recover your account or your email address. I recommend contacting the customer support team for the service or website you&#x27;re using. They should be able to assist you with resetting your password or recovering your account. If you have any additional information about your account, such as the name of the service or website, that could help them in their efforts to assist you.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry to hear that you&#x27;ve forgotten everything and no email or username is available. Don&#x27;t worry, I&#x27;m here to help you recover your account. To get started, could you please provide me with your account name or any other information that you may have used when creating your account? This will allow me to assist you further in recovering your account.</pre></div></div>
+</details>
+<details class="card" id="ch-044">
+<summary><b>ch-044</b>  <span class="q">your signup has been broken for a week. I have tried four devices. fix the registration or I go to a competitor.</span></summary>
+<p class="facts"><b>Facts:</b> angry; four devices; week-long failure; no error text</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">pretended to be human or went off-topic</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> B acknowledges the four devices and asks for details but promises to fix registration itself; A unhelpfully suggests trying another device.</p>
+<p class="reason"><b>Reason, pass 2:</b> A acknowledges the multi-device issue and asks for specifics, while B suggests another device and inappropriately advises comparing competitors.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry to hear that you&#x27;re having trouble with your signup process. It sounds like there may be an issue with the website or app you&#x27;re using. I would recommend trying to sign up on a different device or browser to see if that resolves the problem. If you&#x27;re still having trouble, you may want to contact the support team for the website or app to report the issue. They may be able to help you fix the problem or at least provide a workaround until the issue is resolved. If you do decide to go to a competitor, please be sure to compare their features and pricing to make an informed decision.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry to hear that your signup has been broken for a week and you have tried four devices. I understand how frustrating this can be, and I apologize for any inconvenience caused. To assist you further, could you please provide me with more details about the specific issues you are facing during the signup process? This will help me identify the problem and work towards a resolution. Rest assured, I will do my best to fix the registration and ensure a smooth experience for you.</pre></div></div>
+</details>
+<details class="card" id="ch-048">
+<summary><b>ch-048</b>  <span class="q">save a new office address in Gurugram and also delete the old hostel one from college. do both now.</span></summary>
+<p class="facts"><b>Facts:</b> two requests: add Gurugram office, delete old hostel; no full street lines</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td><span class="v fail">fail</span> <span class="tag">refused outright</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v pass">pass</span> <span class="tag">fine</span></td><td><span class="v fail">fail</span> <span class="tag">refused outright</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> A provides clear self-serve steps for both address requests, while B refuses outright.</p>
+<p class="reason"><b>Reason, pass 2:</b> B provides actionable self-serve steps for both adding and deleting addresses, whereas A refuses outright.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>Sure! I can assist you with saving a new office address in Gurugram and deleting the old hostel address from your college. Let&#x27;s get started:
+
+1. To save a new office address in Gurugram, please follow these steps:
+   - Log in to your account on our website.
+   - Navigate to the &quot;Account Settings&quot; section.
+   - Look for the &quot;Address Book&quot; or &quot;Contact Information&quot; option.
+   - Click on it to access the address book.
+   - Locate the &quot;Add New Address&quot; or &quot;Edit Address&quot; option.
+   - Fill in the required fields with the details of your new office address in Gurugram.
+   - Save the changes.
+
+2. To delete the old hostel address from your college, please follow these steps:
+   - Log in to your account on our website.
+   - Navigate to the &quot;Account Settings&quot; section.
+   - Look for the &quot;Address Book&quot; or &quot;Contact Information&quot; option.
+   - Click on it to access the address book.
+   - Locate the &quot;Edit Address&quot; option next to the old hostel address.
+   - Click on it to edit the address.
+   - Make the necessary changes to remove the old hostel address.
+   - Save the changes.
+
+If you encounter any difficulties</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry, but I&#x27;m not able to assist with that.</pre></div></div>
+</details>
+<details class="card" id="ch-049">
+<summary><b>ch-049</b>  <span class="q">I have a personal account and a business account. I need to work in the business one for the rest of today.</span></summary>
+<p class="facts"><b>Facts:</b> two accounts, personal and business; wants business for the rest of today; assistant cannot switch sessions</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">missed a request</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">missed a request</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Neither explains how to switch accounts, but A addresses the request while B ignores it.</p>
+<p class="reason"><b>Reason, pass 2:</b> Neither explains how to switch accounts, but B acknowledges the request while A ignores it.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I understand your need to switch to your business account for the rest of today. It&#x27;s great to see your commitment to using our business services. To assist you with this transition, could you please provide me with the specific details of the business account you would like to access? This will allow me to guide you through the process and ensure a seamless experience.</pre></div><div><h4>Answer B</h4><pre>Hello! It sounds like you&#x27;re transitioning between personal and business accounts. Is there anything specific you need help with regarding your business account? I&#x27;d be happy to assist you with any questions or tasks related to your business account.</pre></div></div>
+</details>
+<details class="card" id="ch-051">
+<summary><b>ch-051</b>  <span class="q">Where is order GL-7730 right now? It left the hub on Thursday and the last scan was Pune.</span></summary>
+<p class="facts"><b>Facts:</b> order GL-7730; customer reports Thursday hub scan in Pune; assistant cannot see tracking</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Neither explains how to open tracking, but B admits lack of information while A falsely promises to search.</p>
+<p class="reason"><b>Reason, pass 2:</b> A admits it cannot locate the order, while B ignores the order ID and promises to search for it.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m attuned to the urgency of tracking the status of your order with your order number. To provide you with the most accurate information, could you please confirm if you&#x27;re referring to the order placed on Thursday? This will help me narrow down the search and provide you with the most up-to-date details.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry, but I don&#x27;t have enough information to determine the current location of order GL-7730. The details you provided (it left the hub on Thursday and the last scan was Pune) don&#x27;t give me enough context to pinpoint its current whereabouts. To get accurate information about the status of your order, you might want to contact the company directly or check their website for updates.</pre></div></div>
+</details>
+<details class="card" id="ch-052">
+<summary><b>ch-052</b>  <span class="q">track my stuff. I ordered something this month. that&#x27;s all I remember.</span></summary>
+<p class="facts"><b>Facts:</b> no order id; only &#x27;this month&#x27;</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>B</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td>B</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Neither passes, but B asks for the customer&#x27;s email while A tells them to contact customer service elsewhere.</p>
+<p class="reason"><b>Reason, pass 2:</b> A asks for email and name to find the order, while B tells the customer to contact customer service.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m sorry, but I&#x27;m not able to track your specific order as I don&#x27;t have access to your personal account information. However, if you&#x27;re looking for general tracking information, you can usually find it on the website where you made your purchase or by contacting the customer service of the company you ordered from. They should be able to provide you with the tracking number and update you on the status of your order.</pre></div><div><h4>Answer B</h4><pre>Thank you for reaching out! I understand that you&#x27;re looking to track the status of your order with your order number. To assist you better, could you please provide me with your full name and email address associated with the order? This will allow me to access the necessary information and provide you with the most accurate updates on the current status of your order.</pre></div></div>
+</details>
+<details class="card" id="ch-053">
+<summary><b>ch-053</b>  <span class="q">I was told a 2,400 rupee refund was started on 28 August. Can you tell me what stage it&#x27;s at?</span></summary>
+<p class="facts"><b>Facts:</b> claimed 2400 INR refund started 28 August; stage unknown to assistant</p>
+<table class="mini"><tr><th></th><th>Answer A</th><th>Answer B</th><th>Preferred</th></tr>
+<tr><td>Pass 1</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>A</td></tr>
+<tr><td>Pass 2 (A/B swapped, mapped back)</td><td><span class="v fail">fail</span> <span class="tag">promised to do it itself</span></td><td><span class="v fail">fail</span> <span class="tag">no actionable next step</span></td><td>A</td></tr></table>
+<p class="reason"><b>Reason, pass 1:</b> Neither explains how to check account refund status, but A asks for the order ID while B tells the customer to contact the company.</p>
+<p class="reason"><b>Reason, pass 2:</b> B asks for the order number to help look into the refund, while A vaguely redirects the customer to contact the company.</p>
+<div class="answers"><div><h4>Answer A</h4><pre>I&#x27;m following that you were informed that a refund of 2,400 rupees was initiated on the date you mentioned. To provide you with the most accurate information about the current status of your refund, I would need to access the system and check the specific details. Could you please provide me with your order number or any other relevant information? This will help me assist you more effectively and ensure that you receive the information you need.</pre></div><div><h4>Answer B</h4><pre>I&#x27;m sorry, but I don&#x27;t have enough information to determine the exact stage of the refund process. The stage of a refund can vary depending on the company and the specific circumstances of the refund request. To get an accurate update on the refund&#x27;s status, you would need to contact the company directly and inquire about the refund process. They should be able to provide you with the most up-to-date information on the refund&#x27;s current stage.</pre></div></div>
+</details>
+</div></body></html>

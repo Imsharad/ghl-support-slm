@@ -50,10 +50,23 @@ almost never says "I do not know". 15 rows out of 17,701 admit a missing fact
 model in 0.
 [`docs/FAILURES.md`](docs/FAILURES.md) walks three cases through to the training rows behind them.
 
+**v2, the data repair, is also negative on a fresh sealed set.** Branch `v2` keeps every part of the recipe and changes only the data: placeholders substituted instead of rejected, and 206 synthetic rows that admit a missing fact (section 3). Trained on a free Colab T4 ([`notebooks/v2_colab_run.ipynb`](notebooks/v2_colab_run.ipynb), the executed run) and scored on a second sealed set written under a reading ban and sealed before any v2 row existed:
+
+| Fresh sealed set, n = 54 | base (`ghl-base`, Q8) | v2 tune (`ghl-support`, checkpoint-250, Q8) |
+|---|---:|---:|
+| pass rate | **8 / 54 = 14.8%** | **12 / 54 = 22.2%** |
+| critical failures (invented facts) | 6 | 12 |
+
+| difference (tuned minus base) | 95% interval (paired bootstrap, 2,000 draws, seed 42) | preferred: tuned / tie / base | verdict |
+|---:|---:|---:|---|
+| **+7.4 points** | [-7.4, +22.2] | 22 / 12 / 20 | **negative** |
+
+The pass rate moved the right way and the critical count the wrong way, and the rule fixed before v1 makes any rise in critical failures a negative; the interval also crosses zero. Gate 2, pre-registered in [`docs/v2/PLAN_DECISIONS.md`](docs/v2/PLAN_DECISIONS.md), failed, so the v1 headline stands and so does the recommendation to ship the base model. Where the tune improved is navigational questions whose honest answer is a path; where it did not is any question about a fee, a window, support hours or a carrier, where it still answers in the corpus's confident voice (10 of its 12 critical failures carry the judge tag *invented policy, fee or window*). Full account in [`docs/RESULTS.md`](docs/RESULTS.md) (v2 section) and [`docs/FAILURES.md`](docs/FAILURES.md) (v2 section). Two caveats travel with these numbers: the sheet is LLM-judged with adjudication, as v1's was, and the judge drifts between sessions (v1's own base answers scored 16 of 54 on 6 September and 4 of 54 today), so only base-against-tuned inside one session is on one scale; v1 and v2 pass rates are not.
+
 - Weights and adapter: <https://huggingface.co/seekingtroooth/ghl-support-qlora-t4> (public; adapter,
   merged fp16, both GGUFs, manifest).
-- Repository: <https://github.com/Imsharad/ghl-support-slm> (private; reviewer access is granted on
-  request, and tag `v1` marks the submitted commit).
+- Repository: <https://github.com/Imsharad/ghl-support-slm> (public; tag `v1` marks the submitted commit,
+  branch `v2` and tag `v2` the data repair; v2 artifacts on the Hub under `v2/`).
 - Loss curves: [`docs/curves.png`](docs/curves.png). Training log: [`docs/TRAINING.md`](docs/TRAINING.md).
 
 ## 2. Model and method choices, and why
@@ -351,6 +364,18 @@ The tune is not uniformly worse. It wins outright on `edit_account`, `switch_acc
 assistant cannot know: fees, policy windows, support hours, delivery options, payment methods. That
 split is the finding.
 
+### v2 result on the fresh sealed set
+
+Same protocol, second sealed set ([`eval/challenge_v2.jsonl`](eval/challenge_v2.jsonl), sha256 in [`eval/SEAL_v2.json`](eval/SEAL_v2.json), 54 items, two per intent, drafted by a model that had read no v1 result, checked against the v1 set for shared six-grams and cosine, approved and sealed at 18:12 IST on 7 September before a single v2 row was generated). The v2 tune is checkpoint-250 of the Colab T4 run, selected on dev by the pre-registered rule ([`docs/SELECTION.md`](docs/SELECTION.md)), served as `ghl-support` Q8 through the same Ollama path; v1's artifacts are archived under `artifacts/v1/` and served as `ghl-support-v1`.
+
+| | base (`ghl-base` Q8) | v2 tune (`ghl-support` Q8) |
+|---|---:|---:|
+| pass rate (n = 54) | **8 / 54 = 14.8%** | **12 / 54 = 22.2%** |
+| critical failures | 6 | 12 |
+| difference, interval, verdict | | **+7.4** points, [-7.4, +22.2], **negative** |
+
+By kind, per intent, the old set as a contaminated secondary number, the judge-drift caveat and the file hashes are in [`docs/RESULTS.md`](docs/RESULTS.md), v2 section. Gate 2 asked for a positive verdict plus ordinary-item passes at or above base; the guard held (8 against 5) and the verdict did not.
+
 ### Why: it learned the voice and unlearned the admission
 
 Counts over the challenge answers and the training split:
@@ -624,6 +649,16 @@ Pro subscription was bought for this work and then **not used**: no training ran
 adapter was trained on the local Apple M1 Pro through MPS in 2 h 47 m, and the config that produced
 it, [`configs/train-t4.yaml`](configs/train-t4.yaml), is the 8,000-row variant sized for a free
 Colab or Kaggle T4. Nothing in this repository requires paid compute to reproduce.
+
+### v2 disclosures
+
+- **The admission rows were written by a model, not a person.** A stateless `grok-4.5-build` call authored them from the intent list, a specification and a scenario sketch; Gemini 3.8 Flash was the planned author and was replaced after five generator runs died on the training machine (decision 11). A second stateless call reviewed every row against eight checks; an automated leakage check quarantined 53. 206 rows reached train against a 440 target; nothing was edited to close the gap (decision 10).
+- **Two lint rules were relaxed for two intents** so that `check_cancellation_fee` could say fee or charge and `recover_password` could say password (decision 12). Every other price and credential word still rejects.
+- **Checkpoint selection on dev used a Grok judge**, not the hand pass v1 used, so v2 dev counts are lower than v1's and not comparable; only the ordering was used (`docs/SELECTION.md`).
+- **The judge drifts.** v1's base answers on the old set scored 16 of 54 on 6 September and 4 of 54 when rescored today beside the v2 answers. Every number in this README is a paired comparison inside one scoring session; v1 and v2 pass rates are not on one scale.
+- **The held-out Bitext reference metrics were not recomputed for v2.** The v1 sample draws from the v1 test split, whose ids can be v2 training ids; a fresh group-disjoint sample from the v2 test split was planned and cut for time.
+- **Two cells of the executed Colab notebook errored** (a smoke-run cap that could not exempt the admission rows, and a missing `PYTHONPATH` for the dev-answer runner). Neither touched the training or the gate; both are fixed in the source notebook, and the executed copy is committed as it ran, with a note.
+- **Two training runs were started and one was scored.** A first Colab VM was reclaimed mid-epoch; the second completed and was gated. A Mac `mps` insurance run of the same config was stopped at step 325 once the Colab run was clean (decision 14).
 
 ### What is real
 
