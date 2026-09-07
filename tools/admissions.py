@@ -137,6 +137,47 @@ STYLE_BRIEF = {
 # Scenario sketches. Deterministic from (intent, style, serial); they carry no
 # fact, no quantity and no company detail, only a framing so the batch does not
 # collapse into one template.
+# Step-3 closer assigned per example (pre-registered remedy, thread 18:46 IST Mon,
+# applied 00:20 IST Tue after the closer audit read CONCENTRATED on the first 307
+# rows: the "have to hand" checklist and "here is a message you can send" opener
+# spanned 6 to 9 intents). Deterministic from the scenario digest, so the cell's
+# prompt_sha changes and the audit can tell the two prompts apart.
+CLOSER_KINDS = (
+    "describe where on that page to look and what the customer will see there",
+    "draft, in the customer's voice, the short message they should send",
+    "list the details they should have to hand before they go, named for this intent",
+)
+# What each intent's have-to-hand list may name. Hand-written, no row text.
+INTENT_FACTS: dict[str, str] = {
+    "cancel_order": "the order reference and the item names",
+    "change_order": "the order reference, the item to change and what it should become",
+    "change_shipping_address": "the order reference and the full new address",
+    "check_cancellation_fee": "the order reference and when the order was placed, in their own words",
+    "check_invoice": "the order reference and the billing name",
+    "check_payment_methods": "the country they are ordering from and the card or wallet they mean to use",
+    "check_refund_policy": "the item names and the reason for the return",
+    "complaint": "the order reference, what went wrong and what outcome they want",
+    "contact_customer_service": "a one-line summary of the issue and the order reference if there is one",
+    "contact_human_agent": "the account email and a one-line summary of what was already tried",
+    "create_account": "the email they want to use and a name for the account",
+    "delete_account": "the account email and whether any order is still open",
+    "delivery_options": "the delivery address and the item names",
+    "delivery_period": "the order reference and the delivery address",
+    "edit_account": "the account email and the exact detail to change",
+    "get_invoice": "the order reference and the billing name",
+    "get_refund": "the order reference, the item names and the reason",
+    "newsletter_subscription": "the email address the newsletter goes to",
+    "payment_issue": "the order reference, the payment method used and what the screen said",
+    "place_order": "the item names, quantities and the delivery address",
+    "recover_password": "the account email and any other sign-in name they used",
+    "registration_problems": "the email used to register and what the screen said",
+    "review": "the item name and the order reference",
+    "set_up_shipping_address": "the full address and a name for it",
+    "switch_account": "the emails of both accounts",
+    "track_order": "the order reference and the delivery address",
+    "track_refund": "the order reference and the payment method the refund goes back to",
+}
+
 SCENE_WHO = (
     "someone who shops here occasionally",
     "a long-time customer",
@@ -207,6 +248,11 @@ account access and no knowledge of this company's rules. Pick one: describe wher
 on that page to look and what the customer will see there, draft the message the \
 customer should send, or list what information they should have to hand before \
 they go. Then stop.
+
+The closing step is assigned per example in its scenario line; follow that assignment. When \
+step 3 is a have-to-hand list, name only {facts}, in your own words, never as a \
+fixed checklist. Do not open step 3 with a stock phrase; in particular never write \
+"here is a message you can send", "before you go" or "so you can match".
 
 ANSWER LENGTH: between {word_min} and {word_max} words. Count them.
 
@@ -431,13 +477,15 @@ def scenario(intent: str, style: str, serial: int) -> str:
     who = SCENE_WHO[digest[0] % len(SCENE_WHO)]
     when = SCENE_WHEN[digest[1] % len(SCENE_WHEN)]
     why = SCENE_WHY[digest[2] % len(SCENE_WHY)]
-    return f"{who}, {when}; {why}"
+    closer = CLOSER_KINDS[digest[3] % len(CLOSER_KINDS)]
+    return f"{who}, {when}; {why}. Closing step for this example: {closer}"
 
 
 def build_prompt(intent: str, category: str, style: str, scenes: Sequence[str]) -> str:
     numbered = "\n".join(f"{index + 1}. {scene}" for index, scene in enumerate(scenes))
     return PROMPT.format(
         n=len(scenes),
+        facts=INTENT_FACTS[intent],
         intent=intent,
         category=category,
         style_brief=STYLE_BRIEF[style],
@@ -652,11 +700,21 @@ def cmd_generate(args: argparse.Namespace) -> int:
         for row in prior_rows:
             key = (str(row["intent"]), str(row["style"]))
             have[key] = have.get(key, 0) + 1
-        done_cells = {
-            (intent, style)
-            for intent, _, style, want in cells
-            if have.get((intent, style), 0) >= want
-        }
+        if args.redo_cells:
+            # Closer-audit remedy: keep every cell that already has rows, except
+            # the ones named for regeneration under the new prompt.
+            redo = {(str(a), str(b)) for a, b in json.loads(Path(args.redo_cells).read_text())}
+            done_cells = {
+                (intent, style)
+                for intent, _, style, want in cells
+                if have.get((intent, style), 0) >= 1 and (intent, style) not in redo
+            }
+        else:
+            done_cells = {
+                (intent, style)
+                for intent, _, style, want in cells
+                if have.get((intent, style), 0) >= want
+            }
         accepted = [
             row for row in prior_rows
             if (str(row["intent"]), str(row["style"])) in done_cells
@@ -943,6 +1001,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     gen.add_argument("--review", default=str(REVIEW_PATH))
     gen.add_argument("--batch", type=int, default=10, help="rows per model call (8-12)")
     gen.add_argument("--parallel", type=int, default=4, help="concurrent calls, max 16")
+    gen.add_argument("--redo-cells", default=None,
+                     help="with --resume: json list of [intent, style] cells to drop from the partial file and regenerate; every other cell with at least one row on disk is kept as is")
     gen.add_argument("--resume", action="store_true",
                      help="keep cells an earlier attempt banked; redo only what is missing")
     gen.add_argument("--partial-rows", default=str(PARTIAL_ROWS_PATH))
