@@ -234,6 +234,60 @@ One intent is near collapse: `cancel_order` keeps only 66 of 998 raw rows, in 12
 largest group is 53 rows, 80.3% of the intent. 64 of the 66 landed in train. That intent's
 behaviour after tuning is `ch-001` in [`docs/FAILURES.md`](docs/FAILURES.md).
 
+### v2 data: substitute, do not reject, plus 206 admission rows
+
+Branch `v2` changes the data and nothing else. Two edits, both recorded rule by rule in
+[`docs/v2/DATA_V2.md`](docs/v2/DATA_V2.md) and verified by an independent recount in
+[`docs/v2/DATA_V2_VERIFY.md`](docs/v2/DATA_V2_VERIFY.md):
+
+1. **Substitution instead of rejection.** `data/prepare.py --placeholder-mode substitute` replaces a
+   placeholder that has no factual neutral wording with a phrase that asserts nothing (a phone number
+   becomes "the number on our contact page", support hours become "the hours shown on our contact
+   page"). A machine check refuses any phrase containing a digit, a URL, a currency symbol, a duration
+   or a policy verb. 4,318 rows come back; 37 stay rejected because no honest phrase exists. The v1
+   default output is byte-identical (`data/prepare.py --audit-only --strict` still passes).
+2. **206 synthetic admission rows**, one shape only: the fact is not available, here is where to get
+   it, here is the one thing the assistant can do now. Written by a stateless model call that saw only
+   the intent list, the specification and a scenario sketch, never an evaluation query
+   (`grok-4.5-build` through `tools/admissions.py`; Gemini Flash was the planned author and was
+   replaced after five runs died on the training machine, decision 11). Every row passed a lint (no
+   digits, times, prices, URLs, credentials, claimed actions or policy claims), an independent
+   eight-check review by a second stateless call (259 of 340 accepted,
+   [`docs/v2/ADMISSION_REVIEW_A2.md`](docs/v2/ADMISSION_REVIEW_A2.md)), and a leakage check against
+   both sealed sets, the dev set and the v2 validation and test splits (cosine under 0.80, no shared
+   six-word gram; 53 quarantined). The rows carry the flag `SYNTH_ADMISSION` and their own group ids,
+   enter train only, and are exempt from the 8,000-row cap so the intervention is not sampled away
+   (decision 4). The 440-row target was not reached; no row was edited to close the gap
+   (decision 10).
+
+The re-clustering is from scratch (same MiniLM model, 0.86 average linkage, seed 42), so group ids
+and split membership are not row-comparable with v1. Side by side:
+
+| Quantity | v1 (`main`) | v2 (`v2`) | Source |
+|---|---:|---:|---|
+| Raw rows | 26,872 | 26,872 | `data/audit.json`, `data/v2/audit.json` |
+| Corpus rows kept | 22,448 | 26,764 | same |
+| Synthetic admission rows (train only, `SYNTH_ADMISSION`) | 0 | 206 | `data/v2/admissions.jsonl`, `docs/v2/DATA_V2.md` s10 |
+| Rows rejected | 4,424 | 108 | audit `rejected_rows` |
+| Rejected: placeholder with no neutral wording | 4,355 | 37 | audit `rule_counts` |
+| Rejected: invented timeline / completed action / credentials / unresolved placeholder | 50 / 1 / 1 / 9 | 50 / 1 / 1 / 9 | same |
+| Overlength (over 512 tokens) dropped | 8 | 10 | same |
+| Placeholder substitutions applied (v2 only) | 0 | 9,638 | audit `rule_counts` `substitute_*` |
+| Rows with the double-determiner defect (both runs) | 1,771 | 2,015 | `docs/v2/DATA_V2.md` s8 |
+| train / val / test rows | 17,701 / 2,477 / 2,270 | 21,132 / 2,753 / 3,085 | `data/splits.json`, `data/v2/splits.json` |
+| Groups (MiniLM, 0.86 average linkage, seed 42) | 4,462 | 4,992 | same |
+| Intents near collapse (one group over 50 percent) | 1 | 0 | audit `near_collapse_intents` |
+| Nearest cross-split cosine within intent: p50 / p95 / max | 0.8923 / 0.9387 / 0.9708 | 0.8959 / 0.9427 / 0.9825 | audit `nearest_cross_split_cosine` |
+| Group-id and normalized-instruction intersections | empty | empty | audit `cross_split` |
+| Split sha256 (train / val / test, first 12) | 307c59da3503 / b5f2e52d0d32 / ef864aace401 | 26ab60319908 / 6f35948d7c03 / 70e1de8594f7 | same |
+| Train cap at load time | 8,000 | 8,000 corpus rows plus 206 admissions exempt (decision 4) | `configs/train-t4.yaml`, `data/prepare.py cap_train_rows` |
+
+Per intent, corpus rows kept (v1 -> v2): cancel_order 66->996, change_order 942->997, change_shipping_address 973->973, check_cancellation_fee 950->950, check_invoice 926->999, check_payment_methods 942->999, check_refund_policy 889->960, complaint 887->999, contact_customer_service 151->997, contact_human_agent 884->998, create_account 933->997, delete_account 908->993, delivery_options 564->963, delivery_period 973->997, edit_account 739->1000, get_invoice 977->998, get_refund 857->997, newsletter_subscription 979->998, payment_issue 837->999, place_order 934->994, recover_password 435->994, registration_problems 924->999, review 961->996, set_up_shipping_address 944->997, switch_account 969->983, track_order 962->993, track_refund 942->998
+
+Sources: [`data/audit.json`](data/audit.json), [`data/v2/audit.json`](data/v2/audit.json),
+[`data/splits.json`](data/splits.json), [`data/v2/splits.json`](data/v2/splits.json). The v1 files
+are untouched; v2 writes only under `data/v2/` and `data/processed/v2/`.
+
 ## 4. Evaluation design and results
 
 Two evaluations answer two different questions, and they disagree on purpose.
@@ -651,6 +705,23 @@ Run these steps from the repository root in dependency order.
    it stops with a message naming `--device mps` if no CUDA GPU is visible. Details and expected wall
    times in [`docs/TRAINING.md`](docs/TRAINING.md).
 
+   **v2 (branch `v2`).** The same recipe over the v2 split, on a free Colab T4, run as a notebook so a
+   reviewer can read every cell's output:
+
+   ```sh
+   # data: substitution mode, admission rows appended to train, strict audit
+   uv run python data/prepare.py --placeholder-mode substitute --out data/v2 --admissions data/v2/admissions.jsonl
+   uv run python data/prepare.py --audit-only --out data/v2 --strict
+   # the run: notebooks/train_colab.ipynb, executed top to bottom on a free T4 (2026-09-08);
+   # the executed copy with outputs is notebooks/v2_colab_run.ipynb
+   uv run python train/train.py --config configs/train-t4.yaml --data-dir data/processed/v2 --run-name v2-t4 --no-push
+   uv run python tools/check_run.py train/runs/v2-t4 --max-memory-gb 12
+   ```
+
+   The admission rows themselves are regenerated with `uv run python tools/admissions.py generate
+   --provider grok`, reviewed with `tools/admission_review.py`, then `leakage` and `assemble`
+   ([`docs/v2/DATA_V2.md`](docs/v2/DATA_V2.md) section 10 has every count and hash).
+
 4. With the full pinned Hugging Face snapshot available locally, merge the selected adapter and
    convert both models using the pinned llama.cpp checkout. `HF_MODEL_DIR` must point to revision
    `989aa7980e4cf806f80c7fef2b1adb7bc71aa306`:
@@ -691,6 +762,17 @@ Run these steps from the repository root in dependency order.
 
    `eval/score.py` reads `eval/results/blind-key.json`, which is gitignored. Scoring a fresh sheet
    requires regenerating the answers and the key with `eval/blind.py` first.
+
+   **v2 scoring on the fresh sealed set** ([`eval/challenge_v2.jsonl`](eval/challenge_v2.jsonl),
+   sealed in [`eval/SEAL_v2.json`](eval/SEAL_v2.json)) uses the same scripts with explicit paths, so
+   the v1 results above are never overwritten:
+
+   ```sh
+   uv run python eval/run.py --model base  --backend ollama --split challenge --challenge eval/challenge_v2.jsonl --seal eval/SEAL_v2.json --output eval/results/v2/fresh/base-challenge-raw.jsonl  --check-complete
+   uv run python eval/run.py --model tuned --backend ollama --split challenge --challenge eval/challenge_v2.jsonl --seal eval/SEAL_v2.json --output eval/results/v2/fresh/tuned-challenge-raw.jsonl --check-complete
+   uv run python eval/blind.py --challenge eval/challenge_v2.jsonl --seal eval/SEAL_v2.json --base eval/results/v2/fresh/base-challenge-raw.jsonl --tuned eval/results/v2/fresh/tuned-challenge-raw.jsonl --csv eval/results/v2/fresh/blind-sheet.csv --html eval/results/v2/fresh/blind-sheet.html --key eval/results/v2/fresh/blind-key.json
+   uv run python eval/score.py --final --require-complete --sheet eval/results/v2/fresh/blind-sheet-scored.csv --key eval/results/v2/fresh/blind-key.json --scores eval/results/v2/fresh/scores.jsonl --summary eval/results/v2/fresh/summary.jsonl --failures eval/results/v2/fresh/failures.jsonl --n-boot 2000 --seed 42
+   ```
 
 6. Reproduce the 30-request serial benchmark and validate all currently manifested artifacts:
 
