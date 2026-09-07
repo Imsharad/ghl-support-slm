@@ -132,7 +132,7 @@ Fine-tuning Qwen2.5-1.5B-Instruct on 8,000 cleaned Bitext rows made it write lik
 
 # v2 results: the data repair on the fresh sealed set
 
-Written 2026-09-08 05:30 IST by Fable 5.1 (nodes Gate2 scoring, Results writeup). v1 above is unchanged. v2 retrained the identical recipe (`configs/train-t4.yaml`, seed 42, 8,000-row cap) on the repaired data described in `docs/v2/DATA_V2.md`: placeholders substituted instead of rejected, plus 206 synthetic admission rows. Everything else is frozen: base model, prompt, decoding, rubric, judge protocol, serving path.
+Written 2026-09-08 04:55 IST by Fable 5.1 (nodes Gate2 scoring, Results writeup). v1 above is unchanged. v2 retrained the identical recipe (`configs/train-t4.yaml`, seed 42, 8,000-row cap) on the repaired data described in `docs/v2/DATA_V2.md`: placeholders substituted instead of rejected, plus 206 synthetic admission rows. Everything else is frozen: base model, prompt, decoding, rubric, judge protocol, serving path.
 
 ## Headline on the fresh sealed set
 

@@ -118,7 +118,7 @@ Not another checkpoint. `docs/SELECTION.md` already showed every checkpoint past
 
 # v2 failure analysis: the fresh sealed set
 
-Written 2026-09-08 05:35 IST by Fable 5.1. Three cards from `eval/results/v2/fresh/failures.jsonl`, chosen because two of them are the fresh-set twins of v1's Loom cases, so the reader can see what the data repair changed and what it did not. Model identities come from the key, read only after scoring. All 12 tuned critical failures on the fresh set are in the same file; 10 of the 12 carry the judge tag `invented policy, fee or window`, the family v1 lost on.
+Written 2026-09-08 04:56 IST by Fable 5.1. Three cards from `eval/results/v2/fresh/failures.jsonl`, chosen because two of them are the fresh-set twins of v1's Loom cases, so the reader can see what the data repair changed and what it did not. Model identities come from the key, read only after scoring. All 12 tuned critical failures on the fresh set are in the same file; 10 of the 12 carry the judge tag `invented policy, fee or window`, the family v1 lost on.
 
 ## `ch2-017`: invented support hours, again
 

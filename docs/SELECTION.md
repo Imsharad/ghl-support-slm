@@ -155,7 +155,7 @@ load, and the four dev runs plus the test run are serial in a single process eac
 
 # v2: checkpoint selection on dev (run `v2-t4`, Colab T4)
 
-Written 2026-09-08 04:45 IST by Fable 5.1. Same rule as v1, pre-registered in `docs/plans/V2_PLAN.md` section 6 and `docs/v2/PLAN_DECISIONS.md`: candidates are steps 250, 300, 400 and 500; highest dev pass count, then fewest critical failures, then the earliest step; dev set only (`eval/dev.jsonl`, 54 items), never a sealed set. **`checkpoint-250` was selected.**
+Written 2026-09-08 04:37 IST by Fable 5.1. Same rule as v1, pre-registered in `docs/plans/V2_PLAN.md` section 6 and `docs/v2/PLAN_DECISIONS.md`: candidates are steps 250, 300, 400 and 500; highest dev pass count, then fewest critical failures, then the earliest step; dev set only (`eval/dev.jsonl`, 54 items), never a sealed set. **`checkpoint-250` was selected.**
 
 | step | candidate | passes / 54 | pass rate | critical failures |
 |---:|---|---:|---:|---:|
