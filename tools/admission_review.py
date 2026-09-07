@@ -38,6 +38,7 @@ REASONS = [
     "claimed_action",         # says it did, checked, processed, cancelled, escalated anything
     "offered_lookup",         # offers to look up, pull up, process, transfer, connect
     "policy_claim",           # states what the company's process or policy is ("X happens when Y")
+    "credential_request",     # asks the customer for a password, PIN, code, card number or login details
     "grammar",                # broken grammar or unreadable
     "style_mismatch",         # query does not show the declared style
 ]
@@ -90,10 +91,12 @@ access and no knowledge of the company's rules: describe where on that page to l
 draft the message to send, or list what to have to hand. Zero actions, an action that \
 needs a lookup, or two actions all fail.
 6. second_request_ignored: if the message asks two things, both must be addressed.
-7. claimed_action / offered_lookup / policy_claim: the answer must not say it has done, \
+7. claimed_action / offered_lookup / policy_claim / credential_request: the answer must not say it has done, \
 checked, processed, cancelled, updated, refunded or escalated anything; must not offer \
 to look up, pull up, check, process, issue, transfer or connect; must not state what \
-the company's process or policy is or what happens after something ("X happens when Y").
+the company's process or policy is or what happens after something ("X happens when Y"); \
+must not ask the customer to provide a password, PIN, one-time code, card number or login details \
+(naming the thing the customer lost or wants to change is fine).
 8. grammar / style_mismatch: both fields read as natural English (a "typos" style \
 message is allowed its typing mistakes); the message shows its declared STYLE: \
 ordinary = calm and clear; typos = real typing mistakes; anger = frustrated tone; \

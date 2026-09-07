@@ -155,3 +155,15 @@ def test_cell_order_shuffle_is_seeded_and_interleaves_intents():
     # The first tenth of the shuffled order should touch more than one intent.
     head = {cell[0] for cell in first[: len(first) // 10]}
     assert len(head) > 1
+
+
+def test_intent_noun_exemption_is_narrow():
+    # Decision 12: the intent's own noun passes; everything else in the rule still fails.
+    assert admissions.lint_field("What is the cancellation fee?", "query", "check_cancellation_fee") == []
+    assert "query:price_word" in admissions.lint_field("What is the cancellation fee?", "query", "cancel_order")
+    assert "answer:price_word" in admissions.lint_field("The fee is a small charge.", "answer", "check_cancellation_fee")
+    assert admissions.lint_field("I forgot my password.", "query", "recover_password") == []
+    assert "query:credential_request" in admissions.lint_field("I forgot my password.", "query", "edit_account")
+    assert "answer:credential_request" in admissions.lint_field("Tell me your password and PIN.", "answer", "recover_password")
+    row = {"query": "I forgot my password.", "answer": "x", "intent": "recover_password"}
+    assert "query:credential_request" not in admissions.lint_row(row)

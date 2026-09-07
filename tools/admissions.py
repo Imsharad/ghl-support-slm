@@ -351,17 +351,29 @@ def word_count(text: str) -> int:
     return len(_words(text))
 
 
-def lint_field(text: str, field: str) -> list[str]:
+# Decision 12 (docs/v2/PLAN_DECISIONS.md): an intent whose own noun is a banned
+# word is exempt from that one word only. A cancellation-fee query has to say
+# "fee" and a password-recovery query has to say "password"; amounts, other price
+# words, PINs, codes and card numbers stay rejected, and the A2 reviewer still
+# rejects an answer that asks for the credential.
+INTENT_EXEMPT_WORDS: dict[str, frozenset[str]] = {
+    "check_cancellation_fee": frozenset({"fee", "fees"}),
+    "recover_password": frozenset({"password", "passwords"}),
+}
+
+
+def lint_field(text: str, field: str, intent: str | None = None) -> list[str]:
     """Return the rule ids this field breaks. Applied to query and answer alike."""
     bad: list[str] = []
     lower = text.casefold()
+    exempt = INTENT_EXEMPT_WORDS.get(intent or "", frozenset())
     if any(unicodedata.category(ch) == "Nd" for ch in text):
         bad.append(f"{field}:digit")
     if any(ch in CURRENCY_CHARS for ch in text):
         bad.append(f"{field}:currency_symbol")
     if URL_PAT.search(text):
         bad.append(f"{field}:url_or_address")
-    lowered_words = {word.casefold().strip("-'’") for word in _words(text)}
+    lowered_words = {word.casefold().strip("-'’") for word in _words(text)} - exempt
     if lowered_words & NUMBER_WORDS:
         bad.append(f"{field}:number_word")
     if lowered_words & TIME_WORDS:
@@ -372,15 +384,19 @@ def lint_field(text: str, field: str) -> list[str]:
         bad.append(f"{field}:price_word")
     if "24/7" in text or "twenty-four seven" in lower or "24x7" in lower:
         bad.append(f"{field}:always_open")
-    if CREDENTIAL_PAT.search(text):
+    credential_text = text
+    for word in exempt:
+        credential_text = re.sub(rf"(?i)\b{word}\b", " ", credential_text)
+    if CREDENTIAL_PAT.search(credential_text):
         bad.append(f"{field}:credential_request")
     return sorted(set(bad))
 
 
-def lint_row(row: dict) -> list[str]:
+def lint_row(row: dict, intent: str | None = None) -> list[str]:
     query = str(row.get("query", ""))
     answer = str(row.get("answer", ""))
-    bad = lint_field(query, "query") + lint_field(answer, "answer")
+    intent = intent or (str(row["intent"]) if row.get("intent") else None)
+    bad = lint_field(query, "query", intent) + lint_field(answer, "answer", intent)
     stripped = answer.lstrip().casefold()
     for opener in BITEXT_OPENERS:
         if stripped.startswith(opener) or opener in stripped:
@@ -553,7 +569,7 @@ def generate_cell(
             })
             continue
         for index, row in enumerate(rows):
-            failures = lint_row(row)
+            failures = lint_row(row, intent)
             record = {
                 "batch_id": batch_id,
                 "batch_index": index,
