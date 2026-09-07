@@ -671,6 +671,11 @@ def cap_train_rows(rows: list[dict], cap: int, seed: int = SEED) -> list[dict]:
         corpus = [row for row in rows if str(row.get("flags", "")) != SYNTH_ADMISSION_FLAG]
         remaining = cap - len(synthetic)
         if remaining < 1:
+            # A cap smaller than the admission set (the 64-row smoke run) cannot
+            # exempt them; cap the whole pool uniformly instead so the smoke
+            # proof still runs. The real cap (8,000) never takes this branch.
+            return _cap_groups(rows, cap, seed)
+        if remaining < 1:
             raise ValueError(
                 f"cap {cap} leaves no room for corpus rows beside "
                 f"{len(synthetic)} admission rows"

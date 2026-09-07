@@ -519,7 +519,7 @@ def test_admission_rows_are_exempt_from_the_cap() -> None:
     assert [row["id"] for row in corpus_kept] == [row["id"] for row in want]
 
 
-def test_cap_refuses_to_drop_below_the_admission_count() -> None:
+def test_cap_at_or_below_the_admission_count_caps_uniformly() -> None:
     corpus = _corpus_rows()
     synthetic = [
         {
@@ -530,5 +530,18 @@ def test_cap_refuses_to_drop_below_the_admission_count() -> None:
         }
         for s in range(20)
     ]
-    with pytest.raises(ValueError):
-        prepare.cap_train_rows(corpus + synthetic, cap=20, seed=42)
+    # A cap at or below the admission count (the 64-row smoke run against 206
+    # admissions) falls back to a uniform group cap instead of raising.
+    capped = prepare.cap_train_rows(corpus + synthetic, cap=20, seed=42)
+    assert 0 < len(capped) <= 20
+
+
+def test_cap_below_admission_count_caps_uniformly():
+    # Smoke runs cap at 64 rows while v2 carries 206 admission rows; the cap must not raise.
+    from data.prepare import cap_train_rows, SYNTH_ADMISSION_FLAG
+    rows = [{"id": f"c{i}", "group_id": f"g{i}", "intent": "x", "flags": ""} for i in range(50)]
+    rows += [{"id": f"a{i}", "group_id": f"ag{i}", "intent": "x", "flags": SYNTH_ADMISSION_FLAG} for i in range(100)]
+    capped = cap_train_rows(rows, 64)
+    assert len(capped) <= 64 and len(capped) > 0
+    big = cap_train_rows(rows, 140)
+    assert sum(1 for r in big if r["flags"] == SYNTH_ADMISSION_FLAG) == 100
