@@ -107,7 +107,11 @@ Why these choices:
   parity rather than assumed equal. A 27B-class open base (Qwen3.8-27B, also Apache-2.0) was
   considered and set aside: about 28 GB at Q8 and roughly 20 GB of GPU memory for QLoRA at 512
   tokens, so it fits neither a free T4 nor this laptop, and the brief asks for a small model served
-  on your own hardware.
+  on your own hardware. A 14B-class base (Qwen2.5-14B-Instruct or similar) was considered and not
+  run: the assignment says free compute is sufficient and not to spend money on this
+  (`docs/ASSIGNMENT.md`), and a 14B QLoRA at this shape does not fit a free T4. The v1 failure is a
+  data-shape failure, the corpus never says "I don't know" (`docs/RESULTS.md`), which a larger base
+  does not repair.
 - **QLoRA over full fine-tuning.** 18.5M trainable parameters instead of 1.5B fit a free T4 or this
   Mac's MPS device with the base frozen in 4-bit. The shipped adapter is 74 MB against 3.1 GB of
   merged fp16 weights, so base-versus-tuned is one frozen base plus a named delta rather than two
@@ -541,6 +545,7 @@ These are its cuts, each one a real reduction in evidence:
 | Training rows | Full 17,701-row grouped split on a cloud GPU | 8,000-row group-aware cap, one epoch, on this Mac | The corpus problem in section 4 is a coverage problem, and a larger sample of the same corpus would not have added the missing "I don't know" rows. Untested. |
 | Fresh-clone check | Clone on a clean machine | A clone into a temp directory on this Mac with a fresh venv, serving steps only; run 2026-09-06, transcript in [`docs/FRESH_CLONE_TRANSCRIPT.md`](docs/FRESH_CLONE_TRANSCRIPT.md) | Same OS and same machine, so it proves the instructions, not portability. It also caught a README defect (two tests failed after a serve-only install), fixed since. |
 | Concurrency bench | Concurrency 4, labelled optional | Serial only | No concurrency number at all. Section 6 says so. |
+| Second base-model arm | 14B-class base trained and scored alongside 1.5B | 14B second arm: considered, not run — reasons in section 2 | Untested whether a larger base changes anything; section 2's argument is that the failure is data-shape, not capacity. |
 | Loom | 4 minutes | 3 minutes, 5 shots; **not recorded as of 2026-09-06** | Nothing material once recorded. |
 
 ### Three disclosures that matter more than the table
