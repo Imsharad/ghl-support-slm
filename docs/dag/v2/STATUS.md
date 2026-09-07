@@ -23,9 +23,11 @@ Fable 5.1 hand-edits this file after each worker's verified report; other worker
 | A2 | Grok | admission-row review (path per A1 brief) | A1 | ~19:45 | lint rules from `docs/v2/PLAN_DECISIONS.md` sec 4 | blocked on A1 | — |
 | D0 | Sonnet | `docs/dag/v2/STATUS.md` | — | 18:20 | manual read, under 80 lines | done | `b10c1da` |
 | Re-audit | Opus | `data/v2/audit.json`, `data/v2/splits.json` (v2 rows folded in) | A2 | 20:15 | `uv run python data/prepare.py --audit-only --strict` | blocked on A2 | — |
-| Train launch | shark, Opus | detached training job, launcher posts finish line | Re-audit | target 20:30, hard 21:30 | launcher script `--mention` on completion | blocked on Re-audit | — |
+| Train launch | Opus (Colab CLI, `--auth adc`); Mac run as backup | detached `colab run --gpu T4` job, launcher posts finish line | Re-audit | target 20:30, hard 21:30 | launcher script `--mention` on completion; `colab --auth adc sessions` shows the VM | blocked on Re-audit; shark click removed 18:45 IST (ADC probe: T4 + exec + stop OK, kernel-client pinned <1.0) | — |
 | Checkpoint/merge | Sol | checkpoint, merge, Q8 quant, Ollama tag | Train launch | ~01:30 Tue | manual smoke of served model | blocked on Train launch | — |
 | Gate2 scoring | Grok, Fable | 54 v2 answers x2, judge, adjudication | Checkpoint/merge | ~03:30 Tue | judge protocol, frozen rubric | blocked on Checkpoint/merge | — |
 | Results writeup | Opus | `docs/RESULTS.md`, `README.md` (both sets) | Gate2 scoring | ~08:30 Tue | manual read | blocked on Gate2 scoring | — |
 | Loom | shark | recording | Results writeup | 14:00 Tue | manual review | blocked on Results writeup | — |
 | Submission | shark | final commit, tag, submission | Loom | 20:00 Tue | `check_submission.py` | blocked on Loom | — |
+
+Colab path (18:45 IST): `colab --auth adc` uses the existing gcloud ADC file, no OAuth code. Fallback if the CLI fails at launch: `notebooks/train_colab.ipynb` plus shark's Run-all, which needs the repo public (shark approved the flip 18:29 IST).
