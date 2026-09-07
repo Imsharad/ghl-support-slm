@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import random
 import sys
 from pathlib import Path
 
@@ -124,3 +125,33 @@ def test_assembled_rows_use_the_processed_schema() -> None:
     }
     assert sorted(row) == sorted(prepare.ROW_KEYS)
     assert admissions.FLAG == prepare.SYNTH_ADMISSION_FLAG
+
+
+def test_append_jsonl_appends_and_survives_partial_run(tmp_path):
+    """A cell written on return must still be on disk if the run never ends."""
+    path = tmp_path / "partial.jsonl"
+    admissions.append_jsonl(path, [{"intent": "cancel_order", "query": "a"}])
+    admissions.append_jsonl(path, [{"intent": "get_refund", "query": "b"}])
+    lines = path.read_text(encoding="utf-8").splitlines()
+    assert len(lines) == 2
+    assert [json.loads(line)["intent"] for line in lines] == ["cancel_order", "get_refund"]
+
+
+def test_append_jsonl_no_rows_creates_nothing(tmp_path):
+    path = tmp_path / "partial.jsonl"
+    admissions.append_jsonl(path, [])
+    assert not path.exists()
+
+
+def test_cell_order_shuffle_is_seeded_and_interleaves_intents():
+    """The seeded shuffle must be reproducible and must not leave one intent last."""
+    cells = [(intent, "CAT", style, 1) for intent in "abcdefghij" for style in admissions.STYLES]
+    first = list(cells)
+    second = list(cells)
+    random.Random(admissions.CELL_ORDER_SEED).shuffle(first)
+    random.Random(admissions.CELL_ORDER_SEED).shuffle(second)
+    assert first == second
+    assert first != cells
+    # The first tenth of the shuffled order should touch more than one intent.
+    head = {cell[0] for cell in first[: len(first) // 10]}
+    assert len(head) > 1

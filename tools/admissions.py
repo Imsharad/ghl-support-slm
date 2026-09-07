@@ -29,12 +29,13 @@ import argparse
 import hashlib
 import json
 import os
+import random
 import re
 import subprocess
 import sys
 import tempfile
 import unicodedata
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any, Iterable, Sequence
 
@@ -51,6 +52,9 @@ ACCEPTED_PATH = V2_DIR / "admissions.jsonl"
 QUARANTINE_PATH = V2_DIR / "admissions_quarantine.jsonl"
 REVIEW_PATH = V2_DIR / "admission_review.jsonl"
 LEAKAGE_PATH = V2_DIR / "leakage.json"
+PARTIAL_ROWS_PATH = V2_DIR / "admissions_partial.jsonl"
+PARTIAL_REVIEW_PATH = V2_DIR / "admission_review_partial.jsonl"
+CELL_ORDER_SEED = 42
 
 MODEL = "gemini-3.8-flash-high"
 SEED = 42
@@ -246,6 +250,19 @@ def read_jsonl(path: Path) -> list[dict]:
             if line:
                 out.append(json.loads(line))
     return out
+
+
+def append_jsonl(path: Path, rows: Sequence[dict]) -> None:
+    """Append and flush to disk as a cell returns. The final files are still
+    written whole at the end; these partials are what a kill or a cutoff keeps."""
+    if not rows:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = "".join(json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n" for row in rows)
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(payload)
+        handle.flush()
+        os.fsync(handle.fileno())
 
 
 def write_jsonl(path: Path, rows: Sequence[dict]) -> str:
@@ -537,19 +554,40 @@ def cmd_generate(args: argparse.Namespace) -> int:
             want = plan.count(style)
             if want:
                 cells.append((intent, intents[intent], style, want))
-    print(f"cells={len(cells)} rows_wanted={sum(cell[3] for cell in cells)} model={MODEL}")
+    # Interleave the intents so a cutoff leaves every intent with rows rather
+    # than the tail intents with none. Seeded, so the order is reproducible.
+    random.Random(CELL_ORDER_SEED).shuffle(cells)
+    print(
+        f"cells={len(cells)} rows_wanted={sum(cell[3] for cell in cells)} "
+        f"model={MODEL} parallel={args.parallel} cell_order_seed={CELL_ORDER_SEED}"
+    )
+    partial_rows = Path(args.partial_rows)
+    partial_review = Path(args.partial_review)
+    for stale in (partial_rows, partial_review):
+        if stale.exists():
+            stale.unlink()
     accepted: list[dict] = []
     review: list[dict] = []
+    done = 0
     with ThreadPoolExecutor(max_workers=args.parallel) as pool:
-        futures = [
-            pool.submit(generate_cell, intent, category, style, want, args.attempts, args.batch)
+        future_cell = {
+            pool.submit(generate_cell, intent, category, style, want, args.attempts, args.batch):
+                (intent, style, want)
             for intent, category, style, want in cells
-        ]
-        for (intent, _, style, want), future in zip(cells, futures):
+        }
+        # as_completed, not submission order: a cell is written the moment it
+        # returns, so a kill keeps everything finished up to that point.
+        for future in as_completed(future_cell):
+            intent, style, want = future_cell[future]
             rows, lines = future.result()
+            for line in lines:
+                line["cell_order_seed"] = CELL_ORDER_SEED
             accepted.extend(rows)
             review.extend(lines)
-            print(f"{intent:<24} {style:<13} {len(rows)}/{want}")
+            append_jsonl(partial_rows, rows)
+            append_jsonl(partial_review, lines)
+            done += 1
+            print(f"{intent:<24} {style:<13} {len(rows)}/{want}  [{done}/{len(cells)}]", flush=True)
     # Cells run in parallel, so a repeat across two cells only shows up here.
     # Cross-cell duplicates are dropped and reported as a shortfall, not patched.
     deduped: list[dict] = []
@@ -797,7 +835,9 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     gen.add_argument("--out", default=str(RAW_PATH))
     gen.add_argument("--review", default=str(REVIEW_PATH))
     gen.add_argument("--batch", type=int, default=10, help="rows per model call (8-12)")
-    gen.add_argument("--parallel", type=int, default=4, help="concurrent calls, max 4")
+    gen.add_argument("--parallel", type=int, default=4, help="concurrent calls, max 16")
+    gen.add_argument("--partial-rows", default=str(PARTIAL_ROWS_PATH))
+    gen.add_argument("--partial-review", default=str(PARTIAL_REVIEW_PATH))
     gen.add_argument("--attempts", type=int, default=6, help="regeneration rounds per cell")
     gen.set_defaults(func=cmd_generate)
 
@@ -818,8 +858,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     asm.set_defaults(func=cmd_assemble)
 
     args = parser.parse_args(argv)
-    if getattr(args, "parallel", 1) > 4:
-        parser.error("--parallel is capped at 4; swap is tight on this machine")
+    if getattr(args, "parallel", 1) > 16:
+        parser.error("--parallel is capped at 16")
     if getattr(args, "batch", 10) > 12:
         parser.error("--batch is capped at 12")
     return args
