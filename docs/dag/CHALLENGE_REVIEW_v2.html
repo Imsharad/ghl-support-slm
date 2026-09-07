@@ -28,7 +28,7 @@ body.nohints .hint{display:none}
 <button onclick="resume()">Resume</button>
 <label class=barlab><input type=checkbox id=hints checked> explain the fields</label>
 <button onclick="copyEdits()">Copy edits as JSON</button> <span id=msg></span></div>
-<p>Generated 2026-09-07 14:24 IST from <code>eval/challenge_v2_draft.jsonl</code> (54 items, two per intent: one ordinary, one hard). SHA-256 <code>39f70a8d046e5e983a3fbe76a76eb8772d0a7cf007c33d01699dff8bcb87c229</code>.
+<p>Generated 2026-09-07 17:49 IST from <code>eval/challenge_v2_draft.jsonl</code> (54 items, two per intent: one ordinary, one hard). SHA-256 <code>c86af5322452b8d4fb84b60c6dc1375a7b2ec4a1db3c5fc5beae8b3de2d9df72</code>.
 Edit any query or facts inline, untick items you reject, add a note, then press "Copy edits as JSON" and paste it in the GoHighLevel-prep thread.
 Fable applies the edits, seals <code>eval/challenge_v2.jsonl</code> and records its hash in <code>eval/SEAL_v2.json</code>. Nothing tuned is generated before that.</p>
 <div class=guide>
@@ -224,9 +224,9 @@ Challenge items in `eval/challenge_draft.jsonl` are drafts for shark&#x27;s 11:3
 </div>
 <div class=card data-id="ch2-007">
   <div class=head><b>ch2-007</b> <span class=tag>check_cancellation_fee</span> <span class="tag ordinary">ordinary</span>
-  <span class=cos>max Bitext cosine 0.63</span>
+  <span class=cos>max Bitext cosine 0.49</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>If I cancel my yearly air-purifier filter subscription nine months in, what cancellation fee would I owe?</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Nine months into my yearly air-purifier filter plan, how much would ending it early cost me under the exit terms?</div>
   <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>customer is on a yearly filter subscription nine months in; fee schedule unknown to assistant</div>
   <div class=two>
     <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>say the fee depends on the plan terms</li><li>explain where to find the cancellation fee in account or contract</li><li>offer to help locate the plan name or billing cycle</li></ul></div>
@@ -320,9 +320,9 @@ Challenge items in `eval/challenge_draft.jsonl` are drafts for shark&#x27;s 11:3
 </div>
 <div class=card data-id="ch2-015">
   <div class=head><b>ch2-015</b> <span class=tag>complaint</span> <span class="tag ordinary">ordinary</span>
-  <span class=cos>max Bitext cosine 0.54</span>
+  <span class=cos>max Bitext cosine 0.46</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>The courier left my baby-monitor box on the stairwell yesterday and the seal was torn. I want that logged as a complaint.</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Yesterday a courier dropped the baby-monitor package on the stairwell with a torn seal. Please open a formal complaint ticket for that.</div>
   <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>customer reports torn seal and stairwell drop; assistant cannot verify delivery photos</div>
   <div class=two>
     <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>acknowledge the report</li><li>explain how to file a complaint with order id and photos</li><li>say logging may require support ticket creation</li></ul></div>
@@ -440,9 +440,9 @@ Challenge items in `eval/challenge_draft.jsonl` are drafts for shark&#x27;s 11:3
 </div>
 <div class=card data-id="ch2-025">
   <div class=head><b>ch2-025</b> <span class=tag>delivery_options</span> <span class="tag ordinary">ordinary</span>
-  <span class=cos>max Bitext cosine 0.60</span>
+  <span class=cos>max Bitext cosine 0.53</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>For a 8kg pottery wheel going to Nagpur 440001, what delivery options do you offer and is curb-side unload available?</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Shipping an 8kg pottery wheel to Nagpur PIN 440001 — which carriers or service levels exist, and does anyone offer curb-side unload?</div>
   <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>8kg pottery wheel to Nagpur; available options unknown to assistant</div>
   <div class=two>
     <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>say options depend on weight, PIN, and carrier</li><li>explain how to see delivery choices at checkout</li><li>avoid inventing curb-side availability</li></ul></div>
@@ -452,9 +452,9 @@ Challenge items in `eval/challenge_draft.jsonl` are drafts for shark&#x27;s 11:3
 </div>
 <div class=card data-id="ch2-026">
   <div class=head><b>ch2-026</b> <span class=tag>delivery_options</span> <span class="tag hard">hard</span>
-  <span class=cos>max Bitext cosine 0.60</span>
+  <span class=cos>max Bitext cosine 0.64</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>what delivery options do you have, and also can you recommend a vegetarian thali place near Sitabuldi?</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>list every shipping method available for my cart, plus name a vegetarian thali spot around Sitabuldi while you are answering</div>
   <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>delivery question plus off-topic restaurant ask; assistant has no local dining data mandate</div>
   <div class=two>
     <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>answer delivery options at a high level or point to checkout</li><li>decline restaurant recommendations as out of scope</li><li>stay helpful on the shipping question</li></ul></div>
@@ -464,9 +464,9 @@ Challenge items in `eval/challenge_draft.jsonl` are drafts for shark&#x27;s 11:3
 </div>
 <div class=card data-id="ch2-027">
   <div class=head><b>ch2-027</b> <span class=tag>delivery_period</span> <span class="tag ordinary">ordinary</span>
-  <span class=cos>max Bitext cosine 0.55</span>
+  <span class=cos>max Bitext cosine 0.60</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>If I order the teak plant stand today before noon IST, when should I expect it in Mysuru 570001?</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Ordering a teak plant stand this morning before noon IST — roughly when would Mysuru 570001 see it arrive?</div>
   <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>teak plant stand; Mysuru PIN; order not placed yet; ETA unknown to assistant</div>
   <div class=two>
     <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>say ETA depends on stock and carrier estimates shown at checkout</li><li>explain how to read the estimated delivery date before paying</li><li>avoid inventing a calendar day</li></ul></div>
@@ -500,9 +500,9 @@ Challenge items in `eval/challenge_draft.jsonl` are drafts for shark&#x27;s 11:3
 </div>
 <div class=card data-id="ch2-030">
   <div class=head><b>ch2-030</b> <span class=tag>edit_account</span> <span class="tag hard">hard</span>
-  <span class=cos>max Bitext cosine 0.48</span>
+  <span class=cos>max Bitext cosine 0.46</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>change my login phone to the new one and also update the GST billing label on the same profile. I already told chat yesterday.</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>swap the phone number I use to sign in, and rewrite the GST billing label too. Chat supposedly took this yesterday but nothing changed.</div>
   <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>two edit requests; no new phone or GST text provided; prior chat not visible to assistant</div>
   <div class=two>
     <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>ask for the new phone and exact GST billing label</li><li>explain settings paths for phone and billing fields</li><li>do not claim yesterday&#x27;s chat completed the edits</li></ul></div>
@@ -536,9 +536,9 @@ Challenge items in `eval/challenge_draft.jsonl` are drafts for shark&#x27;s 11:3
 </div>
 <div class=card data-id="ch2-033">
   <div class=head><b>ch2-033</b> <span class=tag>get_refund</span> <span class="tag ordinary">ordinary</span>
-  <span class=cos>max Bitext cosine 0.53</span>
+  <span class=cos>max Bitext cosine 0.48</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>I returned the warped yoga mat last Tuesday via the pickup you arranged. How do I request the refund now that the hub scanned it in?</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>The warped yoga mat went back last Tuesday through your arranged pickup and the hub already scanned it. What&#x27;s the next step to get my money back?</div>
   <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>customer says return scanned last Tuesday; refund process unknown; assistant cannot see scans</div>
   <div class=two>
     <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>ask for order id or return id</li><li>explain how to request a refund after a scanned return</li><li>say timing depends on policy and payment method</li></ul></div>
@@ -548,9 +548,9 @@ Challenge items in `eval/challenge_draft.jsonl` are drafts for shark&#x27;s 11:3
 </div>
 <div class=card data-id="ch2-034">
   <div class=head><b>ch2-034</b> <span class=tag>get_refund</span> <span class="tag hard">hard</span>
-  <span class=cos>max Bitext cosine 0.50</span>
+  <span class=cos>max Bitext cosine 0.51</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>refund the yoga mat as store credit and also cash to my cousin&#x27;s UPI, even though I paid by debit card.</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Split the yoga-mat refund: half as store credit, half as cash on my cousin&#x27;s UPI, despite the original debit-card payment.</div>
   <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>customer demands split refund methods including third-party UPI; original pay was debit; assistant cannot approve method changes</div>
   <div class=two>
     <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain refunds usually return to the original payment method subject to policy</li><li>say third-party UPI payouts are not something chat can arrange</li><li>ask for order id to start a normal refund request path</li></ul></div>
@@ -608,9 +608,9 @@ Challenge items in `eval/challenge_draft.jsonl` are drafts for shark&#x27;s 11:3
 </div>
 <div class=card data-id="ch2-039">
   <div class=head><b>ch2-039</b> <span class=tag>place_order</span> <span class="tag ordinary">ordinary</span>
-  <span class=cos>max Bitext cosine 0.58</span>
+  <span class=cos>max Bitext cosine 0.41</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>I want to place an order for three terracotta herb pots, medium, shipped to the home address on my profile.</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Please buy three medium terracotta herb pots and send them to whatever home address sits on my profile.</div>
   <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>customer wants three medium herb pots to profile home address; assistant cannot place orders from chat alone</div>
   <div class=two>
     <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain how to add items and check out</li><li>confirm that chat cannot complete payment</li><li>offer to help with sizing or address checks at a guidance level</li></ul></div>
@@ -620,9 +620,9 @@ Challenge items in `eval/challenge_draft.jsonl` are drafts for shark&#x27;s 11:3
 </div>
 <div class=card data-id="ch2-040">
   <div class=head><b>ch2-040</b> <span class=tag>place_order</span> <span class="tag hard">hard</span>
-  <span class=cos>max Bitext cosine 0.31</span>
+  <span class=cos>max Bitext cosine 0.30</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>order those herb pots, and while you&#x27;re at it write me a haiku about monsoon soil.</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Put those herb pots through checkout for me, then compose a haiku about monsoon soil as a side favor.</div>
   <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>order request plus creative off-topic ask; no pot SKU confirmed; assistant cannot place the order</div>
   <div class=two>
     <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>redirect to checkout for the pots</li><li>optionally decline or briefly handle the haiku without letting it replace the order guidance</li><li>do not claim an order was placed</li></ul></div>
@@ -680,9 +680,9 @@ Challenge items in `eval/challenge_draft.jsonl` are drafts for shark&#x27;s 11:3
 </div>
 <div class=card data-id="ch2-045">
   <div class=head><b>ch2-045</b> <span class=tag>review</span> <span class="tag ordinary">ordinary</span>
-  <span class=cos>max Bitext cosine 0.64</span>
+  <span class=cos>max Bitext cosine 0.59</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Where do I leave a review for the carbon tripod I received eight days ago? I want it on the product page, not a post-purchase survey.</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>I got a carbon tripod eight days ago and need the product-page feedback form, not the post-purchase survey popup. Where is that?</div>
   <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>carbon tripod received eight days ago; review UI location unknown to assistant beyond general guidance</div>
   <div class=two>
     <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain typical path to product-page reviews after delivery</li><li>note eligibility may depend on verified purchase</li><li>avoid inventing that a review was posted</li></ul></div>
@@ -692,9 +692,9 @@ Challenge items in `eval/challenge_draft.jsonl` are drafts for shark&#x27;s 11:3
 </div>
 <div class=card data-id="ch2-046">
   <div class=head><b>ch2-046</b> <span class=tag>review</span> <span class="tag hard">hard</span>
-  <span class=cos>max Bitext cosine 0.46</span>
+  <span class=cos>max Bitext cosine 0.48</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>how do i leve a reivew on the tripod page, the submit buton wont clcik</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>cant submt my reivew on the tripod page, the submit buton wont clcik no matter what i try</div>
   <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>typos; submit button won&#x27;t click on tripod review UI; assistant cannot fix frontend</div>
   <div class=two>
     <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>interpret as product-page review submit failure</li><li>suggest browser refresh, another browser, or app path</li><li>offer to help file a bug report with device details</li></ul></div>
@@ -704,9 +704,9 @@ Challenge items in `eval/challenge_draft.jsonl` are drafts for shark&#x27;s 11:3
 </div>
 <div class=card data-id="ch2-047">
   <div class=head><b>ch2-047</b> <span class=tag>set_up_shipping_address</span> <span class="tag ordinary">ordinary</span>
-  <span class=cos>max Bitext cosine 0.64</span>
+  <span class=cos>max Bitext cosine 0.51</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Add a second shipping address: my sister&#x27;s flat in Lucknow 226001, and make it the default for weekday deliveries.</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Save my sister&#x27;s Lucknow 226001 flat as another ship-to location, then mark it as the weekday default destination.</div>
   <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>Lucknow address to add as weekday default; assistant cannot edit address book from chat alone</div>
   <div class=two>
     <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain how to add and set a default shipping address</li><li>note weekday-default rules may or may not exist as a feature</li><li>do not claim the address is saved</li></ul></div>
@@ -728,9 +728,9 @@ Challenge items in `eval/challenge_draft.jsonl` are drafts for shark&#x27;s 11:3
 </div>
 <div class=card data-id="ch2-049">
   <div class=head><b>ch2-049</b> <span class=tag>switch_account</span> <span class="tag ordinary">ordinary</span>
-  <span class=cos>max Bitext cosine 0.43</span>
+  <span class=cos>max Bitext cosine 0.41</span>
   <label class=ok><input type=checkbox class=approve checked> approve</label></div>
-  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>I have a personal login and a maker-space shared login. I need to work in the maker-space one for the rest of today.</div>
+  <div class=lbl>query (editable) <span class=hint>what the customer sends. Rewrite it if it does not sound like a real person.</span></div><div class="q edit" contenteditable=true>Between my personal login and the maker-space shared login, switch me into the maker-space session for today&#x27;s remaining work.</div>
   <div class=lbl>facts the assistant may assume <span class=hint>everything the assistant knows. Anything missing here it must ask for, not guess.</span></div><div class="f edit" contenteditable=true>two logins; wants maker-space context; assistant cannot switch sessions for the user</div>
   <div class=two>
     <div><div class=lbl>acceptable actions <span class=hint>what a good answer may do. Read-only here: ask for changes in the note.</span></div><ul><li>explain signing out and into the other account</li><li>warn about shared-login risks at a general level</li><li>do not claim the switch is already done</li></ul></div>
