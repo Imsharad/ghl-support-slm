@@ -446,6 +446,11 @@ def call_flash(prompt: str, timeout: str = "8m") -> list[dict]:
             capture_output=True,
             text=True,
             env={**os.environ, "HOME": os.environ.get("HOME", work)},
+            # agy ships a KillAll path over its own process group. Sharing our
+            # session let one call take python and every sibling call with it,
+            # silently. Its own session means a group kill reaches only itself,
+            # which surfaces here as batch:call_failed and is retried.
+            start_new_session=True,
         )
     if proc.returncode != 0:
         raise RuntimeError(f"agy exit {proc.returncode}: {proc.stderr.strip()[:400]}")
