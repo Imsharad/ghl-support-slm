@@ -123,3 +123,18 @@ Memory: the D0 probe peaked at 4.09 GB for this shape, which is why `check_run.p
 - The last few rows of `loss.csv`.
 - The checkpoint list and the row count of each `dev-checkpoint-*-raw.jsonl`.
 - The run zip, or the Hub repo URL when the push worked.
+
+
+## v2 run on the free T4 (measured, 2026-09-08)
+
+`train/runs/v2-t4`, the v2 substrate: `configs/train-t4.yaml` unchanged, data `data/processed/v2` with the 206 admission rows (cap 8,000 = 7,794 corpus rows plus the admissions, decision 4). Executed as `notebooks/train_colab.ipynb` through `jupyter nbconvert --execute` on a free T4; the executed copy is `notebooks/v2_colab_run.ipynb`.
+
+| | value |
+|---|---|
+| steps | 500 (one epoch) |
+| wall | 4832 s (81 min), about 9.7 s per step |
+| peak memory | 2.94 GB (gate 12 GB) |
+| git sha | `33bdbbd` |
+| final train / val loss | 0.652 / 0.685 |
+
+Two free-tier facts worth planning around: the runtime-proxy token the CLI holds expires every hour (the session looks lost; rebuilding it from the assignment list reattaches without losing anything), and a VM can be reclaimed outright (one was, at step ~190 of an identical run). Pull every checkpoint off the VM as it is written; this run did, so a reclaim would have cost minutes. A Mac `mps` insurance run of the same config reached step 325 in 6,532 s (about 20 s per step, swap under 1 GB free for most of it) and was stopped once the Colab run was gated.
