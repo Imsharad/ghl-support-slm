@@ -357,7 +357,7 @@ def word_count(text: str) -> int:
 # words, PINs, codes and card numbers stay rejected, and the A2 reviewer still
 # rejects an answer that asks for the credential.
 INTENT_EXEMPT_WORDS: dict[str, frozenset[str]] = {
-    "check_cancellation_fee": frozenset({"fee", "fees"}),
+    "check_cancellation_fee": frozenset({"fee", "fees", "charge", "charges"}),
     "recover_password": frozenset({"password", "passwords"}),
 }
 
