@@ -416,3 +416,119 @@ def test_out_paths_keeps_v1_as_the_default() -> None:
     assert v2.processed_dir == PROCESSED_DIR / "v2"
     assert v2.splits_path == ROOT / "data" / "v2" / "splits.json"
     assert v2.audit_path == ROOT / "data" / "v2" / "audit.json"
+
+
+def _v1_cap_reference(rows: list[dict], cap: int, seed: int = 42) -> list[dict]:
+    """The cap as it stood at 23be885, before admission rows existed.
+
+    Kept verbatim in the test so the v2 exemption cannot silently change what v1
+    data selects. If this and prepare.cap_train_rows ever disagree on rows with
+    no SYNTH_ADMISSION flag, v1's sealed split is no longer reproducible.
+    """
+    import numpy as np
+    from collections import defaultdict
+
+    if cap < 1:
+        raise ValueError("--cap-train must be positive")
+    if len(rows) <= cap:
+        return rows
+    by_intent: dict[str, list[list[dict]]] = defaultdict(list)
+    grouped: dict[str, list[dict]] = defaultdict(list)
+    for row in rows:
+        grouped[str(row["group_id"])].append(row)
+    for group in grouped.values():
+        by_intent[str(group[0]["intent"])].append(group)
+    rng = np.random.default_rng(seed)
+    intents = sorted(by_intent)
+    for intent in intents:
+        buckets = by_intent[intent]
+        order = rng.permutation(len(buckets))
+        by_intent[intent] = [buckets[i] for i in order]
+    selected: list[dict] = []
+    while len(selected) < cap and any(by_intent[i] for i in intents):
+        progressed = False
+        for intent in intents:
+            if len(selected) >= cap or not by_intent[intent]:
+                continue
+            group = by_intent[intent][0]
+            if len(selected) + len(group) <= cap:
+                by_intent[intent].pop(0)
+                selected.extend(group)
+                progressed = True
+        if progressed:
+            continue
+        break
+    return selected
+
+
+def _corpus_rows(n_intents: int = 6, n_groups: int = 40, per_group: int = 3) -> list[dict]:
+    rows = []
+    for i in range(n_intents):
+        for g in range(n_groups):
+            gid = f"i{i}-g{g}"
+            for r in range(per_group):
+                rows.append({
+                    "id": f"{gid}-{r}",
+                    "intent": f"intent{i}",
+                    "group_id": gid,
+                    "flags": "",
+                })
+    return rows
+
+
+def test_cap_on_corpus_only_rows_is_the_v1_selection() -> None:
+    """Decision 4: v1 data has no SYNTH_ADMISSION row, so the output must not move."""
+    rows = _corpus_rows()
+    for cap in (300, 501, 720):
+        got = prepare.cap_train_rows(rows, cap=cap, seed=42)
+        want = _v1_cap_reference(rows, cap=cap, seed=42)
+        assert [row["id"] for row in got] == [row["id"] for row in want], cap
+
+
+def test_the_sealed_v1_pool_still_caps_to_the_same_8000_rows() -> None:
+    """The real regression: the v1 train pool through the new cap, unchanged."""
+    rows = prepare.load_jsonl(PROCESSED_DIR / "train.jsonl")
+    assert rows
+    assert not [row for row in rows if row.get("flags") == prepare.SYNTH_ADMISSION_FLAG]
+    got = prepare.cap_train_rows(rows, cap=8000, seed=42)
+    want = _v1_cap_reference(rows, cap=8000, seed=42)
+    assert [row["id"] for row in got] == [row["id"] for row in want]
+    assert prepare.sha256_jsonl(got) == prepare.sha256_jsonl(want)
+
+
+def test_admission_rows_are_exempt_from_the_cap() -> None:
+    corpus = _corpus_rows()
+    synthetic = [
+        {
+            "id": f"adm-v2-intent{i}-{s:03d}",
+            "intent": f"intent{i}",
+            "group_id": f"adm-g-v2-intent{i}-ordinary",
+            "flags": prepare.SYNTH_ADMISSION_FLAG,
+        }
+        for i in range(6)
+        for s in range(4)
+    ]
+    cap = 501
+    capped = prepare.cap_train_rows(corpus + synthetic, cap=cap, seed=42)
+    kept_synthetic = [row for row in capped if row["flags"] == prepare.SYNTH_ADMISSION_FLAG]
+    assert len(kept_synthetic) == len(synthetic)
+    assert len(capped) <= cap
+    # The corpus rows are the v1 selection over the reduced budget, not a reshuffle.
+    corpus_kept = [row for row in capped if row["flags"] != prepare.SYNTH_ADMISSION_FLAG]
+    want = _v1_cap_reference(corpus, cap=cap - len(synthetic), seed=42)
+    assert [row["id"] for row in corpus_kept] == [row["id"] for row in want]
+
+
+def test_cap_refuses_to_drop_below_the_admission_count() -> None:
+    corpus = _corpus_rows()
+    synthetic = [
+        {
+            "id": f"adm-{s}",
+            "intent": "intent0",
+            "group_id": "adm-g-v2-intent0-ordinary",
+            "flags": prepare.SYNTH_ADMISSION_FLAG,
+        }
+        for s in range(20)
+    ]
+    with pytest.raises(ValueError):
+        prepare.cap_train_rows(corpus + synthetic, cap=20, seed=42)

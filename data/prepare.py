@@ -70,6 +70,7 @@ SEED = 42
 MAX_LENGTH = 512
 NEAR_COLLAPSE_SHARE = 0.50
 PLACEHOLDER_RE = re.compile(r"\{\{([^{}]+)\}\}")
+SYNTH_ADMISSION_FLAG = "SYNTH_ADMISSION"
 FROZEN_SPLITS_COMMIT = "24ab0d9"
 NUMBER_HEADS = "order|purchase|invoice|tracking|account"
 NOUN_HEADS = "order|purchase|invoice|account"
@@ -658,8 +659,27 @@ def count_tokens(instruction: str, response: str, collator: Any) -> int | None:
 
 
 def cap_train_rows(rows: list[dict], cap: int, seed: int = SEED) -> list[dict]:
+    """Group-aware cap. V2 decision 4: SYNTH_ADMISSION rows are exempt and the
+    corpus rows compete for ``cap - n_admission``. V1 data carries no such flag,
+    so the corpus-only path below is the v1 function unchanged."""
     if cap < 1:
         raise ValueError("--cap-train must be positive")
+    if len(rows) <= cap:
+        return rows
+    synthetic = [row for row in rows if str(row.get("flags", "")) == SYNTH_ADMISSION_FLAG]
+    if synthetic:
+        corpus = [row for row in rows if str(row.get("flags", "")) != SYNTH_ADMISSION_FLAG]
+        remaining = cap - len(synthetic)
+        if remaining < 1:
+            raise ValueError(
+                f"cap {cap} leaves no room for corpus rows beside "
+                f"{len(synthetic)} admission rows"
+            )
+        return synthetic + _cap_groups(corpus, remaining, seed)
+    return _cap_groups(rows, cap, seed)
+
+
+def _cap_groups(rows: list[dict], cap: int, seed: int) -> list[dict]:
     if len(rows) <= cap:
         return rows
     by_intent: dict[str, list[list[dict]]] = defaultdict(list)
@@ -914,6 +934,7 @@ def prepare(
     substitute: bool = False,
     paths: OutPaths = V1_PATHS,
     pin_grouping: bool = True,
+    admissions: list[dict] | None = None,
 ) -> dict:
     grouping = load_json(GROUPING_PATH)
     cleaning = load_cleaning()
@@ -1033,12 +1054,62 @@ def prepare(
     split_rows: dict[str, list[dict]] = {name: [] for name in SPLIT_NAMES}
     for rec in token_kept:
         split_rows[split_of[rec["group_id"]]].append({key: rec[key] for key in ROW_KEYS})
+    n_admissions = 0
+    if admissions:
+        # V2 only. Admission rows join train after the split and before the cap;
+        # they are never eligible for val or test.
+        for row in admissions:
+            if str(row.get("flags", "")) != SYNTH_ADMISSION_FLAG:
+                raise SystemExit(f"admission row {row.get('id')} is not flagged {SYNTH_ADMISSION_FLAG}")
+            split_rows["train"].append({key: row[key] for key in ROW_KEYS})
+        n_admissions = len(admissions)
+        print(f"admissions appended to train: {n_admissions}")
+
+    pool_by_intent: dict[str, dict[str, int]] = defaultdict(
+        lambda: {"pool": 0, "pool_synthetic": 0, "capped": 0, "capped_synthetic": 0}
+    )
+    for row in split_rows["train"]:
+        entry = pool_by_intent[str(row["intent"])]
+        entry["pool"] += 1
+        if str(row.get("flags", "")) == SYNTH_ADMISSION_FLAG:
+            entry["pool_synthetic"] += 1
+    pool_train = len(split_rows["train"])
+
     if cap_train is not None:
         before = len(split_rows["train"])
         split_rows["train"] = cap_train_rows(split_rows["train"], cap_train, seed=seed)
         print(f"cap-train {cap_train}: {before} -> {len(split_rows['train'])}")
         train_groups = sorted({row["group_id"] for row in split_rows["train"]})
         split_groups_map["train"] = train_groups
+
+    for row in split_rows["train"]:
+        entry = pool_by_intent[str(row["intent"])]
+        entry["capped"] += 1
+        if str(row.get("flags", "")) == SYNTH_ADMISSION_FLAG:
+            entry["capped_synthetic"] += 1
+    if paths != V1_PATHS and cap_train is not None:
+        cap_payload = {
+            "generated_at": ist_now(),
+            "cap_train": cap_train,
+            "seed": seed,
+            "pool_rows": pool_train,
+            "pool_synthetic": n_admissions,
+            "capped_rows": len(split_rows["train"]),
+            "capped_synthetic": sum(
+                1
+                for row in split_rows["train"]
+                if str(row.get("flags", "")) == SYNTH_ADMISSION_FLAG
+            ),
+            "synthetic_exempt_from_cap": True,
+            "per_intent": {name: pool_by_intent[name] for name in sorted(pool_by_intent)},
+            "intents_without_a_synthetic_row": sorted(
+                name for name, entry in pool_by_intent.items() if entry["capped_synthetic"] == 0
+            ),
+        }
+        cap_path = paths.splits_path.parent / "cap.json"
+        cap_path.parent.mkdir(parents=True, exist_ok=True)
+        cap_path.write_text(json.dumps(cap_payload, indent=2) + "\n", encoding="utf-8")
+        print(f"wrote {cap_path}")
 
     for name in SPLIT_NAMES:
         split_rows[name].sort(key=lambda row: row["id"])
@@ -1119,6 +1190,8 @@ def prepare(
             "B1b frame counts live in placeholder_frames."
         ),
     }
+    if n_admissions:
+        audit["synthetic_admission_rows"] = n_admissions
     if substitute:
         # v2 only. Appended after readme_note so the default audit stays byte-identical.
         audit["placeholder_mode"] = "substitute"
@@ -1173,6 +1246,14 @@ def parse_args() -> argparse.Namespace:
         ),
     )
     parser.add_argument(
+        "--admissions",
+        default=None,
+        help=(
+            "v2 only: a JSONL of SYNTH_ADMISSION rows from tools/admissions.py assemble. "
+            "Appended to train before the cap; exempt from it."
+        ),
+    )
+    parser.add_argument(
         "--out",
         default=None,
         help=(
@@ -1195,12 +1276,19 @@ def main() -> int:
             file=sys.stderr,
         )
         return 1
+    admissions = None
+    if args.admissions:
+        if paths == V1_PATHS:
+            print("refusing to add admission rows to v1 paths; pass --out", file=sys.stderr)
+            return 1
+        admissions = load_jsonl(ROOT / args.admissions if not Path(args.admissions).is_absolute() else Path(args.admissions))
     # The v2 kept-id set differs from v1, so the pinned grouping cannot apply.
     prepare(
         cap_train=args.cap_train,
         substitute=substitute,
         paths=paths,
         pin_grouping=not substitute,
+        admissions=admissions,
     )
     return audit_only(strict=True, paths=paths)
 
