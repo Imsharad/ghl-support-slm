@@ -12,7 +12,7 @@ Written 2026-09-07 14:12 IST by Sonnet (task V2-E0). Numbers and citations only,
 
 Pass 16/54 = 29.6% base vs 7/54 = 13.0% tuned. Critical 2 base vs 8 tuned. Win/tie/loss (tuned vs base) 18/7/29.
 
-Scoring provenance (`docs/RESULTS.md` line 20-24): not human-scored. Gemini 3.8 Flash (`gemini-3.8-flash-high` via `agy`) scored all 108 answers twice (A/B swapped on pass 2); Fable 5.1 then adjudicated all 54 cards against `eval/RUBRIC.md`, changing 13 fields on 12 cards. Adjudication record: `eval/results/llm-judge/adjudication.json`.
+Scoring provenance (`docs/RESULTS.md` line 20-24): not human-scored. Gemini 3.8 Flash (`gemini-3.8-flash-high` via `agy`) scored all 108 answers twice (A/B swapped on pass 2); Fable 5.1 then adjudicated all 54 cards against `eval/RUBRIC.md`, changing 13 fields on 11 cards. Adjudication record: `eval/results/llm-judge/adjudication.json`.
 
 By-kind (`docs/RESULTS.md` lines 32-35):
 
@@ -146,11 +146,29 @@ From `docs/RESULTS.md` lines 75-79 ("Why" table) and `docs/FAILURES.md` line 5:
 
 | | base answers (54) | tuned answers (54) | training split (17,701 rows) |
 |---|---:|---:|---:|
-| admits a missing fact ("I don't have access", "I'm not able to", "I can't") | 17 | 0 | 24 |
+| admits a missing fact ("I don't have access", "I'm not able to", "I can't") | 14 | 0 | 15 |
 | uses a Bitext template phrase ("I'm on it", "I'm on the same wavelength", "Rest assured"; first two as openers, third anywhere) | 0 | 11 + 13 + 9 | 250 + 43 + 3,632 |
 | refuses outright ("I can't assist with that") | 5 | 0 | 0 |
 
-Method: not recorded. No script or regex definition for these counts exists anywhere in the repo (`eval/`, `data/`, `docs/FAILURES.md`, `eval/results/llm-judge/`); `docs/FAILURES.md` line 3 attributes them to "a pass over `data/processed/train.jsonl`" with no artifact retained.
+Method: `eval/admission_scan.py` (landed 2026-09-07, node V2-E0v/V2-E0f), documented case-insensitive phrase list, not fitted to the earlier hand counts. The earlier hand counts (17, 24) were not reproducible under any recorded method and are superseded; the direction of the finding is unchanged.
+
+```
+uv run python eval/admission_scan.py \
+  eval/results/base-challenge-raw.jsonl \
+  eval/results/tuned-challenge-raw.jsonl \
+  data/processed/train.jsonl
+```
+
+| metric | script |
+|---|---:|
+| base admit / 54 | 14 |
+| tuned admit / 54 | 0 |
+| train admit / 17,701 | 15 |
+| train "I'm on it" opener | 250 |
+| train "I'm on the same wavelength" opener | 43 |
+| train "Rest assured" anywhere | 3,632 |
+
+Additionally, for the "17 of the 8,000 rows the T4 config trains on" clause in `docs/RESULTS.md`: the frozen `data/processed/train.jsonl` (17,701 rows) capped with `train/train.py`'s own `cap_rows` (which calls `data/prepare.py`'s `cap_train_rows`, the same group-aware routine the T4 run used, seed 42, no re-embedding or re-clustering) gives an 8,000-row subset with **5** admission hits, run 2026-09-07 to a gitignored scratch path, not committed.
 
 `docs/FAILURES.md` gives additional per-intent counts behind three named failures (`ch-017`, `ch-025`, `ch-001`), each citing `data/audit.json` / `data/PROFILE.md` / `configs/cleaning.json`:
 - `contact_customer_service`: 773 of 1,000 raw rows carry a phone/hours placeholder; 849 of 1,000 rejected, 151 kept, 122 in train/8,000-cap (line 43).

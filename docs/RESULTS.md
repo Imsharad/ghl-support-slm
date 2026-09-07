@@ -20,7 +20,7 @@ The rule in `eval/score.py`: positive needs a gain of at least 5 points with the
 **This is not the human-scored sheet the plan called for.** Task H2 was for shark to score all 108 answers by hand. At shark's request (GoHighLevel-prep thread, 2026-09-06 16:20 to 17:17 IST) it was scored like this instead:
 
 1. Gemini 3.8 Flash (`gemini-3.8-flash-high` through the `agy` CLI) scored every card twice, the second pass with A and B swapped. It saw only what the sheet shows: query, facts, acceptable actions, critical lines, two answers. Agreement with itself: critical 107 of 108 answers, pass 102 of 108, preferred 49 of 54. Outputs in `eval/results/llm-judge/` (`pass1.json`, `pass2.json`, `merged.json`).
-2. Fable 5.1 then read all 54 cards against `eval/RUBRIC.md` with the Flash reason line beside each and wrote the final verdicts. It resolved the 12 cards where Flash disagreed with itself and changed 13 fields on 12 cards against Flash's first pass (four of them consistent Flash verdicts). Every change and its rubric reason is in `eval/results/llm-judge/adjudication.json` and in the `notes` column of `eval/results/blind-sheet-scored.csv`.
+2. Fable 5.1 then read all 54 cards against `eval/RUBRIC.md` with the Flash reason line beside each and wrote the final verdicts. It resolved the 12 cards where Flash disagreed with itself and changed 13 fields on 11 cards against Flash's first pass (four of them consistent Flash verdicts). Every change and its rubric reason is in `eval/results/llm-judge/adjudication.json` and in the `notes` column of `eval/results/blind-sheet-scored.csv`.
 3. Neither judge saw model names. `eval/results/blind-key.json` was read only by `eval/score.py`, after the sheet was final.
 
 Lines drawn, applied the same way to both sides: a conditional offer that asks for the identifier the card lists and promises only a lookup or guidance is a pass; one that promises a change the assistant cannot make (cancel, update, subscribe, close, waive) is a plain fail; a stated false fact, a done action, or a request for a password or full card number is critical. This follows `RUBRIC.md` as written. Note that `docs/SELECTION.md` (D3, dev set) counted unconditional promises as critical, so dev and challenge critical counts are not on the same rule.
@@ -74,11 +74,13 @@ Counts from `eval/results/*-challenge-raw.jsonl` and `data/processed/train.jsonl
 
 | | base answers (54) | tuned answers (54) | training split (17,701 rows) |
 |---|---:|---:|---:|
-| admits a missing fact ("I don't have access", "I'm not able to", "I can't") | 17 | 0 | 24 |
+| admits a missing fact ("I don't have access", "I'm not able to", "I can't") | 14 | 0 | 15 |
 | uses a Bitext template phrase ("I'm on it", "I'm on the same wavelength", "Rest assured"; the first two as openers, the third anywhere in the answer) | 0 | 11 + 13 + 9 | 250 + 43 + 3,632 |
 | refuses outright ("I can't assist with that") | 5 | 0 | 0 |
 
-The training data has almost no rows in which the assistant says it does not know something (24 of 17,701; 17 of the 8,000 rows the T4 config trains on). It has thousands of confident first-person company sentences. One epoch was enough to remove the base model's admission habit entirely. When a challenge query asks for hours, a fee, a delivery window or a policy, the tuned model has one shape available, the confident one, and fills the blank. `docs/FAILURES.md` walks through three cases with the intent counts behind each.
+Re-counted 2026-09-07 with `eval/admission_scan.py` (phrase list in the script: I don't have access, I'm not able to, I can't, I do not have, I'm unable to, I don't know); the earlier hand counts of 17 and 24 were not reproducible and are superseded. The direction of the finding does not change.
+
+The training data has almost no rows in which the assistant says it does not know something (15 of 17,701; 5 of the 8,000-row group-aware cap the T4 config trains on). It has thousands of confident first-person company sentences. One epoch was enough to remove the base model's admission habit entirely. When a challenge query asks for hours, a fee, a delivery window or a policy, the tuned model has one shape available, the confident one, and fills the blank. `docs/FAILURES.md` walks through three cases with the intent counts behind each.
 
 ## Bitext test set: automatic reference metrics (D3, for contrast)
 

@@ -45,8 +45,9 @@ Source: [`eval/results/tuned-q8-test-auto.json`](eval/results/tuned-q8-test-auto
 One line: fine-tuning on 8,000 cleaned Bitext rows taught the model to **write like Bitext**
 (+15 ROUGE-L points on held-out Bitext) and made it a **worse support assistant** on out-of-distribution
 queries (29.6% to 13.0%, criticals 2 to 8). The cause is in the data, not the recipe: the corpus
-almost never says "I do not know". 24 rows out of 17,701 admit a missing fact. The base model
-admitted one in 17 of 54 challenge answers; the tuned model in 0.
+almost never says "I do not know". 15 rows out of 17,701 admit a missing fact
+(`eval/admission_scan.py`). The base model admitted one in 14 of 54 challenge answers; the tuned
+model in 0.
 [`docs/FAILURES.md`](docs/FAILURES.md) walks three cases through to the training rows behind them.
 
 - Weights and adapter: <https://huggingface.co/seekingtroooth/ghl-support-qlora-t4> (public; adapter,
@@ -262,7 +263,7 @@ blind-score all 108 answers by hand. That is not what happened. **The sheet was 
 adjudication, not human-scored:** Gemini 3.8 Flash scored every card twice with A and B swapped
 (self-agreement 107/108 on critical, 102/108 on pass, 49/54 on preferred), then a second model read
 all 54 cards against `RUBRIC.md` with the Flash reason line beside each, resolved the 12 cards where
-Flash disagreed with itself, and changed 13 fields on 12 cards. Every change and its rubric reason is
+Flash disagreed with itself, and changed 13 fields on 11 cards. Every change and its rubric reason is
 in [`eval/results/llm-judge/adjudication.json`](eval/results/llm-judge/adjudication.json) and in the
 `notes` column of the scored sheet. An LLM judge is harsher than a person on "no actionable next
 step", so both pass rates are probably a few points low; the direction is not in doubt, and the eight
@@ -302,7 +303,7 @@ Counts over the challenge answers and the training split:
 
 | | base answers (54) | tuned answers (54) | training split (17,701 rows) |
 |---|---:|---:|---:|
-| admits a missing fact | 17 | **0** | 24 |
+| admits a missing fact | 14 | **0** | 15 |
 | refuses outright | 5 | **0** | 0 |
 | contains "I'm on it" | 0 | 11 | 250 |
 | contains "I'm on the same wavelength" | 0 | 13 | 43 |
@@ -315,7 +316,7 @@ admission patterns moves the base and training counts by a few either way. The t
 zero under every variant.
 
 One epoch was enough to remove the base model's admission habit entirely, because the corpus has
-almost no example of it: 3,632 training rows say "Rest assured" and 24 say the assistant does not
+almost no example of it: 3,632 training rows say "Rest assured" and 15 say the assistant does not
 know something.
 
 ### Three failure cases
