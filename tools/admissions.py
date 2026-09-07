@@ -56,7 +56,15 @@ PARTIAL_ROWS_PATH = V2_DIR / "admissions_partial.jsonl"
 PARTIAL_REVIEW_PATH = V2_DIR / "admission_review_partial.jsonl"
 CELL_ORDER_SEED = 42
 
-MODEL = "gemini-3.8-flash-high"
+# Row authors, by provider. Both are stateless single-turn CLI calls from an empty
+# cwd with a JSON schema; the model id lands in every review line. "flash" is the
+# author named in docs/v2/PLAN_DECISIONS.md decision 5. "grok" was added at
+# 23:30 IST on 2026-09-07 after five Flash runs died silent: every `agy` call on
+# this Mac fires a delayed kill that walks the parent chain (thread posts 19:06
+# to 19:10 IST). Decision 11 in PLAN_DECISIONS.md records the switch.
+PROVIDERS = {"flash": "gemini-3.8-flash-high", "grok": "grok-4.5-build"}
+PROVIDER = "flash"
+MODEL = PROVIDERS[PROVIDER]
 SEED = 42
 MAX_LENGTH = 512
 FLAG = "SYNTH_ADMISSION"
@@ -460,6 +468,53 @@ def call_flash(prompt: str, timeout: str = "8m") -> list[dict]:
     return [row for row in rows if isinstance(row, dict)]
 
 
+def call_grok(prompt: str, timeout_s: int = 480) -> list[dict]:
+    """One stateless `grok -p` call from an empty cwd. Returns the parsed rows."""
+    with tempfile.TemporaryDirectory() as work:
+        proc = subprocess.run(
+            [
+                "grok",
+                "-p",
+                prompt,
+                "--json-schema",
+                json.dumps(SCHEMA),
+                "--verbatim",
+                "--disable-web-search",
+                "--no-subagents",
+                "--no-plan",
+                "--max-turns",
+                "1",
+            ],
+            cwd=work,
+            capture_output=True,
+            text=True,
+            timeout=timeout_s,
+            start_new_session=True,
+        )
+    if proc.returncode != 0:
+        raise RuntimeError(f"grok exit {proc.returncode}: {proc.stderr.strip()[:400]}")
+    envelope = json.loads(proc.stdout)
+    structured = envelope.get("structuredOutput") or {}
+    if not structured and envelope.get("text"):
+        structured = json.loads(envelope["text"])
+    rows = structured.get("rows") or []
+    return [row for row in rows if isinstance(row, dict)]
+
+
+def call_model(prompt: str) -> list[dict]:
+    if PROVIDER == "grok":
+        return call_grok(prompt)
+    return call_flash(prompt)
+
+
+def set_provider(name: str) -> None:
+    global PROVIDER, MODEL
+    if name not in PROVIDERS:
+        raise ValueError(f"unknown provider: {name}")
+    PROVIDER = name
+    MODEL = PROVIDERS[name]
+
+
 def prompt_sha(prompt: str) -> str:
     return hashlib.sha256(prompt.encode("utf-8")).hexdigest()
 
@@ -483,7 +538,7 @@ def generate_cell(
         digest = prompt_sha(prompt)
         batch_id = f"{intent}:{style}:{attempt}"
         try:
-            rows = call_flash(prompt)
+            rows = call_model(prompt)
         except Exception as error:  # a failed call is retried, never patched
             review.append({
                 "batch_id": batch_id,
@@ -542,6 +597,7 @@ def generate_cell(
 
 
 def cmd_generate(args: argparse.Namespace) -> int:
+    set_provider(args.provider)
     intents = load_intents()
     if args.intent:
         if args.intent not in intents:
@@ -876,6 +932,8 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     gen.add_argument("--partial-rows", default=str(PARTIAL_ROWS_PATH))
     gen.add_argument("--partial-review", default=str(PARTIAL_REVIEW_PATH))
     gen.add_argument("--attempts", type=int, default=6, help="regeneration rounds per cell")
+    gen.add_argument("--provider", choices=sorted(PROVIDERS), default=PROVIDER,
+                     help="row author: flash (agy) or grok (grok -p); model id is recorded per review line")
     gen.set_defaults(func=cmd_generate)
 
     lint = sub.add_parser("lint", help="re-run the lint over a rows file")
