@@ -45,8 +45,9 @@ Source: [`eval/results/tuned-q8-test-auto.json`](eval/results/tuned-q8-test-auto
 One line: fine-tuning on 8,000 cleaned Bitext rows taught the model to **write like Bitext**
 (+15 ROUGE-L points on held-out Bitext) and made it a **worse support assistant** on out-of-distribution
 queries (29.6% to 13.0%, criticals 2 to 8). The cause is in the data, not the recipe: the corpus
-almost never says "I do not know". 24 rows out of 17,701 admit a missing fact. The base model
-admitted one in 17 of 54 challenge answers; the tuned model in 0.
+almost never says "I do not know". 15 rows out of 17,701 admit a missing fact
+(`eval/admission_scan.py`). The base model admitted one in 14 of 54 challenge answers; the tuned
+model in 0.
 [`docs/FAILURES.md`](docs/FAILURES.md) walks three cases through to the training rows behind them.
 
 - Weights and adapter: <https://huggingface.co/seekingtroooth/ghl-support-qlora-t4> (public; adapter,
@@ -107,7 +108,11 @@ Why these choices:
   parity rather than assumed equal. A 27B-class open base (Qwen3.8-27B, also Apache-2.0) was
   considered and set aside: about 28 GB at Q8 and roughly 20 GB of GPU memory for QLoRA at 512
   tokens, so it fits neither a free T4 nor this laptop, and the brief asks for a small model served
-  on your own hardware.
+  on your own hardware. A 14B-class base (Qwen2.5-14B-Instruct or similar) was considered and not
+  run: the assignment says free compute is sufficient and not to spend money on this
+  (`docs/ASSIGNMENT.md`), and a 14B QLoRA at this shape does not fit a free T4. The v1 failure is a
+  data-shape failure, the corpus never says "I don't know" (`docs/RESULTS.md`), which a larger base
+  does not repair.
 - **QLoRA over full fine-tuning.** 18.5M trainable parameters instead of 1.5B fit a free T4 or this
   Mac's MPS device with the base frozen in 4-bit. The shipped adapter is 74 MB against 3.1 GB of
   merged fp16 weights, so base-versus-tuned is one frozen base plus a named delta rather than two
@@ -258,7 +263,7 @@ blind-score all 108 answers by hand. That is not what happened. **The sheet was 
 adjudication, not human-scored:** Gemini 3.8 Flash scored every card twice with A and B swapped
 (self-agreement 107/108 on critical, 102/108 on pass, 49/54 on preferred), then a second model read
 all 54 cards against `RUBRIC.md` with the Flash reason line beside each, resolved the 12 cards where
-Flash disagreed with itself, and changed 13 fields on 12 cards. Every change and its rubric reason is
+Flash disagreed with itself, and changed 13 fields on 11 cards. Every change and its rubric reason is
 in [`eval/results/llm-judge/adjudication.json`](eval/results/llm-judge/adjudication.json) and in the
 `notes` column of the scored sheet. An LLM judge is harsher than a person on "no actionable next
 step", so both pass rates are probably a few points low; the direction is not in doubt, and the eight
@@ -298,7 +303,7 @@ Counts over the challenge answers and the training split:
 
 | | base answers (54) | tuned answers (54) | training split (17,701 rows) |
 |---|---:|---:|---:|
-| admits a missing fact | 17 | **0** | 24 |
+| admits a missing fact | 14 | **0** | 15 |
 | refuses outright | 5 | **0** | 0 |
 | contains "I'm on it" | 0 | 11 | 250 |
 | contains "I'm on the same wavelength" | 0 | 13 | 43 |
@@ -311,7 +316,7 @@ admission patterns moves the base and training counts by a few either way. The t
 zero under every variant.
 
 One epoch was enough to remove the base model's admission habit entirely, because the corpus has
-almost no example of it: 3,632 training rows say "Rest assured" and 24 say the assistant does not
+almost no example of it: 3,632 training rows say "Rest assured" and 15 say the assistant does not
 know something.
 
 ### Three failure cases
@@ -541,6 +546,7 @@ These are its cuts, each one a real reduction in evidence:
 | Training rows | Full 17,701-row grouped split on a cloud GPU | 8,000-row group-aware cap, one epoch, on this Mac | The corpus problem in section 4 is a coverage problem, and a larger sample of the same corpus would not have added the missing "I don't know" rows. Untested. |
 | Fresh-clone check | Clone on a clean machine | A clone into a temp directory on this Mac with a fresh venv, serving steps only; run 2026-09-06, transcript in [`docs/FRESH_CLONE_TRANSCRIPT.md`](docs/FRESH_CLONE_TRANSCRIPT.md) | Same OS and same machine, so it proves the instructions, not portability. It also caught a README defect (two tests failed after a serve-only install), fixed since. |
 | Concurrency bench | Concurrency 4, labelled optional | Serial only | No concurrency number at all. Section 6 says so. |
+| Second base-model arm | 14B-class base trained and scored alongside 1.5B | 14B second arm: considered, not run — reasons in section 2 | Untested whether a larger base changes anything; section 2's argument is that the failure is data-shape, not capacity. |
 | Loom | 4 minutes | 3 minutes, 5 shots; **not recorded as of 2026-09-06** | Nothing material once recorded. |
 
 ### Three disclosures that matter more than the table

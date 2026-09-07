@@ -2,7 +2,9 @@
 
 Written 2026-09-06 17:35 IST by Fable 5.1 (task E3). Three real failures of the tuned model (`ghl-support`, checkpoint-400, Q8) from the sealed challenge set, with both answers verbatim from `eval/results/failures.jsonl`, the rubric reason, and a cause hypothesis grounded in the training data. Counts come from `data/audit.json`, `data/PROFILE.md`, `configs/cleaning.json` and a pass over `data/processed/train.jsonl`. Scoring provenance is in `docs/RESULTS.md`: LLM-judged with adjudication, not human-scored.
 
-The pattern behind all three: the corpus has 24 rows out of 17,701 in which the assistant admits it lacks a fact, and thousands in which it speaks for the company in a confident first person. The base model admitted a missing fact in 17 of 54 challenge answers; the tuned model did so in 0.
+The pattern behind all three: the corpus has 15 rows out of 17,701 in which the assistant admits it lacks a fact, and thousands in which it speaks for the company in a confident first person. The base model admitted a missing fact in 14 of 54 challenge answers; the tuned model did so in 0.
+
+Re-counted 2026-09-07 with `eval/admission_scan.py` (phrase list in the script: I don't have access, I'm not able to, I can't, I do not have, I'm unable to, I don't know); the earlier hand counts of 17 and 24 were not reproducible and are superseded. The direction of the finding does not change.
 
 ## Loom pick: `ch-017`, invented support hours and phone numbers
 
