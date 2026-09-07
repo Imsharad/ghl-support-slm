@@ -1,0 +1,23 @@
+{
+  "schema_version": 2,
+  "challenge_sha256": "c86af5322452b8d4fb84b60c6dc1375a7b2ec4a1db3c5fc5beae8b3de2d9df72",
+  "challenge_path": "eval/challenge_v2.jsonl",
+  "rows": 54,
+  "draft_sha256": "c86af5322452b8d4fb84b60c6dc1375a7b2ec4a1db3c5fc5beae8b3de2d9df72",
+  "draft_path": "eval/challenge_v2_draft.jsonl",
+  "approved_by": "shark",
+  "approval_event": "39e0b99eca948ab6f7e6347c4e4be5867208cf1a51331839a7ad7831ead66be9",
+  "approved_at": "2026-09-07 18:12 IST",
+  "sealed_by": "Fable 5.1",
+  "sealed_at": "2026-09-07 18:12 IST",
+  "provenance": "Gate 1: shark delegated the review at 18:08 IST (event 39e0b99e) to Grok-4.5, the draft author, which approved (event 4afca4e8); Fable 5.1 added Sonnet as independent reader (V2-G1r, no changes, event a1ef9ea0). Draft by Grok-4.5 (aa3aa51, 14 reworded at b64f486 after 6-gram collisions with v1); checker and cosines verified by Sol (2e08d79, 680ed19) and Fable 5.1. Page docs/dag/CHALLENGE_REVIEW_v2.html sha256 f5a19e0904994fe734553dc4977fc361912f349ee227a0b82a413ccf733623ec at 680ed19.",
+  "against_sha256": {
+    "eval/challenge.jsonl": "76e24d3430715da2bb77cda21f4020882ec4b330ee082733c44e17ee7c0573e6",
+    "eval/dev.jsonl": "d8762c57fdc19994327f81077955e442234c871f61f060ac8d0d52648e43b3b6"
+  },
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "max_bitext_cosine_cap": 0.85,
+  "max_v1_cosine_cap": 0.8,
+  "six_gram_overlap_cap": 0,
+  "rule": "eval/challenge_v2.jsonl must not change after this seal; eval/blind.py refuses a mismatching hash"
+}
