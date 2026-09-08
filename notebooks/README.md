@@ -1,86 +1,42 @@
-# `train_colab.ipynb`
+# Notebooks
 
-Written 2026-09-07 (task V2-C0). This notebook has never been executed on Colab; v1 trained
-on the Mac (`docs/LOCAL_RUN.md`). It is meant to run clean, top to bottom, on the first try.
+Two files, one purpose each.
 
-## Colab secrets (key icon, left sidebar)
+| file | what it is |
+|---|---|
+| [`train_colab.ipynb`](train_colab.ipynb) | The runnable notebook. Eleven code cells, top to bottom on a free Colab T4, about 1.5 hours. Open it with the badge in its first cell; it forks into your own Drive, so running it cannot change what is committed here. |
+| [`v2_colab_run.ipynb`](v2_colab_run.ipynb) | The executed record of the run that produced the scored v2 model, committed with every cell output as it ran. Read this one to audit; run the other one to reproduce. |
 
-| Secret | Required | Used for |
-|---|---|---|
-| `GITHUB_TOKEN` | Yes, repo is private | Cloning `Imsharad/ghl-support-slm`. A fine-grained PAT with read-only access to that one repo is enough. |
-| `HF_TOKEN` | No, but strongly recommended | Pushing adapter checkpoints to the private Hub repo as they train (`configs/train*.yaml` `hub.repo_id`), so the run survives a dropped session. Without it, training still completes; checkpoints stay local and must come back via the zip download in section 12. |
+## What the notebook does
 
-Both secrets need "Notebook access" toggled on for this notebook in the Colab secrets panel, not
-just added to the account.
+GPU check and pinned versions, clone at a pinned commit, the pinned base model into the local cache, the v2 data (substitution cleaning plus the 206 admission rows) with the strict audit, the frozen config printed, a smoke run with a resume proof and its gate, one epoch, the loss curve and the completeness gate, dev answers for every checkpoint, then a zip of the whole run directory.
 
-## Runtime
+Nothing needs a secret. The repository is public, so the clone is unauthenticated, and the run trains with `--no-push`, so no Hugging Face token is required; artifacts leave the VM as the zip in the last cell.
 
-Runtime menu -> Change runtime type -> GPU. Two shapes matter here:
+## The run that is committed here
 
-- **Free T4**: the default. `CONFIG = 'configs/train-t4.yaml'` (section 6) matches it: 8,000-row
-  cap, the same config the v1 served checkpoint (`checkpoint-400`) was trained on. This is the v2
-  headline substrate if it finishes clean.
-- **Colab Pro, A100 or L4**: switch section 6 to `CONFIG = 'configs/train.yaml'` (full 17,701-row
-  split). Do not run the full split on a free T4; it will not finish in one session.
+| | value |
+|---|---|
+| substrate | free Colab T4, `configs/train-t4.yaml` unchanged |
+| data | `data/processed/v2` (8,000-row cap: 7,794 corpus rows plus 206 admission rows, exempt from the cap) |
+| steps / wall | 500 (one epoch) / 4832 s |
+| peak memory | 2.94 GB (the gate allows 12) |
+| git sha | `33bdbbd` |
+| selected checkpoint | 250, on dev only ([`docs/SELECTION.md`](../docs/SELECTION.md)) |
 
-## Expected wall time per section
+## Two cells errored in the committed run, and both are fixed in the source
 
-Planning estimates from `docs/TRAINING.md`, not measurements — the real number is `wall_s` in
-`train/runs/<run>/config.json` after the run.
+The executed copy is kept exactly as it ran, with a note at the top. Neither error touched the training or the gate.
 
-| Section | Free T4 | A100 / L4 |
-|---|---|---|
-| 3. Install pinned versions | 1-2 min | 1-2 min |
-| 5. Data (fetch + prepare) | a few min, dataset-fetch-bound | same |
-| 7. Smoke run (20 steps, 64 rows) | 1-2 min | under 1 min |
-| 8. Full run | roughly 1 to 1.5 h (8,000 rows) | 30 to 60 min (17,701 rows) |
-| 9. Dev answers per checkpoint | a few min per checkpoint, 6 checkpoints | faster |
-| 11. Ollama cell (optional) | several min, one-time llama.cpp build | same |
+1. **Smoke cell.** A 64-row smoke cap cannot exempt 206 admission rows. `cap_train_rows` now falls back to a uniform group cap when the cap is at or below the admission count; the real 8,000-row cap never takes that branch.
+2. **Dev-answers cell.** The evaluation runner is launched as a subprocess and needed the repository root on `PYTHONPATH`. The dev answers were regenerated on the same VM with the fixed command; that log is the last cell of the executed copy.
 
-## The headline rule
+## Free-tier facts worth planning around
 
-Fixed in the GoHighLevel-prep thread before either run started, so it cannot be gamed after the
-fact: **this Colab run is the v2 headline training substrate if it finishes clean by 04:00 IST
-Tuesday.** Otherwise the parallel Mac `mps` run (`docs/LOCAL_RUN.md`) is, and `docs/RESULTS.md`
-says which. CUDA and `mps` are not bit-identical, which is why the rule exists.
+- A free T4 can be reclaimed mid-run. One was, at step 190 of an identical earlier run. The second run pulled every checkpoint off the VM as it was written, so a reclaim would have cost minutes rather than the epoch.
+- The CLI's runtime-proxy token expires hourly. The session then looks lost while the VM keeps running; reattaching restores it without losing anything.
+- CUDA training is not bit-reproducible across GPUs and driver versions. A re-run reproduces the split hashes and the gates exactly, and the loss curve and pass rates approximately.
 
-Either way, **scoring always runs on the sealed Mac Ollama path** (`docs/dag/CONTRACTS.md`
-section 6: Q8 GGUF through Ollama, the pipeline that scored v1). The notebook's own Ollama cell
-(section 11) is a visible cross-check of the serving path on Colab, not a second scoring run —
-it is optional and safe to skip.
+## Colab Pro
 
-## `DATA_MODE`
-
-Section 5 has a `DATA_MODE` switch:
-
-- `'v1'`: `data/prepare.py` exactly as v1 ran it (reject-only placeholder cleaning). Regenerates
-  `data/processed/*.jsonl` and checks the hashes against `data/splits.json`, the frozen v1 evidence.
-- `'v2'`: substitute-placeholder cleaning, `data/prepare.py --placeholder-mode substitute --out
-  data/v2`. V2-B1 (Opus) landed this flag before this notebook was finished; verified locally on
-  the Mac (CPU/mps, not Colab/CUDA): `wrote train=20926 val=2753 test=3085 groups=4877`, `strict:
-  hashes and intersections match`, and a smoke train run against `data/processed/v2` with
-  `--device mps` completed with `resume match ok=True max_abs_diff=0.00052`.
-
-## What could not be tested off Colab
-
-- The GPU-only cells: `nvidia-smi`, `bitsandbytes` 4-bit loading, the smoke run, the full run, and
-  everything downstream of them. No CUDA on the machine that wrote this notebook.
-- The `google.colab.userdata` and `google.colab.files` calls (sections 2, 4, 12) — they only exist
-  inside a real Colab kernel; a plain `import` fails outside Colab, which is why every cell that
-  needs a secret already wraps the import in `try/except` and prints a fallback message instead of
-  crashing.
-- The Ollama cell's `apt-get`, the Ollama Linux installer, and `tools/convert.sh`'s cmake build —
-  these need a real Linux Colab VM; not reproducible from the M1 Mac shell that authored this file.
-- The full run and per-checkpoint dev-answer loop (sections 8-9) on CUDA specifically: run on `mps`
-  only as a smoke proof (20 steps), not the full epoch, and never on an actual GPU.
-- The clone cell's `google.colab.userdata` path and the final `google.colab.files.download` call —
-  they only exist inside a real Colab kernel; a plain `import` fails outside Colab, which is why
-  every cell that needs one already wraps the import in `try/except` with a fallback message.
-
-What was checked: the notebook is valid JSON and nbformat 4; `jupyter nbconvert --to script`
-transpiles it without error; every non-magic line parses as valid Python (`ast.parse`); every CLI
-flag the notebook passes to `train/train.py`, `eval/run.py`, `tools/merge.py`,
-`tools/check_run.py`, and `data/prepare.py` exists in that script's `argparse` block today, checked
-by grep against each file. `DATA_MODE = 'v2'` and the smoke-run cell's `--data-dir` override were
-additionally run for real on the Mac (CPU/mps) against the local raw CSV, not just grep-checked —
-see the Data section above for the numbers.
+Switch the config in the configuration cell to `configs/train.yaml` for the full 17,701-row split on an A100 or L4. Do not run the full split on a free T4; it will not finish in one session. The committed run and every number in [`docs/RESULTS.md`](../docs/RESULTS.md) use the T4 config.
