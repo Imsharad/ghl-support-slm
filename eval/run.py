@@ -54,6 +54,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model", required=True, choices=("base", "tuned"))
     parser.add_argument("--backend", required=True, choices=("ollama", "transformers"))
     parser.add_argument("--split", required=True, choices=tuple(SPLIT_PATHS))
+    parser.add_argument("--input", type=Path, help="Custom development input; requires --split dev")
     parser.add_argument("--challenge", type=Path, default=CHALLENGE_PATH)
     parser.add_argument("--seal", type=Path, default=SEAL_PATH)
     parser.add_argument("--limit", type=int)
@@ -533,6 +534,10 @@ def main() -> int:
         challenge=args.challenge,
         seal=args.seal,
     )
+    if args.input:
+        if args.split != "dev":
+            raise ValueError("--input is for development only; final challenges require --challenge and --seal")
+        split_path = args.input
     all_items = load_jsonl(split_path)
     selected = all_items[: args.limit] if args.limit is not None else all_items
     if not selected:

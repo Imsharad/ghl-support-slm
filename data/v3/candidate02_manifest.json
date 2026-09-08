@@ -1,0 +1,142 @@
+{
+  "schema": 1,
+  "status": "assembled_candidate_not_yet_trained",
+  "source_manifest_sha256": "76bd7e4a33d8b0637e89ca9f85bea9485ada87656d4ebc3d96c608482c454c10",
+  "selection_sha256": "ab9e89efb0f3e3af772bc08032a30c3cfc201f23d96123f627958b92a45b31a6",
+  "authored_target_files": {
+    "train": {
+      "data/v3/targets/train_part01.json": "426251c5e78b6014c8551df5c778070a2a928e7ffcb093fa55ee3ca368d5cdee",
+      "data/v3/targets/train_part02.json": "ecce77db2d1a25fcec6173b498f4bbc6c1f6a99c844a88192333ab5d70adf31c",
+      "data/v3/targets/train_part03.json": "4c45918186f46dce2f17f4749d7e6087337aa2caaa33ced01c944a76d26238f1",
+      "data/v3/targets/train_part04.json": "ae262923072910bc442f0d7498dfd6ac35b538ad9359f00e425c25fa3858f1cf"
+    },
+    "val": {
+      "data/v3/targets/val.json": "a8169f89de9447d6a7cac28e00d6417b8add4b70cea71ddb888391bdefff19ce"
+    }
+  },
+  "prompt_file_sha256": "fb45ab8d4a58a83fb3d0541abb350bbe6ee20a666c1b5703ea0c771f029b82ce",
+  "max_length": 512,
+  "script_sha256": "a329d23f009f32624a93043cd76597e50bdc1a7668b60d534eac3878119d45e3",
+  "output_sha256": {
+    "train": "16c4870904f65be97664c4d46dec8c62af12926085d6c1c7a5d24271f64b4c06",
+    "val": "3e4e864b1583a781f3747140102077f53bbd0b9734ce3e689c28d16a125c2b80"
+  },
+  "review_note": "Same assistant authored and inspected all 270 corrected Bitext targets plus 27 fictional context pairs for request alignment, grounded reasoning, reference preservation, safe credential handling, and useful next steps. No independent human or external-model review occurred. Automated checks cover identity, source hashes, reference preservation, token fit, and augmentation-query overlap only.",
+  "stats": {
+    "train": {
+      "rows": 216,
+      "min_tokens": 288,
+      "max_tokens": 320,
+      "by_intent": {
+        "cancel_order": 8,
+        "change_order": 8,
+        "change_shipping_address": 8,
+        "check_cancellation_fee": 8,
+        "check_invoice": 8,
+        "check_payment_methods": 8,
+        "check_refund_policy": 8,
+        "complaint": 8,
+        "contact_customer_service": 8,
+        "contact_human_agent": 8,
+        "create_account": 8,
+        "delete_account": 8,
+        "delivery_options": 8,
+        "delivery_period": 8,
+        "edit_account": 8,
+        "get_invoice": 8,
+        "get_refund": 8,
+        "newsletter_subscription": 8,
+        "payment_issue": 8,
+        "place_order": 8,
+        "recover_password": 8,
+        "registration_problems": 8,
+        "review": 8,
+        "set_up_shipping_address": 8,
+        "switch_account": 8,
+        "track_order": 8,
+        "track_refund": 8
+      },
+      "unique_target_count": 216
+    },
+    "val": {
+      "rows": 54,
+      "min_tokens": 289,
+      "max_tokens": 308,
+      "by_intent": {
+        "cancel_order": 2,
+        "change_order": 2,
+        "change_shipping_address": 2,
+        "check_cancellation_fee": 2,
+        "check_invoice": 2,
+        "check_payment_methods": 2,
+        "check_refund_policy": 2,
+        "complaint": 2,
+        "contact_customer_service": 2,
+        "contact_human_agent": 2,
+        "create_account": 2,
+        "delete_account": 2,
+        "delivery_options": 2,
+        "delivery_period": 2,
+        "edit_account": 2,
+        "get_invoice": 2,
+        "get_refund": 2,
+        "newsletter_subscription": 2,
+        "payment_issue": 2,
+        "place_order": 2,
+        "recover_password": 2,
+        "registration_problems": 2,
+        "review": 2,
+        "set_up_shipping_address": 2,
+        "switch_account": 2,
+        "track_order": 2,
+        "track_refund": 2
+      },
+      "unique_target_count": 54
+    },
+    "augmentation": {
+      "rows": 27,
+      "min_tokens": 319,
+      "max_tokens": 347,
+      "by_intent": {
+        "cancel_order": 1,
+        "change_order": 1,
+        "change_shipping_address": 1,
+        "check_cancellation_fee": 1,
+        "check_invoice": 1,
+        "check_payment_methods": 1,
+        "check_refund_policy": 1,
+        "complaint": 1,
+        "contact_customer_service": 1,
+        "contact_human_agent": 1,
+        "create_account": 1,
+        "delete_account": 1,
+        "delivery_options": 1,
+        "delivery_period": 1,
+        "edit_account": 1,
+        "get_invoice": 1,
+        "get_refund": 1,
+        "newsletter_subscription": 1,
+        "payment_issue": 1,
+        "place_order": 1,
+        "recover_password": 1,
+        "registration_problems": 1,
+        "review": 1,
+        "set_up_shipping_address": 1,
+        "switch_account": 1,
+        "track_order": 1,
+        "track_refund": 1
+      },
+      "unique_target_count": 27
+    }
+  },
+  "augmentation": {
+    "input_sha256": "c89c8f61c2bae3a1445496ff1bd6535b520cd670cfae26e9c5c3f26afda8e0ea",
+    "audit_sha256": "fa9f2bd510f658024e03bafb78ccc0115412974a3c85e52dfb6e3e05294effc3"
+  },
+  "final_rows": {
+    "train": 243,
+    "val": 54
+  },
+  "limitation": "Small balanced subset, assistant-authored targets and same-author validation references. Validation loss is development evidence, not independent proof of task quality. Fresh paired evaluation remains required.",
+  "leakage_basis": "Bitext instruction groups are subsets of the audited source pool. Any authored augmentation has a separate holdout screening report. Target phrasing can overlap across splits and is not an independent test metric."
+}

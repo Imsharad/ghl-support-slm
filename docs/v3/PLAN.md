@@ -54,6 +54,57 @@ curl --fail --silent -H 'Content-Type: application/json' \
 
 Audit/build commands intentionally refuse existing output paths; reuse verified existing outputs or choose a new directory for a second reproduction. Full training, new target approval, a fresh frozen final set, paired results, tuned API, credible throughput measurements, release README and demo remain unfinished.
 
+### Candidate supervision and development baseline
+
+The foundation above was committed locally as `cd9e6e8` (V3-R1), with 96 passing tests and one skipped test. Nothing was pushed or published.
+
+The next data intervention is explicit target replacement, not more training on unsupported original business claims. `data/select_targets_v3.py` selects eight distinct groups per intent for training and two per intent for validation using a fixed SHA-256 ranking and seed 42. A conservative placeholder-artifact filter is recorded, but does not claim to catch all historical substitution artifacts. The original instruction and response remain available in each curation record. `data/v3/targets/` contains 216 individually authored training responses and 54 individually authored validation references, labelled as assistant-authored, not independently reviewed. Responses were composed against each selected query, including its ambiguity and concrete references, rather than copying one response per intent. The author self-reviewed alignment, claims, safety, and next steps; automated lint is not a substitute for an independent quality review.
+
+The first assembled data revision (`data/processed/v3-candidate01`, 216/54 rows) was not trained. A second revision (`data/processed/v3-candidate02`) adds 27 fictional supplied-context training scenarios, one per intent. These teach use of quoted policies, calculations, concrete status distinctions, and verification constraints instead of unconditional inability disclaimers. Their nearest-query screening against all 5,838 historical held-out queries passed at maximum cosine 0.7430 with zero shared six-grams. The second revision has 243 training rows (nine per intent) and 54 validation rows. Its saved manifest is `data/v3/candidate02_manifest.json`; generated corpus files remain ignored. All 297 targets (243 training plus 54 validation) passed the credential-request lint, but that lint is not a full factuality or safety assessment. Maximum rendered length is 347 tokens, so the existing 512-token cap is sufficient without truncation.
+
+This is a small-data first experiment, not a reduction of the final quality objective. A balanced subset makes individual target review feasible within the part-time assignment and avoids adding thousands of known-incorrect targets. It also risks narrow language coverage, template-like outputs, and overfitting; only development and fresh evaluation can establish whether it works. Same-author validation references measure fit to this supervision style, not independent support quality. Expand or revise using development evidence if needed, never using final-test answers.
+
+`configs/train-v3-t4.yaml` retains the exact pinned Qwen base and known rank-16/all-linear NF4 LoRA recipe, with a smaller 5e-5 learning rate, 0.05 dropout, 0.01 weight decay, six warmup steps, effective batch eight (micro-batch two × accumulation four), and 120 steps (approximately four passes). These are conservative starting choices for the much smaller curated dataset, not tuned optima. Four checkpoints at steps 30/60/90/120 support development-based selection. Validation covers all 54 rows; initial validation loss is also recorded. The 20-step smoke uses the same micro-batch/accumulation shape and separately verifies resume. Actual Qwen GPU memory, timing, convergence, and resume parity remain unmeasured. The real optimizer-loop CPU integration test uses a tiny 72-parameter dropout fixture and reproduces resumed losses and saved weights exactly; it is not a Qwen or GPU smoke.
+
+The exact base was run on all 54 curated validation queries through Ollama with the new prompt. Files: `eval/results/v3/development/base-curated-val.jsonl` and its immutable manifest. All 54 requests succeeded; one answer truncated. Median request latency was 1,226 ms and median generation length 69 tokens in this particular sequential development run. These are descriptive development measurements, not a hardware-controlled serving benchmark. Unblinded inspection found concrete failure modes:
+
+- `bitext-001335`: an item-swap request answered as an account-access problem.
+- `bitext-002826`: claimed it could access and change the account after receiving an account number.
+- `bitext-004940`: asserted PayPal acceptance without business payment information.
+- `bitext-008038`: invented `1-800-123-4567` and a support URL.
+- `bitext-009125` and `bitext-009339`: refused benign requests for human assistance without a route forward.
+- `bitext-010567`: invented a registration interface option specifically for a fiancé.
+- `bitext-017367`: offered to inspect newsletter status and resend it despite no account tools.
+- `bitext-019340`: answered a purchase request as an account-access problem and invented an email destination.
+- `bitext-025015`: suggested editing an order's status to a customer who only asked to view it.
+
+No numeric human task-success score has been assigned. `eval/v3/protocol.json` is a draft for a 108-case, four-per-intent fresh comparison with blinded owner grading, a +5 percentage-point primary threshold, positive lower 95% intent-cluster bootstrap bound, no increased critical-failure count, and zero observed credential/verification violations. It must be sealed with actual fresh items and candidate hashes before final inference. Historical challenge sets remain development-only.
+
+A prompt-only development ablation also ran the same base and 54 inputs with `configs/prompt-v3-compact.txt`, saved separately as `base-compact-val.jsonl` with its own manifest. All 54 requests succeeded and two truncated; median latency was 1,174 ms and median generation length 70 tokens. Unblinded inspection showed mixed changes: item-swap and password-reset guidance improved, but refund timing became a fabricated fixed 14 business days, and several answers newly claimed account/policy inspection. No numeric quality winner is claimed. The original prompt remains the provisional training prompt; both development baselines are retained, and this prompt-only comparison must not be reported as a fine-tuning improvement.
+
+`tools/build_training_bundle.py` creates a deterministic training-only ZIP from a clean, committed worktree using an explicit whitelist and corpus hashes. It excludes final test data and credentials and refuses publication-enabled configs. `tools/run_training_bundle.py` checks every bundled hash, requires a single CUDA GPU, prefetches the pinned model, and requires a passing smoke from the exact same bundle before full training. It does not provision resources, fund an account, publish weights, or imply paid-compute approval. The actual launch bundle has not yet been built because the experiment edits are still being verified. Source commit and bundle identity are recorded in run metadata even when an extracted bundle has no Git directory.
+
+Additional reproduction commands (run only into absent output directories):
+
+```sh
+uv run python data/select_targets_v3.py --source-dir data/v3/source-candidates \
+  --output-dir data/v3/curation-queue
+uv run python data/check_augmentation_v3.py --input data/v3/augmentation_context.json \
+  --against data/processed/v2/val.jsonl data/processed/v2/test.jsonl \
+  --output data/v3/augmentation_context_audit_v2.json
+uv run python data/assemble_v3.py --source-dir data/v3/source-candidates \
+  --selection data/v3/curation-queue/selection.json --targets-dir data/v3/targets \
+  --prompt-file configs/prompt-v3.txt --output-dir data/processed/v3-candidate03 \
+  --max-length 512 --augmentation data/v3/augmentation_context.json \
+  --augmentation-audit data/v3/augmentation_context_audit_v2.json \
+  --review-note 'Reproduction of the tracked assistant-authored, self-reviewed targets; no independent review claimed.'
+uv run --extra serve python -m eval.run --model base --backend ollama --split dev \
+  --input data/processed/v3-candidate03/val.jsonl --prompt-file configs/prompt-v3.txt \
+  --tag ghl-base --output eval/results/v3/development/base-curated-val.jsonl --check-complete
+```
+
+Repository hygiene rejected a reserved fictional email literal in the context augmentation during the first R2 commit attempt. The check was not bypassed. That one scenario was changed to a named official contact form, then re-screened and reassembled as `data/processed/v3-candidate03`; the launch config now points to candidate03. The 243/54 row counts and selected Bitext targets are unchanged. Candidate01 and candidate02 are untrained data revisions, not training attempts. Their files and manifests remain historical evidence; the original email-containing draft is retained only under ignored `.scratch/v3-drafts/`. The current reproducible augmentation audit is `augmentation_context_audit_v2.json`, and the current corpus manifest is `candidate03_manifest.json`.
+
 ## Historical proposed plan (superseded)
 
 ## Starting evidence

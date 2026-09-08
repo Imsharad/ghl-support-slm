@@ -21,6 +21,7 @@ import csv
 import json
 import math
 import os
+import platform
 import random
 import resource
 import shutil
@@ -45,7 +46,7 @@ if str(ROOT) not in sys.path:
 
 from train.collate import IGNORE_INDEX, AssistantOnlyCollator  # noqa: E402
 from train.render import PROMPT_PATH, load_base_pin, load_system_prompt  # noqa: E402
-from train.repro import capture_rng, fingerprint, require_same_inputs, restore_rng  # noqa: E402
+from train.repro import capture_rng, fingerprint, require_same_inputs, restore_rng, sha256_file  # noqa: E402
 
 IST = timezone(timedelta(hours=5, minutes=30))
 VERSIONS_PATH = ROOT / "configs" / "versions.json"
@@ -313,6 +314,9 @@ def attach_adapter(model: Any, peft_config: Any, adapter_dir: Path | None) -> An
 
 
 def git_sha() -> str | None:
+    bundle = ROOT / "BUNDLE_MANIFEST.json"
+    if bundle.is_file():
+        return json.loads(bundle.read_text()).get("git_sha")
     try:
         out = subprocess.run(
             ["git", "-C", str(ROOT), "rev-parse", "HEAD"],
@@ -487,6 +491,12 @@ def train(
         max_steps = steps_per_epoch * int(train_cfg.get("epochs", 1))
     max_steps = int(max_steps)
     versions = installed_versions()
+    hardware = {"system": platform.system(), "architecture": platform.machine(),
+                "device": device, "torch_cuda": torch.version.cuda}
+    if device == "cuda":
+        hardware.update(gpu_name=torch.cuda.get_device_name(),
+                        gpu_memory_bytes=torch.cuda.get_device_properties(0).total_memory,
+                        visible_gpus=torch.cuda.device_count())
     inputs = fingerprint(config, {
         "train": data_dir / str(data_cfg["train_file"]),
         "val": data_dir / str(data_cfg["val_file"]),
@@ -494,7 +504,7 @@ def train(
         **{f"code:{name}": ROOT / "train" / name
            for name in ("train.py", "repro.py", "render.py", "collate.py")},
     }, system_prompt, [item["source_id"] for item in encoded_train], load_base_pin(),
-        runtime={"device": device, "versions": versions, "effective_max_steps": max_steps,
+        runtime={"hardware": hardware, "versions": versions, "effective_max_steps": max_steps,
                  "chat_template": collator.tokenizer.chat_template,
                  "encoded_val_ids": [item["source_id"] for item in encoded_val]})
 
@@ -564,7 +574,9 @@ def train(
         "run_name": config["run_name"],
         "started_at": now_ist(),
         "device": device,
+        "hardware": hardware,
         "git_sha": git_sha(),
+        "bundle_sha256": sha256_file(ROOT / "BUNDLE_MANIFEST.json") if (ROOT / "BUNDLE_MANIFEST.json").is_file() else None,
         "versions": versions,
         "base_model": dict(zip(("repo_id", "revision"), load_base_pin())),
         "config": config,
@@ -622,6 +634,10 @@ def train(
         return folder
 
     started = time.perf_counter()
+    summary["initial_val_loss"] = evaluate(model, val_batches, device, torch)
+    if not math.isfinite(summary["initial_val_loss"]):
+        raise ValueError("validation loss is non-finite before the first update")
+    log(f"validation before update {start_step + 1}: {summary['initial_val_loss']:.4f}")
     logged: dict[int, dict[str, float]] = {}
     step = start_step
     if start_step >= max_steps:

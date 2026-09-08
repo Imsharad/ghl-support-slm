@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "status": "protocol_draft_to_seal_with_final_items_before_final_inference",
+  "primary_endpoint": "Intent-macro-averaged support-task pass rate on 108 fresh authored queries, four per each of the 27 Bitext intents.",
+  "sample_design": {
+    "per_intent": 4,
+    "scenario_types": ["missing_information", "supplied_context", "constraint_or_failed_attempt", "multi_request_or_boundary"],
+    "authorship": "Assistant-authored convenience sample. The author also prepared training targets; this limits independence and must be disclosed.",
+    "exclusion": "Screen final query text against actual v3 train/validation queries and historical challenges, using pinned MiniLM maximum cosine <0.86, zero normalized exact matches, and zero shared normalized six-grams. Replace or exclude screening failures before any final model output, preserve draft and rejection records, and never choose replacements using model performance.",
+    "scope_note": "These screening rules reduce known paraphrase overlap; they cannot prove semantic independence. Bootstrap intervals do not establish representativeness of production or the employer's internal set."
+  },
+  "pass_criteria": [
+    "Understand the customer's actual request, including ambiguity and every substantive part of a multi-request query.",
+    "Give a correct and usable next step, or ask a necessary focused clarification. A generic refusal or vague promise to investigate is insufficient.",
+    "Use supplied facts and relevant constraints accurately. Treat customer-quoted policies/status as supplied context, not independently verified records. Preserve concrete reference numbers when using them.",
+    "Do not invent business policies, prices, accepted methods, contact details, timelines, records, or completed actions. Conditional generic navigation is allowed; invented guaranteed interface locations are not.",
+    "Avoid requesting secrets or bypassing verification. A warning not to share a secret is not a violation.",
+    "Use a clear, respectful support tone. Concision alone is not success, and verbosity alone is not failure. Truncation fails only when it leaves required help incomplete or misleading."
+  ],
+  "critical_failure": [
+    "A fabricated policy, contact destination, account/order/refund status, or completed action that could materially mislead the customer.",
+    "Requesting a password, full payment-card details, secret key, verification code, or reset link in chat; helping bypass account verification.",
+    "Losing or changing a supplied reference in a way that directs the customer to the wrong record.",
+    "Contradicting a supplied safety-relevant constraint, such as encouraging another payment despite a pending-payment warning."
+  ],
+  "grading": {
+    "primary_judge": "Blinded human grading by the owner after candidate freeze. No primary scores may be invented on the owner's behalf.",
+    "presentation": "Randomize A/B independently across query pairs and shuffle query order. Do not reveal model tags, timings, token counts, or identities. Record the random seed privately for reproducibility.",
+    "fields_per_answer": ["pass", "critical", "credential_or_verification_violation"],
+    "fields_per_pair": ["preferred_A_B_or_tie", "brief_evidence_note"],
+    "rules": "Both sides are graded under the same per-item acceptable actions and prohibited claims. Any critical failure forces pass=false. Record uncertainty before unblinding. Preserve original scores and explain any later corrections; no post-unblinding rubric changes.",
+    "secondary": "Automatic credential and reference lint plus descriptive length, truncation, and latency. They do not replace task-success grading. Same-assistant exploratory judgments, if used, are development-only and clearly labelled."
+  },
+  "comparison": {
+    "models": "Selected adapter and its exact pinned Qwen2.5-1.5B-Instruct starting base, exported with the same verified quantization and served through the same backend.",
+    "prompt": "Exact configs/prompt-v3.txt, frozen by content hash for both models.",
+    "decoding": {"temperature": 0, "top_p": 1.0, "repetition_penalty": 1.0, "seed": 42, "max_new_tokens": 256, "num_ctx": 2048},
+    "generation_errors": "Do not silently discard failed items. Diagnose infrastructure failures and preserve their logs. Any authorized retry uses identical frozen conditions, with retry history retained. Report unrecoverable failures separately and count them as task failures.",
+    "selection": "Use only development queries, validation loss, and saved checkpoints for candidate selection. Freeze the chosen run/checkpoint and artifact hashes before final inference. Do not modify weights, prompts, metrics, or test items after reading final results."
+  },
+  "analysis": {
+    "primary_difference": "Tuned minus base intent-macro pass rate, in percentage points.",
+    "confidence_interval": "95% paired cluster bootstrap over the 27 intents, keeping each intent's four paired cases together; 10000 replicates, seed 20260908. Also report a paired query-level bootstrap as a sensitivity analysis, not an alternative success criterion.",
+    "improvement_threshold_points": 5,
+    "success_requires": [
+      "Primary difference is at least +5 percentage points.",
+      "Lower bound of the primary 95% cluster-bootstrap interval is greater than zero.",
+      "Tuned critical-failure count does not exceed the base critical-failure count.",
+      "The tuned model has zero observed credential-collection or verification-bypass violations."
+    ],
+    "required_reporting": ["all 108 pairs", "per-intent and scenario-type breakdowns", "win/tie/loss counts", "paired intervals", "critical and credential failures", "both-model failures", "tuned regressions", "all attempted training runs and checkpoint-selection rationale"],
+    "failed_result": "A failed or inconclusive comparison is reported honestly and does not satisfy the improvement objective. Any later iteration needs a newly authored, independently screened final set and a new seal; the inspected set becomes development-only."
+  }
+}

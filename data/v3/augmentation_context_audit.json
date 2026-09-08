@@ -1,0 +1,204 @@
+{
+  "input_sha256": "c89c8f61c2bae3a1445496ff1bd6535b520cd670cfae26e9c5c3f26afda8e0ea",
+  "against_sha256": {
+    "data/processed/v2/val.jsonl": "6f35948d7c03678d02a3a931c307da4ad0d33713ad924077c1dd10ad346c2000",
+    "data/processed/v2/test.jsonl": "70e1de8594f7d4903e677797936040e83ad64530a4917a8c986278194eec8bae"
+  },
+  "threshold": 0.86,
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "results": [
+    {
+      "id": "v3-context-cancel",
+      "max_cosine": 0.6164723038673401,
+      "nearest_id": "bitext-000028",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-change",
+      "max_cosine": 0.5356042385101318,
+      "nearest_id": "bitext-001230",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-address",
+      "max_cosine": 0.5684759020805359,
+      "nearest_id": "bitext-002471",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-fee",
+      "max_cosine": 0.5765950083732605,
+      "nearest_id": "bitext-003325",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-check-invoice",
+      "max_cosine": 0.7238376140594482,
+      "nearest_id": "bitext-004134",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-payment-methods",
+      "max_cosine": 0.5670497417449951,
+      "nearest_id": "bitext-004940",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-refund-policy",
+      "max_cosine": 0.4819190502166748,
+      "nearest_id": "bitext-013818",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-complaint",
+      "max_cosine": 0.5113683342933655,
+      "nearest_id": "bitext-001815",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-contact",
+      "max_cosine": 0.5794417262077332,
+      "nearest_id": "bitext-015573",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-human",
+      "max_cosine": 0.46024271845817566,
+      "nearest_id": "bitext-009221",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-create",
+      "max_cosine": 0.46925631165504456,
+      "nearest_id": "bitext-010008",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-delete",
+      "max_cosine": 0.4411156475543976,
+      "nearest_id": "bitext-011157",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-delivery-options",
+      "max_cosine": 0.5199376940727234,
+      "nearest_id": "bitext-012778",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-delivery-period",
+      "max_cosine": 0.5566359162330627,
+      "nearest_id": "bitext-013898",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-edit",
+      "max_cosine": 0.42497652769088745,
+      "nearest_id": "bitext-020758",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-get-invoice",
+      "max_cosine": 0.7172264456748962,
+      "nearest_id": "bitext-015103",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-get-refund",
+      "max_cosine": 0.5879619121551514,
+      "nearest_id": "bitext-015925",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-newsletter",
+      "max_cosine": 0.7429812550544739,
+      "nearest_id": "bitext-017607",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-payment-issue",
+      "max_cosine": 0.6435700058937073,
+      "nearest_id": "bitext-018732",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-place",
+      "max_cosine": 0.3866593539714813,
+      "nearest_id": "bitext-019691",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-recover",
+      "max_cosine": 0.489996075630188,
+      "nearest_id": "bitext-020788",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-registration",
+      "max_cosine": 0.6526190042495728,
+      "nearest_id": "bitext-010065",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-review",
+      "max_cosine": 0.5032583475112915,
+      "nearest_id": "bitext-001039",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-setup-address",
+      "max_cosine": 0.6008366346359253,
+      "nearest_id": "bitext-002364",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-switch",
+      "max_cosine": 0.5054157376289368,
+      "nearest_id": "bitext-024275",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-track-order",
+      "max_cosine": 0.4446752071380615,
+      "nearest_id": "bitext-013753",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-track-refund",
+      "max_cosine": 0.6214607954025269,
+      "nearest_id": "bitext-026377",
+      "shared_sixgrams": [],
+      "pass": true
+    }
+  ],
+  "pass": true,
+  "scope": "training augmentation instructions versus all supplied holdout instructions",
+  "limitation": "Automated similarity screening, not proof of semantic independence"
+}
