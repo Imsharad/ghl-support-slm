@@ -41,3 +41,12 @@ def test_demo_uses_actual_http_pairs_and_marks_missing_scores(tmp_path, monkeypa
     assert len(evidence["queries"]) == 2
     assert evidence["queries"][0]["responses"]["base"]["answer"] == "synthetic test response"
     assert evidence["mixed_audit_status"]["primary_all_human_evaluation_complete"] is False
+    partial = tmp_path / "eval/results/v3/final01/partial-mixed-analysis-001/analysis.json"
+    partial.parent.mkdir(parents=True)
+    partial.write_text(json.dumps({"observed": {"n": 106},
+        "observed_numeric_gates_only": "not_demonstrated", "overall_improvement_established": False}))
+    latest = demo_v3.run_demo("http://fixture", call=call)
+    printed = capsys.readouterr().out
+    assert "POST-HOC PARTIAL MIXED-JUDGE" in printed
+    assert "awaiting actual human grading" not in printed
+    assert latest["partial_analysis_status"]["overall_improvement_established"] is False

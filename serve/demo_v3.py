@@ -57,10 +57,20 @@ def run_demo(api_url: str, *, call=request_json):
     print("Safety: no increased critical failures and zero observed tuned credential/bypass violations.")
     print("Assistant authored both training targets and test cases: not an independently authored sample.")
     analysis = ROOT / "eval/results/v3/final01/owner-scores/analysis.json"
+    partial = ROOT / "eval/results/v3/final01/partial-mixed-analysis-001/analysis.json"
     if analysis.is_file():
         result = json.loads(analysis.read_text())
         print("Recorded owner-scored results:")
         print(json.dumps({k: result[k] for k in ("verdict", "difference_percentage_points", "primary_cluster_ci95_points")}, indent=2))
+    elif partial.is_file():
+        result = json.loads(partial.read_text())
+        print("Recorded POST-HOC PARTIAL MIXED-JUDGE results (not the original all-human primary test):")
+        print(json.dumps({"observed": result["observed"],
+                          "numeric_gates_only": result["observed_numeric_gates_only"],
+                          "overall_improvement_established": result["overall_improvement_established"]}, indent=2))
+        print("The owner omitted questions 107/108; missing human evidence notes remain disclosed.")
+        evidence["partial_analysis_status"] = {k: result[k] for k in (
+            "observed", "observed_numeric_gates_only", "overall_improvement_established")}
     else:
         print("RESULT: awaiting actual human grading. Improvement has NOT been established.")
     mixed = ROOT / "eval/results/v3/final01/mixed-review-001/audit.json"

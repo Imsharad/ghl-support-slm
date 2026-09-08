@@ -24,8 +24,9 @@ generation errors. A post-hoc analysis of 106 pairs (29 human, 77 calibrated
 Terra; two owner-omitted) records 59 base passes versus 81 tuned passes, but the
 tuned model has two credential/verification violations and therefore fails the
 fixed safety criterion. Human evidence notes are absent. The complete all-human
-primary evaluation and final demo do not exist; this is not a submission-ready
-success. See the partial mixed-judge result below.
+primary evaluation does not exist. A verified 2:47 captioned local recording
+shows the live endpoint, partial results and failure cases; it does not make this
+a submission-ready success. See the partial mixed-judge result below.
 On 2026-09-08 the owner authorized
 RunPod GPU and storage spending up to $10 total from existing credit, superseding
 the previous $0 compute limit. The GPU and temporary volume have been deleted
@@ -152,14 +153,38 @@ were authored by this assistant, so the test is not independently authored.
 Fresh-checkout data reconstruction reproduced the actual training/validation
 files byte-for-byte; it reused the installed environment and global HF cache.
 The direct adapter-loading command was also verified on local MPS.
-The complete primary evaluation, public v3 weights/repo and final demo remain
-outstanding. Partial mixed-judge statistics below do not replace that evaluation.
+The complete primary evaluation and public v3 weights/repo remain outstanding.
+Partial mixed-judge statistics below do not replace that evaluation.
 
 For the live recording walkthrough, run `uv run --extra serve python serve/demo_v3.py`.
 It calls the actual `/support` route twice per development query, prints the
 answers side by side, and includes an unsupported-payment-claim failure check.
 Until human scoring exists, it explicitly prints that improvement is unproven.
-The script is a recording aid, not a completed Loom/video deliverable.
+The script is a live recording aid. The separate completed local video is
+[`eval/results/v3/demo-recording-001/demo.mp4`](eval/results/v3/demo-recording-001/demo.mp4):
+2:47, H.264, 1920×1080, captioned terminal output with no audio. It contains four
+fresh HTTP support requests, side-by-side answers, the partial mixed-judge
+evaluation and the failed safety criterion. Its original timestamped `demo.cast`,
+raw `live-http.json`, scene PNGs and verification metadata are retained alongside
+it. This is a rendered recording of actual terminal output, not a desktop GUI
+capture, staged answer playback or benchmark rerun. No public Loom link exists.
+The [narration and interview outline](docs/v3/SUBMISSION_CHECKLIST.md) can be used
+for an owner-recorded Loom with voice-over.
+
+Re-record into a new directory while the local endpoint is running:
+
+```sh
+uv run --extra serve python serve/record_demo_v3.py \
+  --output-directory .scratch/demo-reproduction
+```
+
+The recording script needs Pillow (in the locked environment), `ffmpeg` with
+libx264, and a monospaced font. The default font is macOS Menlo; on Linux pass
+`--font /path/to/a/monospace.ttf`. Reading pauses and actual request latency are
+preserved. `--render-only` re-encodes an existing cast into an absent MP4 without
+new model requests. Existing recordings are never overwritten. All 334 output
+frames of the delivered video decoded successfully, and representative scenes
+were visually checked for readability.
 On 2026-09-09 it was rerun through the actual local API with all four requests
 successful and identity guards passing. Both models asserted PayPal acceptance
 without supplied business policy; the tuned answer's later qualification does

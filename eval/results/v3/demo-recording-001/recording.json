@@ -1,0 +1,47 @@
+{
+  "duration_seconds": 166.9016,
+  "scenes": [
+    {
+      "seconds": 0.0006,
+      "title": "01 / SUPPORT SLM: WHAT WAS BUILT"
+    },
+    {
+      "seconds": 18.011,
+      "title": "02 / LIVE SELF-HOSTED ENDPOINT"
+    },
+    {
+      "seconds": 30.0266,
+      "title": "03 / LIVE BASE-VERSUS-TUNED REQUESTS"
+    },
+    {
+      "seconds": 38.7689,
+      "title": "03 / ACTUAL HTTP RESPONSES"
+    },
+    {
+      "seconds": 60.7826,
+      "title": "04 / LIVE BASE-VERSUS-TUNED REQUESTS"
+    },
+    {
+      "seconds": 63.8655,
+      "title": "04 / ACTUAL HTTP RESPONSES"
+    },
+    {
+      "seconds": 85.8732,
+      "title": "05 / EVALUATION RESULTS: POST-HOC, MIXED JUDGES"
+    },
+    {
+      "seconds": 115.8765,
+      "title": "06 / WHY THIS IS NOT A PASSING SUBMISSION"
+    },
+    {
+      "seconds": 142.8881,
+      "title": "07 / SERVING, REPRODUCTION AND LIMITATIONS"
+    }
+  ],
+  "live_requests": 4,
+  "format": "captioned terminal recording rendered to MP4; no audio",
+  "cast_sha256": "d1f9887b598f4895c88287c72ec997f3bb7b10e28b9cc453a0d851b2dcfbe3c4",
+  "http_evidence_sha256": "9a5f7cc3698a7c380c029ba94371455a979a1cf1772ee02f3e39576d449289f5",
+  "analysis_sha256": "67dc17d7802515494403fbfffe25fdf0e46a2299dc6c7f06a94ae6fe24e521d2",
+  "script_sha256": "c8ca013e5c75ecd3f9c39e82cf642535afd86646c2d75b12548e90f7b8f17896"
+}

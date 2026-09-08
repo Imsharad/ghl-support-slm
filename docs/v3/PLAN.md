@@ -4,6 +4,30 @@ Status: active under the owner's 2026-09-08 persistent assignment goal. The earl
 
 ## Latest checkpoint: mixed grading audit (2026-09-09)
 
+Demo checkpoint: `serve/record_demo_v3.py` recorded four actual HTTP support
+requests and a paced results/limitations walkthrough, preserving real output
+timestamps in asciicast v2 without capturing desktop pixels, microphone,
+keystrokes or environment variables. The local MP4 is a rendered terminal
+recording, not a GUI screen capture. Duration 167 seconds, H.264, 1920×1080,
+2 fps, 334 successfully decoded frames; no audio. Live-answer and evaluation
+scene PNGs were visually checked. Artifacts and hashes are in
+`eval/results/v3/demo-recording-001/`; the verified delivery copy is
+`/Users/sharad/Documents/Codex/2026-09-08/ghl-v3-execution/outputs/v3-demo-captioned.mp4`.
+The recording discloses partial mixed judging, absent notes, two supported
+tuned credential violations, unsupported PayPal acceptance and paid compute.
+The checklist now includes owner narration and interview preparation. No
+publication, employer submission or successful safety outcome is claimed.
+Full regression verification after the recorder and current-results demo updates:
+212 passed, 1 skipped, two dependency deprecation warnings in 46.89 seconds.
+The delivery MP4 was byte-compared with the repository artifact, and an actual
+decoded MP4 frame at 86 seconds was visually checked in addition to source scenes.
+The first local commit attempt failed because the hygiene hook decoded staged
+MP4 bytes as strict UTF-8. Its staged reader now uses replacement decoding like
+the existing tree reader, retaining ASCII secret detection rather than skipping
+video or bypassing the hook. Two real temporary-Git tests verify binary handling
+and rejection of an embedded synthetic secret pattern; all seven focused hygiene
+and demo tests passed, and the staged hygiene scan passed on 23 paths.
+
 Subsequent explicit owner decision: omit questions 107 and 108. Implemented
 `eval/analyze_partial_v3.py` as a separate post-hoc route, retaining the sealed
 primary protocol/code. It replays audited inputs and the private mapping from

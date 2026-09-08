@@ -1,0 +1,87 @@
+{
+  "created_utc": "2026-09-08T21:50:41.365427+00:00",
+  "api_url": "http://127.0.0.1:8013",
+  "health": {
+    "status": "up",
+    "prompt_sha256": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+    "models": {
+      "base": {
+        "tag": "ghl-base",
+        "digest": "fa4e1b0f10cd2057e4f4ba8adafb8cbb6debcef94f123768928fbedcec86bd08"
+      },
+      "tuned": {
+        "tag": "ghl-support-v3-c03-s120",
+        "digest": "8017241387fedb54a10633459ecfdb22c0b95cfc0a779e4315fd777481d0eb2d"
+      }
+    },
+    "tuned_configured": true
+  },
+  "queries": [
+    {
+      "id": "bitext-008038",
+      "query": "I ned to speak to customer service",
+      "responses": {
+        "base": {
+          "model": "base",
+          "model_digest": "fa4e1b0f10cd2057e4f4ba8adafb8cbb6debcef94f123768928fbedcec86bd08",
+          "prompt_sha256": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+          "answer": "Hello! I'm here to help. To speak to customer service, you can try calling our support line at 1-800-123-4567 or visit our website at www.example.com/support. If you prefer, you can also send us a message through our contact form. Is there anything specific you would like to discuss?",
+          "prompt_tokens": 238,
+          "gen_tokens": 74,
+          "latency_ms": 4232.384540955536,
+          "tokens_per_s": 45.139297012775934,
+          "truncated": false,
+          "device": null,
+          "request_latency_ms": 4313.445
+        },
+        "tuned": {
+          "model": "tuned",
+          "model_digest": "8017241387fedb54a10633459ecfdb22c0b95cfc0a779e4315fd777481d0eb2d",
+          "prompt_sha256": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+          "answer": "I can help you find the official contact page or call number for the business. Which channel do you prefer? I can't place a call or transfer you here. If you share the business's official contact details, I can look for the relevant option.",
+          "prompt_tokens": 238,
+          "gen_tokens": 52,
+          "latency_ms": 4402.2557500284165,
+          "tokens_per_s": 56.32336243195007,
+          "truncated": false,
+          "device": null,
+          "request_latency_ms": 4413.465
+        }
+      }
+    },
+    {
+      "id": "bitext-004940",
+      "query": "can I pay with PayPal?",
+      "responses": {
+        "base": {
+          "model": "base",
+          "model_digest": "fa4e1b0f10cd2057e4f4ba8adafb8cbb6debcef94f123768928fbedcec86bd08",
+          "prompt_sha256": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+          "answer": "Yes, you can pay with PayPal. To make a payment, go to the website or app where you want to make the purchase. Look for a \"Pay with PayPal\" button or option. Enter your PayPal email address and password to log in. If you don't have a PayPal account, you can create one by clicking the \"Create Account\" button. Once logged in, follow the prompts to complete the payment.",
+          "prompt_tokens": 237,
+          "gen_tokens": 85,
+          "latency_ms": 1806.4453749684617,
+          "tokens_per_s": 60.10436422809143,
+          "truncated": false,
+          "device": null,
+          "request_latency_ms": 1836.336
+        },
+        "tuned": {
+          "model": "tuned",
+          "model_digest": "8017241387fedb54a10633459ecfdb22c0b95cfc0a779e4315fd777481d0eb2d",
+          "prompt_sha256": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+          "answer": "Yes, you can use PayPal to pay for the order. Check the purchase details for the payment option and the business's official PayPal payment instructions. If you don't see PayPal listed, contact the seller through its official support channel. I can't confirm whether it's available or process the payment here.",
+          "prompt_tokens": 237,
+          "gen_tokens": 61,
+          "latency_ms": 1215.9282088978216,
+          "tokens_per_s": 61.170047655367966,
+          "truncated": false,
+          "device": null,
+          "request_latency_ms": 1225.55
+        }
+      }
+    }
+  ],
+  "analysis_sha256": "67dc17d7802515494403fbfffe25fdf0e46a2299dc6c7f06a94ae6fe24e521d2",
+  "script_sha256": "c8ca013e5c75ecd3f9c39e82cf642535afd86646c2d75b12548e90f7b8f17896"
+}
