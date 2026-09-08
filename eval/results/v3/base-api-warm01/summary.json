@@ -1,0 +1,30 @@
+{
+  "models": {
+    "base": {
+      "attempts": 54,
+      "successes": 54,
+      "failures": 0,
+      "p50_success_client_latency_ms": 1170.290833513718,
+      "p95_success_client_latency_ms": 3582.376408530398,
+      "measured_wall_seconds": 81.2624927079305,
+      "successful_requests_per_wall_second": 0.6645132114527182,
+      "successful_generated_tokens_per_wall_second": 59.744660029684205,
+      "total_successful_generated_tokens": 4855,
+      "truncated_successes": 1,
+      "latency_scope": "Successful HTTP requests; failures reported separately and included in elapsed throughput denominator."
+    }
+  },
+  "health_at_end": {
+    "status": "up",
+    "prompt_sha256": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+    "models": {
+      "base": {
+        "tag": "ghl-base",
+        "digest": "fa4e1b0f10cd2057e4f4ba8adafb8cbb6debcef94f123768928fbedcec86bd08"
+      }
+    },
+    "tuned_configured": false
+  },
+  "identities_unchanged": true,
+  "pass": true
+}

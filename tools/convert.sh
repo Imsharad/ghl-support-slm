@@ -19,6 +19,10 @@ if [ ! -d "$HF_DIR" ]; then
     echo "error: Hugging Face directory does not exist: $HF_DIR" >&2
     exit 1
 fi
+if [ -e "$OUT_FILE" ]; then
+    echo "error: output already exists; choose a new path to preserve historical artifacts: $OUT_FILE" >&2
+    exit 1
+fi
 
 LLAMA_REPO=$(uv run python -c 'import json,sys; print(json.load(open(sys.argv[1]))["llama_cpp_converter"]["repo"])' "$VERSIONS_FILE")
 LLAMA_COMMIT=$(uv run python -c 'import json,sys; print(json.load(open(sys.argv[1]))["llama_cpp_converter"]["commit"])' "$VERSIONS_FILE")
@@ -29,6 +33,10 @@ fi
 
 if ! git -C "$LLAMA_DIR" cat-file -e "$LLAMA_COMMIT^{commit}" 2>/dev/null; then
     git -C "$LLAMA_DIR" fetch --depth 1 origin "$LLAMA_COMMIT"
+fi
+if ! git -C "$LLAMA_DIR" diff --quiet || ! git -C "$LLAMA_DIR" diff --cached --quiet; then
+    echo "error: converter checkout has tracked changes; preserve them before converting" >&2
+    exit 1
 fi
 git -C "$LLAMA_DIR" checkout --quiet --detach "$LLAMA_COMMIT"
 

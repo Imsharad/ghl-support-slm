@@ -4,6 +4,28 @@ This repository answers the customer-support fine-tuning assignment in
 [`docs/ASSIGNMENT.md`](docs/ASSIGNMENT.md). It keeps training, evaluation, conversion, and local
 serving reproducible from pinned inputs.
 
+## v3 worktree status — not ready for submission
+
+This branch is an unfinished v3 experiment. The results and weight links in the
+historical sections below belong to v1/v2, **not** a successful v3 model. Do not
+submit them as evidence that the current intervention improved support quality.
+
+Current verified work includes 243 traceable training examples and 54 validation
+examples, a hash-verified CUDA training bundle, 108 freshly authored evaluation
+queries that passed the documented overlap screen, paired blinded-grading tools,
+and a live base-only HTTP benchmark. The fresh set is screened but not yet sealed
+to selected model artifacts. No v3 training run, adapter, final comparison,
+human-grading result, or complete demo exists yet. Remote training access remains
+unresolved; paid compute has not been authorized.
+
+The active plan, reproduction commands, evidence paths, limitations, and current
+base-only performance numbers are in [the v3 execution log](docs/v3/PLAN.md).
+The [v3 evaluation protocol](eval/v3/protocol.json) states the fixed improvement
+and safety criteria. A final README rewrite and clean reproduction check remain
+required once the trained model and evaluation exist.
+
+## Historical v1/v2 documentation
+
 ## Contents
 
 - [1. What this is, and the headline result](#1-what-this-is-and-the-headline-result)

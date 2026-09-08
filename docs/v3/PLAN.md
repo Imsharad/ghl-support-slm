@@ -105,6 +105,39 @@ uv run --extra serve python -m eval.run --model base --backend ollama --split de
 
 Repository hygiene rejected a reserved fictional email literal in the context augmentation during the first R2 commit attempt. The check was not bypassed. That one scenario was changed to a named official contact form, then re-screened and reassembled as `data/processed/v3-candidate03`; the launch config now points to candidate03. The 243/54 row counts and selected Bitext targets are unchanged. Candidate01 and candidate02 are untrained data revisions, not training attempts. Their files and manifests remain historical evidence; the original email-containing draft is retained only under ignored `.scratch/v3-drafts/`. The current reproducible augmentation audit is `augmentation_context_audit_v2.json`, and the current corpus manifest is `candidate03_manifest.json`.
 
+### R3 — fresh evaluation preparation, paired scoring and live API measurement
+
+The training bundle was built from local commit `321ec361ecc3221cfb0760ae80ad1063cb60ed39` after R2 verification. `.scratch/training-bundles/v3-candidate03.zip` is 183,123 bytes with SHA-256 `5df675dd6159e45f36ad13bcd8ce82716dc184d7114a9983e1e9aa3ffa4692fb`. Extracting it and running its `--verify-only` command verified all 18 files. Subsequent R3 evaluation, serving benchmark and merge changes do not modify the bundled training implementation. No remote training has run. The last Colab session-list attempt required Google reauthorization. The local Kaggle CLI is absent, the conventional credential/token files are absent, and the three standard Kaggle credential environment variables are absent; this is not a claim that no browser account exists. A RunPod alternative was researched at the owner's request, but the proposed paid-compute exception and budget remain unapproved. The active goal still requires $0 spending.
+
+`eval/v3/final_draft_part01.json` through `part04.json` contain 108 assistant-authored cases, four per intent: missing information, supplied context, failed prior attempt/constraint, and multi-request/boundary. Each contains acceptable actions and critical-failure criteria, not a model answer. The author also prepared training targets; the set is not independently human-authored and does not represent the employer's internal distribution.
+
+`eval/prepare_v3.py` validates complete unique intent/scenario coverage and mandatory checklists, then screens queries against actual candidate03 train/validation and both historical challenge sets (405 comparator queries). It requires zero normalized exact/ID/six-gram matches and maximum pinned-MiniLM cosine below 0.86. It also reports within-final high-similarity pairs descriptively. `screening01` rejected one six-word phrase; the original cases and failed audit remain intact. `final_revisions01.json` records the pre-inference wording revision and reason. `screening02` passes all 108 queries, maximum cosine 0.724695, zero shared six-grams, and no within-final pair at or above 0.86. The compiled cases hash is `0d926b77b5820256e0b640c335bbade68adace5627413df8616601c0061c8340`. This is **screened, not sealed**: candidate selection, artifact lineage and final model/protocol seal remain outstanding. No final model answers or primary human grades exist.
+
+`eval/paired_v3.py` prepares a shuffled A/B CSV, holds the reproducible mapping only under ignored `.scratch`, binds all immutable item/answer text and raw-output manifests, and rejects incomplete or contradictory scores. It never supplies human judgments. Unrecoverable generation failures stay in the denominator as task failures. The scorer requires the v3 model/data/protocol seal, exact shared inference conditions and complete owner-scored pairs. `eval/v3_metrics.py` implements the protocol's 27-intent paired cluster bootstrap, secondary query bootstrap, +5-point threshold, safety gates, per-intent/scenario summaries, both-failure cases and tuned-regression IDs. Unit fixtures are synthetic tool tests, not evidence of model improvement. The final-seal creation and generation handoff still need to be connected to the actual selected trained artifacts.
+
+Reproduce screening into a **new** output directory:
+
+```bash
+uv run --extra serve python eval/prepare_v3.py \
+  --drafts eval/v3/final_draft_part01.json eval/v3/final_draft_part02.json \
+    eval/v3/final_draft_part03.json eval/v3/final_draft_part04.json \
+  --revisions eval/v3/final_revisions01.json --output-dir .scratch/final-screen-reproduction
+```
+
+`serve/bench_api.py` measures the actual HTTP `/support` route, requires configured model identities and a stable prompt, saves every warmup/measurement/error, and refuses to overwrite results. It reports successful-request p50/p95 latency separately from failures and uses the entire measured wall interval for throughput. It does not measure streaming TTFT, cold starts or concurrent saturation. The live base-only run in `eval/results/v3/base-api-warm01/` used three warmups then all 54 development queries in file order, concurrency one. On this Apple M1 Pro (10 logical CPUs, 16 GiB RAM, macOS 26.5), all 54 succeeded, one truncated, p50 client latency was 1,170.29 ms, p95 3,582.38 ms, serial throughput 0.6645 successful requests/s and 59.7447 generated tokens/s over 81.2625 seconds. Exact model/prompt identities are in metadata and responses. Background desktop activity and initial cache state were uncontrolled. No tuned v3 benchmark or performance claim exists. The unchanged raw measurement files were moved from the initial `serve/results/` location into the repository's established model-output evidence directory.
+
+```bash
+uv run --extra serve python serve/bench_api.py --models base --requests 54 --warmup 3 \
+  --hardware-note 'Record actual server placement and hardware here; do not infer it from the client.' \
+  --output-dir .scratch/base-api-benchmark-reproduction
+```
+
+Handoff inspection found that `tools/merge.py` always copied the historical prompt. It now selects the adapter's recorded `prompt.txt`, rejects a conflicting override, and requires an explicit actual training prompt for older adapters lacking one. A merge manifest binds adapter hashes, pinned base revision, exact prompt, output files and merge implementation. Tests cover prompt/identity handling; no v3 merge has occurred because no v3 adapter exists yet. `tools/convert.sh` now refuses to overwrite an existing GGUF or use a converter checkout with tracked modifications.
+
+R3 verification: `uv run --extra serve --with peft==0.20.0 pytest -q -rs` completed with **126 passed, zero skipped**, in 41.86 seconds. The two warnings concern deprecated FastAPI/Starlette HTTP test-client interfaces, not failed assertions. This includes a real pinned-Qwen CPU zero-effect-adapter comparison on development queries; it is inference parity, not training or improvement evidence. The plain serve-only environment skips that PEFT-dependent test, so the explicit package overlay is needed on this Mac (the full CUDA `train` extra includes bitsandbytes and is not a macOS installation route). Shell syntax validation and staged secret/PII hygiene checks passed. The source v2 worktree's dirty-file list remains unchanged.
+
+The locally served base's Modelfile resolves to GGUF blob `eb2837d6dd3d8724fe51f80796e2dd16ba3bb38dd4301b43a4704d0c1219e7a5`. Hashing the actual 1.6 GB blob produced that same SHA-256, matching the base entry in the historical artifact manifest, which records the pinned Qwen revision and converter commit. This verifies reuse of the recorded base artifact; no fresh base conversion was performed in R3. The new prompt is supplied explicitly at request time and is separately hashed in evaluation/API responses.
+
 ## Historical proposed plan (superseded)
 
 ## Starting evidence
