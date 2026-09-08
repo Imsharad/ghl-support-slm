@@ -15,8 +15,12 @@ examples, a hash-verified CUDA training bundle, 108 freshly authored evaluation
 queries that passed the documented overlap screen, paired blinded-grading tools,
 and a live base-only HTTP benchmark. The fresh set is screened but not yet sealed
 to selected model artifacts. No v3 training run, adapter, final comparison,
-human-grading result, or complete demo exists yet. Remote training access remains
-unresolved; paid compute has not been authorized.
+human-grading result, or complete demo exists yet. On 2026-09-08 the owner authorized
+RunPod GPU and storage spending up to $10 total from existing credit, superseding
+the previous $0 compute limit. Account access and live rental pricing must be
+verified before provisioning. Additional credit or paid judge APIs are not
+authorized. Paid compute is a disclosed deviation from the hiring brief's
+"do not spend money" instruction; owner approval is not employer approval.
 
 The active plan, reproduction commands, evidence paths, limitations, and current
 base-only performance numbers are in [the v3 execution log](docs/v3/PLAN.md).

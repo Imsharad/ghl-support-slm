@@ -23,6 +23,7 @@ from eval.blind import index_by_id, load_jsonl
 from eval.prepare_v3 import KINDS, read_json
 from eval.v3_metrics import summarize_pairs, validate_pairs
 from train.repro import sha256_file
+from train.render import load_system_prompt
 
 IMMUTABLE = ("item_id", "query", "acceptable_actions", "critical_fail_if", "answer_A", "answer_B")
 JUDGMENTS = tuple(f"{field}_{side}" for side in ("A", "B")
@@ -47,7 +48,8 @@ def verify_seal(seal: dict, cases_path: Path, protocol_path: Path) -> tuple[list
     if seal.get("schema") != 3 or seal.get("status") != "frozen_before_final_inference":
         raise ValueError("a v3 model/data/protocol seal is required")
     for field, path in (("challenge_sha256", cases_path), ("protocol_sha256", protocol_path),
-                        ("metrics_code_sha256", ROOT / "eval/v3_metrics.py")):
+                        ("metrics_code_sha256", ROOT / "eval/v3_metrics.py"),
+                        ("grading_code_sha256", Path(__file__))):
         if seal.get(field) != sha256_file(path):
             raise ValueError(f"seal mismatch: {field}")
     protocol = read_json(protocol_path)
@@ -69,6 +71,9 @@ def verify_seal(seal: dict, cases_path: Path, protocol_path: Path) -> tuple[list
     shared = seal["inference"]
     if shared.get("backend") != "ollama" or shared.get("decoding") != expected_decoding:
         raise ValueError("sealed inference differs from protocol")
+    expected_prompt = load_system_prompt(ROOT / "configs/prompt-v3.txt")
+    if shared.get("prompt_sha256") != hashlib.sha256(expected_prompt.encode()).hexdigest():
+        raise ValueError("sealed prompt differs from the protocol's exact v3 prompt")
     if set(seal["models"]) != {"base", "tuned"}:
         raise ValueError("seal must name base and tuned identities")
     if seal["models"]["base"]["digest"] == seal["models"]["tuned"]["digest"]:
@@ -187,10 +192,14 @@ def main():
     raw_paths = {"base": args.base, "tuned": args.tuned}
     raw = {}
     for model, path in raw_paths.items():
-        verify_manifest(read_json(manifests[model]), seal, model)
+        manifest = read_json(manifests[model])
+        verify_manifest(manifest, seal, model)
+        if manifest.get("final_seal_sha256") != sha256_file(args.seal):
+            raise ValueError("raw manifest is not bound to this final seal")
         raw[model] = load_jsonl(path)
-        if any(row.get("tag") != seal["models"][model]["tag"] for row in raw[model]):
-            raise ValueError("raw row tag differs from sealed tag")
+        if any(row.get("tag") != seal["models"][model]["tag"]
+               or row.get("final_seal_sha256") != sha256_file(args.seal) for row in raw[model]):
+            raise ValueError("raw row tag or seal differs from the final seal")
     bindings = {"seal_sha256": sha256_file(args.seal),
                 "raw_sha256": {m: sha256_file(p) for m, p in raw_paths.items()},
                 "manifest_sha256": {m: sha256_file(p) for m, p in manifests.items()},
