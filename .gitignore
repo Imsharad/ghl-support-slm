@@ -12,6 +12,7 @@ artifacts/adapter/
 eval/results/blind-key.json
 train/runs/**/checkpoint-*/
 data/processed/
+data/v3/source-candidates/*.jsonl
 
 # Personal and prep material. Never part of the submission (shark, 2026-09-07 13:59 IST).
 docs/career/

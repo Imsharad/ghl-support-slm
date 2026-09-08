@@ -68,22 +68,24 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--base-url", default=DEFAULT_OLLAMA_URL)
     parser.add_argument("--device", choices=("auto", "cpu", "mps"), default="auto")
     parser.add_argument("--query", default=DEFAULT_QUERY)
+    parser.add_argument("--prompt-file", type=Path, default=PROMPT_PATH)
     parser.add_argument("--self-test", action="store_true")
     return parser.parse_args()
 
 
-def load_system_prompt() -> str:
-    prompt = PROMPT_PATH.read_text(encoding="utf-8").strip()
+def load_system_prompt(path: Path | None = None) -> str:
+    path = path or PROMPT_PATH
+    prompt = path.read_text(encoding="utf-8").removesuffix("\n")
     if not prompt:
-        raise RuntimeError(f"system prompt is empty: {PROMPT_PATH}")
+        raise RuntimeError(f"system prompt is empty: {path}")
     return prompt
 
 
-def fixed_messages(query: str) -> list[dict[str, str]]:
+def fixed_messages(query: str, *, system_prompt: str | None = None) -> list[dict[str, str]]:
     if not query.strip():
         raise ValueError("query must not be empty")
     return [
-        {"role": "system", "content": load_system_prompt()},
+        {"role": "system", "content": load_system_prompt() if system_prompt is None else system_prompt},
         {"role": "user", "content": query.strip()},
     ]
 
@@ -108,10 +110,11 @@ def post_json(url: str, payload: dict[str, Any], *, timeout: float = 600) -> dic
     return result
 
 
-def infer_ollama(query: str, *, model: str, base_url: str) -> InferenceResult:
+def infer_ollama(query: str, *, model: str, base_url: str,
+                 system_prompt: str | None = None) -> InferenceResult:
     payload = {
         "model": model,
-        "messages": fixed_messages(query),
+        "messages": fixed_messages(query, system_prompt=system_prompt),
         "temperature": 0,
         "top_p": 1.0,
         "max_tokens": MAX_NEW_TOKENS,
@@ -164,7 +167,8 @@ def _select_device(requested: str, torch_module: Any) -> str:
     return "mps" if torch_module.backends.mps.is_available() else "cpu"
 
 
-def infer_transformers(query: str, *, requested_device: str) -> InferenceResult:
+def infer_transformers(query: str, *, requested_device: str,
+                       system_prompt: str | None = None) -> InferenceResult:
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -181,7 +185,7 @@ def infer_transformers(query: str, *, requested_device: str) -> InferenceResult:
     model.eval()
 
     prompt = tokenizer.apply_chat_template(
-        fixed_messages(query), tokenize=False, add_generation_prompt=True
+        fixed_messages(query, system_prompt=system_prompt), tokenize=False, add_generation_prompt=True
     )
     encoded = tokenizer(
         prompt,
@@ -256,10 +260,13 @@ def check_self_test(result: InferenceResult) -> None:
 def main() -> int:
     args = parse_args()
     query = DEFAULT_QUERY if args.self_test else args.query
+    system_prompt = load_system_prompt(args.prompt_file)
     if args.backend == "ollama":
-        result = infer_ollama(query, model=args.model, base_url=args.base_url)
+        result = infer_ollama(query, model=args.model, base_url=args.base_url,
+                              system_prompt=system_prompt)
     else:
-        result = infer_transformers(query, requested_device=args.device)
+        result = infer_transformers(query, requested_device=args.device,
+                                   system_prompt=system_prompt)
 
     if args.self_test:
         check_self_test(result)

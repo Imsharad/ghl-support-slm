@@ -50,16 +50,28 @@ def _tokenizer(tokenizer: PreTrainedTokenizerBase | None) -> PreTrainedTokenizer
     return tokenizer if tokenizer is not None else get_tokenizer()
 
 
+def load_system_prompt(path: Path = PROMPT_PATH) -> str:
+    """Load an explicit experiment card without changing historical defaults."""
+    prompt = path.read_text(encoding="utf-8").removesuffix("\n")
+    if not prompt.strip():
+        raise ValueError(f"empty system prompt: {path}")
+    if "<|im_start|>" in prompt or "<|im_end|>" in prompt:
+        raise ValueError("system prompt must be content, not a rendered chat template")
+    return prompt
+
+
 def render_prompt(
     instruction: str,
     tokenizer: PreTrainedTokenizerBase | None = None,
+    *,
+    system_prompt: str = SYSTEM_PROMPT,
 ) -> str:
     """Render through the assistant header, ready for greedy generation."""
     if not isinstance(instruction, str) or not instruction:
         raise ValueError("instruction must be a nonempty string")
     rendered = _tokenizer(tokenizer).apply_chat_template(
         [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": instruction},
         ],
         tokenize=False,
@@ -74,6 +86,8 @@ def render_full(
     instruction: str,
     response: str,
     tokenizer: PreTrainedTokenizerBase | None = None,
+    *,
+    system_prompt: str = SYSTEM_PROMPT,
 ) -> str:
     """Render a complete training exchange including Qwen's end marker."""
     if not isinstance(instruction, str) or not instruction:
@@ -82,7 +96,7 @@ def render_full(
         raise ValueError("response must be a nonempty string")
     rendered = _tokenizer(tokenizer).apply_chat_template(
         [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": instruction},
             {"role": "assistant", "content": response},
         ],
