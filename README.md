@@ -4,6 +4,37 @@ This repository answers the customer-support fine-tuning assignment in
 [`docs/ASSIGNMENT.md`](docs/ASSIGNMENT.md). It keeps training, evaluation, conversion, and local
 serving reproducible from pinned inputs.
 
+## Contents
+
+- [1. What this is, and the headline result](#1-what-this-is-and-the-headline-result)
+- [2. Model and method choices, and why](#2-model-and-method-choices-and-why)
+- [3. Data handling and split strategy](#3-data-handling-and-split-strategy)
+  - [What the cleaning removed](#what-the-cleaning-removed)
+  - [Splits](#splits)
+  - [Residual risk, stated plainly](#residual-risk-stated-plainly)
+  - [v2 data: substitute, do not reject, plus 206 admission rows](#v2-data-substitute-do-not-reject-plus-206-admission-rows)
+- [4. Evaluation design and results](#4-evaluation-design-and-results)
+  - [Result](#result)
+  - [v2 result on the fresh sealed set](#v2-result-on-the-fresh-sealed-set)
+  - [Why: it learned the voice and unlearned the admission](#why-it-learned-the-voice-and-unlearned-the-admission)
+  - [Three failure cases](#three-failure-cases)
+  - [Secondary: held-out Bitext reference metrics](#secondary-held-out-bitext-reference-metrics)
+  - [Checkpoint selection on dev](#checkpoint-selection-on-dev)
+- [5. Exact prompt template, and how to load and run](#5-exact-prompt-template-and-how-to-load-and-run)
+  - [Get the weights](#get-the-weights)
+  - [Route 1: Ollama HTTP endpoint (the served artifact, and what the evaluation scored)](#route-1-ollama-http-endpoint-the-served-artifact-and-what-the-evaluation-scored)
+  - [Route 2: merged fp16 weights through Transformers](#route-2-merged-fp16-weights-through-transformers)
+  - [Route 3: LoRA adapter on the pinned base](#route-3-lora-adapter-on-the-pinned-base)
+- [6. Serving and measured latency/throughput](#6-serving-and-measured-latencythroughput)
+- [7. Real vs cut for time, and production trade-offs](#7-real-vs-cut-for-time-and-production-trade-offs)
+  - [What was cut, and what it costs](#what-was-cut-and-what-it-costs)
+  - [Three disclosures that matter more than the table](#three-disclosures-that-matter-more-than-the-table)
+  - [v2 disclosures](#v2-disclosures)
+  - [What is real](#what-is-real)
+  - [What I would revisit for production](#what-i-would-revisit-for-production)
+- [8. Reproduce](#8-reproduce)
+- [Developer quickstart](#developer-quickstart)
+
 ## 1. What this is, and the headline result
 
 A QLoRA fine-tune of `Qwen2.5-1.5B-Instruct` on the Bitext customer-support corpus, exported to
