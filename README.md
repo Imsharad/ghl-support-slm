@@ -63,6 +63,7 @@ model in 0.
 
 The pass rate moved the right way and the critical count the wrong way, and the rule fixed before v1 makes any rise in critical failures a negative; the interval also crosses zero. Gate 2, pre-registered in [`docs/v2/PLAN_DECISIONS.md`](docs/v2/PLAN_DECISIONS.md), failed, so the v1 headline stands and so does the recommendation to ship the base model. Where the tune improved is navigational questions whose honest answer is a path; where it did not is any question about a fee, a window, support hours or a carrier, where it still answers in the corpus's confident voice (10 of its 12 critical failures carry the judge tag *invented policy, fee or window*). Full account in [`docs/RESULTS.md`](docs/RESULTS.md) (v2 section) and [`docs/FAILURES.md`](docs/FAILURES.md) (v2 section). Two caveats travel with these numbers: the sheet is LLM-judged with adjudication, as v1's was, and the judge drifts between sessions (v1's own base answers scored 16 of 54 on 6 September and 4 of 54 today), so only base-against-tuned inside one session is on one scale; v1 and v2 pass rates are not.
 
+- **Open the v2 training run in Colab**: the executed record with its outputs, [`v2_colab_run.ipynb`](https://colab.research.google.com/github/Imsharad/ghl-support-slm/blob/v2/notebooks/v2_colab_run.ipynb), and the runnable notebook that produced it, [`train_colab.ipynb`](https://colab.research.google.com/github/Imsharad/ghl-support-slm/blob/v2/notebooks/train_colab.ipynb). Both open a private copy in the reader's own Drive; the committed files do not change.
 - Weights and adapter: <https://huggingface.co/seekingtroooth/ghl-support-qlora-t4> (public; adapter,
   merged fp16, both GGUFs, manifest).
 - Repository: <https://github.com/Imsharad/ghl-support-slm> (public; tag `v1` marks the submitted commit,
@@ -748,6 +749,7 @@ Run these steps from the repository root in dependency order.
    uv run python data/prepare.py --placeholder-mode substitute --out data/v2 --admissions data/v2/admissions.jsonl
    uv run python data/prepare.py --audit-only --out data/v2 --strict
    # the run: notebooks/train_colab.ipynb, executed top to bottom on a free T4 (2026-09-08);
+   # open it in Colab: https://colab.research.google.com/github/Imsharad/ghl-support-slm/blob/v2/notebooks/train_colab.ipynb
    # the executed copy with outputs is notebooks/v2_colab_run.ipynb
    uv run python train/train.py --config configs/train-t4.yaml --data-dir data/processed/v2 --run-name v2-t4 --no-push
    uv run python tools/check_run.py train/runs/v2-t4 --max-memory-gb 12
