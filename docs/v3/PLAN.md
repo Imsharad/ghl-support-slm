@@ -2,6 +2,51 @@
 
 Status: active under the owner's 2026-09-08 persistent assignment goal. The earlier HARD STOP 1–4 procedures and proposed experiment below are superseded. They remain as historical planning evidence, not current launch requirements.
 
+## Latest checkpoint: mixed grading audit (2026-09-09)
+
+Follow-up verification: the README's exact `uv run python -m
+eval.audit_mixed_v3` command reproduced both audit artifacts byte-for-byte in
+`.scratch/mixed-audit-reproduction`. Restarted the localhost-only API on port
+8013 with the frozen v3 candidate and prompt. All four actual demo HTTP requests
+passed model/prompt identity checks; response evidence is retained in
+`eval/results/v3/demo-live-smoke-20260909.json`. The PayPal development example
+still exposes unsupported acceptance claims in both models. The demo now
+distinguishes the original all-human protocol from current mixed grading and
+can save raw live response evidence to a fresh JSON file. This is not the final
+2–5 minute recording and no benchmark or quality improvement is inferred from it.
+Full local regression verification after these changes: `uv run --extra serve
+pytest -q` finished with 204 passed, 1 skipped, and two dependency deprecation
+warnings in 48.80 seconds. The skip is not counted as a passed test. The older
+grader's unrelated working-tree edits were preserved.
+
+The owner requested Terra grading through the existing Codex subscription,
+initially stopped it to grade manually, then explicitly restarted it for untouched
+questions with human examples in every call. No separately billed API was used.
+The initial human export contains 27 fully selected pairs plus two partial pairs,
+all without evidence notes. The newer export adds only the missing choices on
+questions 2 and 16; 29 marked pairs are preserved without alteration. Calibration
+remained the original 27 pairs throughout the run, not the changing export.
+
+The calibrated run completed 77 of 79 requested pairs. A provider cybersecurity
+block rejected question 107; the fail-closed runner stopped before question 108.
+No attempt was made to evade the block or assign a synthetic grade. The old
+uncalibrated run and all new attempt records are retained separately.
+
+`eval/audit_mixed_v3.py` revalidated the seal, original human calibration export,
+request bindings, journal and every accepted judgment's structural constraints.
+The audit preserves the 29 human marks, labels 77 automated rows, and identifies
+the two missing grades and 29 missing human evidence notes. Outputs:
+`eval/results/v3/final01/mixed-review-001/{audit.json,mixed-grades-review.csv}`.
+The 65 targeted grading, transport, mixed-audit and frozen-analysis tests passed.
+This is not independent semantic approval of Terra's judgments. No model key was
+read, no performance score computed and no improvement claim made.
+
+The judge change is a post-hoc protocol deviation. Do not edit the sealed protocol
+to make the mixed evaluation appear preregistered or relabel automated marks as
+human. Remaining user action: grade 107/108, add human evidence notes and export.
+Remaining package work includes actual analysis, final demo and review; the
+persistent improvement objective is still incomplete.
+
 ## Current execution contract (2026-09-08)
 
 The hiring brief governs the deliverables. The owner explicitly authorizes autonomous local implementation, design changes, data preparation, training, evaluation, local serving, README/demo preparation, and local commits. A subsequent 2026-09-08 instruction supersedes the original $0/free-compute restriction: RunPod GPU and storage usage may consume at most $10 total from existing account credit. Ask before exceeding this ceiling; do not add funds or change auto-pay. Paid judge/API services remain unauthorized. This is a disclosed deviation from the hiring brief's "do not spend money" instruction, not evidence of employer approval. Publication, pushes, merges to main, employer submission, and deletion of historical work remain excluded. Earlier $0 observations below are historical, not the current authority.

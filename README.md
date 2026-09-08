@@ -20,8 +20,10 @@ repetition, unsupported payment claims and intent failures. See the
 [selection record](docs/v3/SELECTION.md) and [prompt-path parity](docs/v3/parity-candidate03-step120.md).
 The fresh set and exact model artifacts are sealed in
 `eval/results/v3/final01/SEAL.json`; all 216 final answers completed without
-generation errors. The 108-pair blind sheet is awaiting actual owner grading.
-No human-grading result or complete demo exists yet.
+generation errors. The 108-pair blind sheet has 29 owner-marked pairs and 77
+separately labelled human-calibrated Terra judgments; two pairs remain ungraded.
+Human evidence notes are missing. This is a post-hoc mixed-judge deviation, not
+the frozen all-human evaluation. No complete quality result or final demo exists yet.
 On 2026-09-08 the owner authorized
 RunPod GPU and storage spending up to $10 total from existing credit, superseding
 the previous $0 compute limit. The GPU and temporary volume have been deleted
@@ -135,7 +137,7 @@ The [execution log](docs/v3/PLAN.md) records exact data fetch/preparation,
 assembly, bundle, CUDA preflight, training, recovery, conversion and screening
 commands. Scripts refuse overwriting immutable evidence; use fresh output paths
 for reproduction. The actual training source is local commit
-`3fb00a062a85a5992b5ac1d77a5f976c24c56016` and bundle SHA-256
+`3fb00a062a85a5992b5ac1d77a5f976c24c56016` and bundle ZIP SHA-256
 `d2eedfde7d64ecda52b41f885014893b33a678719b7605c84ad3d1f10133db22`.
 On Linux CUDA, use `uv sync --frozen --extra train` and run the bundle's smoke
 before full training; do not install the CUDA-only train extra on macOS.
@@ -156,6 +158,61 @@ It calls the actual `/support` route twice per development query, prints the
 answers side by side, and includes an unsupported-payment-claim failure check.
 Until human scoring exists, it explicitly prints that improvement is unproven.
 The script is a recording aid, not a completed Loom/video deliverable.
+On 2026-09-09 it was rerun through the actual local API with all four requests
+successful and identity guards passing. Both models asserted PayPal acceptance
+without supplied business policy; the tuned answer's later qualification does
+not undo its unsupported opening claim. Raw responses and timings are preserved
+in `eval/results/v3/demo-live-smoke-20260909.json`. These four requests are a
+correctness/demo smoke, not a replacement for the 54+54 measured benchmark.
+Use `--record-json <new-path.json>` to retain another live run's response evidence;
+this JSON is not a video recording.
+
+### Post-hoc mixed grading status (2026-09-09)
+
+The owner stopped independent grading after marking 29 pairs and requested
+Terra for the remaining 79, with human examples in each prompt. The original
+export had 27 pairs with every choice selected and two partial pairs; all 29
+lacked evidence notes. The later export filled only the five missing checkboxes
+on questions 2 and 16. Both original exports are preserved byte-for-byte.
+
+`eval/terra_remaining_v3.py` froze the 27 fully selected examples as calibration
+data and submitted one untouched pair per fresh ephemeral Codex CLI session,
+using the owner's existing ChatGPT subscription and `gpt-5.6-terra` at medium
+reasoning. No separately billed API or model-identity mapping was supplied.
+The larger calibration context repeats in each call; previous Terra judgments
+do not. The rubric remains authoritative over potentially inconsistent examples.
+An empty human note is not replaced with invented reasoning.
+
+The batch completed 77 valid structured judgments, then stopped on a provider
+cybersecurity block for question 107 (password recovery). Question 108 was never
+attempted. No bypass, automatic retry or fabricated grade was used. All attempts,
+exact instruction/request bindings and CLI provenance are retained in
+`eval/results/v3/final01/terra-secondary/codex-human-calibrated-001`.
+The earlier uncalibrated batch was stopped at the owner's request and is not
+mixed into these results.
+
+`eval/audit_mixed_v3.py` verifies source fields, original calibration bindings,
+request hashes, response schema and judgment consistency. Its provenance-labelled
+review CSV deliberately differs from the human-sheet import format. The saved
+audit is `eval/results/v3/final01/mixed-review-001/audit.json`: 29 human-marked,
+77 automated, questions 107/108 missing, and 29 missing human evidence notes.
+No private model key was loaded and no quality metric was computed.
+
+This is **not** the preregistered all-human primary evaluation or an independent
+judge validation. Calibration reused part of the same authored test; human
+selection, absent reasoning and systematic judge bias limit interpretation.
+Schema-valid output is not proof of correct grading. Complete missing grades and
+evidence before analysis, report judge provenance and protocol deviation, and
+never describe the combined scores as 108 independent human judgments.
+
+To reproduce the local, read-only audit into a new output directory:
+
+```sh
+uv run python -m eval.audit_mixed_v3 \
+  --run-directory eval/results/v3/final01/terra-secondary/codex-human-calibrated-001 \
+  --human-progress eval/results/v3/final01/terra-secondary/codex-human-calibrated-001/human-progress-updated-01.csv \
+  --output-directory .scratch/mixed-audit-reproduction
+```
 
 ### v3 measured HTTP performance
 

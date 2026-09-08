@@ -8,7 +8,7 @@ Status: incomplete. Do not submit as a proven improvement.
 | Data exploration and leakage handling | Bitext profile; whole-group/six-gram/pinned-MiniLM audits; exact clean-checkout reconstruction | Screening cannot prove semantic independence |
 | Fine-tuning and curves | Completed CUDA run, four checkpoints, full validation, resume smoke; `train/runs/v3-candidate03-runpod*` | No missing training stage |
 | Reasoned choices and attempts | Config, `docs/v3/PLAN.md`, `docs/v3/SELECTION.md`; early repetition and setup failure preserved | Owner must be able to defend choices |
-| Held-out base vs tuned comparison | Frozen 108-case protocol and artifacts; all 216 raw generations; blinded sheet | Actual human grades, uncertainty analysis and verdict |
+| Held-out base vs tuned comparison | Frozen 108-case artifacts; 29 human-marked pairs plus 77 calibrated Terra judgments; `eval/results/v3/final01/mixed-review-001/audit.json` | Questions 107/108, 29 human evidence notes, uncertainty analysis; disclose departure from all-human primary judge |
 | Measurable improvement | No claim yet | Fixed improvement and safety gates must pass |
 | Self-hosted HTTP endpoint | Local `/support` base/tuned routes with prompt/model identity guards | Production auth, TLS and concurrency are explicitly cut |
 | Performance numbers | Complete 54+54 HTTP benchmark, raw requests, hardware and limitations; `eval/results/v3/paired-api-warm02` | Not a concurrent/cold-start capacity claim |
@@ -37,5 +37,9 @@ live answer), describe step-30 repetition, and explain the missing production
 tools/policies/authentication. Disclose paid compute and say whether the fixed
 quality gate actually passed. Never replace missing scores with invented ones.
 
-Next: owner completes the blinded grading sheet; then compute the frozen analysis,
-finish the recording and review publication/submission choices separately.
+Next: owner grades questions 107 and 108 and adds evidence notes to the 29 human
+pairs, then exports progress. Terra stopped on a provider cybersecurity block at
+107; 108 was not attempted. Preserve original grades and the fixed calibration.
+Analyze any completed combination as post-hoc mixed-judge evidence, not the
+original all-human primary test. Finish the recording and review publication /
+submission choices separately.

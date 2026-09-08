@@ -25,7 +25,19 @@ def test_demo_uses_actual_http_pairs_and_marks_missing_scores(tmp_path, monkeypa
         return dict(payload, answer="synthetic test response", model_digest=payload["model"],
                     prompt_sha256="fixture", prompt_tokens=4, gen_tokens=4,
                     latency_ms=1, request_latency_ms=2, tokens_per_s=4, truncated=False)
-    demo_v3.run_demo("http://fixture", call=call)
+    audit_path = tmp_path / "eval/results/v3/final01/mixed-review-001/audit.json"
+    audit_path.parent.mkdir(parents=True)
+    audit_path.write_text(json.dumps({"status": "incomplete", "human_pairs": 29,
+        "automated_pairs": 77, "missing_grade_questions": [107,108],
+        "missing_human_evidence_questions": list(range(2,31)),
+        "primary_all_human_evaluation_complete": False}))
+    evidence = demo_v3.run_demo("http://fixture", call=call)
     assert len(requests) == 4
     assert requests[0]["query"] == requests[1]["query"]
-    assert "awaiting actual human grading" in capsys.readouterr().out
+    printed = capsys.readouterr().out
+    assert "awaiting actual human grading" in printed
+    assert "not 108 independent human judgments" in printed
+    assert "29 human-marked and 77 automated" in printed
+    assert len(evidence["queries"]) == 2
+    assert evidence["queries"][0]["responses"]["base"]["answer"] == "synthetic test response"
+    assert evidence["mixed_audit_status"]["primary_all_human_evaluation_complete"] is False
