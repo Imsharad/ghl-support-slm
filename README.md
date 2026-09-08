@@ -20,10 +20,12 @@ repetition, unsupported payment claims and intent failures. See the
 [selection record](docs/v3/SELECTION.md) and [prompt-path parity](docs/v3/parity-candidate03-step120.md).
 The fresh set and exact model artifacts are sealed in
 `eval/results/v3/final01/SEAL.json`; all 216 final answers completed without
-generation errors. The 108-pair blind sheet has 29 owner-marked pairs and 77
-separately labelled human-calibrated Terra judgments; two pairs remain ungraded.
-Human evidence notes are missing. This is a post-hoc mixed-judge deviation, not
-the frozen all-human evaluation. No complete quality result or final demo exists yet.
+generation errors. A post-hoc analysis of 106 pairs (29 human, 77 calibrated
+Terra; two owner-omitted) records 59 base passes versus 81 tuned passes, but the
+tuned model has two credential/verification violations and therefore fails the
+fixed safety criterion. Human evidence notes are absent. The complete all-human
+primary evaluation and final demo do not exist; this is not a submission-ready
+success. See the partial mixed-judge result below.
 On 2026-09-08 the owner authorized
 RunPod GPU and storage spending up to $10 total from existing credit, superseding
 the previous $0 compute limit. The GPU and temporary volume have been deleted
@@ -150,8 +152,8 @@ were authored by this assistant, so the test is not independently authored.
 Fresh-checkout data reconstruction reproduced the actual training/validation
 files byte-for-byte; it reused the installed environment and global HF cache.
 The direct adapter-loading command was also verified on local MPS.
-Human grading, final statistics, public v3 weights/repo and the final demo remain
-outstanding. Do not substitute historical results for these missing deliverables.
+The complete primary evaluation, public v3 weights/repo and final demo remain
+outstanding. Partial mixed-judge statistics below do not replace that evaluation.
 
 For the live recording walkthrough, run `uv run --extra serve python serve/demo_v3.py`.
 It calls the actual `/support` route twice per development query, prints the
@@ -196,14 +198,16 @@ request hashes, response schema and judgment consistency. Its provenance-labelle
 review CSV deliberately differs from the human-sheet import format. The saved
 audit is `eval/results/v3/final01/mixed-review-001/audit.json`: 29 human-marked,
 77 automated, questions 107/108 missing, and 29 missing human evidence notes.
-No private model key was loaded and no quality metric was computed.
+That audit did not unblind models or compute quality metrics. The subsequent
+owner-authorized partial analysis below is a separate, preserved artifact.
 
 This is **not** the preregistered all-human primary evaluation or an independent
 judge validation. Calibration reused part of the same authored test; human
 selection, absent reasoning and systematic judge bias limit interpretation.
-Schema-valid output is not proof of correct grading. Complete missing grades and
-evidence before analysis, report judge provenance and protocol deviation, and
-never describe the combined scores as 108 independent human judgments.
+Schema-valid output is not proof of correct grading. The owner subsequently
+chose to omit questions 107/108. The partial analysis explicitly permits missing
+human notes without inventing them; neither exception changes the sealed primary
+protocol. Never describe these scores as 108 independent human judgments.
 
 To reproduce the local, read-only audit into a new output directory:
 
@@ -212,6 +216,66 @@ uv run python -m eval.audit_mixed_v3 \
   --run-directory eval/results/v3/final01/terra-secondary/codex-human-calibrated-001 \
   --human-progress eval/results/v3/final01/terra-secondary/codex-human-calibrated-001/human-progress-updated-01.csv \
   --output-directory .scratch/mixed-audit-reproduction
+```
+
+### Partial mixed-judge result — task-success gain, safety gate failed
+
+Source: `eval/results/v3/final01/partial-mixed-analysis-001/analysis.json`.
+The 106 graded pairs still cover all 27 intents, but password recovery and payment
+issues each have three graded cases rather than four. Questions 107/108 remain
+ungraded, not automatically failed. All original judgments are preserved.
+
+| Observed 106 pairs | Exact starting base, Q8 | Tuned step 120, Q8 |
+|---|---:|---:|
+| Task-success passes | 59/106 (55.7%) | 81/106 (76.4%) |
+| Critical failures | 11 | 9 |
+| Credential/verification violations | 1 | 2 |
+| Relative preference | 32 | 67 |
+
+There were seven preference ties. Tuned alone passed 36 pairs; base alone passed
+14; both failed on 11. The unweighted per-question pass-rate difference is +20.75 percentage points.
+The observed per-intent macro difference is +21.60 points, with a paired
+intent-cluster bootstrap 95% interval of [8.95, 34.26] (10,000 resamples, seed
+20260908). Macro and micro values differ because two intents have missing grades.
+These are descriptive post-hoc intervals conditional on the recorded judgments;
+they do not account for judge error, calibration dependence or real-world sampling.
+
+Human-only rows: 14/29 base passes versus 23/29 tuned passes; critical counts 1
+versus 3. Terra-only rows: 45/77 versus 58/77; critical counts 10 versus 6. These
+subsets cover different items/intents, so this is not an inter-rater comparison.
+All 29 human evidence notes are blank. Terra received the original 27 fully
+selected human examples without rationales in each independent session.
+
+For the full 108-case denominator, assigning both missing pairs as base-only
+passes gives a hypothetical worst-case difference of +18.52 points and cluster
+interval [6.48, 29.63]. Assigning both as tuned-only passes gives +22.22 points
+and [9.26, 34.26]. These sensitivity bounds do not create grades for omitted
+items. Neither favorable omission assumptions nor increased helpfulness can
+erase the two observed tuned credential violations: **the fixed safety gate fails**.
+
+An assistant evidence check after unblinding supported both tuned flags without
+changing scores: question 37 invites a password-reset link into chat; question 54
+asks for the proposed password while permitting unconsented account creation.
+The base violation on question 53 explicitly accepts card details and a bank code.
+`credential-review.json` records the evidence and limited review scope. This is
+not a human regrade or independent approval of every automated judgment.
+
+The result is evidence of better recorded task success, **not completion of the
+assignment's improvement objective under the declared safety criteria**. Future
+candidate selection cannot reuse these inspected cases as untouched final data.
+The training prompt, model, frozen rubric and primary analysis code were not
+changed to manufacture a passing result.
+
+Reproduce this explicitly partial analysis into a new output directory (the
+private local key is required; never publish it):
+
+```sh
+uv run python -m eval.analyze_partial_v3 \
+  --run-directory eval/results/v3/final01/terra-secondary/codex-human-calibrated-001 \
+  --human-progress eval/results/v3/final01/terra-secondary/codex-human-calibrated-001/human-progress-updated-01.csv \
+  --key .scratch/v3-final01/blind-key.json \
+  --output-directory .scratch/partial-mixed-analysis-reproduction \
+  --skip-question 107 --skip-question 108 --allow-missing-human-notes
 ```
 
 ### v3 measured HTTP performance

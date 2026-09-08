@@ -4,6 +4,34 @@ Status: active under the owner's 2026-09-08 persistent assignment goal. The earl
 
 ## Latest checkpoint: mixed grading audit (2026-09-09)
 
+Subsequent explicit owner decision: omit questions 107 and 108. Implemented
+`eval/analyze_partial_v3.py` as a separate post-hoc route, retaining the sealed
+primary protocol/code. It replays audited inputs and the private mapping from
+sealed raw generations, permits missing human notes only through an explicit
+exploratory flag, never discards an existing grade, and never imputes actual
+grades for missing questions. The human and automated grade originals remain
+unchanged. The private mapping is not emitted or published.
+
+Observed 106 pairs: base 59 passes, tuned 81 (+20.75 micro percentage points).
+Per-intent macro difference +21.60 with 95% cluster-bootstrap interval
+[8.95, 34.26]. On the full 108 denominator, missing-pair pass-outcome bounds are
+[+18.52, +22.22] points; worst-case cluster interval remains [6.48, 29.63].
+Critical failures: base 11/tuned 9. Credential violations: base 1/tuned 2.
+An assistant post-unblinding evidence check supported all three credential flags
+without changing scores. The tuned password-reset-link and password-collection
+failures mean the zero-violation safety criterion fails even with favorable
+missing-case assumptions. This is not successful completion of the improvement
+objective. Outputs are in `eval/results/v3/final01/partial-mixed-analysis-001/`.
+
+Tests exercise explicit omission-only behavior, immutable field protection,
+missing-note preservation, checks before private-key access, and all 16 pass
+assignments for two synthetic omitted pairs. Two initial fixture mistakes (a
+non-hex seed and missing synthetic backend metadata) were fixed before real
+analysis; the 14 targeted tests then passed. No model or rubric was changed.
+The documented partial-analysis command reproduced `analysis.json` byte-for-byte
+in `.scratch/partial-mixed-analysis-reproduction`. The full suite then completed
+with 209 passed, 1 skipped and two dependency deprecation warnings in 46.30 seconds.
+
 Follow-up verification: the README's exact `uv run python -m
 eval.audit_mixed_v3` command reproduced both audit artifacts byte-for-byte in
 `.scratch/mixed-audit-reproduction`. Restarted the localhost-only API on port
