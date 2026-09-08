@@ -187,6 +187,73 @@ R6 installation correction: the initial `uv sync` used the template's Python 3.1
 
 The smoke process started after successful installation. It verified all 19 bundle files, reported **Torch 2.14.0+cu130 / CUDA 13.0**, passed the actual float16 CUDA kernel preflight and downloaded the pinned ungated base model without a token. An HF unauthenticated-rate-limit warning is not a failure. Smoke training/resume results remain to be inspected. `tools/eval_remote_development.sh` prepares the unchanged 54 validation queries for base and all four candidate checkpoints under the same Transformers/CUDA generation settings; it is development-only, not the final served-Q8 comparison. Local R6 regression verification passed **140 tests**, with two deprecation warnings in 51.19 seconds; shell syntax checks passed.
 
+### R7 — completed training, recovered artifacts and released rental
+
+Both CUDA stages completed successfully. The 20-step smoke resumed from step 10
+with maximum logged-loss difference 0.00007 (tolerance 0.01). The main candidate03
+run completed 120 updates in 201.4 seconds, with 3.37 GiB peak CUDA allocation.
+Full validation loss fell from 3.4693443 to 1.86520. All 243 training and 54
+validation rows fit the sequence cap. Curves were generated locally and visually
+inspected; initial validation is recorded in config, not plotted at step zero.
+Run summaries, loss CSVs and smoke proof are under `train/runs/v3-candidate03-runpod*`.
+
+The base and four checkpoints each answered all 54 development queries without
+generation errors. All 270 answers were inspected unblinded; no human scores were
+fabricated. Step 30 repeated into the cap on seven queries. Later checkpoints
+removed those loops but retain factual and intent errors. `docs/v3/SELECTION.md`
+records the cautious step-120 choice before final inference, including unsupported
+PayPal acceptance, invoice misinterpretation and compensation/account failures.
+This is not evidence that the improvement objective is met.
+
+The full training/smoke archive (including optimizer/RNG state) was downloaded and
+verified against remote SHA-256
+`aae7bbf8990190e201536cb0179d348434a1d73873433b2202f9926f994140f2`.
+Both extracted runs pass `tools/check_run.py`; the smoke requires its resume proof.
+All ten development raw/manifest files and five setup/training/development logs
+also match remote checksums. Recoverable copies live in ignored local
+`.scratch/runpod-recovery`; canonical extracted checkpoints remain local.
+
+After successful recovery, exact task-owned pod `madh8fnq3gcacn` and temporary
+40 GB volume `wta2882eow` were deleted. Both provider lists returned empty and
+`currentSpendPerHr` returned zero. Reported balance was $9.5533553557 versus the
+initial $10: approximately $0.446645 consumed at this observation, not an audited
+settled invoice. The local deadline watchdog was terminated only after the pod
+was verified absent. Remote dependencies/caches are gone and rebuildable; local
+weights, logs and data were preserved. Paid compute remains a disclosed departure
+from the employer's no-spend brief.
+
+The step-120 adapter was merged against the pinned base on local CPU, converted
+using pinned llama.cpp to Q8, and imported under new tag
+`ghl-support-v3-c03-s120`. No old model tag was overwritten. Export hash/lineage
+is in `artifacts/v3/candidate03-step120-q8_0.gguf.export.json`. Five historical
+development queries passed tokenizer-ID and same-GGUF raw-vs-chat parity.
+`tools/parity_check.py` now accepts an explicit prompt, identifies the actual
+tag/prompt/item count and refuses to overwrite reports. The report explicitly
+does not claim CUDA-NF4 or fp16 generation equivalence to Q8.
+
+R7 verification: the initial full CPU suite was interrupted after 49 passes and
+363.52 seconds in the real zero-effect-adapter generation test. Profiling showed
+BF16 CPU matrix multiplication, not a deadlock. That compatibility test now checks
+an eight-token greedy prefix on both of its historical queries rather than four
+full 256-token answers. This bounds a software identity test; final decoding still
+uses 256 tokens, and no sealed evaluation code changed. The complete suite then
+passed **143 tests**, two deprecation warnings, in 213.27 seconds. The two newly
+added live-demo fixture tests also passed in a separate five-test parity/demo
+run. Synthetic fixture output is never treated as a real model result.
+
+`data/assemble_v3.py` was rerun into a fresh ignored directory. Its train hash
+`a6ced0e32a8eba51d75069f9b16d0dd44a4b787c008e15d3e69e88f9d5924382` and validation
+hash `3e4e864b1583a781f3747140102077f53bbd0b9734ce3e689c28d16a125c2b80` exactly
+match the actual GPU inputs. This verifies assembly from the retained source
+pool/curation, not a clean-machine download of the entire historical pipeline.
+
+The final seal was successfully created at `eval/results/v3/final01/SEAL.json`
+before any final responses. Generation is under that seal; checkpoint, prompt,
+cases, rubric and scoring logic must not be revised from final outputs. The
+initial paired API benchmark overlapped CPU tests and was interrupted as
+confounded. Partial measurements and the reason remain in `paired-api-warm01`;
+they are not headline performance evidence.
+
 ## Historical proposed plan (superseded)
 
 ## Starting evidence

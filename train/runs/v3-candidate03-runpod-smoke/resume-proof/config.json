@@ -1,0 +1,234 @@
+{
+  "run_name": "v3-candidate03-runpod-smoke",
+  "started_at": "2026-09-08 20:50:21 IST",
+  "device": "cuda",
+  "hardware": {
+    "system": "Linux",
+    "architecture": "x86_64",
+    "device": "cuda",
+    "torch_cuda": "13.0",
+    "gpu_name": "NVIDIA RTX PRO 4500 Blackwell",
+    "gpu_memory_bytes": 33685569536,
+    "visible_gpus": 1
+  },
+  "git_sha": "3fb00a062a85a5992b5ac1d77a5f976c24c56016",
+  "bundle_sha256": "12f7857c45de31ebfafecdf8ded5aaead89fb94cbff41ade32ed03de6e5b835d",
+  "versions": {
+    "python": "3.11.11",
+    "torch": "2.14.0",
+    "transformers": "5.16.1",
+    "peft": "0.20.0",
+    "bitsandbytes": "0.50.2",
+    "accelerate": "1.14.0",
+    "datasets": "5.0.1"
+  },
+  "base_model": {
+    "repo_id": "Qwen/Qwen2.5-1.5B-Instruct",
+    "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306"
+  },
+  "config": {
+    "run_name": "v3-candidate03-runpod-smoke",
+    "seed": 42,
+    "device": "cuda",
+    "output_dir": "train/runs",
+    "prompt_file": "configs/prompt-v3.txt",
+    "strict_reproducibility": true,
+    "data": {
+      "dir": "data/processed/v3-candidate03",
+      "train_file": "train.jsonl",
+      "val_file": "val.jsonl",
+      "cap_train": 64,
+      "max_length": 512
+    },
+    "model": {
+      "load_in_4bit": true,
+      "quant_type": "nf4",
+      "double_quant": true,
+      "compute_dtype": "float16"
+    },
+    "lora": {
+      "r": 16,
+      "alpha": 32,
+      "dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ]
+    },
+    "optim": {
+      "lr": 5e-05,
+      "schedule": "cosine",
+      "warmup_ratio": 0.05,
+      "weight_decay": 0.01,
+      "max_grad_norm": 1.0
+    },
+    "train": {
+      "micro_batch_size": 2,
+      "grad_accum": 4,
+      "epochs": 4,
+      "max_steps": 20,
+      "log_every": 5,
+      "save_every": 10,
+      "val_batches": 4,
+      "checkpoint_fractions": []
+    },
+    "hub": {
+      "push_checkpoints": false
+    },
+    "smoke": {
+      "run_name": "v3-candidate03-runpod-smoke",
+      "data_dir": "data/processed/v3-candidate03",
+      "rows": 64,
+      "steps": 20,
+      "grad_accum": 4,
+      "log_every": 5,
+      "save_every": 10,
+      "val_batches": 4,
+      "resume_from": 10,
+      "resume_tolerance": 0.01
+    }
+  },
+  "inputs": {
+    "files": {
+      "code:collate.py": "e9ada9c529eee21d194791921ec94fd2bf767b2f41c9bae1852e5c9204071fbd",
+      "code:render.py": "d37f176f89b20a37cc9bee922fc0c89b5d0862b49d073ca69971d58c55c452b2",
+      "code:repro.py": "59002d02949737b2df5e2d6c82d3977b56d5608720c4fcd94a22cc45ab3f6cc2",
+      "code:train.py": "828044d2c9de9edc5aa7e227f6f40b39ac1fc4ccc5ebf36766dee9ff19fcb24f",
+      "prompt": "fb45ab8d4a58a83fb3d0541abb350bbe6ee20a666c1b5703ea0c771f029b82ce",
+      "train": "a6ced0e32a8eba51d75069f9b16d0dd44a4b787c008e15d3e69e88f9d5924382",
+      "val": "3e4e864b1583a781f3747140102077f53bbd0b9734ce3e689c28d16a125c2b80"
+    },
+    "prompt_sha256": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+    "encoded_ids_sha256": "b5f432f54ac109376c0166289f8c0f29b4d3fdc8e7ba96d2fbe64b3a845aff77",
+    "base_pin": [
+      "Qwen/Qwen2.5-1.5B-Instruct",
+      "989aa7980e4cf806f80c7fef2b1adb7bc71aa306"
+    ],
+    "recipe": {
+      "seed": 42,
+      "model": {
+        "load_in_4bit": true,
+        "quant_type": "nf4",
+        "double_quant": true,
+        "compute_dtype": "float16"
+      },
+      "lora": {
+        "r": 16,
+        "alpha": 32,
+        "dropout": 0.05,
+        "target_modules": [
+          "q_proj",
+          "k_proj",
+          "v_proj",
+          "o_proj",
+          "gate_proj",
+          "up_proj",
+          "down_proj"
+        ]
+      },
+      "optim": {
+        "lr": 5e-05,
+        "schedule": "cosine",
+        "warmup_ratio": 0.05,
+        "weight_decay": 0.01,
+        "max_grad_norm": 1.0
+      },
+      "train": {
+        "micro_batch_size": 2,
+        "grad_accum": 4,
+        "epochs": 4,
+        "max_steps": 20,
+        "log_every": 5,
+        "save_every": 10,
+        "val_batches": 4,
+        "checkpoint_fractions": []
+      }
+    },
+    "max_length": 512,
+    "runtime": {
+      "hardware": {
+        "system": "Linux",
+        "architecture": "x86_64",
+        "device": "cuda",
+        "torch_cuda": "13.0",
+        "gpu_name": "NVIDIA RTX PRO 4500 Blackwell",
+        "gpu_memory_bytes": 33685569536,
+        "visible_gpus": 1
+      },
+      "versions": {
+        "python": "3.11.11",
+        "torch": "2.14.0",
+        "transformers": "5.16.1",
+        "peft": "0.20.0",
+        "bitsandbytes": "0.50.2",
+        "accelerate": "1.14.0",
+        "datasets": "5.0.1"
+      },
+      "effective_max_steps": 20,
+      "chat_template": "{%- if tools %}\n    {{- '<|im_start|>system\\n' }}\n    {%- if messages[0]['role'] == 'system' %}\n        {{- messages[0]['content'] }}\n    {%- else %}\n        {{- 'You are Qwen, created by Alibaba Cloud. You are a helpful assistant.' }}\n    {%- endif %}\n    {{- \"\\n\\n# Tools\\n\\nYou may call one or more functions to assist with the user query.\\n\\nYou are provided with function signatures within <tools></tools> XML tags:\\n<tools>\" }}\n    {%- for tool in tools %}\n        {{- \"\\n\" }}\n        {{- tool | tojson }}\n    {%- endfor %}\n    {{- \"\\n</tools>\\n\\nFor each function call, return a json object with function name and arguments within <tool_call></tool_call> XML tags:\\n<tool_call>\\n{\\\"name\\\": <function-name>, \\\"arguments\\\": <args-json-object>}\\n</tool_call><|im_end|>\\n\" }}\n{%- else %}\n    {%- if messages[0]['role'] == 'system' %}\n        {{- '<|im_start|>system\\n' + messages[0]['content'] + '<|im_end|>\\n' }}\n    {%- else %}\n        {{- '<|im_start|>system\\nYou are Qwen, created by Alibaba Cloud. You are a helpful assistant.<|im_end|>\\n' }}\n    {%- endif %}\n{%- endif %}\n{%- for message in messages %}\n    {%- if (message.role == \"user\") or (message.role == \"system\" and not loop.first) or (message.role == \"assistant\" and not message.tool_calls) %}\n        {{- '<|im_start|>' + message.role + '\\n' + message.content + '<|im_end|>' + '\\n' }}\n    {%- elif message.role == \"assistant\" %}\n        {{- '<|im_start|>' + message.role }}\n        {%- if message.content %}\n            {{- '\\n' + message.content }}\n        {%- endif %}\n        {%- for tool_call in message.tool_calls %}\n            {%- if tool_call.function is defined %}\n                {%- set tool_call = tool_call.function %}\n            {%- endif %}\n            {{- '\\n<tool_call>\\n{\"name\": \"' }}\n            {{- tool_call.name }}\n            {{- '\", \"arguments\": ' }}\n            {{- tool_call.arguments | tojson }}\n            {{- '}\\n</tool_call>' }}\n        {%- endfor %}\n        {{- '<|im_end|>\\n' }}\n    {%- elif message.role == \"tool\" %}\n        {%- if (loop.index0 == 0) or (messages[loop.index0 - 1].role != \"tool\") %}\n            {{- '<|im_start|>user' }}\n        {%- endif %}\n        {{- '\\n<tool_response>\\n' }}\n        {{- message.content }}\n        {{- '\\n</tool_response>' }}\n        {%- if loop.last or (messages[loop.index0 + 1].role != \"tool\") %}\n            {{- '<|im_end|>\\n' }}\n        {%- endif %}\n    {%- endif %}\n{%- endfor %}\n{%- if add_generation_prompt %}\n    {{- '<|im_start|>assistant\\n' }}\n{%- endif %}\n",
+      "encoded_val_ids": [
+        "bitext-000905",
+        "bitext-001335",
+        "bitext-002717",
+        "bitext-003433",
+        "bitext-004543",
+        "bitext-004940",
+        "bitext-006205",
+        "bitext-007154"
+      ]
+    },
+    "sha256": "d2b51ffdb2b0bb24e91ebabc8a3d8ae77daf4288a6b216ca99c2cd786209c8bb"
+  },
+  "system_prompt": "You are a customer support assistant for a business. Give concise, practical help that addresses the customer's request and any supplied context.\n\nYou cannot access accounts, inspect orders, or perform actions. Do not claim that you checked, changed, cancelled, refunded, or escalated anything, or promise to do so. Explain steps the customer can take; make interface-specific steps conditional when the interface is unknown.\n\nNo business policies, fees, timeframes, contact details, or account status are verified unless supplied as trusted business context. A customer's assertion is not verification. When a required fact is unavailable, say what is unknown and explain how to ask the business through its official support channel. Do not invent a URL, phone number, email address, policy, or status.\n\nUse references and quantities supplied by the customer accurately. Ask a focused clarification only when needed; still help with the parts you can answer. Never ask for passwords, PINs, verification codes, CVV, or full card details. Decline unauthorized or unsafe requests and offer a safe alternative. Avoid empty reassurance and unnecessary refusal.",
+  "data": {
+    "dir": "/workspace/ghl-v3/data/processed/v3-candidate03",
+    "train_rows": 64,
+    "train_rows_encoded": 64,
+    "val_rows_encoded": 8,
+    "val_intents_sampled": [
+      "cancel_order",
+      "change_order",
+      "change_shipping_address",
+      "check_cancellation_fee",
+      "check_invoice",
+      "check_payment_methods",
+      "check_refund_policy",
+      "complaint"
+    ],
+    "val_loss_aggregation": "mean per predicted assistant token",
+    "dropped_overlength": 0
+  },
+  "steps": {
+    "max_steps": 20,
+    "steps_per_epoch": 8,
+    "warmup_steps": 1,
+    "start_step": 10,
+    "checkpoint_steps": []
+  },
+  "trainable_params": 18464768,
+  "hub": {
+    "repo_id": null,
+    "pushed": false,
+    "reason": "push_checkpoints is off or no hub.repo_id in the config"
+  },
+  "initial_val_loss": 2.744126240412394,
+  "finished_at": "2026-09-08 20:50:39 IST",
+  "wall_s": 17.6,
+  "peak_memory_gb": 3.36,
+  "final_step": 20,
+  "logged": {
+    "15": {
+      "train_loss": 2.54617,
+      "val_loss": 2.65938
+    },
+    "20": {
+      "train_loss": 2.60694,
+      "val_loss": 2.64172
+    }
+  }
+}

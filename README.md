@@ -13,12 +13,19 @@ submit them as evidence that the current intervention improved support quality.
 Current verified work includes 243 traceable training examples and 54 validation
 examples, a hash-verified CUDA training bundle, 108 freshly authored evaluation
 queries that passed the documented overlap screen, paired blinded-grading tools,
-and a live base-only HTTP benchmark. The fresh set is screened but not yet sealed
-to selected model artifacts. No v3 training run, adapter, final comparison,
-human-grading result, or complete demo exists yet. On 2026-09-08 the owner authorized
+and a completed CUDA QLoRA run with verified resume smoke. Step 120 is selected
+for evaluation, exported to Q8 and loaded locally; it is not a demonstrated
+improvement. All 270 base/checkpoint development answers are preserved, including
+repetition, unsupported payment claims and intent failures. See the
+[selection record](docs/v3/SELECTION.md) and [prompt-path parity](docs/v3/parity-candidate03-step120.md).
+The fresh set and exact model artifacts are sealed in
+`eval/results/v3/final01/SEAL.json`; paired final generation is underway.
+No human-grading result or complete demo exists yet.
+On 2026-09-08 the owner authorized
 RunPod GPU and storage spending up to $10 total from existing credit, superseding
-the previous $0 compute limit. Account access and live rental pricing must be
-verified before provisioning. Additional credit or paid judge APIs are not
+the previous $0 compute limit. The GPU and temporary volume have been deleted
+after checksum-verified recovery. The provider reported zero hourly spend and
+$9.55 remaining (approximately $0.45 used). Additional credit or paid judge APIs are not
 authorized. Paid compute is a disclosed deviation from the hiring brief's
 "do not spend money" instruction; owner approval is not employer approval.
 
@@ -27,6 +34,118 @@ base-only performance numbers are in [the v3 execution log](docs/v3/PLAN.md).
 The [v3 evaluation protocol](eval/v3/protocol.json) states the fixed improvement
 and safety criteria. A final README rewrite and clean reproduction check remain
 required once the trained model and evaluation exist.
+
+## v3: run the current candidate locally
+
+Use Python 3.11.11 and the tracked `uv.lock`. From this repository root:
+
+```sh
+uv sync --frozen --extra serve
+ollama create ghl-support-v3-c03-s120 -f serve/Modelfile.v3-candidate03-step120
+SUPPORT_TUNED_TAG=ghl-support-v3-c03-s120 \
+  SUPPORT_PROMPT_FILE=configs/prompt-v3.txt \
+  uv run --extra serve uvicorn serve.api:create_app --factory \
+  --host 127.0.0.1 --port 8013 --no-access-log
+```
+
+Start Ollama first (`ollama serve` if the desktop service is not already running).
+The Modelfile requires the local verified
+`artifacts/v3/candidate03-step120-q8_0.gguf`. The wrapper also requires the exact
+base tag `ghl-base`, created from `serve/Modelfile.base` and the historically
+verified `artifacts/base-q8.gguf`. Existing local tags were verified against the
+artifact manifests. The current v3 weights are local only: the historical Hub
+links below do **not** download v3. Publication still requires owner approval.
+
+In another terminal, choose `base` or `tuned` on the same endpoint:
+
+```sh
+curl --fail --silent http://127.0.0.1:8013/health
+curl --fail --silent -H 'Content-Type: application/json' \
+  -d '{"model":"tuned","query":"I forgot my password. What should I do?"}' \
+  http://127.0.0.1:8013/support
+```
+
+`/health` identifies both immutable model digests and the prompt hash. `/support`
+returns the answer, identity, token counts, truncation flag and timing. It uses
+the same generation implementation and settings as evaluation. Requests are
+serialized (concurrent requests receive 429), prompt overrides/reserved chat
+tokens are rejected, and changed model tags fail closed. This is a localhost
+demo API without authentication, TLS, retrieval or account tools—not a public
+production deployment. Do not expose it to the internet.
+
+### Exact v3 prompt and adapter loading
+
+The complete system text is [`configs/prompt-v3.txt`](configs/prompt-v3.txt).
+Load it with `read_text().removesuffix("\n")`, not arbitrary whitespace stripping.
+Content SHA-256 is `6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79`.
+The file hash includes its final newline and therefore differs. Native Qwen
+ChatML is used without an extra BOS token:
+
+```text
+<|im_start|>system
+{exact system text}<|im_end|>
+<|im_start|>user
+{customer query}<|im_end|>
+<|im_start|>assistant
+```
+
+For training, append the target response and `<|im_end|>`; only assistant target
+tokens contribute loss. For inference, use `apply_chat_template` with the two
+system/user messages and `add_generation_prompt=True`. Decode greedily with
+temperature 0, top-p 1, repetition penalty 1, seed 42, at most 256 new tokens and
+2048 context tokens. Stop on the native end-of-message token.
+
+The standard PEFT adapter is in
+`train/runs/v3-candidate03-runpod/checkpoint-120`. To load it directly without
+Ollama or bitsandbytes, install the CPU/MPS-compatible PEFT overlay and run:
+
+```sh
+uv run --extra serve --with peft==0.20.0 python serve/adapter_v3.py \
+  --adapter train/runs/v3-candidate03-runpod/checkpoint-120 \
+  --device auto --allow-download --query 'I forgot my password. What should I do?'
+```
+
+This downloads only the pinned Qwen base if needed, loads the adapter's tokenizer
+and exact recorded prompt, and rejects a mismatched v3 prompt/base. Direct
+Transformers output is a compatibility route; the final comparison scores Q8
+Ollama output, not claimed-identical fp16/bfloat16 answers.
+
+### v3 experiment and reproduction
+
+Qwen2.5-1.5B-Instruct is Apache-2.0 and small enough to self-host at Q8 on the
+available 16 GiB Mac. QLoRA limits trained parameters to 18.5M and preserves an
+auditable starting base. Candidate03 uses 216 individually rewritten Bitext
+targets plus 27 explicitly fictional supplied-context examples; 54 distinct
+validation examples cover every intent. Rewriting is new assistant-authored
+supervision, not untouched Bitext data. The small size permits target inspection
+but limits language coverage. Paraphrase screening removes whole source groups
+near holdouts; exact/group/six-gram tests and pinned MiniLM cosine reduce observed
+leakage but cannot prove semantic independence.
+
+The actual CUDA configuration is [`configs/train-v3-runpod.yaml`](configs/train-v3-runpod.yaml):
+rank 16/alpha 32 on seven projections, NF4 double quantization, fp16 compute,
+microbatch 2 × accumulation 4, length 512, learning rate 5e-5, 6 warmup steps,
+weight decay .01, dropout .05, 120 updates. Lower learning rate and four short
+passes were conservative starting choices for the compact corpus, not claimed
+optimal settings. [Selection and failures](docs/v3/SELECTION.md) explain what
+was tried and why loss alone is not a quality result.
+
+The [execution log](docs/v3/PLAN.md) records exact data fetch/preparation,
+assembly, bundle, CUDA preflight, training, recovery, conversion and screening
+commands. Scripts refuse overwriting immutable evidence; use fresh output paths
+for reproduction. The actual training source is local commit
+`3fb00a062a85a5992b5ac1d77a5f976c24c56016` and bundle SHA-256
+`d2eedfde7d64ecda52b41f885014893b33a678719b7605c84ad3d1f10133db22`.
+On Linux CUDA, use `uv sync --frozen --extra train` and run the bundle's smoke
+before full training; do not install the CUDA-only train extra on macOS.
+
+The primary final judge is the owner, grading 108 randomized blinded pairs.
+Success requires at least +5 percentage points, a positive lower 95% paired
+intent-cluster bootstrap bound, no rise in critical failures, and no observed
+tuned credential/bypass violations. Both training targets and the fresh queries
+were authored by this assistant, so the test is not independently authored.
+Human grading, final statistics, public v3 weights/repo and the final demo remain
+outstanding. Do not substitute historical results for these missing deliverables.
 
 ## Historical v1/v2 documentation
 

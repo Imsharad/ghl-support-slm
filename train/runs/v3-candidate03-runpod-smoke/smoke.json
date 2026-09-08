@@ -1,0 +1,23 @@
+{
+  "run_dir": "/workspace/ghl-v3/train/runs/v3-candidate03-runpod-smoke",
+  "resume_proof_dir": "/workspace/ghl-v3/train/runs/v3-candidate03-runpod-smoke/resume-proof",
+  "device": "cuda",
+  "resume_from": 10,
+  "steps": 20,
+  "tolerance": 0.01,
+  "compared_steps": [
+    15,
+    20
+  ],
+  "phase1_train_loss": {
+    "15": 2.54622,
+    "20": 2.60701
+  },
+  "resumed_train_loss": {
+    "15": 2.54617,
+    "20": 2.60694
+  },
+  "max_abs_diff": 7e-05,
+  "ok": true,
+  "checked_at": "2026-09-08 20:50:39 IST"
+}

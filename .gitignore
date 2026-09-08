@@ -3,6 +3,7 @@ data/raw/
 artifacts/**/*.gguf
 artifacts/merged/
 artifacts/adapter/
+artifacts/v3/*-merged/
 **/__pycache__/
 .pytest_cache/
 *.log

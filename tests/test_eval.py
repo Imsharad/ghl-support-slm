@@ -284,8 +284,12 @@ def _build_zero_effect_adapter(directory: Path) -> Path:
     return directory
 
 
-def test_zero_effect_adapter_matches_base_greedy_cpu(tmp_path: Path) -> None:
+def test_zero_effect_adapter_matches_base_greedy_cpu(tmp_path: Path, monkeypatch) -> None:
     pytest.importorskip("peft", reason="install the train extra first")
+    # Test adapter identity on a bounded greedy prefix, not support-answer quality.
+    # BF16 CPU fallback can take minutes for four full 256-token generations.
+    # This changes only this test's cap; sealed evaluation remains at 256.
+    monkeypatch.setattr(eval_run, "MAX_NEW_TOKENS", 8)
     adapter_dir = _build_zero_effect_adapter(tmp_path / "zero-lora")
     sha = eval_run.adapter_weights_sha256(adapter_dir)
     assert len(sha) == 64
