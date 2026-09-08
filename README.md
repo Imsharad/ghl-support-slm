@@ -19,7 +19,8 @@ improvement. All 270 base/checkpoint development answers are preserved, includin
 repetition, unsupported payment claims and intent failures. See the
 [selection record](docs/v3/SELECTION.md) and [prompt-path parity](docs/v3/parity-candidate03-step120.md).
 The fresh set and exact model artifacts are sealed in
-`eval/results/v3/final01/SEAL.json`; paired final generation is underway.
+`eval/results/v3/final01/SEAL.json`; all 216 final answers completed without
+generation errors. The 108-pair blind sheet is awaiting actual owner grading.
 No human-grading result or complete demo exists yet.
 On 2026-09-08 the owner authorized
 RunPod GPU and storage spending up to $10 total from existing credit, superseding
@@ -29,8 +30,8 @@ $9.55 remaining (approximately $0.45 used). Additional credit or paid judge APIs
 authorized. Paid compute is a disclosed deviation from the hiring brief's
 "do not spend money" instruction; owner approval is not employer approval.
 
-The active plan, reproduction commands, evidence paths, limitations, and current
-base-only performance numbers are in [the v3 execution log](docs/v3/PLAN.md).
+The active plan, reproduction commands, evidence paths and limitations are in
+[the v3 execution log](docs/v3/PLAN.md).
 The [v3 evaluation protocol](eval/v3/protocol.json) states the fixed improvement
 and safety criteria. A final README rewrite and clean reproduction check remain
 required once the trained model and evaluation exist.
@@ -144,8 +145,49 @@ Success requires at least +5 percentage points, a positive lower 95% paired
 intent-cluster bootstrap bound, no rise in critical failures, and no observed
 tuned credential/bypass violations. Both training targets and the fresh queries
 were authored by this assistant, so the test is not independently authored.
+Fresh-checkout data reconstruction reproduced the actual training/validation
+files byte-for-byte; it reused the installed environment and global HF cache.
+The direct adapter-loading command was also verified on local MPS.
 Human grading, final statistics, public v3 weights/repo and the final demo remain
 outstanding. Do not substitute historical results for these missing deliverables.
+
+For the live recording walkthrough, run `uv run --extra serve python serve/demo_v3.py`.
+It calls the actual `/support` route twice per development query, prints the
+answers side by side, and includes an unsupported-payment-claim failure check.
+Until human scoring exists, it explicitly prints that improvement is unproven.
+The script is a recording aid, not a completed Loom/video deliverable.
+
+### v3 measured HTTP performance
+
+Apple M1 Pro, 10 logical CPUs, 16 GiB RAM, macOS 26.5, Ollama 0.24.0; client,
+FastAPI and inference on the same Mac. Three warmups per model, then the same
+54 development queries in file order, serially. Base ran first, tuned second.
+Regression tests, final generation and data reconstruction had finished before
+this run. All requests succeeded and model/prompt identities remained unchanged.
+
+| Actual `/support` HTTP measurements | Base Q8 | Tuned Q8 |
+|---|---:|---:|
+| Successful requests | 54/54 | 54/54 |
+| Client p50 latency | 1.295 s | 1.225 s |
+| Client p95 latency | 3.845 s | 2.171 s |
+| Serial successful requests/s | 0.592 | 0.713 |
+| Generated tokens / elapsed wall second | 53.22 | 40.16 |
+| Generated tokens total | 4,855 | 3,042 |
+
+Source: `eval/results/v3/paired-api-warm02/summary.json`, with every raw warmup
+and measurement retained. Output lengths differ substantially, so latency is
+not evidence of quality or faster token generation. This is warm serial service,
+not cold-start latency, streaming TTFT or concurrent saturation. Desktop activity,
+cache state, thermal drift and fixed model order remain limitations. The earlier
+interrupted `warm01` attempt overlapped CPU tests and is explicitly excluded.
+
+Reproduce into a fresh output directory while no other inference/test job runs:
+
+```sh
+uv run --extra serve python serve/bench_api.py --models base tuned \
+  --requests 54 --warmup 3 --hardware-note 'Record your actual server hardware and placement.' \
+  --output-dir .scratch/paired-api-benchmark-reproduction
+```
 
 ## Historical v1/v2 documentation
 

@@ -254,6 +254,96 @@ initial paired API benchmark overlapped CPU tests and was interrupted as
 confounded. Partial measurements and the reason remain in `paired-api-warm01`;
 they are not headline performance evidence.
 
+### R8 — final answers, human-grading handoff and clean-checkout reproduction
+
+All 108 base and 108 tuned final generations completed under `final01/SEAL.json`
+with no generation errors. No checkpoint/prompt/test change followed final
+inference. `eval/paired_v3.py blind` produced 108 unique shuffled pairs, all six
+human judgment columns blank, plus preference and evidence-note fields. The
+private reproducible mapping is ignored under `.scratch/v3-final01` with mode
+0600. No primary grades, task-success rate or improvement verdict exist yet.
+
+The direct PEFT entrypoint `serve/adapter_v3.py` was verified live with the exact
+step-120 adapter on local MPS. A password-recovery query produced a nonempty
+60-token answer without truncation. This is compatibility evidence, not the
+served-Q8 evaluation or a hardware-controlled latency measurement.
+
+A fresh local Git clone at `d6f9c680fe0b71c460fcf5c5021d2006cc869073`, containing
+no ignored raw/processed inputs, rebuilt the data from the pinned HF source.
+The source CSV had 26,872 rows and hash
+`6f81102b0100b97b8468eb04368033a23206bf1fde9d53500d5806ec1001a434`.
+Rebuilt historical v2 train/val/test hashes exactly matched the inherited files.
+The fresh overlap audit, whole-group purge, deterministic selection and candidate
+assembly then reproduced the actual candidate03 train/val hashes byte-for-byte.
+The check reused the installed locked Python environment and global HF model
+cache; it is not a fresh-OS installation or an offline-cache independence test.
+Historical initial grouping still uses its older model-ID loading path; the v3
+overlap screen explicitly pins MiniLM's revision. Cross-hardware embedding
+roundoff and future historical-loader changes remain reproduction risks.
+
+Verified commands below run in a fresh checkout, with absent scratch output
+directories. Do not overwrite the canonical historical evidence in a working
+submission checkout just to reproduce it:
+
+```bash
+uv run python data/fetch.py
+uv run python data/prepare.py --placeholder-mode substitute --out data/v2 \
+  --admissions data/v2/admissions.jsonl
+uv run python data/audit_overlap_v3.py --source-dir data/processed/v2 \
+  --output .scratch/source-overlap-reproduction.json
+# Add --allow-download above if the pinned MiniLM model is not already cached.
+uv run python data/prepare_source_v3.py --source-dir data/processed/v2 \
+  --source-audit .scratch/source-overlap-reproduction.json \
+  --output-dir .scratch/source-pool-reproduced
+uv run python data/select_targets_v3.py --source-dir .scratch/source-pool-reproduced \
+  --output-dir .scratch/selection-reproduced
+uv run python data/assemble_v3.py --source-dir .scratch/source-pool-reproduced \
+  --selection .scratch/selection-reproduced/selection.json --targets-dir data/v3/targets \
+  --prompt-file configs/prompt-v3.txt --output-dir data/processed/v3-candidate03 \
+  --max-length 512 --augmentation data/v3/augmentation_context.json \
+  --augmentation-audit data/v3/augmentation_context_audit_v2.json \
+  --review-note 'Reproduction of tracked assistant-authored self-reviewed targets; no independent review claimed.'
+```
+
+Assembly was tested with an equivalent fresh scratch output path. For an immutable
+new training bundle, review and locally commit generated metadata first; the
+builder deliberately refuses a dirty checkout. An exact copy of the original
+verified training-only ZIP is also retained, so retraining need not depend on
+regrouping the full historical corpus. No second paid run has been launched.
+
+The uncontended-by-our-other-jobs HTTP benchmark completed in
+`eval/results/v3/paired-api-warm02`: three warmups, then the same 54 development
+requests for base and tuned, concurrency one, on this M1 Pro/16 GiB Mac with
+Ollama 0.24.0. Both had 54 successes, zero failures and unchanged identities.
+Base p50/p95 were 1295.38/3845.25 ms; tuned 1224.53/2171.06 ms. Serial successful
+requests/s were .5920/.7129, and generated tokens per elapsed wall second were
+53.2247/40.1576 respectively. Different answer lengths, background desktop load,
+warm cache, thermal drift and fixed model order limit interpretation. No maximum
+concurrency, TTFT, cold-start or quality claim is inferred from these numbers.
+
+A later provider check still returned no pods, no volumes and zero hourly spend.
+Reported balance was $9.5524979557 (approximately $0.447502 used), reflecting a
+small delayed billing adjustment after the earlier observation. No additional
+rental was launched. The adapter-only archive's hash is
+`3512eb76fa193967a90668e97d4034dd9cf7171335fdc13093d2472426c0fd77`;
+its packed weights reproduce the selected adapter hash exactly. The original
+training-only ZIP was also copied into the owner's local handoff outputs and
+reverified. Neither was uploaded or published.
+
+`serve/demo_v3.py` was run live against both HTTP model aliases after the benchmark.
+All four requests completed. The development contact example reproduced the
+base's invented contact information; the payment example reproduced unsupported
+PayPal acceptance in both models. The script explicitly reported primary grading
+as pending. Its captured terminal text is a verification transcript, not a
+2–5 minute screen recording. A no-op final-generation resume also revalidated
+the seal and complete outputs without generating replacements.
+
+Staged hygiene passed. Generated loss CSVs retain their original CRLF endings,
+and the blind CSV preserves trailing spaces inside raw model answers; these are
+intentional immutable evidence, not normalized source-code whitespace. The
+private key was not staged. The original v2 worktree's unrelated dirty-file list
+was checked again and remains unchanged.
+
 ## Historical proposed plan (superseded)
 
 ## Starting evidence
