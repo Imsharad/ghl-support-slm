@@ -190,6 +190,22 @@ Gate 2, pre-registered in `docs/v2/PLAN_DECISIONS.md` (decision 8) before the ru
 
 Same protocol as v1, same scripts, explicit paths under `eval/results/v2/fresh/` so nothing of v1 was overwritten: both models through the Ollama HTTP path (`ghl-base` Q8 against the v2 `ghl-support` Q8 built from checkpoint-250), greedy, seed 42, 2,048-token context, 256 new tokens; answers shuffled into A and B by `eval/blind.py`, the key gitignored and read only by `eval/score.py` after the sheet was final. Gemini 3.8 Flash scored every card twice with A and B swapped (self-agreement pass_A 54/54, critical_A 53/54, pass_B 52/54, critical_B 53/54, preferred 41/54); Fable 5.1 read all 54 cards against `eval/RUBRIC.md` with the Flash reason beside each and resolved the 15 cards where Flash disagreed with itself, changing 21 fields on 16 cards; every change and its rubric reason is in `eval/results/v2/fresh/llm-judge/adjudication.json` and in the `notes` column of the scored sheet. As in v1, this is an LLM-judged sheet with adjudication, not a human-scored one, and an LLM judge is harsher than a person on "no actionable next step", so both pass rates are probably a few points low.
 
+## The one v1-to-v2 comparison that holds: the sign flipped on the old set
+
+The old sealed set gives a paired comparison the fresh set cannot, because its base answers are the same file in both scoring sessions (`eval/results/base-challenge-raw.jsonl`, sha256 `af34058f50ff7e90...`, unchanged since 6 September). Each session scored a tune against that file, and each delta is measured inside its own session:
+
+| session | set | base | tune | difference | critical, base vs tune |
+|---|---|---:|---:|---:|---:|
+| 6 September, v1 | old | 16 / 54 | 7 / 54 | **-16.7 points** | 2 vs 8 |
+| 8 September, v2 | old | 4 / 54 | 10 / 54 | **+11.1 points** | 3 vs 6 |
+| 8 September, v2 | fresh | 8 / 54 | 12 / 54 | **+7.4 points** | 6 vs 12 |
+
+**The tune went from 16.7 points below the base model to 11.1 above it on the same eval file, a swing of 27.8 points, and the fresh set agrees on the direction (+7.4).** The judge got harsher between sessions and that harshness lands on both arms of a pair, which is exactly why the within-session delta is the quantity to read and the absolute rate is not.
+
+Two objections belong beside the claim. Harshness need not be uniform across answer styles, so some of the flip could come from a judge that punishes the base model's long hedging answers more than the tune's shorter ones; nothing here separates that from a real gain. And n is 54: the fresh-set interval crosses zero, so the size of the gain is not established by one set. What is established is the direction, on two independent sealed sets, one of them written under a reading ban and sealed before a single v2 row existed.
+
+The critical-failure ratio moved the same way and did not go far enough: the v1 tune invented facts at four times the base rate, the v2 tune at twice, on both sets. That ratio is why Gate 2 fails, and it is also the number to watch in a v3.
+
 ## The judge drifts between sessions: read every v2 number as paired, same-session only
 
 The old set's base answers are v1's own file (`eval/results/base-challenge-raw.jsonl`, unchanged). Scored on 2026-09-06 by the same protocol they passed 16 of 54; scored again today, in the same run as the v2 answers, they pass 4 of 54. Nothing about the answers changed; the judge did (a different Flash session, a different A/B shuffle, and an adjudicator who read only the split cards on this secondary set). So a v2 pass rate must never be set beside a v1 pass rate as if they were on one scale. What is on one scale is base against tuned inside one scoring session, which is what the verdicts above compare. This is the largest caveat in this document and it applies to v1's numbers as much as to v2's: an LLM-judged sheet is a paired comparison, not an absolute score.
