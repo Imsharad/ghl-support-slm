@@ -44,7 +44,8 @@ def bundle_sources(root: Path, config_path: Path) -> list[Path]:
             raise ValueError(f"corpus manifest mismatch: {split}")
         paths.append(path)
     for name in ("pyproject.toml", "uv.lock", "README.md", "configs/versions.json", "configs/prompt.txt",
-                 config["prompt_file"], "data/prepare.py", "tools/check_run.py", "tools/run_training_bundle.py"):
+                 config["prompt_file"], "data/prepare.py", "tools/check_run.py", "tools/run_training_bundle.py",
+                 "tools/check_cuda_host.py"):
         paths.append(inside(root, Path(name)))
     paths.extend(inside(root, path) for path in sorted((root / "train").glob("*.py")))
     # Only whitelisted files, never a recursive repository or home-directory copy.

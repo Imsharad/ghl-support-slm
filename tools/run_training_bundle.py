@@ -50,6 +50,13 @@ def main():
         raise SystemExit("this recipe expects exactly one visible CUDA GPU")
     print(json.dumps({"gpu": torch.cuda.get_device_name(), "torch": torch.__version__,
                       "cuda": torch.version.cuda}), flush=True)
+    # Availability alone does not prove this driver can run the installed CUDA build.
+    # Exercise a kernel before model download; the full smoke separately tests QLoRA.
+    probe = torch.ones((8, 8), dtype=torch.float16, device="cuda")
+    if not torch.equal(probe @ probe, torch.full_like(probe, 8)):
+        raise SystemExit("CUDA float16 matrix multiplication preflight failed")
+    torch.cuda.synchronize()
+    del probe
     import yaml
     config = yaml.safe_load((ROOT / manifest["config"]).read_text())
     if config.get("hub", {}).get("push_checkpoints"):

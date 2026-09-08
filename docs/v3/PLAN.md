@@ -150,6 +150,27 @@ After adding the RunPod configuration, a structural YAML comparison verified tha
 
 Installed official `runpodctl` **2.12.0-51ca7f0**, Darwin ARM64 binary SHA-256 `ea5d936c0d9df23f7b2ff667480cb5a8344ac29b7c769751182c6180f4277408`, verified against the official GitHub release asset. Live `pod create --help` confirms this version has no `--stop-after` or `--terminate-after`; stale skill examples must not be used as a cost guarantee. Establish an actual deadline/cleanup mechanism and check live prices before launch. `runpodctl user` currently returns `no_credentials`; the owner was asked to complete `runpodctl doctor` privately for API-key and SSH setup. No RunPod resource or charge has been created by this task.
 
+### R5 — Linux CUDA compatibility preflight
+
+The first RunPod bundle, built from `abd3a02a153fcf53f295d67d39d4c9b12d6eff12`, has SHA-256 `5321380cffd69919800069c78577bcfee1bd598152709f11e1de6d8727779888`; extraction verified all 18 whitelisted files. It is preserved but superseded by the following host-preflight changes, which require a new bundle identity. Authentication was checked again and still returned `no_credentials`; no rental was launched.
+
+Inspecting `uv.lock` showed Linux PyTorch depends on CUDA Toolkit **13.0.3.0**, not the CUDA 12 runtime in some older template examples. NVIDIA documents a **580-series minimum driver** for CUDA 13 minor compatibility ([source](https://docs.nvidia.com/deploy/cuda-compatibility/minor-version-compatibility.html)). Filter placement with the live CLI's `--min-cuda-version 13.0` and verify the actual host. Do not silently substitute the template's older Torch or rewrite the lock. A separately installed locked Python environment on the network volume is intentional here despite its download cost; the template's SSH/base OS can still be reused.
+
+`tools/check_cuda_host.py` is a read-only, stdlib-only pre-install check. It derives CUDA requirements from the lock and requires Linux x86_64, one GPU, a compatible driver, at least 14 GiB GPU memory and 25 GiB free on the selected volume. The storage and VRAM floors are conservative launch checks for candidate03, not measured peak requirements. The check does not prove the mount is persistent or enforce billing. After dependency installation, `tools/run_training_bundle.py` now exercises a float16 CUDA matrix multiplication before downloading the model; the full training smoke still proves the actual QLoRA/resume path. Unit tests use synthetic host records, not an actual GPU.
+
+On the verified network-volume mount, before dependency installation:
+
+```bash
+python3 tools/check_cuda_host.py --volume /workspace
+uv sync --frozen --extra train
+uv run --frozen --extra train python tools/run_training_bundle.py --smoke
+# Inspect the smoke and measured timing before the separate --train invocation.
+```
+
+Cost-guard requirements remain a launch gate, not an implemented claim: use an independently detached deadline process, confirm the exact new pod identity and network-volume attachment, and verify the scoped CLI can manage that pod. Persist all runs/logs/cache under the network-volume mount so pod termination does not discard checkpoints. Keep the guard separate from the training process and monitor from the local control plane. The guard must not delete the network volume; download and hash-verify artifacts before removing task-owned storage. A timer/API failure can defeat a process-based guard, so stop well below the $10 ceiling and do not describe it as a provider-enforced dollar cap. RunPod's [management documentation](https://docs.runpod.io/pods/manage-pods) confirms that stopping retains billable storage and termination preserves a separate network volume. Live account access is required to validate this mechanism; no timer is active now.
+
+R5 verification: the full PEFT-overlay suite passed **139 tests, zero skipped**, with two deprecation warnings in 50.79 seconds. The host checker rejected this Mac with exit 2 as intended. Local `/health` still reports the pinned base and `tuned_configured: false`. Staged hygiene passed for six changed files. These checks do not replace the unrun CUDA smoke or demonstrate quality improvement.
+
 ## Historical proposed plan (superseded)
 
 ## Starting evidence

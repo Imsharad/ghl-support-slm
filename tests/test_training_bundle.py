@@ -16,6 +16,7 @@ def source(tmp_path):
     root.mkdir()
     files = ["pyproject.toml", "uv.lock", "README.md", "configs/versions.json", "configs/prompt.txt",
              "configs/custom.txt", "data/prepare.py", "tools/check_run.py", "tools/run_training_bundle.py",
+             "tools/check_cuda_host.py",
              "train/train.py", "data/processed/candidate/train.jsonl", "data/processed/candidate/val.jsonl",
              "eval/private_final.jsonl", ".env"]
     for name in files:
