@@ -136,5 +136,16 @@ Memory: the D0 probe peaked at 4.09 GB for this shape, which is why `check_run.p
 | peak memory | 2.94 GB (gate 12 GB) |
 | git sha | `33bdbbd` |
 | final train / val loss | 0.652 / 0.685 |
+| resume proof | none in this run dir, see below |
+
+**The resume proof for v2 is a separate run.** The notebook's smoke cell raised `cap 64 leaves no room for corpus rows beside 206 admission rows` (`cap_train_rows` exempted the admission rows from a cap smaller than the admission set), and the notebook was batch-executed under `--ExecutePreprocessor.allow_errors=True`, so the cells below it ran anyway. `train/runs/v2-t4/` has no `smoke.json`, and `check_smoke` in `tools/check_run.py` returns silently when that file is absent, so the PASS on this run dir did not cover the resume path. The cap now caps the whole pool uniformly when the cap is below the admission count (`data/prepare.py`), and the proof was re-run over the same config and the same v2 data on `mps`:
+
+```sh
+uv run python train/train.py --config configs/train-t4.yaml --smoke \
+  --data-dir data/processed/v2 --run-name v2-smoke --no-push --device mps
+uv run python tools/check_run.py train/runs/v2-smoke --max-memory-gb 12
+```
+
+`train/runs/v2-smoke/smoke.json`: 20 steps on 64 rows drawn from the 21,132-row v2 train split, resumed from step 10, matched at steps 15 and 20 (1.09397 against 1.09404, 1.55195 against 1.55244), `max_abs_diff` 0.00049 against a 0.05 tolerance, `ok: true`; `check_run.py` PASS. This proves the trainer's resume path over v2 data. It is not the T4 run's own proof.
 
 Two free-tier facts worth planning around: the runtime-proxy token the CLI holds expires every hour (the session looks lost; rebuilding it from the assignment list reattaches without losing anything), and a VM can be reclaimed outright (one was, at step ~190 of an identical run). Pull every checkpoint off the VM as it is written; this run did, so a reclaim would have cost minutes. A Mac `mps` insurance run of the same config reached step 325 in 6,532 s (about 20 s per step, swap under 1 GB free for most of it) and was stopped once the Colab run was gated.

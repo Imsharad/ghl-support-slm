@@ -689,15 +689,17 @@ Colab or Kaggle T4. Nothing in this repository requires paid compute to reproduc
 - **Checkpoint selection on dev used a Grok judge**, not the hand pass v1 used, so v2 dev counts are lower than v1's and not comparable; only the ordering was used (`docs/SELECTION.md`).
 - **The judge drifts.** v1's base answers on the old set scored 16 of 54 on 6 September and 4 of 54 when rescored today beside the v2 answers. Every number in this README is a paired comparison inside one scoring session; v1 and v2 pass rates are not on one scale.
 - **The held-out Bitext reference metrics were not recomputed for v2.** The v1 sample draws from the v1 test split, whose ids can be v2 training ids; a fresh group-disjoint sample from the v2 test split was planned and cut for time.
-- **Two cells of the executed Colab notebook errored** (a smoke-run cap that could not exempt the admission rows, and a missing `PYTHONPATH` for the dev-answer runner). Neither touched the training or the gate; both are fixed in the source notebook, and the executed copy is committed as it ran, with a note.
+- **Two cells of the executed Colab notebook errored** (a smoke-run cap that could not exempt the admission rows, and a missing `PYTHONPATH` for the dev-answer runner). Neither touched the 500-step training or the artifact gate, and the executed copy is committed as it ran. The first one does cost something and it is named here: the notebook was batch-executed under `--ExecutePreprocessor.allow_errors=True`, so the cells below the smoke cell ran anyway, `train/runs/v2-t4/` carries no `smoke.json`, and `tools/check_run.py` skips the resume check silently when that file is absent. **The T4 run therefore has no resume proof of its own.**
+- **The resume proof was re-run after the fix**, on the same config and the same v2 data, on this Mac through `mps`: `train/runs/v2-smoke/smoke.json`, 20 steps on 64 rows, resumed from step 10, matched at steps 15 and 20 with `max_abs_diff` 0.00049 against a 0.05 tolerance, `check_run.py` PASS. It proves the trainer's resume path over v2 data, which is a property of the code and not of any one run; it is not the T4 run's own proof and is not offered as one.
 - **Two training runs were started and one was scored.** A first Colab VM was reclaimed mid-epoch; the second completed and was gated. A Mac `mps` insurance run of the same config was stopped at step 325 once the Colab run was clean (decision 14).
 
 ### What is real
 
 Every number in this README comes from a file in this repository, cited next to it. What exists and
 was run: a pinned dataset with deterministic cleaning and frozen split hashes, a training run with a
-resume proof, a checkpoint selection with all four candidates' scores written down, a sealed
-evaluation set generated after the seal, a served HTTP endpoint, and a benchmark script that fails
+resume proof (v1's `local-t4`; for v2 see the disclosure above), a checkpoint selection with all
+four candidates' scores written down, a sealed evaluation set generated after the seal, a served
+HTTP endpoint, and a benchmark script that fails
 rather than silently reporting a partial run. Section 8 is the path from a clone to those numbers, and
 [`docs/FRESH_CLONE_TRANSCRIPT.md`](docs/FRESH_CLONE_TRANSCRIPT.md) is a run of its serving steps
 from a fresh clone on the same machine. The verdict is negative and is reported as negative.

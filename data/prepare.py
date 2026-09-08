@@ -675,11 +675,6 @@ def cap_train_rows(rows: list[dict], cap: int, seed: int = SEED) -> list[dict]:
             # exempt them; cap the whole pool uniformly instead so the smoke
             # proof still runs. The real cap (8,000) never takes this branch.
             return _cap_groups(rows, cap, seed)
-        if remaining < 1:
-            raise ValueError(
-                f"cap {cap} leaves no room for corpus rows beside "
-                f"{len(synthetic)} admission rows"
-            )
         return synthetic + _cap_groups(corpus, remaining, seed)
     return _cap_groups(rows, cap, seed)
 
