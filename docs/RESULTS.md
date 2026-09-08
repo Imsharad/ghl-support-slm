@@ -200,9 +200,27 @@ The old sealed set gives a paired comparison the fresh set cannot, because its b
 | 8 September, v2 | old | 4 / 54 | 10 / 54 | **+11.1 points** | 3 vs 6 |
 | 8 September, v2 | fresh | 8 / 54 | 12 / 54 | **+7.4 points** | 6 vs 12 |
 
-**The tune went from 16.7 points below the base model to 11.1 above it on the same eval file, a swing of 27.8 points, and the fresh set agrees on the direction (+7.4).** The judge got harsher between sessions and that harshness lands on both arms of a pair, which is exactly why the within-session delta is the quantity to read and the absolute rate is not.
+**The tune went from below the base model to above it on the same eval file, and the fresh set agrees on the direction.** Read that as an ordering, not as a 27.8-point gain: the base's own score halved on identical text between the two sessions, so the scale moved under both arms and the difference of the two differences is not a measurement of anything.
 
-Two objections belong beside the claim. Harshness need not be uniform across answer styles, so some of the flip could come from a judge that punishes the base model's long hedging answers more than the tune's shorter ones; nothing here separates that from a real gain. And n is 54: the fresh-set interval crosses zero, so the size of the gain is not established by one set. What is established is the direction, on two independent sealed sets, one of them written under a reading ban and sealed before a single v2 row existed.
+### Why the base scored 16 in one session and 4 in the other, on the same answers
+
+Worth taking seriously, because if this were a bug every v2 number would be void. It is not a bug, and three checks say what it is.
+
+| check | result | what it rules out |
+|---|---|---|
+| Is it the adjudication depth? v1's sheet was adjudicated over all 54 cards, the old set's over its 13 split cards only. | Raw Gemini Flash, before any adjudication, already scored base **12/54 in the v1 session and 6/54 in the v2 session**. Adjudication then added 4 in v1 and removed 2 in v2. | Adjudication asymmetry explains under half of the gap; the judge itself moved first. |
+| Is it noise? | The v2 session's 6 base passes are a **strict subset** of the v1 session's 12: six lost (`ch-002`, `ch-014`, `ch-017`, `ch-025`, `ch-043`, `ch-047`), none gained. | Random variation. A stricter threshold applied consistently produces exactly this shape. |
+| Is the judge penalising the base model's longer answers? | Passing answers are longer than failing ones in **both** sessions and by a similar margin (120 against 81 words in the v1 session, 123 against 85 in the v2 session, same text). | A length or style bias that appeared between sessions. |
+
+So the judge is internally consistent within a session and uncalibrated across sessions: it moved its bar for "would a careful support lead send this unedited" and applied the new bar uniformly. **Absolute pass rates are session-relative and must never be quoted across sessions. Within-session pairs are what this evaluation measures.**
+
+### What still corroborates the direction, and what still weakens it
+
+The preference column is a separate judgement from pass or fail, made card by card, and it moves the same way: base was preferred 29 to 18 in the v1 session, the v2 tune is preferred 27 to 21 on the old set and 22 to 20 on the fresh set. Two metrics, two sealed sets, one direction.
+
+Against that stands a mechanism nothing here can rule out. Both replies are scored inside one prompt, so a card's verdict on one reply is contaminated by the other; when the sibling improves, a borderline reply is re-read against a higher implicit bar. That inflates the delta in both directions, and it is the most likely reason the same base answers lost six passes. Under that reading the near-tie on preference (22 against 20) is the conservative estimate of how much actually changed, and +7.4 pass-rate points is the optimistic one.
+
+**The conclusion does not depend on which of those is right.** Gate 2 fails on the critical-failure count, the most objective judgement in the rubric (did the reply state as done or true something the facts do not support), and that count moved the wrong way in every session and on both sets: the tune invents at twice the base rate on the fresh set and on the old set, against four times in v1. Better, and still the wrong side of a bar that was set before any of this was measured.
 
 The critical-failure ratio moved the same way and did not go far enough: the v1 tune invented facts at four times the base rate, the v2 tune at twice, on both sets. That ratio is why Gate 2 fails, and it is also the number to watch in a v3.
 
