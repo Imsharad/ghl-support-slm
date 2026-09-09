@@ -2,7 +2,49 @@
 
 Status: active under the owner's 2026-09-08 persistent assignment goal. The earlier HARD STOP 1–4 procedures and proposed experiment below are superseded. They remain as historical planning evidence, not current launch requirements.
 
-## Latest checkpoint: candidate04 development preparation (2026-09-09)
+## Latest checkpoint: candidate04 free Colab execution (2026-09-09)
+
+The browser established a genuinely free T4 runtime: Colab Resources showed
+"You are not subscribed" and zero compute units before connecting. The T4 has
+15,360 MiB VRAM and driver 580.82.07. No new paid allocation was made. Uploaded
+the immutable training bundle below and `tools/colab_candidate04.py`; verified
+all 19 payload hashes remotely, installed the frozen Python 3.11.11 environment
+using uv 0.8.8, and passed a CUDA float16 matrix multiplication check with
+torch 2.14.0+cu130. Setup, smoke and training retain their actual logs.
+
+The 20-update smoke and resume-from-10 run completed at 11:06:19 IST. The maximum
+resumed training-loss difference was 0.00026, below the fixed 0.01 tolerance;
+peak GPU memory was 3.28 GB. Downloaded `smoke.json` through the authenticated
+CLI client and matched its SHA-256 against the remote kernel:
+`58539224c7f91a331e97562cfc278c83b597e79d3a2c24c787bae989b618b2f5`.
+Local recovery directory: `.scratch/colab-candidate04-recovery/`.
+
+The owner reauthorized the CLI. `colab sessions` could see the browser-created
+runtime as `[?]`, but both named and default `colab status` could not adopt it.
+Read-only inspection of the installed client confirmed no CLI attach command.
+`tools/colab_existing.py` uses the client's authenticated assignment listing and
+existing-kernel API instead: no new assignment, session-state edits, kernel
+creation/restart, or credential output. Browser download attempts were inconclusive;
+the authenticated file API subsequently verified actual local recovery. Ten
+focused launcher/connection tests passed. This replaces further browser clicking.
+
+Full 120-update training started at 11:21 IST after the immutable-bundle and
+saved-smoke gates passed. Initial full-validation loss is 3.4692. Completion,
+development eligibility and improved support quality are not yet established.
+Next: recover and verify the completed run, generate the base plus four-checkpoint
+54-validation/12-diagnostic comparisons using `tools/colab_candidate04_development.py`,
+then review eligibility before any new final evaluation. Preserve the runtime
+until all artifacts have been downloaded and checksum-verified.
+
+File recovery uses `tools/chunk_artifact.py` (16 MiB parts) and the bridge's
+`download-chunks` command because the authenticated `/api/contents` route works
+but a bounded `/files` streaming probe timed out. Chunks and the final archive
+are SHA-256 checked; existing targets are preserved. Full local regression
+verification after these helpers: **238 passed, 1 skipped, 2 dependency warnings
+in 44.81 seconds**. This is a worktree run including unrelated grader tests, not
+a new clean-export test claim. No upstream CLI installation was patched.
+
+## Previous checkpoint: candidate04 development preparation (2026-09-09)
 
 Previous checkpoint was progress: the commit-pinned source, clean adapter,
 training bundle, results, README/checklist and recording were hash-verified in

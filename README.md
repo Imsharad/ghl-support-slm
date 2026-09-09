@@ -41,7 +41,7 @@ The [v3 evaluation protocol](eval/v3/protocol.json) states the fixed improvement
 and safety criteria. The current local review package is pinned to commit
 `63ae4f0`; its verified artifacts do not establish a successful safety outcome.
 
-Candidate04 is a **prepared, untrained** follow-up: 261 training examples
+Candidate04 is a **training-in-progress** follow-up: 261 training examples
 (candidate03's 243 unchanged, plus 18 development-driven boundary examples),
 with the same 54 validation rows, pinned base, prompt and 120-update budget.
 The new 12-case diagnostic is development data, not another final evaluation.
@@ -49,8 +49,11 @@ Both existing models completed it; the qualitative review found continuing
 consent, unsupported-claim and actionable-help errors. See
 [`boundaries-01-review.json`](eval/results/v3/development/boundaries-01-review.json)
 and the preparation/reproduction commands in the execution log. The current
-continuation requires free compute: Colab sign-in is pending, and no new GPU
-has been allocated. Candidate04 has no weights, quality result or serving tag.
+continuation uses a free Colab T4: the UI showed no subscription and zero compute
+units before allocation. Setup and checkpoint-resume smoke passed; the planned
+120-update run started on 2026-09-09. The CLI's authenticated Python client reuses
+the browser-created kernel without allocating a second runtime or editing CLI
+session state. Candidate04 has no completed quality result or serving tag.
 The unblinded final01 set will not be reused as untouched final evidence.
 
 ## v3: run the current candidate locally
