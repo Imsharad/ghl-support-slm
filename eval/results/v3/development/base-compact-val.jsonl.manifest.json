@@ -1,0 +1,22 @@
+{
+  "backend": "ollama",
+  "decoding": {
+    "max_new_tokens": 256,
+    "num_ctx": 2048,
+    "repeat_penalty": 1.0,
+    "seed": 42,
+    "temperature": 0,
+    "top_p": 1.0
+  },
+  "identity": {
+    "digest": "fa4e1b0f10cd2057e4f4ba8adafb8cbb6debcef94f123768928fbedcec86bd08",
+    "tag": "ghl-base"
+  },
+  "model": "base",
+  "prompt_sha256": "82c7948f9af81af7cf0002c848053fc9d9f9be2f79fbd49d386185d64877fc4d",
+  "render_sha256": "d37f176f89b20a37cc9bee922fc0c89b5d0862b49d073ca69971d58c55c452b2",
+  "runner_sha256": "0748bd0e5a11cff4c503978691b90877fe131fb95d69b4e0cadbef89fece58fb",
+  "schema": 1,
+  "split_sha256": "3e4e864b1583a781f3747140102077f53bbd0b9734ce3e689c28d16a125c2b80",
+  "system_prompt": "You help customers with accounts, orders, payments, invoices, delivery, refunds, and subscriptions. Address their actual question with concise, useful next steps. Use supplied facts and preserve reference numbers. If policy or live account information is missing, explain how to check it instead of guessing. Describe website controls conditionally unless their existence is established. You can explain and draft, but cannot access accounts or perform actions. Keep passwords, full card details, verification codes, and reset links out of chat. Be respectful, and ask a focused clarification when needed."
+}

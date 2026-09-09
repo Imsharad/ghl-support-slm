@@ -1,17 +1,46 @@
 #!/usr/bin/env python3
-"""Render eval/challenge_draft.jsonl as a local review page for shark's approval block (H1).
+"""Render a challenge draft as a local review page for shark's approval block.
 
-Usage: python3 docs/dag/render_challenge_review.py  -> docs/dag/CHALLENGE_REVIEW.html
+Defaults: eval/challenge_draft.jsonl -> docs/dag/CHALLENGE_REVIEW.html
 Edits made in the page are copied out as JSON with the "Copy edits" button; Fable applies
 them to the draft, seals eval/challenge.jsonl and writes eval/SEAL.json.
 """
+import argparse
+import hashlib
 import html
 import json
 from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-items = [json.loads(l) for l in (ROOT / "eval" / "challenge_draft.jsonl").read_text().splitlines() if l.strip()]
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--input", type=Path, default=ROOT / "eval" / "challenge_draft.jsonl")
+    parser.add_argument("--output", type=Path, default=ROOT / "docs" / "dag" / "CHALLENGE_REVIEW.html")
+    return parser.parse_args()
+
+
+args = parse_args()
+input_path = args.input
+output_path = args.output
+is_v2 = "v2" in input_path.stem.casefold() or "v2" in output_path.stem.casefold()
+version_suffix = " v2" if is_v2 else ""
+challenge_path = "eval/challenge_v2.jsonl" if is_v2 else "eval/challenge.jsonl"
+seal_path = "eval/SEAL_v2.json" if is_v2 else "eval/SEAL.json"
+example_id = "ch2-002" if is_v2 else "ch-002"
+storage_version = "v2" if is_v2 else "v1"
+try:
+    input_label = str(input_path.resolve().relative_to(ROOT))
+except ValueError:
+    input_label = str(input_path.resolve())
+input_sha256 = hashlib.sha256(input_path.read_bytes()).hexdigest()
+hash_note = f" SHA-256 <code>{input_sha256}</code>." if is_v2 else ""
+title = f"Challenge set review{version_suffix} (54 items)"
+heading = f"Challenge set review{version_suffix}"
+
+items = [json.loads(l) for l in input_path.read_text().splitlines() if l.strip()]
 rubric = (ROOT / "eval" / "RUBRIC.md").read_text()
 
 rows = []
@@ -30,7 +59,7 @@ for it in items:
   <div class=lbl>your note (optional) <span class=hint>anything you want changed that you cannot edit above.</span></div><div class="n edit" contenteditable=true></div>
 </div>""")
 
-doc = f"""<!doctype html><html><head><meta charset=utf-8><title>Challenge set review (54 items)</title>
+doc = f"""<!doctype html><html><head><meta charset=utf-8><title>{title}</title>
 <style>
 body{{font:15px/1.45 -apple-system,Helvetica,Arial;margin:28px auto;max-width:960px;color:#222;padding:0 16px}}
 .card{{border:1px solid #ddd;border-radius:8px;padding:12px 14px;margin:12px 0}}
@@ -55,14 +84,14 @@ body.nohints .hint{{display:none}}
 .ex{{background:#f4f4f0;border-left:3px solid #bbb;padding:8px 12px;margin:8px 0}}
 .ex b{{font-weight:600}} .barlab{{font-size:13px;color:#555;display:flex;gap:6px;align-items:center;cursor:pointer}}
 </style></head><body>
-<div class=bar><b>Challenge set review</b> <span id=count></span>
+<div class=bar><b>{heading}</b> <span id=count></span>
 <span class=prog title="how far down the 54 cards you have reached"><i id=progbar></i></span> <span id=seen></span>
 <button onclick="resume()">Resume</button>
 <label class=barlab><input type=checkbox id=hints checked> explain the fields</label>
 <button onclick="copyEdits()">Copy edits as JSON</button> <span id=msg></span></div>
-<p>Generated {datetime.now().strftime('%Y-%m-%d %H:%M IST')} from <code>eval/challenge_draft.jsonl</code> (54 items, two per intent: one ordinary, one hard).
+<p>Generated {datetime.now().strftime('%Y-%m-%d %H:%M IST')} from <code>{html.escape(input_label)}</code> (54 items, two per intent: one ordinary, one hard).{hash_note}
 Edit any query or facts inline, untick items you reject, add a note, then press "Copy edits as JSON" and paste it in the GoHighLevel-prep thread.
-Fable applies the edits, seals the file and records its hash. Nothing tuned is generated before that.</p>
+Fable applies the edits, seals <code>{challenge_path}</code> and records its hash in <code>{seal_path}</code>. Nothing tuned is generated before that.</p>
 <div class=guide>
 <h2>Start here: what this page is</h2>
 <p>These 54 questions are the exam for the fine-tuned model. No tuned answer exists yet, and none will be generated until you
@@ -114,7 +143,7 @@ that only describes a clumsy answer is too harsh: note it.</li>
 </ol>
 </div></details>
 
-<details><summary>A worked example: read ch-002 with me</summary><div>
+<details><summary>A worked example: read {example_id} with me</summary><div>
 <div class=ex><b>Query:</b> just cancel it. I don&#x27;t have the number. cancel whatever I bought last night.<br>
 <b>Facts:</b> no order id; customer says last night; assistant cannot see purchase history.</div>
 <p>Question 1: yes, people type exactly like this when they are annoyed. Question 2: the assistant cannot find the order at all,
@@ -129,8 +158,8 @@ could answer straight from the facts and the trap would be gone. That is an edit
 <details><summary>What happens after you press the button</summary><div>
 <ol>
 <li>You paste the JSON in the thread and tag Fable.</li>
-<li>Fable applies your edits, drops what you unticked, writes <code>eval/challenge.jsonl</code> and its sha256 into
-<code>eval/SEAL.json</code>. From that moment the file is frozen and any later change breaks the hash in public.</li>
+<li>Fable applies your edits, drops what you unticked, writes <code>{challenge_path}</code> and its sha256 into
+<code>{seal_path}</code>. From that moment the file is frozen and any later change breaks the hash in public.</li>
 <li>Grok runs all 54 through both models, the untrained base and the tuned one: 108 answers, built into a sheet where the two
 answers are labelled only A and B.</li>
 <li>You score that sheet against the rubric below, not knowing which model wrote which answer. That score is the result the
@@ -143,7 +172,7 @@ assignment reports.</li>
 <details><summary>Rubric (eval/RUBRIC.md)</summary><pre>{html.escape(rubric)}</pre></details>
 {''.join(rows)}
 <script>
-const KEY='ghl-challenge-review-v1';
+const KEY='ghl-challenge-review-{storage_version}';
 function state(){{return [...document.querySelectorAll('.card')].map(c=>({{id:c.dataset.id,approve:c.querySelector('.approve').checked,
  query:c.querySelector('.q').innerText.trim(),facts:c.querySelector('.f').innerText.trim(),note:c.querySelector('.n').innerText.trim()}}));}}
 function save(){{localStorage.setItem(KEY,JSON.stringify(state()));document.getElementById('count').textContent=
@@ -151,7 +180,7 @@ function save(){{localStorage.setItem(KEY,JSON.stringify(state()));document.getE
 function load(){{const s=JSON.parse(localStorage.getItem(KEY)||'null');if(!s)return;for(const r of s){{const c=document.querySelector(`.card[data-id="${{r.id}}"]`);if(!c)continue;
  c.querySelector('.approve').checked=r.approve;c.querySelector('.q').innerText=r.query;c.querySelector('.f').innerText=r.facts;c.querySelector('.n').innerText=r.note;}}}}
 function copyEdits(){{const out={{reviewed_at:new Date().toString(),items:state()}};navigator.clipboard.writeText(JSON.stringify(out,null,1)).then(()=>document.getElementById('msg').textContent='copied');}}
-const HKEY='ghl-challenge-review-hints-v1', SKEY='ghl-challenge-review-seen-v1';
+const HKEY='ghl-challenge-review-hints-{storage_version}', SKEY='ghl-challenge-review-seen-{storage_version}';
 const cards=[...document.querySelectorAll('.card')], hintBox=document.getElementById('hints');
 let seen=new Set(JSON.parse(localStorage.getItem(SKEY)||'[]'));
 function drawSeen(){{document.getElementById('progbar').style.width=(100*seen.size/cards.length).toFixed(0)+'%';
@@ -167,5 +196,6 @@ hintBox.checked=localStorage.getItem(HKEY)!=='0';
 hintBox.addEventListener('change',drawHints);
 document.addEventListener('input',save);document.addEventListener('change',save);load();save();drawHints();drawSeen();
 </script></body></html>"""
-(ROOT / "docs" / "dag" / "CHALLENGE_REVIEW.html").write_text(doc)
-print("wrote docs/dag/CHALLENGE_REVIEW.html", len(items), "items")
+output_path.parent.mkdir(parents=True, exist_ok=True)
+output_path.write_text(doc)
+print("wrote", output_path, len(items), "items", f"sha256={input_sha256}")

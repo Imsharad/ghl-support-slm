@@ -1,10 +1,14 @@
 # GHL support SLM. Commands mirror docs/dag/CONTRACTS.md section 6.
 # Targets may fail until the task that owns their script lands; the commands themselves are final.
 
-.PHONY: sync test audit eval-base bench
+.PHONY: sync test fixtures audit eval-base bench
 
 sync:
 	uv sync --frozen --extra serve
+
+fixtures:
+	uv run python data/fetch.py
+	uv run python data/restore_v1.py
 
 test:
 	uv run pytest -q

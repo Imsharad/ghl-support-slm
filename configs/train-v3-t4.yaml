@@ -1,0 +1,59 @@
+# First v3 experiment: quality-controlled small-data QLoRA, not a claim of improvement.
+# ≈4 passes over 243 training rows; checkpoint selection uses development evidence only.
+run_name: v3-candidate03-t4
+seed: 42
+device: cuda
+output_dir: train/runs
+prompt_file: configs/prompt-v3.txt
+strict_reproducibility: true
+
+data:
+  dir: data/processed/v3-candidate03
+  train_file: train.jsonl
+  val_file: val.jsonl
+  cap_train: null
+  max_length: 512
+
+model:
+  load_in_4bit: true
+  quant_type: nf4
+  double_quant: true
+  compute_dtype: float16
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: [q_proj, k_proj, v_proj, o_proj, gate_proj, up_proj, down_proj]
+
+optim:
+  lr: 5.0e-5
+  schedule: cosine
+  warmup_ratio: 0.05
+  weight_decay: 0.01
+  max_grad_norm: 1.0
+
+train:
+  micro_batch_size: 2
+  grad_accum: 4
+  epochs: 4
+  max_steps: 120
+  log_every: 30
+  save_every: 30
+  val_batches: 27
+  checkpoint_fractions: [0.25, 0.5, 0.75, 1.0]
+
+hub:
+  push_checkpoints: false
+
+smoke:
+  run_name: v3-candidate03-t4-smoke
+  data_dir: data/processed/v3-candidate03
+  rows: 64
+  steps: 20
+  grad_accum: 4
+  log_every: 5
+  save_every: 10
+  val_batches: 4
+  resume_from: 10
+  resume_tolerance: 0.01

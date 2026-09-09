@@ -1,0 +1,119 @@
+{
+  "run_name": "v2-smoke",
+  "started_at": "2026-09-08 14:43:43 IST",
+  "device": "mps",
+  "git_sha": "a138c92bf58e15534fd139714baaae660f68f1d3",
+  "versions": {
+    "python": "3.11.11",
+    "torch": "2.14.0",
+    "transformers": "5.16.1",
+    "peft": "0.20.0",
+    "bitsandbytes": "0.50.2",
+    "accelerate": "1.14.0",
+    "datasets": "5.0.1"
+  },
+  "base_model": {
+    "repo_id": "Qwen/Qwen2.5-1.5B-Instruct",
+    "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306"
+  },
+  "config": {
+    "run_name": "v2-smoke",
+    "seed": 42,
+    "device": "cuda",
+    "output_dir": "train/runs",
+    "data": {
+      "dir": "data/processed/v2",
+      "train_file": "train.jsonl",
+      "val_file": "val.jsonl",
+      "cap_train": 64,
+      "max_length": 512
+    },
+    "model": {
+      "load_in_4bit": true,
+      "quant_type": "nf4",
+      "double_quant": true,
+      "compute_dtype": "float16"
+    },
+    "lora": {
+      "r": 16,
+      "alpha": 32,
+      "dropout": 0.05,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ]
+    },
+    "optim": {
+      "lr": 0.0001,
+      "schedule": "cosine",
+      "warmup_ratio": 0.03,
+      "weight_decay": 0.0,
+      "max_grad_norm": 1.0
+    },
+    "train": {
+      "micro_batch_size": 1,
+      "grad_accum": 1,
+      "epochs": 1,
+      "max_steps": 20,
+      "log_every": 5,
+      "save_every": 10,
+      "val_batches": 4,
+      "checkpoint_fractions": []
+    },
+    "hub": {
+      "repo_id": "seekingtroooth/ghl-support-qlora-t4",
+      "private": true,
+      "push_checkpoints": false
+    },
+    "smoke": {
+      "rows": 64,
+      "steps": 20,
+      "grad_accum": 1,
+      "log_every": 5,
+      "save_every": 10,
+      "val_batches": 4,
+      "resume_from": 10,
+      "resume_tolerance": 0.05,
+      "data_dir": "tests/fixtures/train_smoke"
+    }
+  },
+  "data": {
+    "dir": "/Users/sharad/Projects/agents-hq/gohighlevel-assignement-1/data/processed/v2",
+    "train_rows": 64,
+    "train_rows_encoded": 64,
+    "val_rows_encoded": 4,
+    "dropped_overlength": 0
+  },
+  "steps": {
+    "max_steps": 20,
+    "steps_per_epoch": 64,
+    "warmup_steps": 1,
+    "start_step": 10,
+    "checkpoint_steps": []
+  },
+  "trainable_params": 18464768,
+  "hub": {
+    "repo_id": "seekingtroooth/ghl-support-qlora-t4",
+    "pushed": false,
+    "reason": "push_checkpoints is off or no hub.repo_id in the config"
+  },
+  "finished_at": "2026-09-08 14:43:58 IST",
+  "wall_s": 14.6,
+  "peak_memory_gb": 3.82,
+  "final_step": 20,
+  "logged": {
+    "15": {
+      "train_loss": 1.09404,
+      "val_loss": 1.39217
+    },
+    "20": {
+      "train_loss": 1.55244,
+      "val_loss": 1.39008
+    }
+  }
+}

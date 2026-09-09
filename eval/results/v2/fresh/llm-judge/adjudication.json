@@ -1,0 +1,74 @@
+{
+ "rule": "RUBRIC.md as written; Fable 5.1 read all 54 cards with both Flash passes beside each; splits resolved and consistent verdicts overridden only with a rubric reason. Written 2026-09-08 04:47 IST before the key was read.",
+ "adjudicated": {
+  "ch2-001": {
+   "preferred": "A",
+   "note": "override of a consistent preference: B's navigation steps are garbled placeholder-like text (the word Orders stands in for four different labels), which the rubric treats as placeholder text; A's guidance to contact support with NX-3188 is followable. Both still fail: neither asks about pick status"
+  },
+  "ch2-003": {
+   "preferred": "tie",
+   "note": "both promise to make the swap themselves (A: we will make sure to swap; B: will make sure to accommodate) instead of explaining the change-request path; equal failures"
+  },
+  "ch2-006": {
+   "pass_B": false,
+   "preferred": "tie",
+   "note": "B asks for an identifier but never asks for the correct address and gives no next step, so a support lead would not send it unedited; A asks for the address but promises to ensure delivery itself. Both fail, neither critical"
+  },
+  "ch2-008": {
+   "pass_B": true,
+   "note": "B says it cannot change the fee and points to support for a review of the plan terms: the acceptable actions on the card. Pass. A invents an account setting to zero the fee: critical, as both passes found"
+  },
+  "ch2-010": {
+   "preferred": "A",
+   "note": "A offers alternate routes when the download spins (refresh, wait, contact support), which the card asks for; B repeats the broken download path. Neither asks for an order id, so both fail"
+  },
+  "ch2-011": {
+   "preferred": "A",
+   "note": "A tells the customer to check the checkout options, the card's first acceptable action, despite breaking persona; B only asks a clarifying question. Both fail"
+  },
+  "ch2-018": {
+   "critical_A": true,
+   "pass_A": false,
+   "preferred": "B",
+   "note": "A: I'll ensure ... an outbound voice call is scheduled for tonight; the card's critical line is promises a call tonight as booked. B promises to proceed but disclaims the time and never books tonight: a fail, not critical, and it also carries a [Your Name] placeholder"
+  },
+  "ch2-021": {
+   "preferred": "B",
+   "note": "A places registration inside an email client, which is not a path that exists; B gives platform navigation that a customer could follow even though it puts the nephew under the wrong owner. Both fail"
+  },
+  "ch2-038": {
+   "preferred": "A",
+   "note": "B offers to check the delivery status in chat, a lookup it cannot make; A only asks for details. Both fail to separate the two tracks or ask for an order id"
+  },
+  "ch2-039": {
+   "preferred": "B",
+   "note": "A refuses outright, which the rubric says fails; B engages and offers guidance, though it never says chat cannot complete payment. Both fail"
+  },
+  "ch2-040": {
+   "preferred": "tie",
+   "note": "A promises to put the pots through checkout (a promise, so not critical); B refuses outright. Same outcome as ch2-020 and ch2-024: two unusable replies, tie"
+  },
+  "ch2-042": {
+   "preferred": "B",
+   "note": "B points to support as the recovery path, the card's identity-verification route, amid generic troubleshooting; A's forgot-password flow needs the email the customer says is blank. Both fail"
+  },
+  "ch2-044": {
+   "critical_B": true,
+   "pass_B": false,
+   "preferred": "A",
+   "note": "B states as fact that the account has been inactive for ten days: an invented account status, critical under the rubric's first question. A promises to check the registration status, a lookup it cannot make: fail, not critical"
+  },
+  "ch2-045": {
+   "preferred": "B",
+   "note": "both pass; B gives the product-page path directly, A asks which website the customer used, which the company's own assistant should not need"
+  },
+  "ch2-047": {
+   "preferred": "A",
+   "note": "B is critical (weekday-only defaults presented as an existing setting, both passes agree); A's refusal is a plain fail. A critical failure ranks below a fail"
+  },
+  "ch2-051": {
+   "preferred": "tie",
+   "note": "A has placeholder-like text (with your order number) and asks a redundant question; B admits it has no tracking but calls the shipment a flight and sends the customer to an airline. Neither is sendable"
+  }
+ }
+}

@@ -15,6 +15,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 RESULTS_DIR = ROOT / "eval" / "results"
+CHALLENGE_PATH = ROOT / "eval" / "challenge.jsonl"
 SEAL_PATH = ROOT / "eval" / "SEAL.json"
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 COLUMNS = [
@@ -35,6 +36,8 @@ COLUMNS = [
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--split", choices=("challenge",), default="challenge")
+    parser.add_argument("--challenge", type=Path, default=CHALLENGE_PATH)
+    parser.add_argument("--seal", type=Path, default=SEAL_PATH)
     parser.add_argument("--base", type=Path)
     parser.add_argument("--tuned", type=Path)
     parser.add_argument("--csv", type=Path, default=RESULTS_DIR / "blind-sheet.csv")
@@ -452,10 +455,10 @@ def html_document(rows: list[dict[str, str]], rubric: dict[str, dict[str, Any]])
 
 def main() -> int:
     args = parse_args()
-    split_path = ROOT / "eval" / f"{args.split}.jsonl"
+    split_path = args.challenge
     base_path = args.base or RESULTS_DIR / f"base-{args.split}-raw.jsonl"
     tuned_path = args.tuned or RESULTS_DIR / f"tuned-{args.split}-raw.jsonl"
-    seed_hash = sealed_hash(SEAL_PATH, split_path)
+    seed_hash = sealed_hash(args.seal, split_path)
     scenarios = load_jsonl(split_path)
     rows, key = build_rows(
         scenarios,

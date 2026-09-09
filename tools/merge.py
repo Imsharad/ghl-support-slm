@@ -4,21 +4,24 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import shutil
 import tempfile
+import sys
 from pathlib import Path
 from typing import Any
 
 import torch
 from huggingface_hub import snapshot_download
-from peft import PeftConfig, PeftModel
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT))
+from train.render import load_system_prompt
+from train.repro import sha256_file
 VERSIONS_PATH = ROOT / "configs" / "versions.json"
-PROMPT_PATH = ROOT / "configs" / "prompt.txt"
 DEFAULT_ADAPTER_PATH = ROOT / "artifacts" / "adapter"
 DEFAULT_OUTPUT_PATH = ROOT / "artifacts" / "merged"
 TOKENIZER_FILES = (
@@ -34,6 +37,8 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--adapter", type=Path, default=DEFAULT_ADAPTER_PATH)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT_PATH)
+    parser.add_argument("--prompt-file", type=Path,
+                        help="Must match adapter prompt when recorded; required for an adapter without prompt.txt")
     parser.add_argument(
         "--allow-download",
         action="store_true",
@@ -62,12 +67,32 @@ def validate_adapter(adapter_path: Path, repo_id: str) -> None:
         raise FileNotFoundError(f"adapter directory not found: {adapter_path}")
     if not (adapter_path / "adapter_config.json").is_file():
         raise FileNotFoundError(f"adapter_config.json not found in {adapter_path}")
-    config = PeftConfig.from_pretrained(adapter_path)
-    recorded_base = config.base_model_name_or_path
+    config = json.loads((adapter_path / "adapter_config.json").read_text())
+    recorded_base = config.get("base_model_name_or_path")
     if recorded_base and recorded_base != repo_id:
         raise ValueError(
             f"adapter records base model {recorded_base!r}; expected pinned {repo_id!r}"
         )
+    if not (adapter_path / "adapter_model.safetensors").is_file():
+        raise FileNotFoundError("adapter_model.safetensors is required")
+
+
+def select_prompt(adapter_path: Path, explicit: Path | None = None) -> tuple[Path, str]:
+    recorded = adapter_path / "prompt.txt"
+    if explicit is None:
+        if not recorded.is_file():
+            raise ValueError("adapter has no prompt.txt; explicitly provide its actual training --prompt-file")
+        return recorded, load_system_prompt(recorded)
+    prompt = load_system_prompt(explicit)
+    if recorded.is_file() and load_system_prompt(recorded) != prompt:
+        raise ValueError("explicit prompt differs from the adapter's recorded training prompt")
+    return explicit, prompt
+
+
+def artifact_hashes(directory: Path) -> dict[str, str]:
+    # state.pt contains the optimizer; it is not part of inference identity.
+    return {str(path.relative_to(directory)): sha256_file(path)
+            for path in sorted(directory.rglob("*")) if path.is_file() and path.name != "state.pt"}
 
 
 def ensure_output_absent(output_path: Path) -> None:
@@ -78,9 +103,13 @@ def ensure_output_absent(output_path: Path) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
 
-def merge(adapter_path: Path, output_path: Path, *, local_files_only: bool) -> None:
+def merge(adapter_path: Path, output_path: Path, *, local_files_only: bool,
+          prompt_file: Path | None = None) -> None:
+    from peft import PeftModel
     repo_id, revision = load_base_pin()
     validate_adapter(adapter_path, repo_id)
+    prompt_path, prompt = select_prompt(adapter_path, prompt_file)
+    input_hashes = artifact_hashes(adapter_path)
     ensure_output_absent(output_path)
 
     print(f"base={repo_id}@{revision}")
@@ -122,7 +151,18 @@ def merge(adapter_path: Path, output_path: Path, *, local_files_only: bool) -> N
             source = snapshot / filename
             if source.is_file():
                 shutil.copyfile(source, temporary / filename)
-        shutil.copyfile(PROMPT_PATH, temporary / "prompt.txt")
+        if artifact_hashes(adapter_path) != input_hashes or load_system_prompt(prompt_path) != prompt:
+            raise ValueError("adapter or prompt changed during merge")
+        shutil.copyfile(prompt_path, temporary / "prompt.txt")
+        provenance = {
+            "schema": 1, "base_model": {"repo_id": repo_id, "revision": revision},
+            "adapter_files_sha256": input_hashes,
+            "prompt_sha256": hashlib.sha256(prompt.encode()).hexdigest(),
+            "merge_dtype": "float16", "safe_merge": True,
+            "merge_code_sha256": sha256_file(Path(__file__)),
+            "output_files_sha256": artifact_hashes(temporary),
+        }
+        (temporary / "merge_manifest.json").write_text(json.dumps(provenance, indent=2) + "\n")
         temporary.rename(output_path)
     finally:
         if temporary.exists():
@@ -138,6 +178,7 @@ def main() -> int:
         args.adapter.expanduser().resolve(),
         args.output.expanduser().resolve(),
         local_files_only=not args.allow_download,
+        prompt_file=args.prompt_file.expanduser().resolve() if args.prompt_file else None,
     )
     return 0
 

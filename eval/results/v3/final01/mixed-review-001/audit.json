@@ -1,0 +1,66 @@
+{
+  "status": "incomplete",
+  "evaluation_design": "posthoc_mixed_human_and_human_calibrated_automated",
+  "total_pairs": 108,
+  "human_pairs": 29,
+  "automated_pairs": 77,
+  "missing_grade_questions": [
+    107,
+    108
+  ],
+  "missing_human_evidence_questions": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+  ],
+  "human_precedence_overlap_questions": [],
+  "primary_all_human_evaluation_complete": false,
+  "models_unblinded": false,
+  "improvement_established": false,
+  "limitations": [
+    "No all-human primary score is claimed.",
+    "The fixed 27 calibration examples came from this same test and lacked human evidence notes.",
+    "Fresh Codex sessions do not remove systematic judge bias.",
+    "Automated grade validity checks test structure and logic, not semantic correctness."
+  ],
+  "input_sha256": {
+    "human_export": "7de3382fcc5fdd35c7e9fa8717422a8e9fa1b5b6f96ba966646d6fc690a15519",
+    "run_manifest": "fb69754c5c70142fae46a28b767352213f422506778b0b2cd73f4188ce280b01",
+    "run_journal": "72cbf0bd40a6829b6cfd8f551f03697a898e0fbb8e876591f827679a17f96789",
+    "audit_code": "09357db8989c45196e2e70c79656f39c8fcf232098f4edd8dafccfc8b4822e67"
+  },
+  "attempts": 78,
+  "valid_attempts": 77,
+  "unsuccessful_attempts": [
+    {
+      "item_id": "v3-final-recover_password-04",
+      "status": "invalid"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "run_dir": "/Users/sharad/Projects/agents-hq/gohighlevel-assignement-1/train/runs/v2-smoke",
+  "device": "mps",
+  "resume_from": 10,
+  "steps": 20,
+  "tolerance": 0.05,
+  "compared_steps": [
+    15,
+    20
+  ],
+  "phase1_train_loss": {
+    "15": 1.09397,
+    "20": 1.55195
+  },
+  "resumed_train_loss": {
+    "15": 1.09404,
+    "20": 1.55244
+  },
+  "max_abs_diff": 0.00049,
+  "ok": true,
+  "checked_at": "2026-09-08 14:43:58 IST"
+}

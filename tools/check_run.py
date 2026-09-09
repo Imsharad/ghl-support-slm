@@ -96,9 +96,11 @@ def check_memory(run_dir: Path, limit_gb: float, failures: list[str]) -> dict[st
     return summary
 
 
-def check_smoke(run_dir: Path, failures: list[str]) -> None:
+def check_smoke(run_dir: Path, failures: list[str], *, required: bool = False) -> None:
     smoke_json = run_dir / "smoke.json"
     if not smoke_json.is_file():
+        if required:
+            failures.append(f"required smoke evidence missing: {smoke_json}")
         return
     report = json.loads(smoke_json.read_text(encoding="utf-8"))
     if not report.get("ok"):
@@ -123,7 +125,7 @@ def check_generation(run_dir: Path, device: str, failures: list[str]) -> None:
         from peft import PeftModel
         from transformers import AutoModelForCausalLM, AutoTokenizer
 
-        from train.render import load_base_pin, render_prompt
+        from train.render import SYSTEM_PROMPT, load_base_pin, render_prompt
     except ImportError as exc:
         failures.append(f"cannot import the training stack for the reload check: {exc}")
         return
@@ -148,7 +150,10 @@ def check_generation(run_dir: Path, device: str, failures: list[str]) -> None:
         model = PeftModel.from_pretrained(base, str(checkpoint))
         model.to(device)
         model.eval()
-        prompt = render_prompt(SAMPLE_QUERY, tokenizer)
+        summary_path = run_dir / "config.json"
+        summary = json.loads(summary_path.read_text()) if summary_path.is_file() else {}
+        prompt = render_prompt(SAMPLE_QUERY, tokenizer,
+                               system_prompt=summary.get("system_prompt", SYSTEM_PROMPT))
         encoded = tokenizer(prompt, return_tensors="pt", add_special_tokens=False)
         inputs = {name: tensor.to(device) for name, tensor in encoded.items()}
         with torch.no_grad():
@@ -176,6 +181,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("run_dir", type=Path)
     parser.add_argument("--max-memory-gb", type=float, default=12.0)
     parser.add_argument("--device", default="auto", choices=("auto", "cuda", "mps", "cpu"))
+    parser.add_argument("--require-smoke", action="store_true",
+                        help="fail when smoke.json is absent, not just when it reports failure")
     parser.add_argument(
         "--no-generate",
         action="store_true",
@@ -195,7 +202,7 @@ def main() -> int:
     failures: list[str] = []
     check_losses(run_dir, failures)
     check_memory(run_dir, args.max_memory_gb, failures)
-    check_smoke(run_dir, failures)
+    check_smoke(run_dir, failures, required=args.require_smoke)
     if args.no_generate:
         print("generation check skipped (--no-generate)")
     else:

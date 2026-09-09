@@ -8,6 +8,7 @@ from pathlib import Path
 import pytest
 
 from eval import blind
+from eval import check_challenge
 from eval import run as eval_run
 from eval import score
 
@@ -283,8 +284,12 @@ def _build_zero_effect_adapter(directory: Path) -> Path:
     return directory
 
 
-def test_zero_effect_adapter_matches_base_greedy_cpu(tmp_path: Path) -> None:
+def test_zero_effect_adapter_matches_base_greedy_cpu(tmp_path: Path, monkeypatch) -> None:
     pytest.importorskip("peft", reason="install the train extra first")
+    # Test adapter identity on a bounded greedy prefix, not support-answer quality.
+    # BF16 CPU fallback can take minutes for four full 256-token generations.
+    # This changes only this test's cap; sealed evaluation remains at 256.
+    monkeypatch.setattr(eval_run, "MAX_NEW_TOKENS", 8)
     adapter_dir = _build_zero_effect_adapter(tmp_path / "zero-lora")
     sha = eval_run.adapter_weights_sha256(adapter_dir)
     assert len(sha) == 64
@@ -338,3 +343,105 @@ def test_red_list_partitions_every_critical_line_of_the_sealed_set() -> None:
     assert "The full red list" in page
     for line in expected:
         assert line in page
+
+
+def test_challenge_schema_accepts_the_v1_sealed_set() -> None:
+    root = Path(__file__).resolve().parents[1]
+    rows = check_challenge.load_jsonl(root / "eval" / "challenge.jsonl")
+    errors = check_challenge.schema_errors(
+        rows,
+        check_challenge.load_intents(),
+        require_v1_cosine=False,
+    )
+    assert errors == []
+
+
+def test_challenge_schema_requires_v1_cosine_for_comparison() -> None:
+    root = Path(__file__).resolve().parents[1]
+    rows = check_challenge.load_jsonl(root / "eval" / "challenge.jsonl")
+    errors = check_challenge.schema_errors(
+        rows,
+        check_challenge.load_intents(),
+        require_v1_cosine=True,
+    )
+    assert any("max_v1_cosine" in error for error in errors)
+
+
+def test_challenge_schema_accepts_the_v2_draft() -> None:
+    root = Path(__file__).resolve().parents[1]
+    rows = check_challenge.load_jsonl(root / "eval" / "challenge_v2_draft.jsonl")
+    errors = check_challenge.schema_errors(
+        rows,
+        check_challenge.load_intents(),
+        require_v1_cosine=True,
+    )
+    assert errors == []
+
+
+def test_challenge_shared_six_grams_normalizes_case_and_punctuation() -> None:
+    hits = check_challenge.shared_ngrams(
+        "Please STOP this tent order, before it ships now.",
+        ["please stop this tent order before it gets labelled"],
+    )
+    assert ("please", "stop", "this", "tent", "order", "before") in hits
+
+
+def test_challenge_metric_caps_and_six_grams_are_failures() -> None:
+    rows = [{"id": "ch2-001", "max_bitext_cosine": 0.85, "max_v1_cosine": 0.80}]
+    metrics = [{
+        "id": "ch2-001",
+        "bitext_cosine": 0.85,
+        "v1_cosine": 0.80,
+        "six_gram_hits": 1,
+        "six_gram_sources": {"one two three four five six": ["ch-001"]},
+    }]
+    errors = check_challenge.metric_errors(rows, metrics)
+    assert any("Bitext cosine" in error for error in errors)
+    assert any("v1 cosine" in error for error in errors)
+    assert any("six-gram" in error for error in errors)
+
+
+def test_custom_challenge_path_is_checked_against_custom_seal(tmp_path: Path) -> None:
+    challenge = tmp_path / "challenge-v2.jsonl"
+    challenge.write_text('{"id":"ch2-001"}\n', encoding="utf-8")
+    seal = tmp_path / "seal-v2.json"
+    seal.write_text(
+        json.dumps({"challenge_sha256": check_challenge.file_sha256(challenge)}),
+        encoding="utf-8",
+    )
+    assert (
+        eval_run.split_path_for(split="challenge", challenge=challenge, seal=seal)
+        == challenge
+    )
+
+
+def test_seal_challenge_copies_draft_bytes_and_records_provenance(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    draft = tmp_path / "draft.jsonl"
+    draft.write_bytes(b'{"id":"ch2-001"}\n')
+    against = tmp_path / "against.jsonl"
+    against.write_bytes(b'{"id":"ch-001"}\n')
+    challenge = tmp_path / "challenge_v2.jsonl"
+    seal_path = tmp_path / "SEAL_v2.json"
+    monkeypatch.setattr(check_challenge, "SEALED_CHALLENGE_PATH", challenge)
+    monkeypatch.setattr(check_challenge, "SEAL_PATH", seal_path)
+    seal = check_challenge.seal_challenge(
+        draft,
+        [{"id": "ch2-001"}],
+        [against],
+        approval_event="a" * 64,
+        provenance="fresh set drafted before v2 answers",
+    )
+    assert challenge.read_bytes() == draft.read_bytes()
+    assert seal["challenge_sha256"] == check_challenge.file_sha256(challenge)
+    assert seal["approval_event"] == "a" * 64
+    assert json.loads(seal_path.read_text(encoding="utf-8")) == seal
+    with pytest.raises(ValueError, match="refusing to overwrite sealed output"):
+        check_challenge.seal_challenge(
+            draft,
+            [{"id": "ch2-001"}],
+            [against],
+            approval_event="a" * 64,
+            provenance="fresh set drafted before v2 answers",
+        )

@@ -1,0 +1,66 @@
+{
+ "rule": "RUBRIC.md as written; secondary, contaminated set: Fable 5.1 read the 13 cards where the two Flash passes disagreed, applied v1's adjudication precedents where the same question recurred, and left consistent verdicts as scored. Written 2026-09-08 04:52 IST before the key was read.",
+ "adjudicated": {
+  "ch-002": {
+   "critical_B": false,
+   "pass_B": false,
+   "preferred": "A",
+   "note": "B asks for an email to help cancel; misreading the situation as an account-access problem states no false fact, so a fail, not critical"
+  },
+  "ch-004": {
+   "preferred": "A",
+   "note": "A addresses both requests and asks for the order id though it promises the adjustments itself; B deflects to customer service. Same call as ch2-004"
+  },
+  "ch-007": {
+   "preferred": "B",
+   "note": "both fail for the same reason as the passes found; B keeps the persona and points to the cancellation policy, A sends the customer to the company you are dealing with"
+  },
+  "ch-013": {
+   "critical_B": false,
+   "pass_B": false,
+   "preferred": "tie",
+   "note": "v1 precedent on this card: a day count offered as typically, e.g. 30 days is an example, not a stated window; B still fails for never pointing at the published policy of this store, and A answers nothing"
+  },
+  "ch-023": {
+   "preferred": "A",
+   "note": "B carries unreplaced placeholder text (the number your account number), which the rubric fails; A's identity check is at least followable, though it promises the closure itself"
+  },
+  "ch-035": {
+   "pass_A": false,
+   "preferred": "A",
+   "note": "A asks for the email but never explains how to manage newsletter preferences, the card's first acceptable action; B promises to add the customer itself"
+  },
+  "ch-038": {
+   "pass_A": false,
+   "preferred": "A",
+   "note": "A asks for details on both issues without promising the deadline, but names no identifier to send and gives no step; same reading as ch2-038 on the fresh set"
+  },
+  "ch-039": {
+   "critical_A": false,
+   "pass_A": false,
+   "preferred": "B",
+   "note": "Thank you for your order is a greeting, not a claim that the aprons were ordered; offering to place the order is a promise the assistant cannot keep, a fail, not critical, for both"
+  },
+  "ch-043": {
+   "preferred": "tie",
+   "note": "A gives browser steps for an iOS OTP problem, B asks for details the customer already gave; neither reports the bug or suggests a new code"
+  },
+  "ch-045": {
+   "preferred": "A",
+   "note": "both pass; A gives the store's own product-page path in persona, B refers to the website where you bought it. Same call as ch2-045 on the fresh set: the direct path wins"
+  },
+  "ch-046": {
+   "preferred": "tie",
+   "note": "both give the normal review steps and neither addresses the stars that will not click"
+  },
+  "ch-047": {
+   "preferred": "A",
+   "note": "both assume a weekend default exists; A's address steps are the more complete guidance"
+  },
+  "ch-054": {
+   "pass_B": false,
+   "preferred": "B",
+   "note": "B acknowledges the frustration and asks for the order id but promises that the refund request will be processed promptly, an action it cannot take; the same reading failed ch2-054 A on the fresh set"
+  }
+ }
+}

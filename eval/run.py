@@ -17,16 +17,20 @@ from zoneinfo import ZoneInfo
 
 import yaml
 
-from train.render import SYSTEM_PROMPT, render_prompt
+from eval.blind import sealed_hash
+from train.render import PROMPT_PATH, SYSTEM_PROMPT, load_system_prompt, render_prompt
+from train.repro import sha256_file
 
 
 ROOT = Path(__file__).resolve().parents[1]
 CONFIG_PATH = ROOT / "configs" / "eval.yaml"
 VERSIONS_PATH = ROOT / "configs" / "versions.json"
 RESULTS_DIR = ROOT / "eval" / "results"
+CHALLENGE_PATH = ROOT / "eval" / "challenge.jsonl"
+SEAL_PATH = ROOT / "eval" / "SEAL.json"
 SPLIT_PATHS = {
     "dev": ROOT / "eval" / "dev.jsonl",
-    "challenge": ROOT / "eval" / "challenge.jsonl",
+    "challenge": CHALLENGE_PATH,
     "test": ROOT / "data" / "processed" / "test.jsonl",
 }
 MAX_NEW_TOKENS = 256
@@ -50,9 +54,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model", required=True, choices=("base", "tuned"))
     parser.add_argument("--backend", required=True, choices=("ollama", "transformers"))
     parser.add_argument("--split", required=True, choices=tuple(SPLIT_PATHS))
+    parser.add_argument("--input", type=Path, help="Custom development input; requires --split dev")
+    parser.add_argument("--challenge", type=Path, default=CHALLENGE_PATH)
+    parser.add_argument("--seal", type=Path, default=SEAL_PATH)
     parser.add_argument("--limit", type=int)
     parser.add_argument("--check-complete", action="store_true")
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--prompt-file", type=Path, help="Exact system prompt for both models")
+    parser.add_argument("--tag", help="Explicit Ollama model tag; recorded with its digest")
     parser.add_argument("--timeout", type=float, default=600.0)
     parser.add_argument("--device", choices=("auto", "cpu", "mps", "cuda"), default="auto")
     parser.add_argument(
@@ -164,13 +173,16 @@ def post_json(url: str, payload: dict[str, Any], timeout: float) -> dict[str, An
 
 
 class OllamaRunner:
-    def __init__(self, *, tag: str, base_url: str, timeout: float) -> None:
+    def __init__(self, *, tag: str, base_url: str, timeout: float,
+                 system_prompt: str | None = None) -> None:
         self.tag = tag
         self.url = f"{base_url.rstrip('/')}/api/chat"
         self.timeout = timeout
+        self.system_prompt = system_prompt
 
     def __call__(self, query: str) -> Generation:
-        system = (ROOT / "configs" / "prompt.txt").read_text(encoding="utf-8").strip()
+        system = self.system_prompt if self.system_prompt is not None else (
+            ROOT / "configs" / "prompt.txt").read_text(encoding="utf-8").removesuffix("\n")
         payload = {
             "model": self.tag,
             "messages": [
@@ -226,6 +238,7 @@ class TransformersRunner:
         model: str,
         requested_device: str,
         adapter_dir: Path | None = None,
+        system_prompt: str | None = None,
     ) -> None:
         import torch
         from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -236,7 +249,7 @@ class TransformersRunner:
             raise ValueError("configs/versions.json has no base_model object")
         repo_id = str(base["repo_id"])
         revision = str(base["revision"])
-        self.system_prompt = SYSTEM_PROMPT
+        self.system_prompt = SYSTEM_PROMPT if system_prompt is None else system_prompt
 
         common: dict[str, Any] = {"local_files_only": True, "dtype": "auto"}
         if adapter_dir is not None:
@@ -254,7 +267,7 @@ class TransformersRunner:
                 tokenizer_source, **tokenizer_kwargs
             )
             prompt_file = adapter_dir / "prompt.txt"
-            if prompt_file.is_file():
+            if prompt_file.is_file() and system_prompt is None:
                 self.system_prompt = prompt_file.read_text(encoding="utf-8").removesuffix(
                     "\n"
                 )
@@ -398,6 +411,45 @@ def append_jsonl(path: Path, row: dict[str, Any]) -> None:
         handle.flush()
 
 
+def ensure_run_manifest(output: Path, manifest: dict[str, Any]) -> None:
+    """Never combine outputs made with different data, prompts, or model weights."""
+    path = output.with_suffix(output.suffix + ".manifest.json")
+    if path.exists():
+        if load_json(path) != manifest:
+            raise ValueError("evaluation manifest mismatch; choose a new output path")
+        return
+    if output.exists() and output.stat().st_size:
+        raise ValueError("existing evaluation has no manifest; preserve it and use a new output path")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("x", encoding="utf-8") as handle:
+        json.dump(manifest, handle, indent=2, sort_keys=True)
+        handle.write("\n")
+
+
+def ollama_digest(base_url: str, tag: str, timeout: float) -> str:
+    with urllib.request.urlopen(f"{base_url.rstrip('/')}/api/tags", timeout=timeout) as response:
+        models = json.load(response).get("models", [])
+    matches = [m for m in models if tag in (m.get("name"), m.get("model"))
+               or (":" not in tag and m.get("name") == tag + ":latest")]
+    if len(matches) != 1 or not matches[0].get("digest"):
+        raise ValueError(f"cannot resolve a unique local Ollama digest for {tag}")
+    return str(matches[0]["digest"])
+
+
+def inference_manifest(*, split_path: Path, system_prompt: str, model: str,
+                       backend: str, identity: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "schema": 1, "split_sha256": sha256_file(split_path),
+        "system_prompt": system_prompt,
+        "prompt_sha256": hashlib.sha256(system_prompt.encode()).hexdigest(),
+        "model": model, "backend": backend, "identity": identity,
+        "decoding": {"temperature": 0, "top_p": 1.0, "repeat_penalty": 1.0,
+                     "seed": 42, "max_new_tokens": MAX_NEW_TOKENS, "num_ctx": NUM_CTX},
+        "runner_sha256": sha256_file(Path(__file__)),
+        "render_sha256": sha256_file(ROOT / "train/render.py"),
+    }
+
+
 def result_row(
     item: dict[str, Any],
     *,
@@ -460,6 +512,14 @@ def assert_complete(expected_ids: set[str], output_rows: list[dict[str, Any]]) -
         raise ValueError(f"missing output ids: {missing}")
 
 
+def split_path_for(*, split: str, challenge: Path, seal: Path) -> Path:
+    """Resolve the requested split and verify a challenge against its seal."""
+    if split != "challenge":
+        return SPLIT_PATHS[split]
+    sealed_hash(seal, challenge)
+    return challenge
+
+
 def main() -> int:
     args = parse_args()
     if args.limit is not None and args.limit < 1:
@@ -469,7 +529,16 @@ def main() -> int:
     )
     adapter_sha = adapter_weights_sha256(adapter_dir) if adapter_dir is not None else None
     config = load_config()
-    all_items = load_jsonl(SPLIT_PATHS[args.split])
+    split_path = split_path_for(
+        split=args.split,
+        challenge=args.challenge,
+        seal=args.seal,
+    )
+    if args.input:
+        if args.split != "dev":
+            raise ValueError("--input is for development only; final challenges require --challenge and --seal")
+        split_path = args.input
+    all_items = load_jsonl(split_path)
     selected = all_items[: args.limit] if args.limit is not None else all_items
     if not selected:
         raise ValueError(f"split {args.split} has no items")
@@ -480,6 +549,27 @@ def main() -> int:
     except (KeyError, TypeError) as exc:
         raise ValueError(f"invalid model/backend config in {CONFIG_PATH}: {exc}") from exc
     output = args.output or RESULTS_DIR / f"{args.model}-{args.split}-raw.jsonl"
+    if args.tag:
+        if args.backend != "ollama":
+            raise ValueError("--tag is only supported for Ollama")
+        tag = args.tag
+    prompt_path = args.prompt_file or (
+        adapter_dir / "prompt.txt" if adapter_dir and (adapter_dir / "prompt.txt").is_file()
+        else PROMPT_PATH)
+    system_prompt = load_system_prompt(prompt_path)
+    if args.backend == "ollama":
+        identity = {"tag": tag, "digest": ollama_digest(base_url, tag, args.timeout)}
+    else:
+        identity = {"base": load_json(VERSIONS_PATH)["base_model"],
+                    "requested_device": args.device}
+        artifact_dir = adapter_dir or (ROOT / "artifacts/merged" if args.model == "tuned" else None)
+        if artifact_dir:
+            identity["artifact_files"] = {
+                str(p.relative_to(artifact_dir)): sha256_file(p)
+                for p in sorted(artifact_dir.rglob("*")) if p.is_file() and p.name != "state.pt"}
+    ensure_run_manifest(output, inference_manifest(
+        split_path=split_path, system_prompt=system_prompt, model=args.model,
+        backend=args.backend, identity=identity))
     existing = load_existing(
         output,
         model=args.model,
@@ -492,12 +582,14 @@ def main() -> int:
             tag=tag,
             base_url=base_url,
             timeout=args.timeout,
+            system_prompt=system_prompt,
         )
     else:
         generate = TransformersRunner(
             model=args.model,
             requested_device=args.device,
             adapter_dir=adapter_dir,
+            system_prompt=system_prompt,
         )
 
     written = 0
@@ -535,8 +627,8 @@ def main() -> int:
         f"output={output.relative_to(ROOT) if output.is_relative_to(ROOT) else output}"
     )
     if args.check_complete:
-        print("CHECK PASS")
-    return 0
+        print("CHECK PASS" if not failures else "CHECK FAIL: generation errors remain")
+    return 1 if failures else 0
 
 
 if __name__ == "__main__":

@@ -8,6 +8,7 @@ import hashlib
 import os
 import sys
 import tempfile
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -78,6 +79,7 @@ def download(artifact: Artifact, root: Path) -> None:
             temporary_path = Path(temporary.name)
             digest = hashlib.sha256()
             size = 0
+            reported = time.monotonic()
             request = urllib.request.Request(
                 artifact.hub_url,
                 headers={"User-Agent": "ghl-support-slm-artifact-fetch/1"},
@@ -90,6 +92,9 @@ def download(artifact: Artifact, root: Path) -> None:
                     temporary.write(chunk)
                     digest.update(chunk)
                     size += len(chunk)
+                    if time.monotonic() - reported >= 10:
+                        print(f"  {artifact.path}: {size / 1024**2:.0f}/{artifact.bytes / 1024**2:.0f} MiB", flush=True)
+                        reported = time.monotonic()
             temporary.flush()
             os.fsync(temporary.fileno())
 

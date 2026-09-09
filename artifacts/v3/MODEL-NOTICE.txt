@@ -1,0 +1,7 @@
+Base model: Qwen/Qwen2.5-1.5B-Instruct, Alibaba Cloud.
+Revision: 989aa7980e4cf806f80c7fef2b1adb7bc71aa306
+License: Apache-2.0; see LICENSE-QWEN.
+Changes: candidate03 QLoRA adapter, merged and converted to Q8_0 GGUF.
+The base GGUF is a Q8_0 conversion of the pinned original model.
+The adapter and tuned GGUF are experimental; credential-safety evaluation failed.
+No endorsement by the upstream authors is implied.

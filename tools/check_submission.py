@@ -21,6 +21,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import subprocess
@@ -125,15 +126,15 @@ def is_http_url(value: str) -> bool:
     return parsed.scheme in ("http", "https") and bool(parsed.netloc)
 
 
-def collect_hub_urls(hub: Any, failures: list[str]) -> list[tuple[str, str]]:
+def collect_hub_urls(hub: Any, failures: list[str], *, required_fields=HUB_REQUIRED_FIELDS) -> list[tuple[str, str]]:
     if not isinstance(hub, dict):
         failures.append("hub must be an object")
         return []
-    missing = [field for field in HUB_REQUIRED_FIELDS if field not in hub]
+    missing = [field for field in required_fields if field not in hub]
     if missing:
         failures.append(f"hub missing fields: {', '.join(missing)}")
     urls: list[tuple[str, str]] = []
-    for field in HUB_REQUIRED_FIELDS:
+    for field in required_fields:
         if field not in hub:
             continue
         value = hub[field]
@@ -326,6 +327,29 @@ def check_manifest(root: Path, manifest_path: Path, failures: list[str]) -> None
     print(f"manifest hashed={matched}/{len(artifacts)}")
 
 
+def check_v3_artifacts(root: Path, failures: list[str]) -> None:
+    try:
+        export = json.loads((root / 'artifacts/v3/candidate03-step120-q8_0.gguf.export.json').read_text())
+        seal = json.loads((root / 'eval/results/v3/final01/SEAL.json').read_text())
+        files = {'artifacts/v3/candidate03-step120-q8_0.gguf': export['gguf_sha256'],
+                 'artifacts/base-q8.gguf': seal['base_gguf_sha256']}
+        files.update({f'train/runs/v3-candidate03-runpod/checkpoint-120/{name}': digest
+                      for name, digest in export['adapter_files_sha256'].items()})
+        for name, expected in files.items():
+            path = root / name
+            if not path.is_file():
+                failures.append(f'v3 artifact missing: {name}')
+                continue
+            with path.open('rb') as stream:
+                actual = hashlib.file_digest(stream, 'sha256').hexdigest()
+            if actual != expected:
+                failures.append(f'v3 artifact hash mismatch: {name}')
+            else:
+                print(f'PASS v3 artifact {name}')
+    except (OSError, ValueError, KeyError) as exc:
+        failures.append(f'v3 artifact metadata: {exc}')
+
+
 def main() -> int:
     args = parse_args()
     submission_path = args.submission
@@ -340,12 +364,17 @@ def main() -> int:
     failures: list[str] = []
     check_repo_url(submission.get("repo_url"), failures)
     check_tag(args.root, submission.get("tag"), failures)
-    for label, url in collect_hub_urls(submission.get("hub"), failures):
+    is_v3 = submission.get('candidate') == 'v3-candidate03-step120'
+    required = tuple(k for k in HUB_REQUIRED_FIELDS if k != 'merged') if is_v3 else HUB_REQUIRED_FIELDS
+    for label, url in collect_hub_urls(submission.get("hub"), failures, required_fields=required):
         check_url(label, url, failures)
     check_loom(submission.get("loom_url"), failures)
     check_readme(args.root, submission.get("readme"), failures)
     check_contact(submission.get("contact"), failures)
-    check_manifest(args.root, args.manifest, failures)
+    if is_v3:
+        check_v3_artifacts(args.root, failures)
+    else:
+        check_manifest(args.root, args.manifest, failures)
 
     if failures:
         for failure in failures:

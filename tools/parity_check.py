@@ -53,6 +53,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--tokenizer-bin", type=Path, default=DEFAULT_TOKENIZER_BIN)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT_PATH)
     parser.add_argument("--limit", type=int, default=5)
+    parser.add_argument("--prompt-file", type=Path, default=PROMPT_PATH)
     return parser.parse_args()
 
 
@@ -191,11 +192,13 @@ def markdown_report(
     gguf: Path,
     converter_commit: str,
     model_revision: str,
+    prompt_path: Path = PROMPT_PATH,
+    model_tag: str = "ghl-base",
 ) -> str:
     now = datetime.now(ZoneInfo("Asia/Kolkata"))
     all_match = all(row.tokenizer_match and row.answer_match for row in rows)
     lines = [
-        "# Base-model GGUF conversion and parity",
+        "# GGUF tokenizer and prompt-path parity",
         "",
         f"Verified: {now:%Y-%m-%d %H:%M:%S IST}",
         f"Verdict: **{'PASS' if all_match else 'FAIL'}**",
@@ -203,6 +206,8 @@ def markdown_report(
         "## Artifact",
         "",
         f"- Base model revision: `{model_revision}`",
+        f"- Ollama model tag: `{model_tag}`",
+        f"- Prompt file: `{prompt_path}` (file SHA-256 `{sha256(prompt_path)}`)",
         f"- llama.cpp converter commit: `{converter_commit}`",
         "- Quantization: `Q8_0`",
         f"- File: `{gguf.relative_to(ROOT)}`",
@@ -211,7 +216,7 @@ def markdown_report(
         "",
         "The GGUF was produced by `tools/convert.sh`, which validates the pinned llama.cpp checkout and uses its isolated uv-created converter environment.",
         "",
-        "## Five-item parity check",
+        f"## {len(rows)}-item parity check",
         "",
         "`tokenizer_match` compares Hugging Face token IDs with the pinned llama.cpp `llama-tokenize` binary for the exact rendered prompt. `answer_match` compares generated token IDs from Ollama `/api/generate` with `raw: true` against Ollama `/api/chat`, both using greedy decoding and the same rendered item.",
         "",
@@ -227,7 +232,7 @@ def markdown_report(
     lines.extend(
         [
             "",
-            "The Modelfile applies `configs/prompt.txt` once as the system turn and uses the native Qwen2.5 ChatML markers. Ollama remained running after verification for downstream evaluation tasks.",
+            "The exact specified prompt is supplied as the system turn. This compares tokenizer IDs and raw-vs-chat generation on the same GGUF; it does not claim numerical equivalence between the HF weights and their quantized export. Ollama remained running after verification.",
             "",
         ]
     )
@@ -236,7 +241,10 @@ def markdown_report(
 
 def main() -> int:
     args = parse_args()
-    from train.render import render_prompt
+    from train.render import load_system_prompt, render_prompt
+
+    if args.output.exists():
+        raise FileExistsError("choose a new parity report path; existing evidence is preserved")
 
     versions = load_json(VERSIONS_PATH)
     base_model = versions["base_model"]
@@ -255,14 +263,14 @@ def main() -> int:
     repo_id = str(base_model["repo_id"])
     revision = str(base_model["revision"])
     tokenizer = AutoTokenizer.from_pretrained(repo_id, revision=revision, local_files_only=True)
-    system = PROMPT_PATH.read_text(encoding="utf-8").strip()
+    system = load_system_prompt(args.prompt_file)
     dev_rows = load_dev(args.dev, args.limit)
 
     parity_rows: list[ParityRow] = []
     for dev_row in dev_rows:
         item_id = str(dev_row["id"])
         query = str(dev_row["query"])
-        prompt = render_prompt(query)
+        prompt = render_prompt(query, tokenizer, system_prompt=system)
         hf_prompt_ids = tokenizer.encode(prompt, add_special_tokens=False)
         gguf_prompt_ids = llama_token_ids(args.tokenizer_bin, args.gguf, prompt)
 
@@ -286,6 +294,8 @@ def main() -> int:
         gguf=args.gguf.resolve(),
         converter_commit=str(converter["commit"]),
         model_revision=revision,
+        prompt_path=args.prompt_file,
+        model_tag=args.model,
     )
     args.output.write_text(report, encoding="utf-8")
     print(report)

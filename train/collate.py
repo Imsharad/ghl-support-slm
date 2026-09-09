@@ -14,7 +14,7 @@ from typing import Any
 import torch
 from transformers import PreTrainedTokenizerBase
 
-from train.render import get_tokenizer, render_full, render_prompt
+from train.render import SYSTEM_PROMPT, get_tokenizer, render_full, render_prompt
 
 
 IGNORE_INDEX = -100
@@ -30,6 +30,7 @@ class AssistantOnlyCollator:
         tokenizer: PreTrainedTokenizerBase | None = None,
         *,
         max_length: int = MAX_LENGTH,
+        system_prompt: str = SYSTEM_PROMPT,
     ) -> None:
         if max_length < 1:
             raise ValueError("max_length must be positive")
@@ -40,6 +41,7 @@ class AssistantOnlyCollator:
             self.tokenizer.pad_token = self.tokenizer.eos_token
         self.tokenizer.padding_side = "right"
         self.max_length = max_length
+        self.system_prompt = system_prompt
         self.dropped_overlength = 0
 
         end_marker_id = self.tokenizer.convert_tokens_to_ids(END_MARKER)
@@ -55,8 +57,8 @@ class AssistantOnlyCollator:
         if not isinstance(response, str) or not response:
             raise ValueError("example response must be a nonempty string")
 
-        prompt = render_prompt(instruction, self.tokenizer)
-        full = render_full(instruction, response, self.tokenizer)
+        prompt = render_prompt(instruction, self.tokenizer, system_prompt=self.system_prompt)
+        full = render_full(instruction, response, self.tokenizer, system_prompt=self.system_prompt)
         prompt_ids = self.tokenizer.encode(prompt, add_special_tokens=False)
         input_ids = self.tokenizer.encode(full, add_special_tokens=False)
         if input_ids[: len(prompt_ids)] != prompt_ids or len(input_ids) <= len(prompt_ids):

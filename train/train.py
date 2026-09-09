@@ -21,6 +21,7 @@ import csv
 import json
 import math
 import os
+import platform
 import random
 import resource
 import shutil
@@ -44,7 +45,8 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from train.collate import IGNORE_INDEX, AssistantOnlyCollator  # noqa: E402
-from train.render import load_base_pin  # noqa: E402
+from train.render import PROMPT_PATH, load_base_pin, load_system_prompt  # noqa: E402
+from train.repro import capture_rng, fingerprint, require_same_inputs, restore_rng, sha256_file  # noqa: E402
 
 IST = timezone(timedelta(hours=5, minutes=30))
 VERSIONS_PATH = ROOT / "configs" / "versions.json"
@@ -175,8 +177,8 @@ def encode_rows(
     collator: AssistantOnlyCollator,
     *,
     label: str,
-) -> list[dict[str, list[int]]]:
-    encoded: list[dict[str, list[int]]] = []
+) -> list[dict[str, Any]]:
+    encoded: list[dict[str, Any]] = []
     dropped = 0
     for index, row in enumerate(rows, start=1):
         item = collator.encode(row)
@@ -184,6 +186,7 @@ def encode_rows(
             dropped += 1
             continue
         encoded.append(item)
+        item["source_id"] = str(row.get("id", f"{label}-{index}"))
         if index % 2000 == 0:
             log(f"encoding {label}: {index}/{len(rows)}")
     if not encoded:
@@ -191,6 +194,27 @@ def encode_rows(
     if dropped:
         log(f"{label}: dropped {dropped} rows over {collator.max_length} tokens")
     return encoded
+
+
+def validation_rows(rows: list[dict[str, Any]], count: int, seed: int) -> list[dict[str, Any]]:
+    """Deterministic round-robin intents, avoiding a sorted single-intent prefix."""
+    if count < 1:
+        raise ValueError("validation sample must contain at least one row")
+    groups: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        groups.setdefault(str(row.get("intent", "unknown")), []).append(row)
+    rng = np.random.default_rng(seed)
+    for intent, pool in groups.items():
+        groups[intent] = [pool[int(i)] for i in rng.permutation(len(pool))]
+    intents = sorted(groups)
+    selected = []
+    for offset in range(max(map(len, groups.values()), default=0)):
+        for intent in intents:
+            if offset < len(groups[intent]):
+                selected.append(groups[intent][offset])
+                if len(selected) == count:
+                    return selected
+    return selected
 
 
 def pad_batch(items: Sequence[dict[str, list[int]]], pad_id: int, torch: Any) -> dict[str, Any]:
@@ -290,6 +314,9 @@ def attach_adapter(model: Any, peft_config: Any, adapter_dir: Path | None) -> An
 
 
 def git_sha() -> str | None:
+    bundle = ROOT / "BUNDLE_MANIFEST.json"
+    if bundle.is_file():
+        return json.loads(bundle.read_text()).get("git_sha")
     try:
         out = subprocess.run(
             ["git", "-C", str(ROOT), "rev-parse", "HEAD"],
@@ -386,14 +413,26 @@ class HubPusher:
 def evaluate(model: Any, batches: Sequence[dict[str, Any]], device: str, torch: Any) -> float:
     if not batches:
         raise SystemExit("no validation batches: raise train.val_batches or check the val split")
+    was_training = model.training
+    rng = capture_rng(torch)
     model.eval()
     total = 0.0
-    with torch.no_grad():
-        for batch in batches:
-            moved = {name: tensor.to(device) for name, tensor in batch.items()}
-            total += float(model(**moved).loss.detach().cpu())
-    model.train()
-    return total / len(batches)
+    tokens = 0
+    try:
+        with torch.no_grad():
+            for batch in batches:
+                moved = {name: tensor.to(device) for name, tensor in batch.items()}
+                loss = float(model(**moved).loss.detach().cpu())
+                # Causal LM labels shift left; the first position is not predicted.
+                n = int((moved["labels"][:, 1:] != IGNORE_INDEX).sum().item())
+                total += loss * n
+                tokens += n
+    finally:
+        model.train(was_training)
+        restore_rng(rng, torch)
+    if not tokens:
+        raise ValueError("validation contains no assistant target tokens")
+    return total / tokens
 
 
 def train(
@@ -406,6 +445,10 @@ def train(
 ) -> dict[str, Any]:
     import torch
 
+    if not resume and run_dir.exists() and any(run_dir.iterdir()):
+        raise ValueError(f"refusing to overwrite nonempty run directory: {run_dir}")
+    if resume and not checkpoint_dirs(run_dir):
+        raise ValueError(f"--resume requires an existing checkpoint: {run_dir}")
     seed = int(config["seed"])
     random.seed(seed)
     np.random.seed(seed)
@@ -420,7 +463,10 @@ def train(
     val_batches_n = int(train_cfg["val_batches"])
 
     data_dir = resolve_path(str(data_cfg["dir"]))
-    collator = AssistantOnlyCollator(max_length=int(data_cfg["max_length"]))
+    prompt_path = resolve_path(str(config.get("prompt_file", PROMPT_PATH)))
+    system_prompt = load_system_prompt(prompt_path)
+    collator = AssistantOnlyCollator(max_length=int(data_cfg["max_length"]),
+                                     system_prompt=system_prompt)
     pad_id = int(collator.tokenizer.pad_token_id)
 
     train_rows = cap_rows(
@@ -432,7 +478,7 @@ def train(
     log(f"train rows {len(train_rows)}, val rows {len(val_rows)}, data dir {data_dir}")
 
     encoded_train = encode_rows(train_rows, collator, label="train")
-    val_slice = val_rows[: val_batches_n * micro_batch_size]
+    val_slice = validation_rows(val_rows, val_batches_n * micro_batch_size, seed)
     encoded_val = encode_rows(val_slice, collator, label="val")
     val_batches = [
         pad_batch(encoded_val[i : i + micro_batch_size], pad_id, torch)
@@ -444,22 +490,38 @@ def train(
     if not max_steps:
         max_steps = steps_per_epoch * int(train_cfg.get("epochs", 1))
     max_steps = int(max_steps)
+    versions = installed_versions()
+    hardware = {"system": platform.system(), "architecture": platform.machine(),
+                "device": device, "torch_cuda": torch.version.cuda}
+    if device == "cuda":
+        hardware.update(gpu_name=torch.cuda.get_device_name(),
+                        gpu_memory_bytes=torch.cuda.get_device_properties(0).total_memory,
+                        visible_gpus=torch.cuda.device_count())
+    inputs = fingerprint(config, {
+        "train": data_dir / str(data_cfg["train_file"]),
+        "val": data_dir / str(data_cfg["val_file"]),
+        "prompt": prompt_path,
+        **{f"code:{name}": ROOT / "train" / name
+           for name in ("train.py", "repro.py", "render.py", "collate.py")},
+    }, system_prompt, [item["source_id"] for item in encoded_train], load_base_pin(),
+        runtime={"hardware": hardware, "versions": versions, "effective_max_steps": max_steps,
+                 "chat_template": collator.tokenizer.chat_template,
+                 "encoded_val_ids": [item["source_id"] for item in encoded_val]})
 
     fractions = [float(f) for f in (train_cfg.get("checkpoint_fractions") or [])]
     fraction_steps = {max(1, min(max_steps, round(max_steps * f))) for f in fractions}
-
-    peft_config, base_model = build_model(config, device, torch)
 
     start_step = 0
     resume_dir: Path | None = None
     state: dict[str, Any] = {}
     if resume:
         existing = checkpoint_dirs(run_dir)
-        if not existing:
-            log(f"WARNING: --resume found no checkpoint in {run_dir}; starting from step 0")
-        else:
-            start_step, resume_dir = existing[-1]
-            state = torch.load(resume_dir / "state.pt", map_location="cpu", weights_only=False)
+        start_step, resume_dir = existing[-1]
+        state = torch.load(resume_dir / "state.pt", map_location="cpu", weights_only=False)
+        if config.get("strict_reproducibility") or "inputs" in state:
+            require_same_inputs(state.get("inputs"), inputs)
+
+    peft_config, base_model = build_model(config, device, torch)
 
     model = attach_adapter(base_model, peft_config, resume_dir)
     trainable = [p for p in model.parameters() if p.requires_grad]
@@ -482,10 +544,13 @@ def train(
         optimizer.load_state_dict(state["optimizer"])
         scheduler.load_state_dict(state["scheduler"])
         cursor = int(state.get("cursor", start_step * grad_accum))
-        try:
+        if "rng" in state:
+            restore_rng(state["rng"], torch)
+        elif config.get("strict_reproducibility"):
+            raise ValueError("checkpoint lacks complete RNG state")
+        else:
             torch.set_rng_state(state["torch_rng"].cpu())
-        except Exception as exc:
-            log(f"WARNING: could not restore the torch RNG state: {exc}")
+            log("legacy checkpoint: only CPU torch RNG was recorded; exact device resume is unproven")
         log(f"resumed at step {start_step}, micro-batch cursor {cursor}")
     else:
         cursor = start_step * grad_accum
@@ -509,15 +574,21 @@ def train(
         "run_name": config["run_name"],
         "started_at": now_ist(),
         "device": device,
+        "hardware": hardware,
         "git_sha": git_sha(),
-        "versions": installed_versions(),
+        "bundle_sha256": sha256_file(ROOT / "BUNDLE_MANIFEST.json") if (ROOT / "BUNDLE_MANIFEST.json").is_file() else None,
+        "versions": versions,
         "base_model": dict(zip(("repo_id", "revision"), load_base_pin())),
         "config": config,
+        "inputs": inputs,
+        "system_prompt": system_prompt,
         "data": {
             "dir": str(data_dir),
             "train_rows": len(train_rows),
             "train_rows_encoded": len(encoded_train),
             "val_rows_encoded": len(encoded_val),
+            "val_intents_sampled": sorted({r.get("intent", "unknown") for r in val_slice}),
+            "val_loss_aggregation": "mean per predicted assistant token",
             "dropped_overlength": collator.dropped_overlength,
         },
         "steps": {
@@ -536,6 +607,8 @@ def train(
         folder = run_dir / f"{CHECKPOINT_PREFIX}{step}"
         folder.mkdir(parents=True, exist_ok=True)
         model.save_pretrained(str(folder))
+        collator.tokenizer.save_pretrained(str(folder))
+        (folder / "prompt.txt").write_text(system_prompt + "\n", encoding="utf-8")
         torch.save(
             {
                 "step": step,
@@ -543,6 +616,8 @@ def train(
                 "optimizer": optimizer.state_dict(),
                 "scheduler": scheduler.state_dict(),
                 "torch_rng": torch.get_rng_state(),
+                "rng": capture_rng(torch),
+                "inputs": inputs,
             },
             folder / "state.pt",
         )
@@ -559,6 +634,10 @@ def train(
         return folder
 
     started = time.perf_counter()
+    summary["initial_val_loss"] = evaluate(model, val_batches, device, torch)
+    if not math.isfinite(summary["initial_val_loss"]):
+        raise ValueError("validation loss is non-finite before the first update")
+    log(f"validation before update {start_step + 1}: {summary['initial_val_loss']:.4f}")
     logged: dict[int, dict[str, float]] = {}
     step = start_step
     if start_step >= max_steps:
@@ -627,13 +706,17 @@ def run_smoke(config: dict[str, Any], device: str, run_dir: Path) -> int:
     first = train(config, device=device, resume=False, run_dir=run_dir)
     first_losses = {int(k): v for k, v in first["logged"].items()}
 
-    for step, folder in checkpoint_dirs(run_dir):
-        if step > resume_from:
-            shutil.rmtree(folder)
-            log(f"removed {folder.name} so --resume picks {CHECKPOINT_PREFIX}{resume_from}")
+    # Preserve the uninterrupted run; the proof resumes a copy in its own directory.
+    proof_dir = run_dir / "resume-proof"
+    if proof_dir.exists():
+        raise ValueError(f"resume proof already exists: {proof_dir}")
+    source = run_dir / f"{CHECKPOINT_PREFIX}{resume_from}"
+    if not source.is_dir():
+        raise ValueError(f"smoke did not save required checkpoint: {source}")
+    shutil.copytree(source, proof_dir / source.name)
 
     log(f"smoke phase 2: resuming from step {resume_from}")
-    second = train(config, device=device, resume=True, run_dir=run_dir)
+    second = train(config, device=device, resume=True, run_dir=proof_dir)
     second_losses = {int(k): v for k, v in second["logged"].items()}
 
     compared = sorted(set(first_losses) & set(second_losses))
@@ -645,6 +728,7 @@ def run_smoke(config: dict[str, Any], device: str, run_dir: Path) -> int:
     ok = bool(compared) and worst <= tolerance and second["final_step"] == max_steps
     report = {
         "run_dir": str(run_dir),
+        "resume_proof_dir": str(proof_dir),
         "device": device,
         "resume_from": resume_from,
         "steps": max_steps,

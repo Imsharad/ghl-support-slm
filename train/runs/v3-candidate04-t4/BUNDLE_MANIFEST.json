@@ -1,0 +1,28 @@
+{
+  "config": "configs/train-v3-candidate04-t4.yaml",
+  "files": {
+    "README.md": "696b177c8ea80b87b6548feac02ab7c81c7b9658e87708d30473a7543270729f",
+    "configs/prompt-v3.txt": "fb45ab8d4a58a83fb3d0541abb350bbe6ee20a666c1b5703ea0c771f029b82ce",
+    "configs/prompt.txt": "d738ddb811ab3d1bb0d0804b2f1a9978b48435f9adb518159b5360ff7bd53443",
+    "configs/train-v3-candidate04-t4.yaml": "e075ca1e7f6484fd944aae4b47e1ea6c504f443fd940edb354747e7e21813d70",
+    "configs/versions.json": "c38c69c941986fa5e53bad37d13d041cf3abd073a2e814a345df7ced2f9d99f8",
+    "data/prepare.py": "544cf610bb11c5894ac77ffbf3f0031380a7135dd6faa2cfa1f9b43250098aed",
+    "data/processed/v3-candidate04/manifest.json": "db211b5f4b4a7e948cc5184e48c681d8d0357ad8c35f11e94cfb87775ab1127a",
+    "data/processed/v3-candidate04/train.jsonl": "93997e0e375746c103b00f1fe32c51c6018af1085069140243f415dededa9a15",
+    "data/processed/v3-candidate04/val.jsonl": "3e4e864b1583a781f3747140102077f53bbd0b9734ce3e689c28d16a125c2b80",
+    "pyproject.toml": "14efabc49ef2a168bca56ed6a4ae93946a7e92bb74c2ec47f4d07ead4f8deaf3",
+    "tools/check_cuda_host.py": "5a3e69a983a534811f909af34527b146b1996e8684cbaed0267b0ad48d57fe00",
+    "tools/check_run.py": "f9c4ddfff7a016f78890d0be1c94c5672c962162f29d2c35310ee1e2c723f972",
+    "tools/run_training_bundle.py": "8db051769b40d2ebc1a1fa5bd6797b855d13dbb80d1283bda6abb6518342e74d",
+    "train/collate.py": "e9ada9c529eee21d194791921ec94fd2bf767b2f41c9bae1852e5c9204071fbd",
+    "train/plot_curves.py": "eb256fb81bdcff15584fafaf5cc89cec373f9facc0004897da1a4c49db3f77f4",
+    "train/render.py": "d37f176f89b20a37cc9bee922fc0c89b5d0862b49d073ca69971d58c55c452b2",
+    "train/repro.py": "59002d02949737b2df5e2d6c82d3977b56d5608720c4fcd94a22cc45ab3f6cc2",
+    "train/train.py": "828044d2c9de9edc5aa7e227f6f40b39ac1fc4ccc5ebf36766dee9ff19fcb24f",
+    "uv.lock": "f4994b6c672eb2276f1552a1af26951adee0fbf214c2671746078f4da91cbef4"
+  },
+  "git_sha": "dda625f578ca4c66e1b4925e603734428d29e7f2",
+  "schema": 1,
+  "scope": "Training code, train/validation corpus, pinned environment; final evaluation excluded",
+  "spending_authority": "None. Bundle creation does not authorize provisioning or paid services."
+}

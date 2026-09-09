@@ -1,0 +1,153 @@
+{
+  "schema": 1,
+  "created_utc": "2026-09-09T08:12:36.026425+00:00",
+  "api_url": "http://127.0.0.1:8014",
+  "purpose": "live_development_demo_smoke_not_benchmark_or_video",
+  "queries": [
+    {
+      "item_id": "bitext-008038",
+      "query": "I ned to speak to customer service",
+      "responses": {
+        "base": {
+          "model": "base",
+          "model_digest": "fa4e1b0f10cd2057e4f4ba8adafb8cbb6debcef94f123768928fbedcec86bd08",
+          "prompt_sha256": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+          "answer": "Hello! I'm here to help. To speak to customer service, you can try calling our support line at 1-800-123-4567 or visit our website at www.example.com/support. If you prefer, you can also send us a message through our contact form. Is there anything specific you would like to discuss?",
+          "prompt_tokens": 238,
+          "gen_tokens": 74,
+          "latency_ms": 4509.201083914377,
+          "tokens_per_s": 64.79610015739848,
+          "truncated": false,
+          "device": null,
+          "request_latency_ms": 4557.606
+        },
+        "tuned": {
+          "model": "tuned",
+          "model_digest": "8017241387fedb54a10633459ecfdb22c0b95cfc0a779e4315fd777481d0eb2d",
+          "prompt_sha256": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+          "answer": "I can help you find the official contact page or call number for the business. Which channel do you prefer? I can't place a call or transfer you here. If you share the business's official contact details, I can look for the relevant option.",
+          "prompt_tokens": 238,
+          "gen_tokens": 52,
+          "latency_ms": 3929.8481669975445,
+          "tokens_per_s": 65.03396349968298,
+          "truncated": false,
+          "device": null,
+          "request_latency_ms": 3940.252
+        }
+      }
+    },
+    {
+      "item_id": "bitext-004940",
+      "query": "can I pay with PayPal?",
+      "responses": {
+        "base": {
+          "model": "base",
+          "model_digest": "fa4e1b0f10cd2057e4f4ba8adafb8cbb6debcef94f123768928fbedcec86bd08",
+          "prompt_sha256": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+          "answer": "Yes, you can pay with PayPal. To make a payment, go to the website or app where you want to make the purchase. Look for a \"Pay with PayPal\" button or option. Enter your PayPal email address and password to log in. If you don't have a PayPal account, you can create one by clicking the \"Create Account\" button. Once logged in, follow the prompts to complete the payment.",
+          "prompt_tokens": 237,
+          "gen_tokens": 85,
+          "latency_ms": 1469.4250830216333,
+          "tokens_per_s": 65.20666839293011,
+          "truncated": false,
+          "device": null,
+          "request_latency_ms": 1476.675
+        },
+        "tuned": {
+          "model": "tuned",
+          "model_digest": "8017241387fedb54a10633459ecfdb22c0b95cfc0a779e4315fd777481d0eb2d",
+          "prompt_sha256": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+          "answer": "Yes, you can use PayPal to pay for the order. Check the purchase details for the payment option and the business's official PayPal payment instructions. If you don't see PayPal listed, contact the seller through its official support channel. I can't confirm whether it's available or process the payment here.",
+          "prompt_tokens": 237,
+          "gen_tokens": 61,
+          "latency_ms": 1072.8547079488635,
+          "tokens_per_s": 64.4850402180616,
+          "truncated": false,
+          "device": null,
+          "request_latency_ms": 1076.435
+        }
+      }
+    }
+  ],
+  "health": {
+    "status": "up",
+    "prompt_sha256": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+    "models": {
+      "base": {
+        "tag": "ghl-base",
+        "digest": "fa4e1b0f10cd2057e4f4ba8adafb8cbb6debcef94f123768928fbedcec86bd08"
+      },
+      "tuned": {
+        "tag": "ghl-support-v3-c03-s120",
+        "digest": "8017241387fedb54a10633459ecfdb22c0b95cfc0a779e4315fd777481d0eb2d"
+      }
+    },
+    "tuned_configured": true
+  },
+  "partial_analysis_status": {
+    "observed": {
+      "n": 106,
+      "intent_coverage": 27,
+      "pass_counts": {
+        "base": 59,
+        "tuned": 81
+      },
+      "micro_pass_rates": {
+        "base": 0.5566037735849056,
+        "tuned": 0.7641509433962265
+      },
+      "micro_difference_points": 20.754716981132077,
+      "critical_failures": {
+        "base": 11,
+        "tuned": 9
+      },
+      "credential_violations": {
+        "base": 1,
+        "tuned": 2
+      }
+    },
+    "observed_numeric_gates_only": "not_demonstrated",
+    "overall_improvement_established": false
+  },
+  "mixed_audit_status": {
+    "status": "incomplete",
+    "human_pairs": 29,
+    "automated_pairs": 77,
+    "missing_grade_questions": [
+      107,
+      108
+    ],
+    "missing_human_evidence_questions": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30
+    ],
+    "primary_all_human_evaluation_complete": false
+  }
+}

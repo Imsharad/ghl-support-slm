@@ -1,0 +1,17 @@
+{
+  "video": "demo.mp4",
+  "sha256": "0f9fc35f72f0d603d9d7439033d2c463c125b7ab79d8bc81bc37c7b11a65c6e5",
+  "codec": "h264",
+  "width": 1920,
+  "height": 1080,
+  "frames_per_second": 2,
+  "decoded_frames": 334,
+  "duration_seconds": 167.0,
+  "bytes": 945910,
+  "audio": false,
+  "original_recording_seconds": 166.9016,
+  "timing": "Actual terminal-output timeline; no time compression; video rounded up to the next half-second frame.",
+  "evidence": "ffprobe -count_frames decoded 334 frames successfully; source scene PNGs for live responses and results were visually checked. An actual MP4 frame decoded at 86 seconds was also visually inspected and matched the results scene without clipping.",
+  "delivery_copy": "/Users/sharad/Documents/Codex/2026-09-08/ghl-v3-execution/outputs/v3-demo-captioned.mp4",
+  "not_claimed": ["Desktop GUI screen capture", "Human voice-over", "A successful safety evaluation", "Employer submission or publication"]
+}

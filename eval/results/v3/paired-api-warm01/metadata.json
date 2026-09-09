@@ -1,0 +1,100 @@
+{
+  "schema": 1,
+  "started_at": "2026-09-08T15:47:31.422641+00:00",
+  "api_url": "http://127.0.0.1:8013",
+  "health_at_start": {
+    "status": "up",
+    "prompt_sha256": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+    "models": {
+      "base": {
+        "tag": "ghl-base",
+        "digest": "fa4e1b0f10cd2057e4f4ba8adafb8cbb6debcef94f123768928fbedcec86bd08"
+      },
+      "tuned": {
+        "tag": "ghl-support-v3-c03-s120",
+        "digest": "8017241387fedb54a10633459ecfdb22c0b95cfc0a779e4315fd777481d0eb2d"
+      }
+    },
+    "tuned_configured": true
+  },
+  "dev_sha256": "3e4e864b1583a781f3747140102077f53bbd0b9734ce3e689c28d16a125c2b80",
+  "benchmark_sha256": "0fac156bfcb23cafb30ae575b1b56a45939a7c31fc0ff83f87ff44b6e2b26fb3",
+  "client_hardware": {
+    "platform": "macOS-26.5-arm64-arm-64bit",
+    "machine": "arm64",
+    "processor": "Apple M1 Pro",
+    "logical_cpu_count": 10,
+    "memory_bytes": 17179869184
+  },
+  "server_hardware_note": "Client, FastAPI and Ollama run on this Apple M1 Pro, 10 logical CPUs, 16 GiB RAM, macOS 26.5. No remote inference. Desktop background load and thermal state are uncontrolled.",
+  "concurrency": 1,
+  "warmup_requests_per_model": 3,
+  "requests_per_model": 54,
+  "model_order": [
+    "base",
+    "tuned"
+  ],
+  "prompt_order": [
+    "bitext-000511",
+    "bitext-000905",
+    "bitext-001335",
+    "bitext-001443",
+    "bitext-002717",
+    "bitext-002826",
+    "bitext-003433",
+    "bitext-003194",
+    "bitext-004889",
+    "bitext-004543",
+    "bitext-005003",
+    "bitext-004940",
+    "bitext-006205",
+    "bitext-006294",
+    "bitext-007193",
+    "bitext-007154",
+    "bitext-008688",
+    "bitext-008038",
+    "bitext-009125",
+    "bitext-009339",
+    "bitext-010567",
+    "bitext-010871",
+    "bitext-010953",
+    "bitext-011559",
+    "bitext-012197",
+    "bitext-012455",
+    "bitext-012966",
+    "bitext-013343",
+    "bitext-014019",
+    "bitext-014879",
+    "bitext-015345",
+    "bitext-015014",
+    "bitext-016138",
+    "bitext-015986",
+    "bitext-017174",
+    "bitext-017367",
+    "bitext-018290",
+    "bitext-017951",
+    "bitext-019001",
+    "bitext-019340",
+    "bitext-020505",
+    "bitext-020033",
+    "bitext-021080",
+    "bitext-021405",
+    "bitext-021964",
+    "bitext-022680",
+    "bitext-022953",
+    "bitext-023317",
+    "bitext-023948",
+    "bitext-024169",
+    "bitext-025015",
+    "bitext-025306",
+    "bitext-026096",
+    "bitext-026357"
+  ],
+  "limitations": [
+    "Serial warm requests, not saturation capacity or streaming TTFT.",
+    "Initial cache state uncontrolled; warmup is not a cold-start measurement.",
+    "Models run sequentially; time/thermal/background-load confounding is possible.",
+    "Client hardware is measured locally; the server placement note is operator-supplied.",
+    "Answers and token lengths differ; latency alone is not a quality comparison."
+  ]
+}

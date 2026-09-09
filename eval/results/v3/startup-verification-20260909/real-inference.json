@@ -1,0 +1,46 @@
+{
+  "health": {
+    "status": "up",
+    "prompt_sha256": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+    "models": {
+      "base": {
+        "tag": "ghl-base",
+        "digest": "e98fe0ebada8cc722a58ef7392b496871d89a00d683b1a69b3fb53a065a73935"
+      },
+      "tuned": {
+        "tag": "ghl-support-v3-c03-s120",
+        "digest": "7ea4e7abb412200bff500c948561210e7dee0fb1649d2b8bfa5a57a57417a434"
+      }
+    },
+    "tuned_configured": true
+  },
+  "responses": {
+    "base": {
+      "model": "base",
+      "model_digest": "e98fe0ebada8cc722a58ef7392b496871d89a00d683b1a69b3fb53a065a73935",
+      "prompt_sha256": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+      "answer": "If you've forgotten your password, you can usually reset it by visiting the website or app where you registered and following these steps:\n\n1. **Log in**: Try to log in using your email address or phone number. If you can't remember the exact details, you might need to contact customer support for assistance.\n\n2. **Reset Password**: If you can't log in, you'll need to reset your password. Look for a \"Forgot Password\" or \"Reset Password\" option on the login page. This will typically take you to a form where you can enter your email address or phone number.\n\n3. **Verify**: After entering your information, you'll be prompted to verify your identity. This might involve sending a verification code to your email or phone number.\n\n4. **Enter New Password**: Once verified, you'll be asked to enter a new password. Make sure to choose a strong password that includes a mix of letters, numbers, and symbols.\n\n5. **Confirm**: Confirm your new password to complete the process.\n\nIf you're still having trouble, you can contact customer support for further assistance. They can guide you through the process or help you reset your password if you have a support account.",
+      "prompt_tokens": 241,
+      "gen_tokens": 244,
+      "latency_ms": 17939.922375022434,
+      "tokens_per_s": 64.61905401203359,
+      "truncated": false,
+      "device": null,
+      "request_latency_ms": 17952.908
+    },
+    "tuned": {
+      "model": "tuned",
+      "model_digest": "7ea4e7abb412200bff500c948561210e7dee0fb1649d2b8bfa5a57a57417a434",
+      "prompt_sha256": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+      "answer": "If you can't access the account, use the official password-reset process. Check the business's secure password-reset instructions for a verification code or recovery email. If you can't find the option, contact official support with the account name and request a password reset. I can't change the password here.",
+      "prompt_tokens": 241,
+      "gen_tokens": 61,
+      "latency_ms": 2788.648833055049,
+      "tokens_per_s": 65.9639405523668,
+      "truncated": false,
+      "device": null,
+      "request_latency_ms": 2799.055
+    }
+  },
+  "checked_at": 1788945441.900985
+}

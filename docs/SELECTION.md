@@ -151,3 +151,23 @@ Both were launched detached with `Popen(start_new_session=True)`; the launcher i
 line of `.scratch/d3_dev_run.log` and `.scratch/d3_test_run.log` as `launcher=opus`. One model at a
 time throughout: `ollama stop ghl-base` ran and `ollama ps` was empty before the first transformers
 load, and the four dev runs plus the test run are serial in a single process each.
+
+
+# v2: checkpoint selection on dev (run `v2-t4`, Colab T4)
+
+Written 2026-09-08 04:37 IST by Fable 5.1. Same rule as v1, pre-registered in `docs/plans/V2_PLAN.md` section 6 and `docs/v2/PLAN_DECISIONS.md`: candidates are steps 250, 300, 400 and 500; highest dev pass count, then fewest critical failures, then the earliest step; dev set only (`eval/dev.jsonl`, 54 items), never a sealed set. **`checkpoint-250` was selected.**
+
+| step | candidate | passes / 54 | pass rate | critical failures |
+|---:|---|---:|---:|---:|
+| 100 | no | 8 | 14.8% | 15 |
+| 200 | no | 6 | 11.1% | 17 |
+| 250 | yes | 6 | 11.1% | 14 |
+| 300 | yes | 4 | 7.4% | 15 |
+| 400 | yes | 6 | 11.1% | 14 |
+| 500 | yes | 3 | 5.6% | 14 |
+
+250 and 400 tie on both keys, so the earlier step wins. `checkpoint-100` scored 8 passes but is not a pre-registered candidate; it is recorded here and was not selected, because changing the candidate set after seeing the numbers is exactly what pre-registration forbids. `checkpoint-200` is recorded for the same reason.
+
+**The judge differs from v1's, and the counts are not comparable across versions.** v1's dev pass counts (9 to 13 of 54) were read by hand by Fable 5.1. For v2 the 324 dev answers were judged by `grok-4.5-build` through `grok -p`, six cards per call, with the same three rubric questions v1's hand pass used (critical if it states as done or true what the facts do not support; else pass if a careful support lead would send it unedited), because the hours were not there at 04:30 IST. Grok is the harsher reader: every v2 checkpoint sits well below v1's hand-judged counts, and the critical counts (14 to 17) are of the same order as v1's hand-judged 14 to 20. The selection only needs the ordering, and the ordering is stable under that harshness. Judgment files: `train/runs/v2-t4/dev-<step>-judgments.jsonl`; record: `train/runs/v2-t4/selection.json` and `artifacts/selection.json`.
+
+Run facts from `train/runs/v2-t4/config.json`: device cuda, git sha `33bdbbd`, 500 steps, wall 4832 s, peak memory 2.94 GB. The dev answers were generated on the same T4 through the transformers backend from the merged fp16 weights of each checkpoint (`eval/run.py --backend transformers --device cuda`), 54 of 54 with `--check-complete` passing for every checkpoint.

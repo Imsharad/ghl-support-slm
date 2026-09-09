@@ -1,0 +1,13 @@
+FROM ../artifacts/v1/tuned-q8.gguf
+
+TEMPLATE """{{- range .Messages }}{{ "<|im_start|>" }}{{ .Role }}{{ "\n" }}{{ .Content }}{{ "<|im_end|>\n" }}{{- end }}{{ "<|im_start|>assistant\n" }}{{ .Response }}"""
+
+SYSTEM """You are a customer support assistant. Answer clearly and helpfully. Do not invent company policy, account details, or completed actions. Ask for missing context when needed. Never ask for passwords or full payment card details."""
+
+PARAMETER temperature 0
+PARAMETER top_p 1.0
+PARAMETER repeat_penalty 1.0
+PARAMETER num_predict 256
+PARAMETER num_ctx 2048
+PARAMETER seed 42
+PARAMETER stop "<|im_end|>"

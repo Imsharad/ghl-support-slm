@@ -34,7 +34,10 @@ MODEL_OUTPUT = re.compile(r"^eval/results/")
 
 
 def git(*args):
-    return subprocess.run(["git", *args], capture_output=True, text=True, check=False).stdout
+    # Binary artifacts can contain invalid UTF-8. Match tree_blob's tolerant
+    # decoding while retaining ASCII secret detection, rather than skipping video.
+    return subprocess.run(["git", *args], capture_output=True, text=True,
+                          errors="replace", check=False).stdout
 
 
 def staged_paths():

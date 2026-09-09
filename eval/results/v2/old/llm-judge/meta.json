@@ -1,0 +1,10 @@
+{
+ "model": "gemini-3.8-flash-high",
+ "started": "2026-09-08 04:39 IST",
+ "finished": "2026-09-08 04:50 IST",
+ "batch": 6,
+ "workers": 4,
+ "cards": 54,
+ "missing": [],
+ "sheet_sha256": "153580143afac9e9e359c8c672e45ce42fd48ea77e1d33c120700713cf685911"
+}

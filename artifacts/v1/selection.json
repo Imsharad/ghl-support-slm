@@ -1,0 +1,58 @@
+{
+  "checkpoint": "train/runs/local-t4/checkpoint-400",
+  "step": 400,
+  "dev_pass_rate": 0.2407,
+  "critical_errors": 20,
+  "reason": "Selected on eval/dev.jsonl only, 54 rows per checkpoint judged against eval/RUBRIC.md. checkpoint-400 has the highest dev pass rate, 13 of 54 against 12 for 300 and 500 and 9 for 250, and the briefed tiebreak order is pass rate, then critical errors, then the earlier checkpoint. The margin is one item and 400 also carries the most critical failures (20 against 18 for 300 and 500), so this is a weak selection: 400 and 500 are not separable at this sample size. Nothing from the Bitext test split and nothing from the training validation loss was used.",
+  "candidates": [
+    {
+      "step": 250,
+      "n": 54,
+      "passes": 9,
+      "pass_rate": 0.1667,
+      "critical": 14,
+      "errors": 0,
+      "truncated": 0,
+      "mean_gen_tokens": 87.9,
+      "mean_latency_s": 5.2
+    },
+    {
+      "step": 300,
+      "n": 54,
+      "passes": 12,
+      "pass_rate": 0.2222,
+      "critical": 18,
+      "errors": 0,
+      "truncated": 1,
+      "mean_gen_tokens": 109.1,
+      "mean_latency_s": 5.97
+    },
+    {
+      "step": 400,
+      "n": 54,
+      "passes": 13,
+      "pass_rate": 0.2407,
+      "critical": 20,
+      "errors": 0,
+      "truncated": 0,
+      "mean_gen_tokens": 98.0,
+      "mean_latency_s": 5.4
+    },
+    {
+      "step": 500,
+      "n": 54,
+      "passes": 12,
+      "pass_rate": 0.2222,
+      "critical": 18,
+      "errors": 0,
+      "truncated": 0,
+      "mean_gen_tokens": 89.2,
+      "mean_latency_s": 4.9
+    }
+  ],
+  "rule": "highest dev pass rate, then fewest critical errors, then earliest step",
+  "dev_rows": 54,
+  "rubric": "eval/RUBRIC.md",
+  "judge": "Opus, single judge, one line per item in eval/results/dev-<step>-judgments.jsonl",
+  "selected_at": "2026-09-06 06:04:15 IST"
+}

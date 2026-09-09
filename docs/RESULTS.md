@@ -129,3 +129,183 @@ scores=.../eval/results/scores.jsonl summary=.../eval/results/summary.jsonl fail
 ## One-line verdict for the README
 
 Fine-tuning Qwen2.5-1.5B-Instruct on 8,000 cleaned Bitext rows made it write like Bitext (+15 ROUGE-L points on held-out Bitext) and made it a worse support assistant on 54 sealed, out-of-distribution queries (pass rate 29.6% to 13.0%, critical failures 2 to 8, LLM-judged with adjudication, not human-scored). The cause is in the data: the corpus never says "I don't know".
+
+# v2 results: the data repair on the fresh sealed set
+
+Written 2026-09-08 04:55 IST by Fable 5.1 (nodes Gate2 scoring, Results writeup). v1 above is unchanged. v2 retrained the identical recipe (`configs/train-t4.yaml`, seed 42, 8,000-row cap) on the repaired data described in `docs/v2/DATA_V2.md`: placeholders substituted instead of rejected, plus 206 synthetic admission rows. Everything else is frozen: base model, prompt, decoding, rubric, judge protocol, serving path.
+
+## Headline on the fresh sealed set
+
+`eval/challenge_v2.jsonl`, 54 items, two per intent, sha256 `c86af5322452b8d4fb84b60c6dc1375a7b2ec4a1db3c5fc5beae8b3de2d9df72`, sealed 2026-09-07 18:12 IST in `eval/SEAL_v2.json` before any v2 row was generated (Gate 1: Grok-4.5 drafted under a reading ban, Sol's checker found and Grok-4.5 reworded 14 six-gram collisions with the v1 set, shark delegated the review, Sonnet read it independently). No v2 answer existed before the seal.
+
+| fresh sealed set, n = 54 | base (`ghl-base`, Q8) | tuned v2 (`ghl-support`, Q8) |
+|---|---:|---:|
+| pass rate | **8 / 54 = 14.8%** | **12 / 54 = 22.2%** |
+| critical failures (invented facts) | 6 | 12 |
+
+| difference (tuned minus base) | 95% interval (paired bootstrap, 2,000 draws, seed 42) | preferred: tuned / tie / base | verdict |
+|---:|---:|---:|---|
+| **+7.4 points** | [-7.4, +22.2] | 22 / 12 / 20 | **negative** |
+
+| kind | n | base pass | tuned pass | diff | base critical | tuned critical |
+|---|---:|---:|---:|---:|---:|---:|
+| hard | 27 | 11.1% | 14.8% | +3.7 | 2 | 7 |
+| ordinary | 27 | 18.5% | 29.6% | +11.1 | 4 | 5 |
+
+| intent | n | base pass | tuned pass | diff (points) | base critical | tuned critical |
+|---|---:|---:|---:|---:|---:|---:|
+| cancel_order | 2 | 0% | 50% | +50 | 0 | 0 |
+| change_order | 2 | 0% | 0% | +0 | 0 | 0 |
+| change_shipping_address | 2 | 0% | 0% | +0 | 0 | 0 |
+| check_cancellation_fee | 2 | 100% | 0% | -100 | 0 | 2 |
+| check_invoice | 2 | 0% | 0% | +0 | 0 | 0 |
+| check_payment_methods | 2 | 0% | 0% | +0 | 0 | 1 |
+| check_refund_policy | 2 | 0% | 0% | +0 | 1 | 2 |
+| complaint | 2 | 0% | 0% | +0 | 0 | 0 |
+| contact_customer_service | 2 | 50% | 0% | -50 | 0 | 2 |
+| contact_human_agent | 2 | 0% | 50% | +50 | 0 | 0 |
+| create_account | 2 | 50% | 0% | -50 | 0 | 0 |
+| delete_account | 2 | 0% | 50% | +50 | 1 | 0 |
+| delivery_options | 2 | 0% | 0% | +0 | 1 | 2 |
+| delivery_period | 2 | 0% | 0% | +0 | 0 | 0 |
+| edit_account | 2 | 50% | 100% | +50 | 0 | 0 |
+| get_invoice | 2 | 0% | 100% | +100 | 0 | 0 |
+| get_refund | 2 | 0% | 50% | +50 | 0 | 1 |
+| newsletter_subscription | 2 | 0% | 0% | +0 | 0 | 0 |
+| payment_issue | 2 | 0% | 50% | +50 | 0 | 0 |
+| place_order | 2 | 0% | 0% | +0 | 0 | 0 |
+| recover_password | 2 | 0% | 0% | +0 | 0 | 0 |
+| registration_problems | 2 | 50% | 0% | -50 | 1 | 0 |
+| review | 2 | 100% | 50% | -50 | 0 | 0 |
+| set_up_shipping_address | 2 | 0% | 0% | +0 | 0 | 1 |
+| switch_account | 2 | 0% | 50% | +50 | 1 | 1 |
+| track_order | 2 | 0% | 50% | +50 | 0 | 0 |
+| track_refund | 2 | 0% | 0% | +0 | 1 | 0 |
+
+**Report sentence.** V1 was negative; v2 is **negative** on the fresh sealed set sealed set: base 8/54, tuned 12/54, difference +7.4 points, interval [-7.4, +22.2], critical 6 base vs 12 tuned; ordinary passes base 5 vs tuned 8; Gate 2 failed.
+
+Gate 2, pre-registered in `docs/v2/PLAN_DECISIONS.md` (decision 8) before the run: v2 becomes the headline only if the fresh verdict is positive and the tuned model's passes on ordinary items are at least the base model's (the over-refusal guard, using the existing by-kind count, not a new metric). The fresh verdict is **negative**: the tuned model passes more items (12 against 8) and the ordinary-item guard holds (8 against 5), but it makes twice the critical failures (12 against 6), and the rule pre-registered before v1 makes any rise in critical failures a negative. The interval on the pass-rate difference, [-7.4, +22.2], also crosses zero. **Gate 2 failed; v1's headline stands and the base-model recommendation stands.**
+
+## Scoring provenance
+
+Same protocol as v1, same scripts, explicit paths under `eval/results/v2/fresh/` so nothing of v1 was overwritten: both models through the Ollama HTTP path (`ghl-base` Q8 against the v2 `ghl-support` Q8 built from checkpoint-250), greedy, seed 42, 2,048-token context, 256 new tokens; answers shuffled into A and B by `eval/blind.py`, the key gitignored and read only by `eval/score.py` after the sheet was final. Gemini 3.8 Flash scored every card twice with A and B swapped (self-agreement pass_A 54/54, critical_A 53/54, pass_B 52/54, critical_B 53/54, preferred 41/54); Fable 5.1 read all 54 cards against `eval/RUBRIC.md` with the Flash reason beside each and resolved the 15 cards where Flash disagreed with itself, changing 21 fields on 16 cards; every change and its rubric reason is in `eval/results/v2/fresh/llm-judge/adjudication.json` and in the `notes` column of the scored sheet. As in v1, this is an LLM-judged sheet with adjudication, not a human-scored one, and an LLM judge is harsher than a person on "no actionable next step", so both pass rates are probably a few points low.
+
+## The one v1-to-v2 comparison that holds: the sign flipped on the old set
+
+The old sealed set gives a paired comparison the fresh set cannot, because its base answers are the same file in both scoring sessions (`eval/results/base-challenge-raw.jsonl`, sha256 `af34058f50ff7e90...`, unchanged since 6 September). Each session scored a tune against that file, and each delta is measured inside its own session:
+
+| session | set | base | tune | difference | critical, base vs tune |
+|---|---|---:|---:|---:|---:|
+| 6 September, v1 | old | 16 / 54 | 7 / 54 | **-16.7 points** | 2 vs 8 |
+| 8 September, v2 | old | 4 / 54 | 10 / 54 | **+11.1 points** | 3 vs 6 |
+| 8 September, v2 | fresh | 8 / 54 | 12 / 54 | **+7.4 points** | 6 vs 12 |
+
+**The tune went from below the base model to above it on the same eval file, and the fresh set agrees on the direction.** Read that as an ordering, not as a 27.8-point gain: the base's own score halved on identical text between the two sessions, so the scale moved under both arms and the difference of the two differences is not a measurement of anything.
+
+### Why the base scored 16 in one session and 4 in the other, on the same answers
+
+Worth taking seriously, because if this were a bug every v2 number would be void. It is not a bug, and three checks say what it is.
+
+| check | result | what it rules out |
+|---|---|---|
+| Is it the adjudication depth? v1's sheet was adjudicated over all 54 cards, the old set's over its 13 split cards only. | Raw Gemini Flash, before any adjudication, already scored base **12/54 in the v1 session and 6/54 in the v2 session**. Adjudication then added 4 in v1 and removed 2 in v2. | Adjudication asymmetry explains under half of the gap; the judge itself moved first. |
+| Is it noise? | The v2 session's 6 base passes are a **strict subset** of the v1 session's 12: six lost (`ch-002`, `ch-014`, `ch-017`, `ch-025`, `ch-043`, `ch-047`), none gained. | Random variation. A stricter threshold applied consistently produces exactly this shape. |
+| Is the judge penalising the base model's longer answers? | Passing answers are longer than failing ones in **both** sessions and by a similar margin (120 against 81 words in the v1 session, 123 against 85 in the v2 session, same text). | A length or style bias that appeared between sessions. |
+
+So the judge is internally consistent within a session and uncalibrated across sessions: it moved its bar for "would a careful support lead send this unedited" and applied the new bar uniformly. **Absolute pass rates are session-relative and must never be quoted across sessions. Within-session pairs are what this evaluation measures.**
+
+### What still corroborates the direction, and what still weakens it
+
+The preference column is a separate judgement from pass or fail, made card by card, and it moves the same way: base was preferred 29 to 18 in the v1 session, the v2 tune is preferred 27 to 21 on the old set and 22 to 20 on the fresh set. Two metrics, two sealed sets, one direction.
+
+Against that stands a mechanism nothing here can rule out. Both replies are scored inside one prompt, so a card's verdict on one reply is contaminated by the other; when the sibling improves, a borderline reply is re-read against a higher implicit bar. That inflates the delta in both directions, and it is the most likely reason the same base answers lost six passes. Under that reading the near-tie on preference (22 against 20) is the conservative estimate of how much actually changed, and +7.4 pass-rate points is the optimistic one.
+
+**The conclusion does not depend on which of those is right.** Gate 2 fails on the critical-failure count, the most objective judgement in the rubric (did the reply state as done or true something the facts do not support), and that count moved the wrong way in every session and on both sets: the tune invents at twice the base rate on the fresh set and on the old set, against four times in v1. Better, and still the wrong side of a bar that was set before any of this was measured.
+
+The critical-failure ratio moved the same way and did not go far enough: the v1 tune invented facts at four times the base rate, the v2 tune at twice, on both sets. That ratio is why Gate 2 fails, and it is also the number to watch in a v3.
+
+## The judge drifts between sessions: read every v2 number as paired, same-session only
+
+The old set's base answers are v1's own file (`eval/results/base-challenge-raw.jsonl`, unchanged). Scored on 2026-09-06 by the same protocol they passed 16 of 54; scored again today, in the same run as the v2 answers, they pass 4 of 54. Nothing about the answers changed; the judge did (a different Flash session, a different A/B shuffle, and an adjudicator who read only the split cards on this secondary set). So a v2 pass rate must never be set beside a v1 pass rate as if they were on one scale. What is on one scale is base against tuned inside one scoring session, which is what the verdicts above compare. This is the largest caveat in this document and it applies to v1's numbers as much as to v2's: an LLM-judged sheet is a paired comparison, not an absolute score.
+
+## The old sealed set, secondary and contaminated
+
+The old challenge file is unchanged, but its answers informed the v2 data fix; v2 results on that set are contaminated, secondary, and not evidence of held-out improvement. Reported for continuity only, never pooled with the fresh set:
+
+| old sealed set, n = 54 | base (`ghl-base`, Q8) | tuned v2 (`ghl-support`, Q8) |
+|---|---:|---:|
+| pass rate | **4 / 54 = 7.4%** | **10 / 54 = 18.5%** |
+| critical failures (invented facts) | 3 | 6 |
+
+| difference (tuned minus base) | 95% interval (paired bootstrap, 2,000 draws, seed 42) | preferred: tuned / tie / base | verdict |
+|---:|---:|---:|---|
+| **+11.1 points** | [+0.0, +24.1] | 27 / 6 / 21 | **negative** |
+
+| kind | n | base pass | tuned pass | diff | base critical | tuned critical |
+|---|---:|---:|---:|---:|---:|---:|
+| hard | 27 | 3.7% | 18.5% | +14.8 | 1 | 4 |
+| ordinary | 27 | 11.1% | 18.5% | +7.4 | 2 | 2 |
+
+| intent | n | base pass | tuned pass | diff (points) | base critical | tuned critical |
+|---|---:|---:|---:|---:|---:|---:|
+| cancel_order | 2 | 50% | 50% | +0 | 0 | 0 |
+| change_order | 2 | 0% | 0% | +0 | 0 | 0 |
+| change_shipping_address | 2 | 0% | 0% | +0 | 1 | 0 |
+| check_cancellation_fee | 2 | 0% | 0% | +0 | 0 | 0 |
+| check_invoice | 2 | 50% | 0% | -50 | 0 | 0 |
+| check_payment_methods | 2 | 0% | 0% | +0 | 0 | 2 |
+| check_refund_policy | 2 | 0% | 0% | +0 | 0 | 1 |
+| complaint | 2 | 0% | 0% | +0 | 0 | 0 |
+| contact_customer_service | 2 | 0% | 50% | +50 | 0 | 0 |
+| contact_human_agent | 2 | 0% | 0% | +0 | 0 | 0 |
+| create_account | 2 | 0% | 50% | +50 | 0 | 0 |
+| delete_account | 2 | 0% | 0% | +0 | 0 | 0 |
+| delivery_options | 2 | 0% | 0% | +0 | 0 | 2 |
+| delivery_period | 2 | 0% | 0% | +0 | 1 | 0 |
+| edit_account | 2 | 0% | 100% | +100 | 0 | 0 |
+| get_invoice | 2 | 0% | 0% | +0 | 0 | 0 |
+| get_refund | 2 | 0% | 50% | +50 | 1 | 0 |
+| newsletter_subscription | 2 | 0% | 50% | +50 | 0 | 0 |
+| payment_issue | 2 | 0% | 0% | +0 | 0 | 0 |
+| place_order | 2 | 0% | 50% | +50 | 0 | 0 |
+| recover_password | 2 | 50% | 0% | -50 | 0 | 0 |
+| registration_problems | 2 | 0% | 0% | +0 | 0 | 0 |
+| review | 2 | 50% | 50% | +0 | 0 | 0 |
+| set_up_shipping_address | 2 | 0% | 50% | +50 | 0 | 0 |
+| switch_account | 2 | 0% | 0% | +0 | 0 | 1 |
+| track_order | 2 | 0% | 0% | +0 | 0 | 0 |
+| track_refund | 2 | 0% | 0% | +0 | 0 | 0 |
+
+V1 was negative; v2 is **negative** on the old sealed set sealed set: base 4/54, tuned 10/54, difference +11.1 points, interval [+0.0, +24.1], critical 3 base vs 6 tuned; ordinary passes base 3 vs tuned 5; Gate 2 failed.
+
+## Checkpoint selection
+
+Dev set only (`eval/dev.jsonl`, 54 items), same rule as v1: highest pass count, then fewest critical failures, then the earliest step; the judge for dev was `grok-4.5-build` by shell-out (`dev_judge.py`, same three questions as v1's hand judging), because the person-hours were not there at 04:00 IST. Candidates and the pick are in `docs/SELECTION.md` (v2 section) and `train/runs/v2-t4/selection.json`. Nothing was selected on any sealed set.
+
+| step | candidate | dev passes / 54 | critical |
+|---:|---|---:|---:|
+| 100 | no | 8 | 15 |
+| 200 | no | 6 | 17 |
+| 250 | yes | 6 | 14 |
+| 300 | yes | 4 | 15 |
+| 400 | yes | 6 | 14 |
+| 500 | yes | 3 | 14 |
+
+## Training run
+
+Free Colab T4, session `ghl-v2`, the notebook `notebooks/train_colab.ipynb` executed top to bottom; the executed copy with every cell's output is `notebooks/v2_colab_run.ipynb`. From `train/runs/v2-t4/config.json`: git sha `33bdbbd`, device cuda, 500 steps, wall 4832 s, peak memory 2.94 GB; `tools/check_run.py` passed on the VM and again on the Mac after download. Headline rule fixed before launch: this run is the v2 substrate because it finished clean and its artifacts were downloaded and gated before 09:00 IST; no Mac run was started (swap on the Mac stood at 12 of 14 GB during generation).
+
+## Files and verification
+
+- `eval/results/v2/fresh/`: `base-challenge-raw.jsonl`, `tuned-challenge-raw.jsonl`, `blind-sheet.csv`, `blind-sheet-scored.csv` (sha256 `4029e8907b60a9adfeddf33ef0a0dbc39dc30b77e9ca2bc210c7e9b20bcadb3d`), `scores.jsonl`, `summary.jsonl`, `failures.jsonl`, `llm-judge/`.
+- `eval/results/v2/old/`: the same for the old set.
+- `artifacts/tuned-q8.gguf` is now the v2 model (sha256 `9e72a8f958f9a9ae183e67f0679d227b95803dcce0ad7f3f5b0327bebb887289`); v1's artifacts are archived under `artifacts/v1/` and served as `ghl-support-v1`.
+
+```
+$ uv run python eval/score.py --final --require-complete --sheet eval/results/v2/fresh/blind-sheet-scored.csv --key eval/results/v2/fresh/blind-key.json --scores eval/results/v2/fresh/scores.jsonl --summary eval/results/v2/fresh/summary.jsonl --failures eval/results/v2/fresh/failures.jsonl --n-boot 2000 --seed 42
+n=54 base=0.148 tuned=0.222 diff_points=7.41 ci95=[-7.4074, 22.2222] verdict=negative
+```
+
+## One-line verdict for the README
+
+The data repair moved the pass rate the right way and the critical count the wrong way: on 54 fresh sealed queries the v2 tune passes 12 where the base passes 8 (+7.4 points, interval [-7.4, +22.2]), and invents facts on 12 where the base does on 6. Negative by the pre-registered rule; the base model is still the one to ship.

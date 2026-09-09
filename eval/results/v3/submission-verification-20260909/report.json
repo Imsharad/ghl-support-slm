@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "environment": "New local venv via uv sync --frozen --extra serve; shared download/model caches; macOS M1 Pro",
+  "tests": {
+    "passed": 239,
+    "skipped": 1,
+    "failed": 0
+  },
+  "v1_original_split_hashes_reproduced": true,
+  "v3_candidate03_split_sha256": {
+    "train": "a6ced0e32a8eba51d75069f9b16d0dd44a4b787c008e15d3e69e88f9d5924382",
+    "val": "3e4e864b1583a781f3747140102077f53bbd0b9734ce3e689c28d16a125c2b80"
+  },
+  "v3_training_rows": 243,
+  "v3_validation_rows": 54,
+  "live_http_requests": 4,
+  "http_port": 8014,
+  "purpose": "Submission reproducibility and runtime smoke; not new training, benchmark or final evaluation",
+  "video": {
+    "sha256": "0f9fc35f72f0d603d9d7439033d2c463c125b7ab79d8bc81bc37c7b11a65c6e5",
+    "decoded_frames": 334,
+    "duration_seconds": 167,
+    "width": 1920,
+    "height": 1080,
+    "audio": false
+  },
+  "publication": "not yet authorized/published",
+  "limitations": [
+    "Evaluation remains partial mixed-judge and failed its fixed safety gate.",
+    "Existing model downloads and original Ollama tags were reused; artifact hashes were checked.",
+    "No new GPU training was run for this verification."
+  ],
+  "published_score_arithmetic_replayed": true,
+  "v3_release_artifact_hashes_verified": true
+}
