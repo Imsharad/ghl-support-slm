@@ -4,6 +4,18 @@ This repository answers the customer-support fine-tuning assignment in
 [`docs/ASSIGNMENT.md`](docs/ASSIGNMENT.md). It keeps training, evaluation, conversion, and local
 serving reproducible from pinned inputs.
 
+## Index
+
+- [Submission closeout: measured gains, unresolved safety failures](#submission-closeout-measured-gains-unresolved-safety-failures)
+- [v3: run the currently served candidate03 locally](#v3-run-the-currently-served-candidate03-locally)
+  - [Exact v3 prompt and adapter loading](#exact-v3-prompt-and-adapter-loading)
+  - [v3 experiment and reproduction](#v3-experiment-and-reproduction)
+  - [Post-hoc mixed grading status](#post-hoc-mixed-grading-status-2026-09-09)
+  - [Partial mixed-judge result](#partial-mixed-judge-result--task-success-gain-safety-gate-failed)
+  - [v3 measured HTTP performance](#v3-measured-http-performance)
+- [Historical v1/v2 documentation](#historical-v1v2-documentation)
+- [Developer quickstart](#developer-quickstart)
+
 ## Submission closeout: measured gains, unresolved safety failures
 
 V3 candidate03 step120 is the final evaluated and demonstrated artifact for this
