@@ -1,11 +1,24 @@
 # Notebooks
 
-Two files, one purpose each.
+Four notebooks cover the current v3 review path and the historical v2 run.
 
 | file | what it is |
 |---|---|
+| [`v3_evidence_walkthrough.ipynb`](v3_evidence_walkthrough.ipynb) | The fastest v3 review path. CPU-only and read-only: loads the recorded comparison, defines critical failures, visualizes the result, inspects the exact contract, and replays published arithmetic. [Open in Colab](https://colab.research.google.com/github/Imsharad/ghl-support-slm/blob/main/notebooks/v3_evidence_walkthrough.ipynb). |
+| [`v3_candidate04_colab.ipynb`](v3_candidate04_colab.ipynb) | Runnable free-T4 reconstruction, smoke, and 120-update training for candidate04. Candidate04 was rejected at every checkpoint and did not replace the submitted candidate03 model. [Open in Colab](https://colab.research.google.com/github/Imsharad/ghl-support-slm/blob/main/notebooks/v3_candidate04_colab.ipynb). |
 | [`train_colab.ipynb`](train_colab.ipynb) | The runnable notebook. Eleven code cells, top to bottom on a free Colab T4, about 1.5 hours. Open it with the badge in its first cell; it forks into your own Drive, so running it cannot change what is committed here. |
 | [`v2_colab_run.ipynb`](v2_colab_run.ipynb) | The executed record of the run that produced the scored v2 model, committed with every cell output as it ran. Read this one to audit; run the other one to reproduce. |
+
+## v3 notebook status
+
+The submitted and served v3 artifact is **candidate03 step120**, originally trained
+on RunPod. The evidence notebook audits its published records without retraining.
+The runnable GPU notebook covers the later free-Colab candidate04 experiment because
+that is the v3 training run actually completed on Colab. Its failure is part of the
+record: successful training and falling validation loss did not make any checkpoint
+safe or eligible.
+
+The remainder of this file documents the two historical v2 notebooks.
 
 ## What the notebook does
 
