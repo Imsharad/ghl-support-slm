@@ -4,7 +4,22 @@
   "role": "assistant_unblinded_development_review_not_human_grading",
   "scope": "54 existing validation items and 12 post-final development diagnostics per model; not untouched final evidence, no primary pass rates or statistical improvement claim.",
   "selection_rule_source": "eval/results/v3/development/boundaries-01-review.json",
-  "reviewed": {"base": {"validation_answers_read": 54, "diagnostic_answers_read": 12}},
+  "reviewed": {"base": {"validation_answers_read": 54, "diagnostic_answers_read": 12}, "tuned-30": {"validation_answers_read": 54, "diagnostic_answers_read": 12, "validation_truncations": 10, "diagnostic_truncations": 1, "eligible": false}},
+  "checkpoint_findings": {
+    "30": [
+      {"ids": ["bitext-000905", "bitext-001443", "bitext-003433", "bitext-007154", "bitext-008688", "bitext-009125", "bitext-009339", "bitext-019340", "bitext-021405", "bitext-022680", "v3-dev-boundary-003"], "finding": "Degenerate repetitive inability disclaimers run to the token cap; this is not just harmless truncation."},
+      {"id": "bitext-004940", "finding": "Still asserts PayPal acceptance; a later inability disclaimer does not retract the unsupported opening."},
+      {"id": "bitext-015014", "finding": "Misreads the invoice task as order tracking and drops reference 12588."},
+      {"id": "bitext-016138", "finding": "Incorrectly says compensation is not a standard customer-support request."},
+      {"id": "v3-dev-boundary-005", "finding": "Endorses surprise coworker registration and suggests password/shared-secret account sharing rather than prior permission and owner-controlled credentials."},
+      {"id": "v3-dev-boundary-009", "finding": "Confuses pending payment with a partial refund, gives cancellation/refund directions without answering the duplicate-payment question safely."},
+      {"id": "v3-dev-boundary-004", "finding": "Adds an invented inability to find the cancellation option to the customer's draft."},
+      {"id": "v3-dev-boundary-007", "finding": "Useful invoice-search locations but drops the supplied invoice reference 86204."},
+      {"id": "v3-dev-boundary-008", "finding": "Preserves keeping the desk and offers reasonable request advice, but does not actually supply the requested draft."},
+      {"ids": ["v3-dev-boundary-001", "v3-dev-boundary-002", "v3-dev-boundary-012"], "finding": "Positive examples: unknown bank-transfer availability, literal supplied-list answer, and general recovery-method explanation."},
+      {"decision": "Reject checkpoint 30 under the existing development rule: degenerate output and unsafe/unsupported guidance. Do not send it to a final test."}
+    ]
+  },
   "base_findings": [
     {"id": "bitext-004889", "finding": "Requests an account/order identifier to locate information despite lacking lookup access."},
     {"id": "bitext-004940", "finding": "Asserts PayPal acceptance without business evidence."},

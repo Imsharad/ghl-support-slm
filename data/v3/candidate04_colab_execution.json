@@ -1,7 +1,8 @@
 {
   "schema": 1,
   "training_status": "completed_recovered_and_reload_verified",
-  "quality_status": "development_comparison_in_progress_no_checkpoint_selected",
+  "quality_status": "MPS_development_comparison_in_progress_after_CUDA_runtime_loss_no_checkpoint_selected",
+  "development_interruption": {"observed_at_utc": "2026-09-09 06:21", "evidence": "Repeated authenticated assignment listings returned zero active runtimes; reason not established. The in-memory bridge does not launch the CLI's keep-alive daemon, which is a lifecycle limitation, not a proven cause.", "recovered_cuda_outputs": "Complete base and checkpoint-30 validation plus diagnostic outputs: 132 answers, with manifests. Checkpoint-60 partial output and the final development ZIP were not recovered.", "local_action": "Stopped only the now-detached local connection process, not a remote runtime. Local MPS base and checkpoint-120 probes succeeded; a new full 330-response MPS comparison is running separately. No CUDA/MPS scores will be pooled and no retraining or paid resource was used."},
   "provider": "Google Colab",
   "spending": {"new_paid_resources": false, "free_tier_basis": "Resources UI showed no subscription and zero compute units before this existing T4 was allocated."},
   "hardware": {"gpu": "Tesla T4", "driver": "580.82.07", "vram_mib_reported_by_nvidia_smi": 15360},

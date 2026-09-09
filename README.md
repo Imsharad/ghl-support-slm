@@ -63,6 +63,9 @@ The completed run and all four adapters are recovered locally under
 [`candidate04_colab_execution.json`](data/v3/candidate04_colab_execution.json).
 Checkpoint 120 passed a real CUDA reload/generation check. No candidate04
 checkpoint is selected for final evaluation or serving yet.
+Colab stopped listing the runtime during development inference after 132 complete
+responses were recovered. A separate, same-backend comparison is running locally
+on MPS using the recovered adapters; partial CUDA and MPS results are not pooled.
 
 ## v3: run the currently served candidate03 locally
 

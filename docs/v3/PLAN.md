@@ -45,13 +45,48 @@ safetensors / 18,464,768 parameters and the byte-identical prompt. Curves were
 generated and visually inspected. Full evidence:
 `data/v3/candidate04_colab_execution.json`.
 
-Development inference is now generating the base plus four-checkpoint
+Development inference began generating the base plus four-checkpoint
 54-validation/12-diagnostic comparisons using `tools/colab_candidate04_development.py`.
 The base's 66 responses completed without errors and were read unblinded; one
 diagnostic was truncated. Raw outputs and qualitative notes are being retained
 under `eval/results/v3/development/candidate04/`. These are not human grades or
-final evidence. Next: finish all checkpoint comparisons, review eligibility,
-and recover the completed development archive before releasing the runtime.
+final evidence. Checkpoint 30 also completed all 66 responses and was reviewed:
+10 validation and one diagnostic output truncated through repetitive disclaimers;
+unsupported PayPal acceptance and unauthorized coworker registration persist.
+It is ineligible under the existing development rule. Input/prompt/decoding/
+runner/renderer/base-pin parity passed between these two complete CUDA models.
+
+At approximately 06:21 UTC, repeated authenticated assignment listings returned
+zero active runtimes. The disappearance's cause is not established; the in-memory
+bridge does not launch the CLI's keep-alive daemon, a known lifecycle limitation.
+The already verified training archive and 132 complete CUDA development answers
+are safe locally. Unfinished checkpoint-60 output and the final development ZIP
+were not recovered. Only the detached local connection process was stopped;
+no remote stop, new allocation, or retraining was attempted.
+
+Local inference fallback passed actual base and checkpoint-120 generations on
+the Mac's MPS backend. CUDA and MPS produce different responses, so preserve the
+interrupted CUDA comparison and start a separate complete 330-response MPS run,
+not a pooled comparison. `tools/candidate04_development_local.py` verifies input
+and adapter hashes, uses the same pinned base/prompt/runner/decoding for all five
+models, resumes exact-identity outputs, and runs only inference. Command:
+
+```sh
+uv run --frozen --extra serve --with peft==0.20.0 --with accelerate==1.14.0 \
+  python tools/candidate04_development_local.py
+```
+
+This overlays PEFT without installing the CUDA-only bitsandbytes extra on macOS.
+Results are in `eval/results/v3/development/candidate04-mps/`. The bounded launcher
+test passed. Next: finish this same-backend comparison and review every checkpoint;
+there is no currently active remote runtime to release.
+Local hardware: Apple M1 Pro, 16 GB memory. Actual probes produced 22.1 tokens/s
+for one base answer and 13.7 tokens/s for one tuned answer; these are feasibility
+probes, not serving benchmarks. Full regression verification after the fallback
+launcher: **239 passed, 1 skipped, 2 dependency warnings in 44.87 seconds**.
+The original training CSVs retain their CRLF bytes for checksum fidelity; Git's
+whitespace check warned on those raw CSVs when they were first staged. No training
+records were reformatted to suppress the warnings.
 
 File recovery uses `tools/chunk_artifact.py` (16 MiB parts) and the bridge's
 `download-chunks` command because the authenticated `/api/contents` route works
