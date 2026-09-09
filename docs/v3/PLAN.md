@@ -91,7 +91,7 @@ unsafe or degenerate candidates and require helpful positive-control behavior.
 Validation loss is only a secondary tie-break among eligible checkpoints.
 If none qualifies, retain the failure and do not launch another final comparison.
 
-Next: finish immutable launch-bundle verification locally; remote smoke/training
+Launch-bundle verification is complete (details below); remote smoke/training
 requires Google authorization and an actually available free CUDA runtime.
 Never substitute full local training or silently provision a paid instance.
 
@@ -102,6 +102,30 @@ validation `3e4e864b1583a781f3747140102077f53bbd0b9734ce3e689c28d16a125c2b80`).
 Diagnostic base/tuned manifests also match on backend, input, prompt, decoding,
 runner and renderer hashes. The 222-test run used the current worktree, including
 preserved unrelated browser-grader edits; it is not a clean-export test claim.
+
+Immutable training bundle built from a clean archive of local commit
+`dda625f578ca4c66e1b4925e603734428d29e7f2`, with only the verified candidate04
+processed files restored. The 195,417-byte bundle is
+`.scratch/training-bundles/v3-candidate04-dda625f.zip`, SHA-256
+`2b2f144ec7be3e62b58179b84729d28850a4ed59235fc058ead754293255d5f5`.
+ZIP CRC and extracted `tools/run_training_bundle.py --verify-only` passed for
+all 19 payload files. No final evaluation or unrelated dirty files are included.
+This does not exercise CUDA or create trained weights.
+
+Clean-export regression checks initially exposed missing ignored v1 data:
+217 passed / 2 skipped / 1 failed without historical fixtures; copying only the
+train fixture enabled more historical checks and produced 215 passed / 1 skipped /
+4 failed because val/test fixtures were still missing. Restoring all three
+preserved, checksum-matched fixtures resolved these without altering tests:
+**219 passed, 1 skipped, 2 dependency warnings in 13.19 seconds**. The skipped
+test requires the training extra. This used the installed local environment,
+not a fresh dependency installation. All attempts and fixture hashes are in
+`data/v3/candidate04_bundle_verification.json`. The three additional worktree
+tests belong to the unrelated, uncommitted browser-grader edits.
+
+Next action: authenticate Colab, confirm a genuinely free compatible CUDA runtime,
+then verify the transferred bundle and run its resume smoke before full training.
+Candidate04 is prepared only; no improved model or new final result is claimed.
 
 ## Previous checkpoint: mixed grading audit (2026-09-09)
 
