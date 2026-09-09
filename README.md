@@ -41,7 +41,7 @@ The [v3 evaluation protocol](eval/v3/protocol.json) states the fixed improvement
 and safety criteria. The current local review package is pinned to commit
 `63ae4f0`; its verified artifacts do not establish a successful safety outcome.
 
-Candidate04 is a **training-in-progress** follow-up: 261 training examples
+Candidate04 is a **trained, not yet quality-validated** follow-up: 261 training examples
 (candidate03's 243 unchanged, plus 18 development-driven boundary examples),
 with the same 54 validation rows, pinned base, prompt and 120-update budget.
 The new 12-case diagnostic is development data, not another final evaluation.
@@ -51,12 +51,20 @@ consent, unsupported-claim and actionable-help errors. See
 and the preparation/reproduction commands in the execution log. The current
 continuation uses a free Colab T4: the UI showed no subscription and zero compute
 units before allocation. Setup and checkpoint-resume smoke passed; the planned
-120-update run started on 2026-09-09. The CLI's authenticated Python client reuses
+120-update run completed on 2026-09-09 in 519.8 seconds, with 3.32 GB peak GPU
+memory and validation loss decreasing from 3.4692 to 1.8812. These losses do not
+establish improved support quality. The CLI's authenticated Python client reuses
 the browser-created kernel without allocating a second runtime or editing CLI
 session state. Candidate04 has no completed quality result or serving tag.
 The unblinded final01 set will not be reused as untouched final evidence.
 
-## v3: run the current candidate locally
+The completed run and all four adapters are recovered locally under
+`train/runs/v3-candidate04-t4/`; archive and per-adapter hashes are in
+[`candidate04_colab_execution.json`](data/v3/candidate04_colab_execution.json).
+Checkpoint 120 passed a real CUDA reload/generation check. No candidate04
+checkpoint is selected for final evaluation or serving yet.
+
+## v3: run the currently served candidate03 locally
 
 Use Python 3.11.11 and the tracked `uv.lock`. From this repository root:
 

@@ -29,12 +29,29 @@ the authenticated file API subsequently verified actual local recovery. Ten
 focused launcher/connection tests passed. This replaces further browser clicking.
 
 Full 120-update training started at 11:21 IST after the immutable-bundle and
-saved-smoke gates passed. Initial full-validation loss is 3.4692. Completion,
-development eligibility and improved support quality are not yet established.
-Next: recover and verify the completed run, generate the base plus four-checkpoint
-54-validation/12-diagnostic comparisons using `tools/colab_candidate04_development.py`,
-then review eligibility before any new final evaluation. Preserve the runtime
-until all artifacts have been downloaded and checksum-verified.
+saved-smoke gates passed and completed at 11:29:56 IST, in 519.8 seconds with
+3.32 GB peak GPU memory. Validation loss: 3.4692 before updates, 2.3350 at step
+30, 2.0101 at 60, 1.8989 at 90, and 1.8812 at 120. All four checkpoints saved;
+the launch returned zero and the downloaded config records `final_step: 120`.
+Development eligibility and improved support quality are not yet established.
+The saved checkpoint-120 reloaded on the pinned base and generated a nonempty
+answer on CUDA. This checks loadability, not support quality; the password-reset
+sample has ambiguous link-sharing wording that requires development scrutiny.
+Recovered the entire 1,651,144,661-byte archive in 99 chunks; its reassembled
+SHA-256 matches the remote value:
+`4c1f308bff11fb1881eaa6c4c29006df057ff1f9e00c78ace9b13a1b8e9caee5`.
+Both recovered run checks pass locally. All four adapters contain 392 readable
+safetensors / 18,464,768 parameters and the byte-identical prompt. Curves were
+generated and visually inspected. Full evidence:
+`data/v3/candidate04_colab_execution.json`.
+
+Development inference is now generating the base plus four-checkpoint
+54-validation/12-diagnostic comparisons using `tools/colab_candidate04_development.py`.
+The base's 66 responses completed without errors and were read unblinded; one
+diagnostic was truncated. Raw outputs and qualitative notes are being retained
+under `eval/results/v3/development/candidate04/`. These are not human grades or
+final evidence. Next: finish all checkpoint comparisons, review eligibility,
+and recover the completed development archive before releasing the runtime.
 
 File recovery uses `tools/chunk_artifact.py` (16 MiB parts) and the bridge's
 `download-chunks` command because the authenticated `/api/contents` route works
@@ -43,6 +60,10 @@ are SHA-256 checked; existing targets are preserved. Full local regression
 verification after these helpers: **238 passed, 1 skipped, 2 dependency warnings
 in 44.81 seconds**. This is a worktree run including unrelated grader tests, not
 a new clean-export test claim. No upstream CLI installation was patched.
+The first binary chunk transfer rejected Jupyter's line-wrapped Base64; accepting
+transport whitespace while retaining strict decoding and hash checks fixed it.
+The regression fixture now uses wrapped Base64. The full suite again passed:
+238 passed, 1 skipped, 2 warnings in 44.73 seconds.
 
 ## Previous checkpoint: candidate04 development preparation (2026-09-09)
 

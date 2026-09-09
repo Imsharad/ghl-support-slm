@@ -40,7 +40,7 @@ def setup_fake_download(monkeypatch, tmp_path, *, bad_hash=False, bad_name=False
     def get(url, **kwargs):
         content = json.dumps(manifest).encode() if url.endswith("manifest.json") else payload
         return SimpleNamespace(ok=True, json=lambda: {"type": "file", "format": "base64",
-                                "content": base64.b64encode(content).decode()})
+                                "content": base64.encodebytes(content).decode()})
     monkeypatch.setattr("requests.get", get)
     monkeypatch.setattr(sys, "argv", ["colab_existing", "--endpoint", "existing", "download-chunks", "/content/chunks", str(tmp_path / "download")])
     return payload

@@ -1,0 +1,23 @@
+{
+  "run_dir": "/content/ghl-candidate04/train/runs/v3-candidate04-t4-smoke",
+  "resume_proof_dir": "/content/ghl-candidate04/train/runs/v3-candidate04-t4-smoke/resume-proof",
+  "device": "cuda",
+  "resume_from": 10,
+  "steps": 20,
+  "tolerance": 0.01,
+  "compared_steps": [
+    15,
+    20
+  ],
+  "phase1_train_loss": {
+    "15": 2.5579,
+    "20": 2.81406
+  },
+  "resumed_train_loss": {
+    "15": 2.55816,
+    "20": 2.81404
+  },
+  "max_abs_diff": 0.00026,
+  "ok": true,
+  "checked_at": "2026-09-09 11:06:19 IST"
+}

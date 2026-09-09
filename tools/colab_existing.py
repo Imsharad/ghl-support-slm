@@ -76,7 +76,8 @@ def main():
         if data.get("type") != "file":
             raise ValueError("Not a remote file")
         if data.get("format") == "base64":
-            payload = base64.b64decode(data["content"], validate=True)
+            # Jupyter may return MIME-wrapped base64 with line breaks.
+            payload = base64.b64decode("".join(data["content"].split()), validate=True)
         elif data.get("format") == "text":
             payload = data["content"].encode("utf-8")
         else:
