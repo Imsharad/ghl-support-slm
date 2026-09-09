@@ -14,7 +14,7 @@ Verdict: **PASS**
 - Size: 1,646,572,608 bytes
 - SHA-256: `06d865f722bda7e6abd250cfab01e61c5806369cf42207b557e2c6f2e27f1240`
 
-The GGUF was produced by `tools/convert.sh`, which validates the pinned llama.cpp checkout and uses its isolated uv-created converter environment.
+The GGUF was produced by `tools/artifacts/convert.sh`, which validates the pinned llama.cpp checkout and uses its isolated uv-created converter environment.
 
 ## 5-item parity check
 

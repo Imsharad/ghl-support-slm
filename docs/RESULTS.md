@@ -132,7 +132,7 @@ Fine-tuning Qwen2.5-1.5B-Instruct on 8,000 cleaned Bitext rows made it write lik
 
 # v2 results: the data repair on the fresh sealed set
 
-Written 2026-09-08 04:55 IST by Fable 5.1 (nodes Gate2 scoring, Results writeup). v1 above is unchanged. v2 retrained the identical recipe (`configs/train-t4.yaml`, seed 42, 8,000-row cap) on the repaired data described in `docs/v2/DATA_V2.md`: placeholders substituted instead of rejected, plus 206 synthetic admission rows. Everything else is frozen: base model, prompt, decoding, rubric, judge protocol, serving path.
+Written 2026-09-08 04:55 IST by Fable 5.1 (nodes Gate2 scoring, Results writeup). v1 above is unchanged. v2 retrained the identical recipe (`configs/training/train-t4.yaml`, seed 42, 8,000-row cap) on the repaired data described in `docs/v2/DATA_V2.md`: placeholders substituted instead of rejected, plus 206 synthetic admission rows. Everything else is frozen: base model, prompt, decoding, rubric, judge protocol, serving path.
 
 ## Headline on the fresh sealed set
 
@@ -293,7 +293,7 @@ Dev set only (`eval/dev.jsonl`, 54 items), same rule as v1: highest pass count, 
 
 ## Training run
 
-Free Colab T4, session `ghl-v2`, the notebook `notebooks/train_colab.ipynb` executed top to bottom; the executed copy with every cell's output is `notebooks/v2_colab_run.ipynb`. From `train/runs/v2-t4/config.json`: git sha `33bdbbd`, device cuda, 500 steps, wall 4832 s, peak memory 2.94 GB; `tools/check_run.py` passed on the VM and again on the Mac after download. Headline rule fixed before launch: this run is the v2 substrate because it finished clean and its artifacts were downloaded and gated before 09:00 IST; no Mac run was started (swap on the Mac stood at 12 of 14 GB during generation).
+Free Colab T4, session `ghl-v2`, the notebook `notebooks/train_colab.ipynb` executed top to bottom; the executed copy with every cell's output is `notebooks/v2_colab_run.ipynb`. From `train/runs/v2-t4/config.json`: git sha `33bdbbd`, device cuda, 500 steps, wall 4832 s, peak memory 2.94 GB; `tools/training/check_run.py` passed on the VM and again on the Mac after download. Headline rule fixed before launch: this run is the v2 substrate because it finished clean and its artifacts were downloaded and gated before 09:00 IST; no Mac run was started (swap on the Mac stood at 12 of 14 GB during generation).
 
 ## Files and verification
 

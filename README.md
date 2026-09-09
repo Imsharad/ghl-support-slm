@@ -135,13 +135,13 @@ reproduction paths.
 
 | Path | Purpose |
 |---|---|
-| [`configs/`](configs/) | Exact prompts and experiment configuration |
+| [`configs/`](configs/) | Configs grouped into `data/`, `evaluation/`, `models/`, `prompts/`, `runtime/`, and `training/` |
 | [`data/`](data/) | Pinned source reconstruction, derived datasets, and manifests |
 | [`train/`](train/) | Training and rendering code |
 | [`eval/`](eval/) | Evaluation code, rubric, sealed sets, and recorded results |
 | [`serve/`](serve/) | Local comparison API and model definitions |
-| [`tools/`](tools/) | Artifact, release, demo, and integrity utilities |
-| [`tests/`](tests/) | Automated regression and evidence-integrity tests |
+| [`tools/`](tools/) | Utilities grouped into `artifacts/`, `evaluation/`, `quality/`, `runtime/`, and `training/` |
+| [`tests/`](tests/) | Suites grouped into `data/`, `evaluation/`, `serving/`, `tooling/`, and `training/`; shared fixtures stay in `fixtures/` |
 | [`artifacts/`](artifacts/) | Source and served-weight manifests; large weights stay external |
 | [`notebooks/`](notebooks/) | Colab entry points and historical notebooks |
 | [`docs/v3/`](docs/v3/) | Current reviewer records and operational detail |
@@ -154,6 +154,10 @@ reproduction paths.
 
 Local `.runtime/`, `.venv/`, `.pytest_cache/`, and `.scratch/` directories are
 gitignored runtime state, not part of the GitHub submission.
+
+`configs/prompt-v3.txt` intentionally remains at the config root: the published
+v3 seal hashes evaluator code containing that literal path. Moving it would break
+verification of the immutable submission evidence.
 
 ## Understand evidence boundaries
 

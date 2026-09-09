@@ -459,7 +459,7 @@ def profile(sources: dict) -> None:
             _md_pct_row("full ChatML Qwen tokens", total_tok_pct),
             "",
             "Full ChatML = native Qwen2.5 template with one system turn "
-            "(exact `configs/prompt.txt` text), user = instruction, "
+            "(exact `configs/prompts/prompt.txt` text), user = instruction, "
             "assistant = response, `add_generation_prompt=False`. This is the "
             f"training example. Rows with total tokens > {MAX_TRAIN_TOKENS} "
             f"(train max length): **{n_over_512}** / {row_count} "

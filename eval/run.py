@@ -23,8 +23,8 @@ from train.repro import sha256_file
 
 
 ROOT = Path(__file__).resolve().parents[1]
-CONFIG_PATH = ROOT / "configs" / "eval.yaml"
-VERSIONS_PATH = ROOT / "configs" / "versions.json"
+CONFIG_PATH = ROOT / "configs" / "evaluation" / "eval.yaml"
+VERSIONS_PATH = ROOT / "configs" / "models" / "versions.json"
 RESULTS_DIR = ROOT / "eval" / "results"
 CHALLENGE_PATH = ROOT / "eval" / "challenge.jsonl"
 SEAL_PATH = ROOT / "eval" / "SEAL.json"
@@ -182,7 +182,8 @@ class OllamaRunner:
 
     def __call__(self, query: str) -> Generation:
         system = self.system_prompt if self.system_prompt is not None else (
-            ROOT / "configs" / "prompt.txt").read_text(encoding="utf-8").removesuffix("\n")
+            ROOT / "configs" / "prompts" / "prompt.txt"
+        ).read_text(encoding="utf-8").removesuffix("\n")
         payload = {
             "model": self.tag,
             "messages": [
@@ -246,7 +247,7 @@ class TransformersRunner:
         versions = load_json(VERSIONS_PATH)
         base = versions.get("base_model")
         if not isinstance(base, dict):
-            raise ValueError("configs/versions.json has no base_model object")
+            raise ValueError("configs/models/versions.json has no base_model object")
         repo_id = str(base["repo_id"])
         revision = str(base["revision"])
         self.system_prompt = SYSTEM_PROMPT if system_prompt is None else system_prompt

@@ -85,7 +85,7 @@ Use Python 3.11.11 and Ollama 0.24.0. Start `ollama serve` separately, then run:
 
 ```sh
 uv sync --frozen --extra serve
-uv run python tools/fetch_artifacts.py \
+uv run python tools/artifacts/fetch_artifacts.py \
   --manifest artifacts/v3/manifest.json \
   --target serve
 uv run python -c 'from train.render import get_tokenizer; get_tokenizer(local_files_only=False)'

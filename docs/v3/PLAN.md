@@ -20,7 +20,7 @@ Raw outputs, qualitative evidence and the independent file/identity audit are in
 `eval/results/v3/development/candidate04-mps/`. The audit verifies all 330 expected
 IDs, nonempty error-free outputs, exact input/prompt/runner/renderer hashes, common
 decoding and MPS device, pinned base identity, and per-row adapter hashes.
-`tools/candidate04_development_local.py` exited successfully; no inference process
+`tools/evaluation/candidate04_development_local.py` exited successfully; no inference process
 from this run remains. The local served candidate03, historical final01, grading
 files, and old review package were not changed. No new final set, blind sheet,
 serving promotion, publication, or paid resource was created.
@@ -34,7 +34,7 @@ that were true while the run was in progress.
 The browser established a genuinely free T4 runtime: Colab Resources showed
 "You are not subscribed" and zero compute units before connecting. The T4 has
 15,360 MiB VRAM and driver 580.82.07. No new paid allocation was made. Uploaded
-the immutable training bundle below and `tools/colab_candidate04.py`; verified
+the immutable training bundle below and `tools/evaluation/colab_candidate04.py`; verified
 all 19 payload hashes remotely, installed the frozen Python 3.11.11 environment
 using uv 0.8.8, and passed a CUDA float16 matrix multiplication check with
 torch 2.14.0+cu130. Setup, smoke and training retain their actual logs.
@@ -49,7 +49,7 @@ Local recovery directory: `.scratch/colab-candidate04-recovery/`.
 The owner reauthorized the CLI. `colab sessions` could see the browser-created
 runtime as `[?]`, but both named and default `colab status` could not adopt it.
 Read-only inspection of the installed client confirmed no CLI attach command.
-`tools/colab_existing.py` uses the client's authenticated assignment listing and
+`tools/evaluation/colab_existing.py` uses the client's authenticated assignment listing and
 existing-kernel API instead: no new assignment, session-state edits, kernel
 creation/restart, or credential output. Browser download attempts were inconclusive;
 the authenticated file API subsequently verified actual local recovery. Ten
@@ -73,7 +73,7 @@ generated and visually inspected. Full evidence:
 `data/v3/candidate04_colab_execution.json`.
 
 Development inference began generating the base plus four-checkpoint
-54-validation/12-diagnostic comparisons using `tools/colab_candidate04_development.py`.
+54-validation/12-diagnostic comparisons using `tools/evaluation/colab_candidate04_development.py`.
 The base's 66 responses completed without errors and were read unblinded; one
 diagnostic was truncated. Raw outputs and qualitative notes are being retained
 under `eval/results/v3/development/candidate04/`. These are not human grades or
@@ -94,13 +94,13 @@ no remote stop, new allocation, or retraining was attempted.
 Local inference fallback passed actual base and checkpoint-120 generations on
 the Mac's MPS backend. CUDA and MPS produce different responses, so preserve the
 interrupted CUDA comparison and start a separate complete 330-response MPS run,
-not a pooled comparison. `tools/candidate04_development_local.py` verifies input
+not a pooled comparison. `tools/evaluation/candidate04_development_local.py` verifies input
 and adapter hashes, uses the same pinned base/prompt/runner/decoding for all five
 models, resumes exact-identity outputs, and runs only inference. Command:
 
 ```sh
 uv run --frozen --extra serve --with peft==0.20.0 --with accelerate==1.14.0 \
-  python tools/candidate04_development_local.py
+  python tools/evaluation/candidate04_development_local.py
 ```
 
 This overlays PEFT without installing the CUDA-only bitsandbytes extra on macOS.
@@ -115,7 +115,7 @@ The original training CSVs retain their CRLF bytes for checksum fidelity; Git's
 whitespace check warned on those raw CSVs when they were first staged. No training
 records were reformatted to suppress the warnings.
 
-File recovery uses `tools/chunk_artifact.py` (16 MiB parts) and the bridge's
+File recovery uses `tools/artifacts/chunk_artifact.py` (16 MiB parts) and the bridge's
 `download-chunks` command because the authenticated `/api/contents` route works
 but a bounded `/files` streaming probe timed out. Chunks and the final archive
 are SHA-256 checked; existing targets are preserved. Full local regression
@@ -206,7 +206,7 @@ reduces measured overlap but does not prove semantic independence. No final01
 query or answer is in candidate04 training. Candidate04 must get a genuinely
 new screened final set only after development selection.
 
-`configs/train-v3-candidate04-t4.yaml` preserves the base initialization, prompt,
+`configs/training/train-v3-candidate04-t4.yaml` preserves the base initialization, prompt,
 NF4 QLoRA rank 16, learning rate 5e-5, effective batch 8, 120 updates, four saved
 checkpoints and resume smoke. Approximately 3.7 dataset passes, not four exact
 epochs. Keeping the update budget isolates this small supervision intervention;
@@ -233,7 +233,7 @@ Immutable training bundle built from a clean archive of local commit
 processed files restored. The 195,417-byte bundle is
 `.scratch/training-bundles/v3-candidate04-dda625f.zip`, SHA-256
 `2b2f144ec7be3e62b58179b84729d28850a4ed59235fc058ead754293255d5f5`.
-ZIP CRC and extracted `tools/run_training_bundle.py --verify-only` passed for
+ZIP CRC and extracted `tools/training/run_training_bundle.py --verify-only` passed for
 all 19 payload files. No final evaluation or unrelated dirty files are included.
 This does not exercise CUDA or create trained weights.
 
@@ -411,7 +411,7 @@ The first assembled data revision (`data/processed/v3-candidate01`, 216/54 rows)
 
 This is a small-data first experiment, not a reduction of the final quality objective. A balanced subset makes individual target review feasible within the part-time assignment and avoids adding thousands of known-incorrect targets. It also risks narrow language coverage, template-like outputs, and overfitting; only development and fresh evaluation can establish whether it works. Same-author validation references measure fit to this supervision style, not independent support quality. Expand or revise using development evidence if needed, never using final-test answers.
 
-`configs/train-v3-t4.yaml` retains the exact pinned Qwen base and known rank-16/all-linear NF4 LoRA recipe, with a smaller 5e-5 learning rate, 0.05 dropout, 0.01 weight decay, six warmup steps, effective batch eight (micro-batch two × accumulation four), and 120 steps (approximately four passes). These are conservative starting choices for the much smaller curated dataset, not tuned optima. Four checkpoints at steps 30/60/90/120 support development-based selection. Validation covers all 54 rows; initial validation loss is also recorded. The 20-step smoke uses the same micro-batch/accumulation shape and separately verifies resume. Actual Qwen GPU memory, timing, convergence, and resume parity remain unmeasured. The real optimizer-loop CPU integration test uses a tiny 72-parameter dropout fixture and reproduces resumed losses and saved weights exactly; it is not a Qwen or GPU smoke.
+`configs/training/train-v3-t4.yaml` retains the exact pinned Qwen base and known rank-16/all-linear NF4 LoRA recipe, with a smaller 5e-5 learning rate, 0.05 dropout, 0.01 weight decay, six warmup steps, effective batch eight (micro-batch two × accumulation four), and 120 steps (approximately four passes). These are conservative starting choices for the much smaller curated dataset, not tuned optima. Four checkpoints at steps 30/60/90/120 support development-based selection. Validation covers all 54 rows; initial validation loss is also recorded. The 20-step smoke uses the same micro-batch/accumulation shape and separately verifies resume. Actual Qwen GPU memory, timing, convergence, and resume parity remain unmeasured. The real optimizer-loop CPU integration test uses a tiny 72-parameter dropout fixture and reproduces resumed losses and saved weights exactly; it is not a Qwen or GPU smoke.
 
 The exact base was run on all 54 curated validation queries through Ollama with the new prompt. Files: `eval/results/v3/development/base-curated-val.jsonl` and its immutable manifest. All 54 requests succeeded; one answer truncated. Median request latency was 1,226 ms and median generation length 69 tokens in this particular sequential development run. These are descriptive development measurements, not a hardware-controlled serving benchmark. Unblinded inspection found concrete failure modes:
 
@@ -427,9 +427,9 @@ The exact base was run on all 54 curated validation queries through Ollama with 
 
 No numeric human task-success score has been assigned. `eval/v3/protocol.json` is a draft for a 108-case, four-per-intent fresh comparison with blinded owner grading, a +5 percentage-point primary threshold, positive lower 95% intent-cluster bootstrap bound, no increased critical-failure count, and zero observed credential/verification violations. It must be sealed with actual fresh items and candidate hashes before final inference. Historical challenge sets remain development-only.
 
-A prompt-only development ablation also ran the same base and 54 inputs with `configs/prompt-v3-compact.txt`, saved separately as `base-compact-val.jsonl` with its own manifest. All 54 requests succeeded and two truncated; median latency was 1,174 ms and median generation length 70 tokens. Unblinded inspection showed mixed changes: item-swap and password-reset guidance improved, but refund timing became a fabricated fixed 14 business days, and several answers newly claimed account/policy inspection. No numeric quality winner is claimed. The original prompt remains the provisional training prompt; both development baselines are retained, and this prompt-only comparison must not be reported as a fine-tuning improvement.
+A prompt-only development ablation also ran the same base and 54 inputs with `configs/prompts/prompt-v3-compact.txt`, saved separately as `base-compact-val.jsonl` with its own manifest. All 54 requests succeeded and two truncated; median latency was 1,174 ms and median generation length 70 tokens. Unblinded inspection showed mixed changes: item-swap and password-reset guidance improved, but refund timing became a fabricated fixed 14 business days, and several answers newly claimed account/policy inspection. No numeric quality winner is claimed. The original prompt remains the provisional training prompt; both development baselines are retained, and this prompt-only comparison must not be reported as a fine-tuning improvement.
 
-`tools/build_training_bundle.py` creates a deterministic training-only ZIP from a clean, committed worktree using an explicit whitelist and corpus hashes. It excludes final test data and credentials and refuses publication-enabled configs. `tools/run_training_bundle.py` checks every bundled hash, requires a single CUDA GPU, prefetches the pinned model, and requires a passing smoke from the exact same bundle before full training. It does not provision resources, fund an account, publish weights, or imply paid-compute approval. The actual launch bundle has not yet been built because the experiment edits are still being verified. Source commit and bundle identity are recorded in run metadata even when an extracted bundle has no Git directory.
+`tools/training/build_training_bundle.py` creates a deterministic training-only ZIP from a clean, committed worktree using an explicit whitelist and corpus hashes. It excludes final test data and credentials and refuses publication-enabled configs. `tools/training/run_training_bundle.py` checks every bundled hash, requires a single CUDA GPU, prefetches the pinned model, and requires a passing smoke from the exact same bundle before full training. It does not provision resources, fund an account, publish weights, or imply paid-compute approval. The actual launch bundle has not yet been built because the experiment edits are still being verified. Source commit and bundle identity are recorded in run metadata even when an extracted bundle has no Git directory.
 
 Additional reproduction commands (run only into absent output directories):
 
@@ -479,7 +479,7 @@ uv run --extra serve python serve/bench_api.py --models base --requests 54 --war
   --output-dir .scratch/base-api-benchmark-reproduction
 ```
 
-Handoff inspection found that `tools/merge.py` always copied the historical prompt. It now selects the adapter's recorded `prompt.txt`, rejects a conflicting override, and requires an explicit actual training prompt for older adapters lacking one. A merge manifest binds adapter hashes, pinned base revision, exact prompt, output files and merge implementation. Tests cover prompt/identity handling; no v3 merge has occurred because no v3 adapter exists yet. `tools/convert.sh` now refuses to overwrite an existing GGUF or use a converter checkout with tracked modifications.
+Handoff inspection found that `tools/artifacts/merge.py` always copied the historical prompt. It now selects the adapter's recorded `prompt.txt`, rejects a conflicting override, and requires an explicit actual training prompt for older adapters lacking one. A merge manifest binds adapter hashes, pinned base revision, exact prompt, output files and merge implementation. Tests cover prompt/identity handling; no v3 merge has occurred because no v3 adapter exists yet. `tools/artifacts/convert.sh` now refuses to overwrite an existing GGUF or use a converter checkout with tracked modifications.
 
 R3 verification: `uv run --extra serve --with peft==0.20.0 pytest -q -rs` completed with **126 passed, zero skipped**, in 41.86 seconds. The two warnings concern deprecated FastAPI/Starlette HTTP test-client interfaces, not failed assertions. This includes a real pinned-Qwen CPU zero-effect-adapter comparison on development queries; it is inference parity, not training or improvement evidence. The plain serve-only environment skips that PEFT-dependent test, so the explicit package overlay is needed on this Mac (the full CUDA `train` extra includes bitsandbytes and is not a macOS installation route). Shell syntax validation and staged secret/PII hygiene checks passed. The source v2 worktree's dirty-file list remains unchanged.
 
@@ -487,11 +487,11 @@ The locally served base's Modelfile resolves to GGUF blob `eb2837d6dd3d8724fe51f
 
 ### R4 — artifact-bound final evaluation and funded RunPod preparation
 
-`tools/convert_verified.py` checks the merged-model lineage and input hashes before conversion and records Q8 GGUF hash, pinned converter revision, environment and selected-adapter lineage. `eval/final_v3.py seal` requires a completed CUDA candidate, a passing same-bundle CUDA/resume smoke, development selection note, valid overlap screen, matching export lineage, and the actual local base/tuned Ollama identities. It freezes cases, rubric, scoring code, inference code, exact prompt, templates and parameters before final inference. `generate` checks identities around each response, preserves errors, binds every result to the seal, and rejects incompatible resumes. The blinded scoring CLI requires the same seal binding. No real v3 export, seal, final inference or human grading has run.
+`tools/artifacts/convert_verified.py` checks the merged-model lineage and input hashes before conversion and records Q8 GGUF hash, pinned converter revision, environment and selected-adapter lineage. `eval/final_v3.py seal` requires a completed CUDA candidate, a passing same-bundle CUDA/resume smoke, development selection note, valid overlap screen, matching export lineage, and the actual local base/tuned Ollama identities. It freezes cases, rubric, scoring code, inference code, exact prompt, templates and parameters before final inference. `generate` checks identities around each response, preserves errors, binds every result to the seal, and rejects incompatible resumes. The blinded scoring CLI requires the same seal binding. No real v3 export, seal, final inference or human grading has run.
 
 Verification before the compute amendment: `uv run --extra serve --with peft==0.20.0 pytest -q -rs` passed **132 tests, zero skipped**, with two deprecation warnings in 54.30 seconds. New final-launch tests use explicitly synthetic model outputs to exercise freeze/generate/resume and tamper rejection, not to measure model quality.
 
-`configs/train-v3-runpod.yaml` preserves candidate03's 120 updates, length 512, learning rate 5e-5, rank 16 and 20-step resume smoke; only run names differ from the T4 configuration. Neither configuration enforces provider billing. The owner authorized $10 total RunPod GPU/storage usage and no automatic top-up. The separate linked task's 500-step, eight-hour A100 and paid Gemini proposal is not adopted.
+`configs/training/train-v3-runpod.yaml` preserves candidate03's 120 updates, length 512, learning rate 5e-5, rank 16 and 20-step resume smoke; only run names differ from the T4 configuration. Neither configuration enforces provider billing. The owner authorized $10 total RunPod GPU/storage usage and no automatic top-up. The separate linked task's 500-step, eight-hour A100 and paid Gemini proposal is not adopted.
 
 After adding the RunPod configuration, a structural YAML comparison verified that only the two run names differ. The full suite again passed **132 tests, zero skipped**, with two deprecation warnings in 51.72 seconds. Staged hygiene passed for all seven changed files; the original v2 checkout's unrelated dirty-file list was unchanged.
 
@@ -503,14 +503,14 @@ The first RunPod bundle, built from `abd3a02a153fcf53f295d67d39d4c9b12d6eff12`, 
 
 Inspecting `uv.lock` showed Linux PyTorch depends on CUDA Toolkit **13.0.3.0**, not the CUDA 12 runtime in some older template examples. NVIDIA documents a **580-series minimum driver** for CUDA 13 minor compatibility ([source](https://docs.nvidia.com/deploy/cuda-compatibility/minor-version-compatibility.html)). Filter placement with the live CLI's `--min-cuda-version 13.0` and verify the actual host. Do not silently substitute the template's older Torch or rewrite the lock. A separately installed locked Python environment on the network volume is intentional here despite its download cost; the template's SSH/base OS can still be reused.
 
-`tools/check_cuda_host.py` is a read-only, stdlib-only pre-install check. It derives CUDA requirements from the lock and requires Linux x86_64, one GPU, a compatible driver, at least 14 GiB GPU memory and 25 GiB free on the selected volume. The storage and VRAM floors are conservative launch checks for candidate03, not measured peak requirements. The check does not prove the mount is persistent or enforce billing. After dependency installation, `tools/run_training_bundle.py` now exercises a float16 CUDA matrix multiplication before downloading the model; the full training smoke still proves the actual QLoRA/resume path. Unit tests use synthetic host records, not an actual GPU.
+`tools/training/check_cuda_host.py` is a read-only, stdlib-only pre-install check. It derives CUDA requirements from the lock and requires Linux x86_64, one GPU, a compatible driver, at least 14 GiB GPU memory and 25 GiB free on the selected volume. The storage and VRAM floors are conservative launch checks for candidate03, not measured peak requirements. The check does not prove the mount is persistent or enforce billing. After dependency installation, `tools/training/run_training_bundle.py` now exercises a float16 CUDA matrix multiplication before downloading the model; the full training smoke still proves the actual QLoRA/resume path. Unit tests use synthetic host records, not an actual GPU.
 
 On the verified network-volume mount, before dependency installation:
 
 ```bash
-python3 tools/check_cuda_host.py --volume /workspace
+python3 tools/training/check_cuda_host.py --volume /workspace
 uv sync --frozen --extra train
-uv run --frozen --extra train python tools/run_training_bundle.py --smoke
+uv run --frozen --extra train python tools/training/run_training_bundle.py --smoke
 # Inspect the smoke and measured timing before the separate --train invocation.
 ```
 
@@ -526,13 +526,13 @@ The listed RTX 4090 stock in EU-CZ-1 could not host a network volume; the failed
 
 Task-owned pod `madh8fnq3gcacn` was created at **2026-09-08 15:08:01 UTC**, named `ghl-v3-candidate03-20260908`. Task-owned 40 GB network volume `wta2882eow` is named `ghl-v3-training-20260908`. Template `runpod-torch-v280` resolves to `runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404`; only TCP 22 is exposed, not its default Jupyter HTTP port. Live SSH and `findmnt` verified `/workspace` is the separate network-volume mount. The actual GPU reports 32,623 MiB and driver **580.126.20**. Bundle `v3-candidate03-runpod-preflight.zip` SHA-256 `d2eedfde7d64ecda52b41f885014893b33a678719b7605c84ad3d1f10133db22` was independently checked after transfer; all 19 files verified remotely. Host preflight passed. Network-volume `disk_usage` reports underlying filesystem capacity, not the purchased quota; the separate 40 GB quota must still be observed.
 
-`tools/runpod_deadline.py` is armed locally for **2026-09-08 17:08:00 UTC / 22:38 IST**, under macOS `caffeinate -i`. It rechecks exact pod ID/name/network-volume ID before deletion, never deletes storage, and retries bounded cleanup failures. This is a live local process, not a provider-enforced dollar cap or a host-independent guarantee. The pod image carries old runpodctl 1.14.15 without a configured scoped key, so no second on-pod watchdog is claimed. Actual cleanup still requires verification and artifact recovery before storage deletion. A unit test verifies identity mismatch refusal; the current real pod passed the watchdog's arming read. No account-wide key was copied to the pod.
+`tools/training/runpod_deadline.py` is armed locally for **2026-09-08 17:08:00 UTC / 22:38 IST**, under macOS `caffeinate -i`. It rechecks exact pod ID/name/network-volume ID before deletion, never deletes storage, and retries bounded cleanup failures. This is a live local process, not a provider-enforced dollar cap or a host-independent guarantee. The pod image carries old runpodctl 1.14.15 without a configured scoped key, so no second on-pod watchdog is claimed. Actual cleanup still requires verification and artifact recovery before storage deletion. A unit test verifies identity mismatch refusal; the current real pod passed the watchdog's arming read. No account-wide key was copied to the pod.
 
-Environment installation is detached with logs on the network volume. The template's system Python is 3.11.13; installing the explicitly pinned **3.11.11** interpreter under `/workspace/python` avoids silently adopting that patch version. The locked environment, HF cache, logs and outputs stay under `/workspace`. `tools/run_remote_stage.sh` fixes these paths and Python version and records a terminal exit marker; it runs the bundle's gated smoke or train operation. Only the development evaluator (`eval/run.py`, `eval/blind.py`, `configs/eval.yaml`) is additionally transferred for later checkpoint inspection. No fresh final evaluation queries are on the pod. At this log checkpoint setup is still running; no smoke/full training success or adapter is claimed.
+Environment installation is detached with logs on the network volume. The template's system Python is 3.11.13; installing the explicitly pinned **3.11.11** interpreter under `/workspace/python` avoids silently adopting that patch version. The locked environment, HF cache, logs and outputs stay under `/workspace`. `tools/training/run_remote_stage.sh` fixes these paths and Python version and records a terminal exit marker; it runs the bundle's gated smoke or train operation. Only the development evaluator (`eval/run.py`, `eval/blind.py`, `configs/evaluation/eval.yaml`) is additionally transferred for later checkpoint inspection. No fresh final evaluation queries are on the pod. At this log checkpoint setup is still running; no smoke/full training success or adapter is claimed.
 
-R6 installation correction: the initial `uv sync` used the template's Python 3.11.13 and stalled waiting on the FUSE-backed network filesystem. Process/thread inspection showed `request_wait_answer`, not a completed installer. After 8m08s it was deliberately terminated; the preserved `/workspace/setup.log` records `SETUP_EXIT=143`. No training had begun. Rebuildable package cache and virtualenv moved to `/opt/ghl-v3-uv-cache` and `/opt/ghl-v3-venv` on the 30 GB container disk. Python 3.11.11 remains at `/workspace/python`; model cache, source, logs and checkpoints remain on persistent storage. `tools/setup_remote.sh` then completed the unchanged lock with `SETUP_EXIT=0` and Python 3.11.11. This storage-layout change is evidence-driven; stopping the pod requires reinstalling local dependencies, not changing the recipe. The earlier incomplete venv/cache and failed-install log are preserved until task-owned storage cleanup.
+R6 installation correction: the initial `uv sync` used the template's Python 3.11.13 and stalled waiting on the FUSE-backed network filesystem. Process/thread inspection showed `request_wait_answer`, not a completed installer. After 8m08s it was deliberately terminated; the preserved `/workspace/setup.log` records `SETUP_EXIT=143`. No training had begun. Rebuildable package cache and virtualenv moved to `/opt/ghl-v3-uv-cache` and `/opt/ghl-v3-venv` on the 30 GB container disk. Python 3.11.11 remains at `/workspace/python`; model cache, source, logs and checkpoints remain on persistent storage. `tools/training/setup_remote.sh` then completed the unchanged lock with `SETUP_EXIT=0` and Python 3.11.11. This storage-layout change is evidence-driven; stopping the pod requires reinstalling local dependencies, not changing the recipe. The earlier incomplete venv/cache and failed-install log are preserved until task-owned storage cleanup.
 
-The smoke process started after successful installation. It verified all 19 bundle files, reported **Torch 2.14.0+cu130 / CUDA 13.0**, passed the actual float16 CUDA kernel preflight and downloaded the pinned ungated base model without a token. An HF unauthenticated-rate-limit warning is not a failure. Smoke training/resume results remain to be inspected. `tools/eval_remote_development.sh` prepares the unchanged 54 validation queries for base and all four candidate checkpoints under the same Transformers/CUDA generation settings; it is development-only, not the final served-Q8 comparison. Local R6 regression verification passed **140 tests**, with two deprecation warnings in 51.19 seconds; shell syntax checks passed.
+The smoke process started after successful installation. It verified all 19 bundle files, reported **Torch 2.14.0+cu130 / CUDA 13.0**, passed the actual float16 CUDA kernel preflight and downloaded the pinned ungated base model without a token. An HF unauthenticated-rate-limit warning is not a failure. Smoke training/resume results remain to be inspected. `tools/evaluation/eval_remote_development.sh` prepares the unchanged 54 validation queries for base and all four candidate checkpoints under the same Transformers/CUDA generation settings; it is development-only, not the final served-Q8 comparison. Local R6 regression verification passed **140 tests**, with two deprecation warnings in 51.19 seconds; shell syntax checks passed.
 
 ### R7 — completed training, recovered artifacts and released rental
 
@@ -555,7 +555,7 @@ This is not evidence that the improvement objective is met.
 The full training/smoke archive (including optimizer/RNG state) was downloaded and
 verified against remote SHA-256
 `aae7bbf8990190e201536cb0179d348434a1d73873433b2202f9926f994140f2`.
-Both extracted runs pass `tools/check_run.py`; the smoke requires its resume proof.
+Both extracted runs pass `tools/training/check_run.py`; the smoke requires its resume proof.
 All ten development raw/manifest files and five setup/training/development logs
 also match remote checksums. Recoverable copies live in ignored local
 `.scratch/runpod-recovery`; canonical extracted checkpoints remain local.
@@ -574,7 +574,7 @@ using pinned llama.cpp to Q8, and imported under new tag
 `ghl-support-v3-c03-s120`. No old model tag was overwritten. Export hash/lineage
 is in `artifacts/v3/candidate03-step120-q8_0.gguf.export.json`. Five historical
 development queries passed tokenizer-ID and same-GGUF raw-vs-chat parity.
-`tools/parity_check.py` now accepts an explicit prompt, identifies the actual
+`tools/evaluation/parity_check.py` now accepts an explicit prompt, identifies the actual
 tag/prompt/item count and refuses to overwrite reports. The report explicitly
 does not claim CUDA-NF4 or fp16 generation equivalence to Q8.
 
@@ -775,7 +775,7 @@ Nothing in this section exists because it is listed here. The phase table remain
 - Phase 2: `eval/factual_lint.py`, `tests/test_factual_lint.py`, `eval/results/v3/calibration/`, and pre-training calibration sections in `docs/v3/RESULTS.md`.
 - Phase 3: `eval/challenge_v3_draft.jsonl`, `eval/challenge_v3.jsonl`, `eval/SEAL_v3.json`, `eval/regression_v3.jsonl`, `eval/smoke_v3.jsonl`, `eval/window_probe_v3.jsonl`, `eval/safety_guard_v3.jsonl`, and `eval/reference_probe_v3.jsonl`.
 - Phase 4: reviewed/rejected candidate, audit, leakage, admissions, corpus, split, and encoded artifacts under `data/v3/` and `data/processed/v3/`; the exact filenames become CLI outputs rather than hidden defaults.
-- Phase 5: `configs/train-v3-t4.yaml`, `configs/train-v3-pass2-t4.yaml`, deterministic sampler evidence, pass-2 initialization evidence, and required smoke evidence.
+- Phase 5: `configs/training/train-v3-t4.yaml`, `configs/train-v3-pass2-t4.yaml`, deterministic sampler evidence, pass-2 initialization evidence, and required smoke evidence.
 - Later approved phases: immutable run evidence under `train/runs/v3-*`, model artifacts under `artifacts/v3/`, paired outputs under `eval/results/v3/`, and the executed v3 notebook copy. No README patch is created before HARD STOP 4.
 
 ## Exact planned command contracts
@@ -790,7 +790,7 @@ python3 /Users/sharad/.codex/skills/grok-correction-loop/scripts/ledger.py init 
 python3 /Users/sharad/.codex/skills/grok-correction-loop/scripts/ledger.py query \
   --repo /Users/sharad/Projects/agents-hq/gohighlevel-assignement-1-v3 \
   --milestone V3-R2
-uv run pytest -q tests/test_eval.py tests/test_factual_lint.py
+uv run pytest -q tests/evaluation/test_eval.py tests/test_factual_lint.py
 uv run python eval/check_challenge.py --help
 uv run python eval/factual_lint.py --help
 uv run python eval/score.py --help
@@ -839,17 +839,17 @@ uv run python data/prepare.py --profile v3 --placeholder-mode substitute \
 Background target review is a separate operation, not an implied side effect of preparation:
 
 ```sh
-uv run python tools/admission_review.py background \
+uv run python tools/evaluation/admission_review.py background \
   --profile v3 --input data/v3/corpus_candidates.jsonl \
   --output data/v3/background_review.jsonl \
-  --card configs/prompt.txt --max-candidates 12000 \
+  --card configs/prompts/prompt.txt --max-candidates 12000 \
   --max-input-tokens 8000000 --max-output-tokens 2000000 --strict
 ```
 
 Both-field leakage is also a separate operation. Every comparison file must exist or the command fails:
 
 ```sh
-uv run python tools/admissions.py leakage data/v3/admissions_reviewed.jsonl \
+uv run python tools/evaluation/admissions.py leakage data/v3/admissions_reviewed.jsonl \
   --profile v3 --fields query response \
   --against eval/challenge.jsonl eval/challenge_v2.jsonl eval/challenge_v3.jsonl \
     eval/dev.jsonl eval/smoke_v3.jsonl eval/safety_guard_v3.jsonl \
@@ -862,20 +862,20 @@ uv run python tools/admissions.py leakage data/v3/admissions_reviewed.jsonl \
 Final assembly and explicit quota audit:
 
 ```sh
-uv run python tools/admissions.py lint data/v3/admissions_raw.jsonl --profile v3
+uv run python tools/evaluation/admissions.py lint data/v3/admissions_raw.jsonl --profile v3
 uv run python data/prepare.py --profile v3 --placeholder-mode substitute \
   --out data/v3 --source-splits data/v2/splits.json --max-length 768 \
   --target-review data/v3/background_review.jsonl \
   --admissions data/v3/admissions.jsonl --cap-train 8000 --require-frozen-holdouts
 uv run python data/prepare.py --profile v3 --audit-only --out data/v3 --strict
 uv run python train/render.py
-uv run pytest -q tests/test_prepare.py tests/test_admissions.py tests/test_prompt.py
+uv run pytest -q tests/data/test_prepare.py tests/data/test_admissions.py tests/tooling/test_prompt.py
 ```
 
 Deterministic sampler and pass-2 initialization checks after their Phase 5 options exist:
 
 ```sh
-uv run python train/train.py --config configs/train-v3-t4.yaml \
+uv run python train/train.py --config configs/training/train-v3-t4.yaml \
   --sampler-dry-run --draws 8000 --seed 42 --output train/runs/v3-sampler-dry-run.json
 uv run python train/train.py --config configs/train-v3-pass2-t4.yaml \
   --init-adapter train/runs/v3-pass1-init-test/adapter \
@@ -886,10 +886,10 @@ MPS correctness smoke after data and training controls freeze:
 
 ```sh
 uv run pytest -q
-uv run python train/train.py --config configs/train-v3-t4.yaml \
+uv run python train/train.py --config configs/training/train-v3-t4.yaml \
   --smoke --device mps --data-dir data/processed/v3 \
   --run-name v3-smoke-mps --no-push
-uv run python tools/check_run.py train/runs/v3-smoke-mps \
+uv run python tools/training/check_run.py train/runs/v3-smoke-mps \
   --device mps --max-memory-gb 12
 ```
 

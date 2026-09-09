@@ -18,7 +18,7 @@ as candidate04 success.
 
 | Requirement | Verified evidence | Remaining work |
 |---|---|---|
-| Commercially self-hostable SLM | Pinned Apache-2.0 Qwen2.5-1.5B-Instruct; `configs/versions.json`, license review | Preserve notices at publication |
+| Commercially self-hostable SLM | Pinned Apache-2.0 Qwen2.5-1.5B-Instruct; `configs/models/versions.json`, license review | Preserve notices at publication |
 | Data exploration and leakage handling | Bitext profile; whole-group/six-gram/pinned-MiniLM audits; exact clean-checkout reconstruction | Screening cannot prove semantic independence |
 | Fine-tuning and curves | Completed CUDA run, four checkpoints, full validation, resume smoke; `train/runs/v3-candidate03-runpod*` | No missing training stage |
 | Reasoned choices and attempts | Config, `docs/v3/PLAN.md`, `docs/v3/SELECTION.md`; early repetition and setup failure preserved | Owner must be able to defend choices |
@@ -87,7 +87,7 @@ or revise the safety gate to manufacture success. Publication was approved and c
 
 ## Final package review
 
-Use `python3 tools/package_v3_submission.py --artifact-root /path/to/v3-worktree
+Use `python3 tools/artifacts/package_v3_submission.py --artifact-root /path/to/v3-worktree
 --output /path/to/new-release-directory` (one shell line). The source ZIP contains
 tracked code, configuration, data provenance, training logs/curves, evaluation
 responses and judgments, performance evidence, and the captioned video. Separate
@@ -102,7 +102,7 @@ Critical reviewer paths:
 | Brief and requirements | `docs/ASSIGNMENT.md` |
 | Exact model prompt | `configs/prompt-v3.txt` |
 | Data lineage and rewrites | `data/v3/candidate03_manifest.json`, `data/assemble_v3.py` |
-| Actual training recipe | `configs/train-v3-runpod.yaml` |
+| Actual training recipe | `configs/training/train-v3-runpod.yaml` |
 | Training curve and loss | `train/runs/v3-candidate03-runpod/curves.png`, `loss.csv` |
 | Fixed evaluation contract | `eval/v3/protocol.json`, `docs/v3/PRE_REGISTRATION.md` |
 | Final model/data seal | `eval/results/v3/final01/SEAL.json` |
@@ -133,7 +133,7 @@ Release procedure (publication steps completed for `v3-submission`; retained for
    public URL in `submission.json`.
 4. Fill the currently null v3 tag/weight URLs; verify downloads in a fresh folder,
    extract at the repository root, and run the README health/support commands.
-   Run `uv run python tools/check_submission.py` afterward: v3 validation checks
+   Run `uv run python tools/quality/check_submission.py` afterward: v3 validation checks
    the candidate03 artifacts and does not require an unused merged-fp16 upload.
 5. Send the GitHub revision, adapter link and video link with this statement:
    “Fine-tuning improved recorded task success from 55.7% to 76.4% in a partial

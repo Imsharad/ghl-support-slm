@@ -13,8 +13,8 @@ from transformers import AutoTokenizer, PreTrainedTokenizerBase
 
 
 ROOT = Path(__file__).resolve().parents[1]
-VERSIONS_PATH = ROOT / "configs" / "versions.json"
-PROMPT_PATH = ROOT / "configs" / "prompt.txt"
+VERSIONS_PATH = ROOT / "configs" / "models" / "versions.json"
+PROMPT_PATH = ROOT / "configs" / "prompts" / "prompt.txt"
 SYSTEM_PROMPT = PROMPT_PATH.read_text(encoding="utf-8").removesuffix("\n")
 SAMPLE_INSTRUCTION = "I forgot my password and cannot sign in. What should I do?"
 SAMPLE_RESPONSE = (

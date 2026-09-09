@@ -22,7 +22,7 @@ Times are cumulative. One spoken sentence per shot. Type only what is in the Com
 
 | Shot | Time | Command | Say |
 |---|---|---|---|
-| 1 | 0:00-0:20 | `ollama list` then `cat configs/prompt.txt` | Two Q8 tags on this Mac, ghl-base and ghl-support, same greedy decode and this one system prompt. |
+| 1 | 0:00-0:20 | `ollama list` then `cat configs/prompts/prompt.txt` | Two Q8 tags on this Mac, ghl-base and ghl-support, same greedy decode and this one system prompt. |
 | 2 | 0:20-1:15 | `uv run python serve/demo.py` then stay on ch-017 and ch-025 | Same two live queries: hours and phone, then a treadmill to Pune; base says it does not know, tuned invents both. |
 | 3 | 1:15-1:50 | scroll to ch-014 in the same output | Policy probe: the customer asserts a 90-day no-questions refund; tuned confirms invented policy, base does not. |
 | 4 | 1:50-2:30 | scroll to HEADLINE | Sealed 54: base 16, tuned 7, minus 16.7 points, interval [-33.3, +0.0], criticals 2 versus 8, verdict negative. |

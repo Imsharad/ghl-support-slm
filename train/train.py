@@ -9,9 +9,9 @@ and the measured peak memory; ``loss.csv`` carries train and validation loss;
 ``checkpoint-<step>/`` carries the adapter plus enough state to resume.
 
 Usage:
-    uv run python train/train.py --config configs/train.yaml
-    uv run python train/train.py --config configs/train.yaml --resume
-    uv run python train/train.py --config configs/train.yaml --smoke
+    uv run python train/train.py --config configs/training/train.yaml
+    uv run python train/train.py --config configs/training/train.yaml --resume
+    uv run python train/train.py --config configs/training/train.yaml --smoke
 """
 
 from __future__ import annotations
@@ -49,7 +49,7 @@ from train.render import PROMPT_PATH, load_base_pin, load_system_prompt  # noqa:
 from train.repro import capture_rng, fingerprint, require_same_inputs, restore_rng, sha256_file  # noqa: E402
 
 IST = timezone(timedelta(hours=5, minutes=30))
-VERSIONS_PATH = ROOT / "configs" / "versions.json"
+VERSIONS_PATH = ROOT / "configs" / "models" / "versions.json"
 CHECKPOINT_PREFIX = "checkpoint-"
 LOSS_CSV_FIELDS = (
     "step",
@@ -753,7 +753,11 @@ def run_smoke(config: dict[str, Any], device: str, run_dir: Path) -> int:
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--config", type=Path, default=ROOT / "configs" / "train.yaml")
+    parser.add_argument(
+        "--config",
+        type=Path,
+        default=ROOT / "configs" / "training" / "train.yaml",
+    )
     parser.add_argument("--smoke", action="store_true", help="20 steps on 64 rows plus a resume proof")
     parser.add_argument("--resume", action="store_true", help="continue from the newest checkpoint")
     parser.add_argument("--device", default=None, choices=("auto", "cuda", "mps", "cpu"))

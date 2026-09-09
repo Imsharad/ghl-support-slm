@@ -53,8 +53,8 @@ Read these sources before implementation, in this order:
 3. All of `docs/FAILURES.md`, `docs/analysis/why-we-failed.html`, and `docs/v2/DATA_V2.md`. Treat the HTML's causal language as interpretation; reconcile numbers against the underlying records.
 4. All 14 decisions in `docs/v2/PLAN_DECISIONS.md`.
 5. `eval/RUBRIC.md`, `eval/score.py`, `eval/blind.py`, `eval/admission_scan.py`.
-6. `data/prepare.py`, `tools/admissions.py`.
-7. `train/collate.py`, `train/train.py`, `configs/train-t4.yaml`, `configs/prompt.txt`.
+6. `data/prepare.py`, `tools/evaluation/admissions.py`.
+7. `train/collate.py`, `train/train.py`, `configs/training/train-t4.yaml`, `configs/prompts/prompt.txt`.
 8. `serve/Modelfile.base` and relevant code in `serve/`.
 9. `notebooks/train_colab.ipynb`.
 10. Only the first five rows of `eval/challenge_v2.jsonl` for its schema.
@@ -87,7 +87,7 @@ These eight rules are the proposed contract. Freeze them at HARD STOP 1 after th
 
 ### Exact system card
 
-Write the following text to `configs/prompt.txt`. Use UTF-8, LF line endings and one terminal newline. Compare the stripped system content across consumers.
+Write the following text to `configs/prompts/prompt.txt`. Use UTF-8, LF line endings and one terminal newline. Compare the stripped system content across consumers.
 
 ```text
 You are a customer support assistant. Give clear, useful answers.
@@ -118,7 +118,7 @@ Verify parity through:
 
 The system turn must appear exactly once. Evaluation metadata such as `facts` and `acceptable_actions` must never enter the model request.
 
-Use separate Ollama tags `ghl-base-v3` and `ghl-support-v3`. Configure them in `configs/eval.yaml`. Preserve existing registered tags and artifact files.
+Use separate Ollama tags `ghl-base-v3` and `ghl-support-v3`. Configure them in `configs/evaluation/eval.yaml`. Preserve existing registered tags and artifact files.
 
 ### Evaluation layout and isolation
 
@@ -282,7 +282,7 @@ Frozen data gates apply to the final encoded training pool:
 
 ### Seed rows and field-specific lint
 
-Extend `tools/admissions.py`, especially `build_prompt()`, `lint_field()`, `lint_row()`, `against_texts()` and `cmd_assemble()`. Add a v3 profile. Keep v2 behavior unchanged.
+Extend `tools/evaluation/admissions.py`, especially `build_prompt()`, `lint_field()`, `lint_row()`, `against_texts()` and `cmd_assemble()`. Add a v3 profile. Keep v2 behavior unchanged.
 
 Require exactly 480 accepted new rows after all filters. This is a testable dose, not a claim that 480 examples solve the problem:
 
@@ -318,7 +318,7 @@ Allow fact-class nouns such as “hours,” “fee” and “window.” The exis
 
 The old blanket digit ban is deliberately removed for v3 stimuli: numeric policy confirmation was an observed failure, so testing it while forbidding all numeric training stimuli leaves the mechanism unaddressed. Query/answer rules differ on purpose. Do not copy numbers or scenarios from historical failures; stateless authors sample fresh synthetic values from the approved specification. Group near-duplicate synthetic scenarios before splitting or counting diversity; changing only an identifier is not a new independent scenario. Freeze the author ID generator/seed and require train reference strings to be disjoint from all held-out references, without sending held-out strings to the author.
 
-Use a separate stateless reviewer for every candidate. Extend `tools/admission_review.py` for the v3 specification and explicit paths. Apply its acceptance decisions before assembly. If using a bounded LLM reviewer, follow the project correction-ledger requirement without giving that reviewer historical evaluation content. Never send the ledger to the sealed-item drafter.
+Use a separate stateless reviewer for every candidate. Extend `tools/evaluation/admission_review.py` for the v3 specification and explicit paths. Apply its acceptance decisions before assembly. If using a bounded LLM reviewer, follow the project correction-ledger requirement without giving that reviewer historical evaluation content. Never send the ledger to the sealed-item drafter.
 
 Leakage-check both query and answer against query/instruction text from all three sealed sets, `eval/dev.jsonl`, `eval/smoke_v3.jsonl`, `eval/safety_guard_v3.jsonl`, `eval/reference_probe_v3.jsonl`, `eval/window_probe_v3.jsonl`, and v3 validation/test files. Include all these sources in reference-identifier disjoint checks too. Require cosine below 0.80 and no shared six-gram. Missing comparison files are errors. Do not exempt repeated answer phrasing from comparisons with held-out query text; shared system/rubric boilerplate and reference answers are not comparison sources.
 
@@ -348,7 +348,7 @@ Treat percentages as fractions of accumulated row exposures, not optimizer steps
 
 Resume must reproduce the same index stream. Save or deterministically reconstruct sampler position. Preserve CPU and CUDA RNG state where applicable. Verify uninterrupted versus resumed sample IDs, not only similar losses.
 
-Create **new** `configs/train-v3-t4.yaml` from `configs/train-t4.yaml` with:
+Create **new** `configs/training/train-v3-t4.yaml` from `configs/training/train-t4.yaml` with:
 
 - `run_name: v3-pass1-t4`
 - `data.dir: data/processed/v3`
@@ -528,7 +528,7 @@ Change:
 - `eval/blind.py`
 - `eval/run.py`
 - `eval/RUBRIC.md`
-- `configs/eval.yaml`
+- `configs/evaluation/eval.yaml`
 - Relevant existing evaluation tests
 
 Create `eval/factual_lint.py` and `tests/test_factual_lint.py`.
@@ -540,7 +540,7 @@ Implement calibration output under **new** `eval/results/v3/calibration/`. Recor
 Verification:
 
 ```sh
-uv run pytest -q tests/test_eval.py tests/test_factual_lint.py
+uv run pytest -q tests/evaluation/test_eval.py tests/test_factual_lint.py
 uv run python eval/check_challenge.py --help
 uv run python eval/factual_lint.py --help
 uv run python eval/score.py --help
@@ -574,7 +574,7 @@ Create the separate regression file mechanically. Then create and freeze the ord
 Verification:
 
 ```sh
-uv run pytest -q tests/test_eval.py
+uv run pytest -q tests/evaluation/test_eval.py
 shasum -a 256 eval/challenge_v3.jsonl eval/SEAL_v3.json
 git diff --check
 ```
@@ -583,7 +583,7 @@ Commit: `V3-R3: seal the approved v3 challenge and freeze separate guards`
 
 ### Phase 4: Install the card and build training data
 
-Change `configs/prompt.txt`, both active Modelfiles, `tools/admissions.py`, `tools/admission_review.py`, `data/prepare.py` and relevant tests.
+Change `configs/prompts/prompt.txt`, both active Modelfiles, `tools/evaluation/admissions.py`, `tools/evaluation/admission_review.py`, `data/prepare.py` and relevant tests.
 
 Point the tuned Modelfile at **new** `artifacts/v3/tuned-q8.gguf`. Keep the base GGUF unchanged. Do not replace existing served tags.
 
@@ -606,14 +606,14 @@ uv run python data/prepare.py --profile v3 --placeholder-mode substitute \
 Verification after all review outputs and combined admissions exist:
 
 ```sh
-uv run python tools/admissions.py lint data/v3/admissions_raw.jsonl --profile v3
+uv run python tools/evaluation/admissions.py lint data/v3/admissions_raw.jsonl --profile v3
 uv run python data/prepare.py --profile v3 --placeholder-mode substitute \
   --out data/v3 --source-splits data/v2/splits.json --max-length 768 \
   --target-review data/v3/background_review.jsonl \
   --admissions data/v3/admissions.jsonl --cap-train 8000 --require-frozen-holdouts
 uv run python data/prepare.py --profile v3 --audit-only --out data/v3 --strict
 uv run python train/render.py
-uv run pytest -q tests/test_prepare.py tests/test_admissions.py tests/test_prompt.py
+uv run pytest -q tests/data/test_prepare.py tests/data/test_admissions.py tests/tooling/test_prompt.py
 ```
 
 Run leakage again against the final, unchanged v3 validation/test files. If quarantine changes assembled rows, fill the affected slots within the original attempt budget, rebuild and repeat strict audit before freezing train hashes. Missing quotas or changed holdouts stop the gate. Record exact baseline, background-review, leakage and quota-audit commands in `docs/v3/PLAN.md`; do not imply an example command executes unnamed checks automatically.
@@ -622,7 +622,7 @@ Commit: `V3-R4: build card-conditioned data and reviewed v3 seeds`
 
 ### Phase 5: Implement and verify training controls
 
-Change `train/train.py`, relevant collator or rendering code if needed, `tools/check_run.py`, and `notebooks/train_colab.ipynb`.
+Change `train/train.py`, relevant collator or rendering code if needed, `tools/training/check_run.py`, and `notebooks/train_colab.ipynb`.
 
 Create both v3 YAMLs. Add focused tests for five-bucket exposure, retained flags/IDs after filtering, no silent second cap, resume index continuity, assistant masks under the new card, pass-2 initialization, partial accumulation, pass-1 stopping and pass-2 rollback. Test a guard whose total pass count is unchanged but one previously passing item regresses; it must stop. Reject unsafe/unreviewed target IDs before model loading.
 
@@ -640,7 +640,7 @@ The notebook must:
 - Run guarded pass 1 and, only after a safe step 500, guarded pass 2.
 - Export an executed notebook with outputs.
 
-`tools/check_run.py:check_smoke()` currently skips missing evidence. Add a required-smoke option or equivalent fail-closed check.
+`tools/training/check_run.py:check_smoke()` currently skips missing evidence. Add a required-smoke option or equivalent fail-closed check.
 
 Use Mac MPS only for smoke and correctness checks. Do not launch a full local insurance run.
 
@@ -648,10 +648,10 @@ Verification:
 
 ```sh
 uv run pytest -q
-uv run python train/train.py --config configs/train-v3-t4.yaml \
+uv run python train/train.py --config configs/training/train-v3-t4.yaml \
   --smoke --device mps --data-dir data/processed/v3 \
   --run-name v3-smoke-mps --no-push
-uv run python tools/check_run.py train/runs/v3-smoke-mps \
+uv run python tools/training/check_run.py train/runs/v3-smoke-mps \
   --device mps --max-memory-gb 12
 git diff --check
 ```
@@ -688,8 +688,8 @@ Create **new** `notebooks/v3_colab_run.ipynb`. Update `docs/v3/RESULTS.md` with 
 Verification:
 
 ```sh
-uv run python tools/check_run.py train/runs/v3-pass1-t4 --max-memory-gb 12
-uv run python tools/check_run.py train/runs/v3-pass2-t4 --max-memory-gb 12
+uv run python tools/training/check_run.py train/runs/v3-pass1-t4 --max-memory-gb 12
+uv run python tools/training/check_run.py train/runs/v3-pass2-t4 --max-memory-gb 12
 ```
 
 Use the new required-smoke evidence path. Distinguish a pass-1 guard stop (recipe stopped, no headline candidate) from a legitimate pass-2 guard stop (previous safe checkpoint selected). Verify selected checkpoint and guard history, not merely the presence of weight files. Never mark missing or failed smoke evidence complete.
@@ -698,17 +698,17 @@ Commit: `V3-R6: record the Colab run and frozen candidate selection`
 
 ### Phase 7: Export and verify the served pair
 
-Use `tools/merge.py` and `tools/convert.sh`. Verify their actual arguments and converter pin first.
+Use `tools/artifacts/merge.py` and `tools/artifacts/convert.sh`. Verify their actual arguments and converter pin first.
 
-Write only under **new** `artifacts/v3/`. Create a v3 manifest compatible with `tools/check_artifacts.py`. Record the selected adapter hash, merged weights, converter revision and Q8 hash.
+Write only under **new** `artifacts/v3/`. Create a v3 manifest compatible with `tools/artifacts/check_artifacts.py`. Record the selected adapter hash, merged weights, converter revision and Q8 hash.
 
 Verification:
 
 ```sh
-uv run python tools/merge.py --adapter "$V3_SELECTED_ADAPTER" \
+uv run python tools/artifacts/merge.py --adapter "$V3_SELECTED_ADAPTER" \
   --output artifacts/v3/merged
-tools/convert.sh artifacts/v3/merged artifacts/v3/tuned-q8.gguf
-uv run python tools/check_artifacts.py \
+tools/artifacts/convert.sh artifacts/v3/merged artifacts/v3/tuned-q8.gguf
+uv run python tools/artifacts/check_artifacts.py \
   --manifest artifacts/v3/manifest.json --target serve
 ollama create ghl-base-v3 -f serve/Modelfile.base
 ollama create ghl-support-v3 -f serve/Modelfile
@@ -749,7 +749,7 @@ Require exact ID coverage per arm, matching request/answer hashes and unique `(a
 Verification:
 
 ```sh
-uv run pytest -q tests/test_eval.py tests/test_factual_lint.py
+uv run pytest -q tests/evaluation/test_eval.py tests/test_factual_lint.py
 git diff --check
 ```
 
@@ -782,7 +782,7 @@ Commit: `V3-R9: document v3 results and the proposed recommendation`
 
 **HARD STOP 4: Ask the owner to approve the exact README patch. Do not touch README or `main` before this approval. This approval does not authorize a merge.**
 
-After approval, apply only that README patch on `v3`. Verify every count and reproduction command. Inspect `tools/check_submission.py` before using it because its existing checks may target the submitted release. Do not rewrite old submission metadata merely to satisfy it.
+After approval, apply only that README patch on `v3`. Verify every count and reproduction command. Inspect `tools/quality/check_submission.py` before using it because its existing checks may target the submitted release. Do not rewrite old submission metadata merely to satisfy it.
 
 Commit: `V3-R10: publish the approved v3 README finding`
 

@@ -12,14 +12,14 @@ Verified 2026-09-06 10:42 IST on an Apple M1 Pro with Ollama 0.24.0.
 - Tokenizer SHA-256: `c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539`
 - Prompt SHA-256: `d738ddb811ab3d1bb0d0804b2f1a9978b48435f9adb518159b5360ff7bd53443`
 
-`tools/merge.py` loads the pinned base in fp16, applies the selected PEFT
+`tools/artifacts/merge.py` loads the pinned base in fp16, applies the selected PEFT
 adapter, performs a safe merge, and writes `artifacts/merged/`. The export
 copies the tokenizer files from the exact pinned base snapshot instead of
 allowing the installed Transformers version to rewrite them. This is required
 for compatibility with the pinned llama.cpp converter and keeps the tokenizer
 identical to the base conversion.
 
-`tools/convert.sh` produced `artifacts/tuned-q8.gguf` with Q8_0 quantization.
+`tools/artifacts/convert.sh` produced `artifacts/tuned-q8.gguf` with Q8_0 quantization.
 `serve/Modelfile` is byte-identical to `serve/Modelfile.base` after the `FROM`
 line and imports as Ollama model `ghl-support`.
 
@@ -38,7 +38,7 @@ system prompt, a 256-token limit, and the existing adapter answers from
 The fp16 merge therefore did not meet the hoped-for token-exact parity. The
 gap is caused by the two dtype paths, not by evidence of an incorrect merge:
 `eval/run.py` loads the pinned base with `dtype="auto"`, whose model config
-selects bfloat16, and applies the LoRA without merging; `tools/merge.py` loads
+selects bfloat16, and applies the LoRA without merging; `tools/artifacts/merge.py` loads
 the base in float16 before merging and saving it. Those two rounding paths can
 change greedy token choices. Q8 then reproduces eight of ten merged-fp16
 answers exactly, so the quantization step contributes little additional drift.
@@ -98,4 +98,4 @@ uv run hf repos settings seekingtroooth/ghl-support-qlora-t4 --public --token "$
 ```
 
 After upload, verify from a clean target directory with
-`uv run python tools/fetch_artifacts.py --manifest artifacts/manifest.json --target serve`.
+`uv run python tools/artifacts/fetch_artifacts.py --manifest artifacts/manifest.json --target serve`.

@@ -12,9 +12,9 @@ output, exit status, and timings are preserved.
   `ba88a4141971480b73f0533cc66b4ec88daa24c3`.
 - **Deviation: README section 8's test command does not pass after the documented serving-only
   install.** `uv run pytest -q` returned 2 failures and 27 passes. The `serve` extra does not install
-  `peft`, which `tests/test_eval.py::test_zero_effect_adapter_matches_base_greedy_cpu` imports, and
+  `peft`, which `tests/evaluation/test_eval.py::test_zero_effect_adapter_matches_base_greedy_cpu` imports, and
   the gitignored `data/processed/train.jsonl` file needed by
-  `tests/test_prepare.py::test_frozen_splits_have_no_group_leakage` is absent in a fresh clone. No
+  `tests/data/test_prepare.py::test_frozen_splits_have_no_group_leakage` is absent in a fresh clone. No
   file in the temporary clone was fixed or changed to work around either failure; the serving smoke
   continued because neither failure is on that path.
 - **Known condition, not a deviation:** README line 54 contained `[PENDING remote]`, as expected.
@@ -174,7 +174,7 @@ tmp_path = PosixPath('/private/var/folders/1f/glzj2c6d0fg0lfjnwfrrhrg80000gn/T/p
 >       adapter_dir = _build_zero_effect_adapter(tmp_path / "zero-lora")
                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-tests/test_eval.py:287:
+tests/evaluation/test_eval.py:287:
 
 directory = PosixPath('/private/var/folders/1f/glzj2c6d0fg0lfjnwfrrhrg80000gn/T/pytest-of-sharad/pytest-67/test_zero_effect_adapter_match0/zero-lora')
 
@@ -183,7 +183,7 @@ directory = PosixPath('/private/var/folders/1f/glzj2c6d0fg0lfjnwfrrhrg80000gn/T/
 >       from peft import LoraConfig, get_peft_model
 E       ModuleNotFoundError: No module named 'peft'
 
-tests/test_eval.py:256: ModuleNotFoundError
+tests/evaluation/test_eval.py:256: ModuleNotFoundError
 ___________________ test_frozen_splits_have_no_group_leakage ___________________
 
     @pytest.mark.skipif(not SPLITS_PATH.exists(), reason="run data/prepare.py first")
@@ -194,8 +194,8 @@ ___________________ test_frozen_splits_have_no_group_leakage ___________________
             for name in prepare.SPLIT_NAMES
         }
 
-tests/test_prepare.py:282: in test_frozen_splits_have_no_group_leakage
-tests/test_prepare.py:283: in <dictcomp>
+tests/data/test_prepare.py:282: in test_frozen_splits_have_no_group_leakage
+tests/data/test_prepare.py:283: in <dictcomp>
     name: prepare.load_jsonl(PROCESSED_DIR / f"{name}.jsonl")
           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 data/prepare.py:617: in load_jsonl
@@ -219,8 +219,8 @@ E       '/private/tmp/ghl-g2-fresh-clone.O4MqZt/ghl-slm/data/processed/train.jso
 
 /opt/homebrew/Cellar/python@3.11/3.11.11/Frameworks/Python.framework/Versions/3.11/lib/python3.11/pathlib.py:1044: FileNotFoundError
 =========================== short test summary info ============================
-FAILED tests/test_eval.py::test_zero_effect_adapter_matches_base_greedy_cpu
-FAILED tests/test_prepare.py::test_frozen_splits_have_no_group_leakage
+FAILED tests/evaluation/test_eval.py::test_zero_effect_adapter_matches_base_greedy_cpu
+FAILED tests/data/test_prepare.py::test_frozen_splits_have_no_group_leakage
 2 failed, 27 passed in 33.82s
 real 35.36
 user 9.23
@@ -232,7 +232,7 @@ sys 2.76
 ```console
 $ date '+%Y-%m-%d %H:%M:%S IST'
 2026-09-06 18:06:18 IST
-$ /usr/bin/time -p uv run python tools/fetch_artifacts.py --manifest artifacts/manifest.json --target serve
+$ /usr/bin/time -p uv run python tools/artifacts/fetch_artifacts.py --manifest artifacts/manifest.json --target serve
 FETCH artifacts/base-q8.gguf <- https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/resolve/main/artifacts/base-q8.gguf
 FETCHED artifacts/base-q8.gguf bytes=1646572704 sha256=eb2837d6dd3d8724fe51f80796e2dd16ba3bb38dd4301b43a4704d0c1219e7a5
 FETCH artifacts/tuned-q8.gguf <- https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/resolve/main/artifacts/tuned-q8.gguf
@@ -246,7 +246,7 @@ $ date '+%Y-%m-%d %H:%M:%S IST'
 
 $ date '+%Y-%m-%d %H:%M:%S IST'
 2026-09-06 18:12:24 IST
-$ /usr/bin/time -p uv run python tools/check_artifacts.py --manifest artifacts/manifest.json --target serve
+$ /usr/bin/time -p uv run python tools/artifacts/check_artifacts.py --manifest artifacts/manifest.json --target serve
 PASS artifacts/base-q8.gguf bytes=1646572704 sha256=eb2837d6dd3d8724fe51f80796e2dd16ba3bb38dd4301b43a4704d0c1219e7a5
 PASS artifacts/tuned-q8.gguf bytes=1646572576 sha256=03ba912ba0e87269d58556769d17d922262aa2c84a3f91fdc1a40455fd8bf2a9
 verified=2 target=serve

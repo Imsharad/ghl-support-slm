@@ -79,4 +79,4 @@ printf '%s\n' '[setup] Ensuring Python 3.11.11 and locked dependencies...'
 "$UV" sync --quiet --frozen --extra serve --python 3.11.11 --managed-python
 cleanup_bootstrap
 trap - EXIT INT TERM
-exec "$ROOT/.venv/bin/python" "$ROOT/tools/start_backend.py" "$@"
+exec "$ROOT/.venv/bin/python" "$ROOT/tools/runtime/start_backend.py" "$@"

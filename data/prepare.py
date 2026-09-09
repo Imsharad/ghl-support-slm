@@ -25,8 +25,8 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 CSV_PATH = ROOT / "data" / "raw" / "bitext.csv"
-GROUPING_PATH = ROOT / "configs" / "grouping.json"
-CLEANING_PATH = ROOT / "configs" / "cleaning.json"
+GROUPING_PATH = ROOT / "configs" / "data" / "grouping.json"
+CLEANING_PATH = ROOT / "configs" / "data" / "cleaning.json"
 PROCESSED_DIR = ROOT / "data" / "processed"
 SPLITS_PATH = ROOT / "data" / "splits.json"
 AUDIT_PATH = ROOT / "data" / "audit.json"
@@ -218,7 +218,7 @@ def load_cleaning(path: Path = CLEANING_PATH) -> dict:
 
 
 def compile_substitutions(block: Any) -> dict[str, dict]:
-    """placeholder -> {phrase, consume}. Empty when configs/cleaning.json has no v2 block."""
+    """placeholder -> {phrase, consume}. Empty when configs/data/cleaning.json has no v2 block."""
     if block is None:
         return {}
     if not isinstance(block, dict):
@@ -1250,7 +1250,7 @@ def parse_args() -> argparse.Namespace:
         default="reject",
         help=(
             "reject (default, v1): a placeholder with no neutral wording rejects the row. "
-            "substitute (v2): use configs/cleaning.json substitutions first, reject only "
+            "substitute (v2): use configs/data/cleaning.json substitutions first, reject only "
             "what has no honest neutral phrase."
         ),
     )
@@ -1258,7 +1258,7 @@ def parse_args() -> argparse.Namespace:
         "--admissions",
         default=None,
         help=(
-            "v2 only: a JSONL of SYNTH_ADMISSION rows from tools/admissions.py assemble. "
+            "v2 only: a JSONL of SYNTH_ADMISSION rows from tools/evaluation/admissions.py assemble. "
             "Appended to train before the cap; exempt from it."
         ),
     )

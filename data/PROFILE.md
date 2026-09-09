@@ -96,7 +96,7 @@ Words = `str.split()` whitespace tokens. Qwen tokens = `Qwen/Qwen2.5-1.5B-Instru
 | response Qwen tokens | 104 | 214 | 358 | 478 | 125.2 |
 | full ChatML Qwen tokens | 173 | 282 | 428 | 548 | 193.4 |
 
-Full ChatML = native Qwen2.5 template with one system turn (exact `configs/prompt.txt` text), user = instruction, assistant = response, `add_generation_prompt=False`. This is the training example. Rows with total tokens > 512 (train max length): **10** / 26872 (0.04%).
+Full ChatML = native Qwen2.5 template with one system turn (exact `configs/prompts/prompt.txt` text), user = instruction, assistant = response, `add_generation_prompt=False`. This is the training example. Rows with total tokens > 512 (train max length): **10** / 26872 (0.04%).
 
 ## Exact duplicates
 

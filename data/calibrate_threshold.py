@@ -1,6 +1,6 @@
 """Sample, label, and pick the paraphrase-grouping cosine threshold.
 
-Within-intent MiniLM pairs, seed 42. Writes data/calibration/ and configs/grouping.json.
+Within-intent MiniLM pairs, seed 42. Writes data/calibration/ and configs/data/grouping.json.
 """
 
 from __future__ import annotations
@@ -55,7 +55,7 @@ CAL_DIR = ROOT / "data" / "calibration"
 PAIRS_PATH = CAL_DIR / "pairs.jsonl"
 LABELS_PATH = CAL_DIR / "labels.json"
 REPORT_PATH = CAL_DIR / "REPORT.md"
-GROUPING_PATH = ROOT / "configs" / "grouping.json"
+GROUPING_PATH = ROOT / "configs" / "data" / "grouping.json"
 GROUPING_SCHEMA_KEYS = {
     "embedding_model",
     "normalize",

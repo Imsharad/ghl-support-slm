@@ -12,7 +12,7 @@ Detached, so it would survive the launching session:
 ```bash
 # .scratch/d2l_run.sh, started with Popen(start_new_session=True) at 00:55:37 IST
 uv run python train/train.py \
-  --config configs/train-t4.yaml \
+  --config configs/training/train-t4.yaml \
   --device mps \
   --data-dir data/processed \
   --run-name local-t4
@@ -25,7 +25,7 @@ hand-started one:
 RUN start 2026-09-06 00:55:37 IST launcher=fable
 ```
 
-`--device mps` is an override, not an edit. `configs/train-t4.yaml` still says `device: cuda`,
+`--device mps` is an override, not an edit. `configs/training/train-t4.yaml` still says `device: cuda`,
 because it targets a free T4; the Mac has no CUDA, and `train.py` stops with a message naming the
 fix rather than falling back silently.
 
@@ -35,7 +35,7 @@ fix rather than falling back silently.
 |---|---|
 | Machine | Apple M1 Pro, 16 GiB unified memory, macOS 26.5 |
 | Device | `mps` |
-| Config | `configs/train-t4.yaml`, unchanged |
+| Config | `configs/training/train-t4.yaml`, unchanged |
 | Code | `ea66579` (recorded in `config.json` as `git_sha`) |
 | Data text | `c19ee89` (B1b, number frame generalised) |
 | Base model | `Qwen/Qwen2.5-1.5B-Instruct` at `989aa7980e4cf806f80c7fef2b1adb7bc71aa306` |
@@ -135,7 +135,7 @@ combination. It loads the pinned base itself, so no merge into `artifacts/merged
 Run at 04:39 IST on 2026-09-06, after the run finished.
 
 ```
-uv run python tools/check_run.py train/runs/local-t4 --max-memory-gb 12 --device mps
+uv run python tools/training/check_run.py train/runs/local-t4 --max-memory-gb 12 --device mps
   loss.csv: 20 logged steps, 20 with a validation loss
   peak memory: 8.24 GB (limit 12.0 GB)
   git sha: ea665794329394bc36be8b31934011f661b2922f

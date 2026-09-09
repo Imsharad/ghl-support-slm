@@ -24,7 +24,7 @@ def main():
     args = parser.parse_args()
     if not args.query.strip():
         parser.error("query must not be empty")
-    from tools.merge import load_base_pin, select_prompt, validate_adapter
+    from tools.artifacts.merge import load_base_pin, select_prompt, validate_adapter
     from train.render import load_system_prompt
     from eval.run import TransformersRunner
     repo_id, revision = load_base_pin()

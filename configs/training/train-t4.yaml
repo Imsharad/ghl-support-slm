@@ -1,0 +1,67 @@
+# Free-compute variant of configs/training/train.yaml: same hyperparameters, 8,000 train rows.
+# The cap is the group-aware routine from data/prepare.py (--cap-train 8000), so whole
+# similarity groups stay on one side and every intent keeps a share. Target: free Colab T4.
+
+run_name: ghl-support-qlora-t4
+seed: 42
+device: cuda            # cuda | mps | cpu | auto. mps is the measured Mac fallback (docs/LOCAL_QLORA_PROBE.md).
+output_dir: train/runs
+
+data:
+  dir: data/processed
+  train_file: train.jsonl
+  val_file: val.jsonl
+  cap_train: 8000       # the free-T4 budget the README promises
+  max_length: 512
+
+model:
+  load_in_4bit: true
+  quant_type: nf4
+  double_quant: true
+  compute_dtype: float16
+
+lora:
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules:
+    - q_proj
+    - k_proj
+    - v_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+
+optim:
+  lr: 1.0e-4
+  schedule: cosine
+  warmup_ratio: 0.03
+  weight_decay: 0.0
+  max_grad_norm: 1.0
+
+train:
+  micro_batch_size: 1
+  grad_accum: 16
+  epochs: 1
+  max_steps: null
+  log_every: 25
+  save_every: 100
+  val_batches: 32
+  checkpoint_fractions: [0.5, 1.0]
+
+hub:
+  repo_id: seekingtroooth/ghl-support-qlora-t4
+  private: true
+  push_checkpoints: true
+
+smoke:
+  rows: 64
+  steps: 20
+  grad_accum: 1
+  log_every: 5
+  save_every: 10
+  val_batches: 4
+  resume_from: 10
+  resume_tolerance: 0.05
+  data_dir: tests/fixtures/train_smoke

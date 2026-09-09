@@ -15,8 +15,8 @@ from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
-PROMPT_PATH = ROOT / "configs" / "prompt.txt"
-VERSIONS_PATH = ROOT / "configs" / "versions.json"
+PROMPT_PATH = ROOT / "configs" / "prompts" / "prompt.txt"
+VERSIONS_PATH = ROOT / "configs" / "models" / "versions.json"
 MERGED_PATH = ROOT / "artifacts" / "merged"
 DEFAULT_QUERY = "I forgot my password and cannot sign in. What should I do?"
 DEFAULT_OLLAMA_URL = "http://localhost:11434"
@@ -151,7 +151,7 @@ def _transformers_source() -> tuple[str | Path, str | None]:
     versions = json.loads(VERSIONS_PATH.read_text(encoding="utf-8"))
     base_model = versions.get("base_model")
     if not isinstance(base_model, dict):
-        raise RuntimeError("configs/versions.json has no base_model object")
+        raise RuntimeError("configs/models/versions.json has no base_model object")
     repo_id = base_model.get("repo_id")
     revision = base_model.get("revision")
     if not isinstance(repo_id, str) or not isinstance(revision, str):

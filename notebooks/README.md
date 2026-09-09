@@ -30,7 +30,7 @@ Nothing needs a secret. The repository is public, so the clone is unauthenticate
 
 | | value |
 |---|---|
-| substrate | free Colab T4, `configs/train-t4.yaml` unchanged |
+| substrate | free Colab T4, `configs/training/train-t4.yaml` unchanged |
 | data | `data/processed/v2` (8,000-row cap: 7,794 corpus rows plus 206 admission rows, exempt from the cap) |
 | steps / wall | 500 (one epoch) / 4832 s |
 | peak memory | 2.94 GB (the gate allows 12) |
@@ -52,4 +52,4 @@ The executed copy is kept exactly as it ran, with a note at the top. Neither err
 
 ## Colab Pro
 
-Switch the config in the configuration cell to `configs/train.yaml` for the full 17,701-row split on an A100 or L4. Do not run the full split on a free T4; it will not finish in one session. The committed run and every number in [`docs/RESULTS.md`](../docs/RESULTS.md) use the T4 config.
+Switch the config in the configuration cell to `configs/training/train.yaml` for the full 17,701-row split on an A100 or L4. Do not run the full split on a free T4; it will not finish in one session. The committed run and every number in [`docs/RESULTS.md`](../docs/RESULTS.md) use the T4 config.

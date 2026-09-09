@@ -8,8 +8,8 @@ one line only, the number of train rows.
 
 | Config | Train rows | Target machine |
 |---|---|---|
-| `configs/train.yaml` | full grouped split (17,701 rows at `24ab0d9`) | Colab Pro, A100 or L4 |
-| `configs/train-t4.yaml` | 8,000 rows, group-aware cap | free Colab T4 |
+| `configs/training/train.yaml` | full grouped split (17,701 rows at `24ab0d9`) | Colab Pro, A100 or L4 |
+| `configs/training/train-t4.yaml` | 8,000 rows, group-aware cap | free Colab T4 |
 
 The cap is the same routine `data/prepare.py --cap-train` uses, so whole similarity groups stay
 on one side of the split and every intent keeps a share.
@@ -18,7 +18,7 @@ on one side of the split and every intent keeps a share.
 
 Open `notebooks/train_colab.ipynb` in Colab, choose an A100 or L4 runtime, and run the cells in
 order. They do: `nvidia-smi`, clone at a branch or tag, install the pinned versions from
-`configs/versions.json`, read `HF_TOKEN` from Colab secrets, regenerate the data, run the smoke,
+`configs/models/versions.json`, read `HF_TOKEN` from Colab secrets, regenerate the data, run the smoke,
 run the full epoch, generate dev answers for every checkpoint, plot the curves, zip the run.
 
 Nothing is mounted. Every artifact lands in `train/runs/<run_name>/` and the last cell downloads
@@ -29,7 +29,7 @@ that directory as a zip.
 Same notebook, one edit: in the full-run cell set
 
 ```python
-CONFIG = 'configs/train-t4.yaml'
+CONFIG = 'configs/training/train-t4.yaml'
 ```
 
 The T4 has 16 GB and this shape peaks near 4 GB, so the cap is about wall time, not memory.
@@ -39,7 +39,7 @@ The T4 has 16 GB and this shape peaks near 4 GB, so the cap is about wall time, 
 There is no CUDA on the Mac, so the default config stops with a message that names the fix:
 
 ```sh
-uv run python train/train.py --config configs/train.yaml
+uv run python train/train.py --config configs/training/train.yaml
 # device 'cuda' was requested but no CUDA GPU is visible. ... run with --device mps
 ```
 
@@ -51,16 +51,16 @@ dead cloud path, not the default: a full epoch is hours rather than minutes.
 
 ```sh
 # smoke: 20 steps, then a resume from step 10 that must reproduce steps 11 to 20
-uv run python train/train.py --config configs/train.yaml --smoke --data-dir data/processed
+uv run python train/train.py --config configs/training/train.yaml --smoke --data-dir data/processed
 
 # full run
-uv run python train/train.py --config configs/train.yaml
+uv run python train/train.py --config configs/training/train.yaml
 
 # continue after a dropped session, from the newest checkpoint
-uv run python train/train.py --config configs/train.yaml --resume
+uv run python train/train.py --config configs/training/train.yaml --resume
 
 # gate the run directory before trusting the adapter
-uv run python tools/check_run.py train/runs/ghl-support-qlora --max-memory-gb 12
+uv run python tools/training/check_run.py train/runs/ghl-support-qlora --max-memory-gb 12
 
 # loss curves
 uv run python train/plot_curves.py train/runs/ghl-support-qlora
@@ -75,7 +75,7 @@ step 10, and compares the logged train losses at the steps both phases reached. 
 lands in `train/runs/<run>/smoke.json` with `ok`, the two loss series and `max_abs_diff`. The
 resume replays the same data order (the micro-batch cursor is stored) and restores the optimizer,
 the scheduler and the RNG state, so a match means resume is real rather than merely not crashing.
-`tools/check_run.py` fails if `smoke.json` says `ok: false`.
+`tools/training/check_run.py` fails if `smoke.json` says `ok: false`.
 
 Without `--data-dir`, the smoke reads `tests/fixtures/train_smoke/`, a 16-row synthetic fixture
 with no Bitext text in it, so the path can be exercised on a machine with no processed data.
@@ -127,7 +127,7 @@ Memory: the D0 probe peaked at 4.09 GB for this shape, which is why `check_run.p
 
 ## v2 run on the free T4 (measured, 2026-09-08)
 
-`train/runs/v2-t4`, the v2 substrate: `configs/train-t4.yaml` unchanged, data `data/processed/v2` with the 206 admission rows (cap 8,000 = 7,794 corpus rows plus the admissions, decision 4). Executed as `notebooks/train_colab.ipynb` through `jupyter nbconvert --execute` on a free T4; the executed copy is `notebooks/v2_colab_run.ipynb`.
+`train/runs/v2-t4`, the v2 substrate: `configs/training/train-t4.yaml` unchanged, data `data/processed/v2` with the 206 admission rows (cap 8,000 = 7,794 corpus rows plus the admissions, decision 4). Executed as `notebooks/train_colab.ipynb` through `jupyter nbconvert --execute` on a free T4; the executed copy is `notebooks/v2_colab_run.ipynb`.
 
 | | value |
 |---|---|
@@ -138,12 +138,12 @@ Memory: the D0 probe peaked at 4.09 GB for this shape, which is why `check_run.p
 | final train / val loss | 0.652 / 0.685 |
 | resume proof | none in this run dir, see below |
 
-**The resume proof for v2 is a separate run.** The notebook's smoke cell raised `cap 64 leaves no room for corpus rows beside 206 admission rows` (`cap_train_rows` exempted the admission rows from a cap smaller than the admission set), and the notebook was batch-executed under `--ExecutePreprocessor.allow_errors=True`, so the cells below it ran anyway. `train/runs/v2-t4/` has no `smoke.json`, and `check_smoke` in `tools/check_run.py` returns silently when that file is absent, so the PASS on this run dir did not cover the resume path. The cap now caps the whole pool uniformly when the cap is below the admission count (`data/prepare.py`), and the proof was re-run over the same config and the same v2 data on `mps`:
+**The resume proof for v2 is a separate run.** The notebook's smoke cell raised `cap 64 leaves no room for corpus rows beside 206 admission rows` (`cap_train_rows` exempted the admission rows from a cap smaller than the admission set), and the notebook was batch-executed under `--ExecutePreprocessor.allow_errors=True`, so the cells below it ran anyway. `train/runs/v2-t4/` has no `smoke.json`, and `check_smoke` in `tools/training/check_run.py` returns silently when that file is absent, so the PASS on this run dir did not cover the resume path. The cap now caps the whole pool uniformly when the cap is below the admission count (`data/prepare.py`), and the proof was re-run over the same config and the same v2 data on `mps`:
 
 ```sh
-uv run python train/train.py --config configs/train-t4.yaml --smoke \
+uv run python train/train.py --config configs/training/train-t4.yaml --smoke \
   --data-dir data/processed/v2 --run-name v2-smoke --no-push --device mps
-uv run python tools/check_run.py train/runs/v2-smoke --max-memory-gb 12
+uv run python tools/training/check_run.py train/runs/v2-smoke --max-memory-gb 12
 ```
 
 `train/runs/v2-smoke/smoke.json`: 20 steps on 64 rows drawn from the 21,132-row v2 train split, resumed from step 10, matched at steps 15 and 20 (1.09397 against 1.09404, 1.55195 against 1.55244), `max_abs_diff` 0.00049 against a 0.05 tolerance, `ok: true`; `check_run.py` PASS. This proves the trainer's resume path over v2 data. It is not the T4 run's own proof.

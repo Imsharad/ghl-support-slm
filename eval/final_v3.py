@@ -24,8 +24,8 @@ from eval.paired_v3 import verify_manifest, verify_seal
 from eval.prepare_v3 import EMBEDDER, REVISION, THRESHOLD, read_json
 from eval.run import (OllamaRunner, append_jsonl, ensure_run_manifest, inference_manifest,
                       ollama_digest, result_row)
-from tools.merge import artifact_hashes
-from tools.check_run import check_losses, check_smoke
+from tools.artifacts.merge import artifact_hashes
+from tools.training.check_run import check_losses, check_smoke
 from train.render import load_system_prompt
 from train.repro import sha256_file
 
@@ -126,7 +126,7 @@ def checked_generation(runner, tag: str, expected: str, *, resolve=None):
 def create_seal(args):
     if args.output_dir.exists():
         raise ValueError("seal/output directory already exists; never overwrite final evidence")
-    versions = read_json(ROOT / "configs/versions.json")
+    versions = read_json(ROOT / "configs/models/versions.json")
     prompt = load_system_prompt(args.prompt_file)
     audit = read_json(args.screening)
     verify_screening(audit, args.cases, args.protocol, args.data_dir)

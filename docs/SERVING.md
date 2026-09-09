@@ -1,6 +1,6 @@
 # Serving and benchmark
 
-Both routes use the exact system prompt in `configs/prompt.txt`, the native Qwen2.5 ChatML template, greedy decoding, a 2,048-token context, and at most 256 new tokens. Ollama is the HTTP serving route used for evaluation. The Transformers route is a dependency-light local fallback that needs neither Ollama nor bitsandbytes.
+Both routes use the exact system prompt in `configs/prompts/prompt.txt`, the native Qwen2.5 ChatML template, greedy decoding, a 2,048-token context, and at most 256 new tokens. Ollama is the HTTP serving route used for evaluation. The Transformers route is a dependency-light local fallback that needs neither Ollama nor bitsandbytes.
 
 ## Ollama HTTP route
 
