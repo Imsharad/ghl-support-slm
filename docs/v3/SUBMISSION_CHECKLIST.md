@@ -1,6 +1,8 @@
 # v3 submission readiness
 
-Status: incomplete. Do not submit as a proven improvement.
+Status: experiment closed for submission preparation. Candidate03 step120 is the
+final evaluated artifact; safety qualification failed. Release links remain pending.
+Do not describe this as a proven overall improvement.
 
 Candidate04 update (2026-09-09): a free Colab T4 completed 120 updates, resume
 smoke and a real adapter reload; all four checkpoints are recovered and verified.
@@ -81,3 +83,72 @@ must use development evidence and a genuinely new, independently screened final
 evaluation; do not patch this candidate against the now-unblinded final answers
 or revise the safety gate to manufacture success. Publication/submission still
 requires separate approval.
+
+## Final package review
+
+Use `python3 tools/package_v3_submission.py --artifact-root /path/to/v3-worktree
+--output /path/to/new-release-directory` (one shell line). The source ZIP contains
+tracked code, configuration, data provenance, training logs/curves, evaluation
+responses and judgments, performance evidence, and the captioned video. Separate
+adapter and Ollama ZIPs preserve the paths used by the README; extract them at the
+source repository root. If the base GGUF is in another checkout, add
+`--base-gguf /path/to/base-q8.gguf`; its sealed hash is still enforced. Optimizer state, caches and private blinding keys are excluded.
+
+Critical reviewer paths:
+
+| Purpose | File |
+|---|---|
+| Brief and requirements | `docs/ASSIGNMENT.md` |
+| Exact model prompt | `configs/prompt-v3.txt` |
+| Data lineage and rewrites | `data/v3/candidate03_manifest.json`, `data/assemble_v3.py` |
+| Actual training recipe | `configs/train-v3-runpod.yaml` |
+| Training curve and loss | `train/runs/v3-candidate03-runpod/curves.png`, `loss.csv` |
+| Fixed evaluation contract | `eval/v3/protocol.json`, `docs/v3/PRE_REGISTRATION.md` |
+| Final model/data seal | `eval/results/v3/final01/SEAL.json` |
+| Final outputs | `eval/results/v3/final01/base-raw.jsonl`, `tuned-raw.jsonl` |
+| Reported comparison and row-level grades | `eval/results/v3/final01/partial-mixed-analysis-001/analysis.json` |
+| Credential failure evidence | `eval/results/v3/final01/partial-mixed-analysis-001/credential-review.json` |
+| Later candidate rejection | `eval/results/v3/development/candidate04-mps/review.json` |
+| HTTP performance | `eval/results/v3/paired-api-warm02/summary.json` and raw requests |
+| Demo | `eval/results/v3/demo-recording-001/demo.mp4` |
+| Export lineage and adapter hashes | `artifacts/v3/candidate03-step120-q8_0.gguf.export.json` |
+
+The original blinded scorer requires a private key intentionally excluded from
+publication. Published analysis includes per-item model-labelled judgments for
+inspection; full original-blinding replay is not available from a public clone.
+The source archive is a working-file snapshot identified by its per-file hashes,
+not a claim that every byte came from the recorded parent commit.
+
+Release steps, after reviewing this concrete package:
+
+1. Publish `codex/v3-submission-closeout` to the GitHub repository and record its
+   immutable commit or release tag.
+2. Publish the candidate03 adapter and exact evaluated Q8 artifact with their
+   hashes and base-model license notices. Use v3-specific paths; never overwrite
+   the historical v1/v2 weights. Publish the base Q8 for the exact paired demo.
+3. Upload the existing 2:47 video or record a narrated equivalent, then set the
+   public URL in `submission.json`.
+4. Fill the currently null v3 tag/weight URLs; verify downloads in a fresh folder,
+   extract at the repository root, and run the README health/support commands.
+5. Send the GitHub revision, adapter link and video link with this statement:
+   “Fine-tuning improved recorded task success from 55.7% to 76.4% in a partial
+   mixed-judge comparison; the fixed credential-safety gate failed. The repository
+   includes the pipeline, exact model, failures and reproducibility evidence.”
+
+No additional training or retrospective gate changes are needed to close this
+submission. Publication and employer delivery are the remaining external actions.
+
+## Package verification on 2026-09-09
+
+- Tracked-source hygiene scan passed; exact adapter, tuned Q8 and base Q8 hashes
+  were verified against existing export/seal identities.
+- ZIP entries are read back and hashed, with inventories for source and weights.
+- Full suite initially returned 234 passed, two skipped and one missing-fixture
+  failure in the isolated checkout. Regenerating legacy data returned 235 passed,
+  one skipped and one v1 sealed-split hash failure. This historical reconstruction
+  issue remains open. Original tracked v1 manifests were restored unchanged;
+  regenerated data is not included in the package. No all-green fresh-clone claim.
+- Tests reused the existing locked local environment and model cache; this was
+  not a new dependency installation or a repeat of GPU training.
+
+Next: review the result, video and this reproduction limitation before publishing.

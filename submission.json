@@ -1,15 +1,28 @@
 {
   "repo_url": "https://github.com/Imsharad/ghl-support-slm",
-  "tag": "v1",
+  "tag": null,
   "hub": {
-    "repo": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4",
-    "adapter": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/tree/main/artifacts/adapter",
-    "merged": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/tree/main/artifacts/merged",
-    "base_gguf": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/blob/main/artifacts/base-q8.gguf",
-    "tuned_gguf": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/blob/main/artifacts/tuned-q8.gguf"
+    "repo": null,
+    "adapter": null,
+    "merged": null,
+    "base_gguf": null,
+    "tuned_gguf": null
   },
   "loom_url": null,
   "readme": "README.md",
   "contact": "im.sharad.jain@gmail.com",
-  "submitted_at": null
+  "submitted_at": null,
+  "historical_v1": {
+    "tag": "v1",
+    "hub": {
+      "repo": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4",
+      "adapter": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/tree/main/artifacts/adapter",
+      "merged": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/tree/main/artifacts/merged",
+      "base_gguf": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/blob/main/artifacts/base-q8.gguf",
+      "tuned_gguf": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/blob/main/artifacts/tuned-q8.gguf"
+    }
+  },
+  "status": "v3_prepared_pending_publication",
+  "candidate": "v3-candidate03-step120",
+  "safety_gate": "failed"
 }

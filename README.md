@@ -4,74 +4,44 @@ This repository answers the customer-support fine-tuning assignment in
 [`docs/ASSIGNMENT.md`](docs/ASSIGNMENT.md). It keeps training, evaluation, conversion, and local
 serving reproducible from pinned inputs.
 
-## v3 worktree status — not ready for submission
+## Submission closeout: measured gains, unresolved safety failures
 
-This branch is an unfinished v3 experiment. The results and weight links in the
-historical sections below belong to v1/v2, **not** a successful v3 model. Do not
-submit them as evidence that the current intervention improved support quality.
+V3 candidate03 step120 is the final evaluated and demonstrated artifact for this
+submission. Candidate04 completed training but all four checkpoints failed
+development selection; it does not replace candidate03. Experimentation is closed
+for this package. No successful safety qualification is claimed.
 
-The trained candidate03 includes 243 traceable training examples and 54 validation
-examples, a hash-verified CUDA training bundle, 108 freshly authored evaluation
-queries that passed the documented overlap screen, paired blinded-grading tools,
-and a completed CUDA QLoRA run with verified resume smoke. Step 120 is selected
-for evaluation, exported to Q8 and loaded locally; it is not a demonstrated
-improvement. All 270 base/checkpoint development answers are preserved, including
-repetition, unsupported payment claims and intent failures. See the
-[selection record](docs/v3/SELECTION.md) and [prompt-path parity](docs/v3/parity-candidate03-step120.md).
-The fresh set and exact model artifacts are sealed in
-`eval/results/v3/final01/SEAL.json`; all 216 final answers completed without
-generation errors. A post-hoc analysis of 106 pairs (29 human, 77 calibrated
-Terra; two owner-omitted) records 59 base passes versus 81 tuned passes, but the
-tuned model has two credential/verification violations and therefore fails the
-fixed safety criterion. Human evidence notes are absent. The complete all-human
-primary evaluation does not exist. A verified 2:47 captioned local recording
-shows the live endpoint, partial results and failure cases; it does not make this
-a submission-ready success. See the partial mixed-judge result below.
-On 2026-09-08 the owner authorized
-RunPod GPU and storage spending up to $10 total from existing credit, superseding
-the previous $0 compute limit. The GPU and temporary volume have been deleted
-after checksum-verified recovery. The provider reported zero hourly spend and
-$9.55 remaining (approximately $0.45 used). Additional credit or paid judge APIs are not
-authorized. Paid compute is a disclosed deviation from the hiring brief's
-"do not spend money" instruction; owner approval is not employer approval.
+| Evidence | Base | Tuned | Interpretation |
+|---|---:|---:|---|
+| V3 recorded task success, 106 pairs | 59 (55.7%) | 81 (76.4%) | +20.75 percentage points; post-hoc mixed judging |
+| V3 critical failures | 11 | 9 | Lower observed count |
+| V3 credential/verification violations | 1 | 2 | Fixed safety gate failed |
+| Historical v1 served ROUGE-L, 270 Bitext rows | 0.2153 | 0.3667 | Reference conformity, not verified accuracy |
 
-The active plan, reproduction commands, evidence paths and limitations are in
-[the v3 execution log](docs/v3/PLAN.md).
-The [v3 evaluation protocol](eval/v3/protocol.json) states the fixed improvement
-and safety criteria. The current local review package is pinned to commit
-`63ae4f0`; its verified artifacts do not establish a successful safety outcome.
+V3's intent-macro gain is +21.60 points, 95% paired intent-cluster interval
+[8.95, 34.26]. This interval is conditional on the recorded judgments: 29 human
+and 77 human-calibrated Terra judgments, with two omitted pairs and no human
+evidence notes. It does not measure judge uncertainty. The preregistered
+all-human evaluation remains incomplete. The full analysis and failures are below.
 
-Candidate04 is a **completed training experiment with no eligible checkpoint**: 261 training examples
-(candidate03's 243 unchanged, plus 18 development-driven boundary examples),
-with the same 54 validation rows, pinned base, prompt and 120-update budget.
-The new 12-case diagnostic is development data, not another final evaluation.
-Both existing models completed it; the qualitative review found continuing
-consent, unsupported-claim and actionable-help errors. See
-[`boundaries-01-review.json`](eval/results/v3/development/boundaries-01-review.json)
-and the preparation/reproduction commands in the execution log. The current
-continuation uses a free Colab T4: the UI showed no subscription and zero compute
-units before allocation. Setup and checkpoint-resume smoke passed; the planned
-120-update run completed on 2026-09-09 in 519.8 seconds, with 3.32 GB peak GPU
-memory and validation loss decreasing from 3.4692 to 1.8812. These losses do not
-establish improved support quality. The CLI's authenticated Python client reuses
-the browser-created kernel without allocating a second runtime or editing CLI
-session state. Candidate04's development result is negative; it has no serving tag.
-The unblinded final01 set will not be reused as untouched final evidence.
+The defensible conclusion is that fine-tuning learned support response patterns
+and improved recorded v3 task success, while credential handling remains unsafe.
+The v1 reference gains and v3 task-success gains come from different models and
+tests and must not be combined into one headline. The data mechanism is plausible,
+not a proof that every Bitext fine-tune must hallucinate. Accuracy and safety are
+part of the hiring brief, so reference similarity alone does not fulfill it.
 
-The completed run and all four adapters are recovered locally under
-`train/runs/v3-candidate04-t4/`; archive and per-adapter hashes are in
-[`candidate04_colab_execution.json`](data/v3/candidate04_colab_execution.json).
-Checkpoint 120 passed a real CUDA reload/generation check. No candidate04
-checkpoint is selected for final evaluation or serving.
-Colab stopped listing the runtime during development inference after 132 complete
-responses were recovered. A separate, same-backend comparison completed locally
-on MPS using the recovered adapters: 330 responses, zero generation errors, all
-reviewed. Partial CUDA and MPS results are not pooled. Later checkpoints remove
-repetition and improve ordinary guidance, but unauthorized account assistance,
-unsupported payment claims and unreliable drafting remain. All four checkpoints
-were rejected under the development rule; no new final test or blind sheet was
-launched. See the [development review](eval/results/v3/development/candidate04-mps/review.json)
-and [integrity audit](eval/results/v3/development/candidate04-mps/integrity.json).
+**Reviewer entry point:** [submission evidence and release steps](docs/v3/SUBMISSION_CHECKLIST.md).
+The source, adapter and served-weight packages are assembled with
+`tools/package_v3_submission.py`; each carries a SHA-256 inventory. Public v3
+repository revision, weight URLs and video URL are still pending publication.
+Historical v1/v2 URLs are not v3 download links.
+
+Candidate03 used approximately $0.45 of owner-authorized RunPod credit, a disclosed
+deviation from the brief's free-compute requirement. Candidate04 used a free
+Colab T4, completed 120 updates in 519.8 seconds (3.32 GB peak GPU memory), and
+was rejected after a separate 330-response MPS development review. Partial CUDA
+and MPS results were not pooled. See the [selection record](docs/v3/SELECTION.md).
 
 ## v3: run the currently served candidate03 locally
 
@@ -87,6 +57,8 @@ SUPPORT_TUNED_TAG=ghl-support-v3-c03-s120 \
 ```
 
 Start Ollama first (`ollama serve` if the desktop service is not already running).
+Before creating the tuned tag, create the base tag with
+`ollama create ghl-base -f serve/Modelfile.base`.
 The Modelfile requires the local verified
 `artifacts/v3/candidate03-step120-q8_0.gguf`. The wrapper also requires the exact
 base tag `ghl-base`, created from `serve/Modelfile.base` and the historically
@@ -366,6 +338,9 @@ uv run --extra serve python serve/bench_api.py --models base tuned \
   --requests 54 --warmup 3 --hardware-note 'Record your actual server hardware and placement.' \
   --output-dir .scratch/paired-api-benchmark-reproduction
 ```
+
+<details>
+<summary>Historical v1/v2 documentation (different models, prompts and results)</summary>
 
 ## Historical v1/v2 documentation
 
@@ -1226,13 +1201,24 @@ Everything runs through `uv run` against the locked environment.
 
 ```sh
 make sync     # uv sync --frozen --extra serve
-make test     # uv run pytest -q
+make test     # uv run pytest -q; see legacy fixture caveat below
 make audit    # uv run python data/prepare.py --audit-only --strict
 make eval-base
 make bench
 ```
 
+The full suite includes a historical v1 test requiring ignored
+`data/processed/train.jsonl`. During submission preparation, regenerating it with
+`data/prepare.py` on this Mac produced split hashes different from the v1 seal:
+235 tests passed, one failed and one skipped. The original tracked split/audit
+files were restored unchanged. This is an unresolved historical reconstruction
+limitation, not a change to the sealed v3 evaluation or its reported scores.
+Do not overwrite historical split manifests to make this test pass. The v3
+reconstruction evidence is separately documented in `docs/v3/PLAN.md`.
+
 `bitsandbytes` lives in the `train` extra only. The pinned environment loads and steps an NF4 QLoRA
 model on this Apple M1 Pro through MPS; the measured scope and caveats are in
 [`docs/LOCAL_QLORA_PROBE.md`](docs/LOCAL_QLORA_PROBE.md). The default `uv sync` and `--extra serve`
 also work here.
+
+</details>
