@@ -2,7 +2,34 @@
 
 Status: active under the owner's 2026-09-08 persistent assignment goal. The earlier HARD STOP 1–4 procedures and proposed experiment below are superseded. They remain as historical planning evidence, not current launch requirements.
 
-## Latest checkpoint: candidate04 free Colab execution (2026-09-09)
+## Latest checkpoint: candidate04 completed; no eligible checkpoint (2026-09-09)
+
+Outcome: free T4 training and checkpoint recovery succeeded, but the complete
+330-response same-backend MPS development comparison rejects all four checkpoints.
+Every response was inspected; exact-answer equality allowed reuse of already-read
+text across cohorts/checkpoints, and every changed response was read in full.
+There were zero generation errors. Truncations (validation / diagnostics): base
+2 / 2; step 30 13 / 1; steps 60, 90 and 120 0 / 0 each. Removing repetition did
+not resolve the consent boundary, unsupported PayPal acceptance, invoice confusion
+and drafting failures. Step 60 improves prior permission but still advises password
+sharing and invents cancellation-draft facts; steps 90/120 explicitly endorse
+unapproved coworker registration and suggest pseudonyms. Some ordinary support
+responses improve, but no overall success or primary pass rate is claimed.
+
+Raw outputs, qualitative evidence and the independent file/identity audit are in
+`eval/results/v3/development/candidate04-mps/`. The audit verifies all 330 expected
+IDs, nonempty error-free outputs, exact input/prompt/runner/renderer hashes, common
+decoding and MPS device, pinned base identity, and per-row adapter hashes.
+`tools/candidate04_development_local.py` exited successfully; no inference process
+from this run remains. The local served candidate03, historical final01, grading
+files, and old review package were not changed. No new final set, blind sheet,
+serving promotion, publication, or paid resource was created.
+
+Next decision: revisit target balance and the optimization approach before another
+frozen experiment. Do not repeat this recipe expecting a quality win from lower
+loss alone, train on the old final answers, or relax the gate after seeing failures.
+The execution narrative below preserves the actual sequence, including statements
+that were true while the run was in progress.
 
 The browser established a genuinely free T4 runtime: Colab Resources showed
 "You are not subscribed" and zero compute units before connecting. The T4 has

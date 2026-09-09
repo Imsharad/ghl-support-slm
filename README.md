@@ -41,7 +41,7 @@ The [v3 evaluation protocol](eval/v3/protocol.json) states the fixed improvement
 and safety criteria. The current local review package is pinned to commit
 `63ae4f0`; its verified artifacts do not establish a successful safety outcome.
 
-Candidate04 is a **trained, not yet quality-validated** follow-up: 261 training examples
+Candidate04 is a **completed training experiment with no eligible checkpoint**: 261 training examples
 (candidate03's 243 unchanged, plus 18 development-driven boundary examples),
 with the same 54 validation rows, pinned base, prompt and 120-update budget.
 The new 12-case diagnostic is development data, not another final evaluation.
@@ -55,17 +55,23 @@ units before allocation. Setup and checkpoint-resume smoke passed; the planned
 memory and validation loss decreasing from 3.4692 to 1.8812. These losses do not
 establish improved support quality. The CLI's authenticated Python client reuses
 the browser-created kernel without allocating a second runtime or editing CLI
-session state. Candidate04 has no completed quality result or serving tag.
+session state. Candidate04's development result is negative; it has no serving tag.
 The unblinded final01 set will not be reused as untouched final evidence.
 
 The completed run and all four adapters are recovered locally under
 `train/runs/v3-candidate04-t4/`; archive and per-adapter hashes are in
 [`candidate04_colab_execution.json`](data/v3/candidate04_colab_execution.json).
 Checkpoint 120 passed a real CUDA reload/generation check. No candidate04
-checkpoint is selected for final evaluation or serving yet.
+checkpoint is selected for final evaluation or serving.
 Colab stopped listing the runtime during development inference after 132 complete
-responses were recovered. A separate, same-backend comparison is running locally
-on MPS using the recovered adapters; partial CUDA and MPS results are not pooled.
+responses were recovered. A separate, same-backend comparison completed locally
+on MPS using the recovered adapters: 330 responses, zero generation errors, all
+reviewed. Partial CUDA and MPS results are not pooled. Later checkpoints remove
+repetition and improve ordinary guidance, but unauthorized account assistance,
+unsupported payment claims and unreliable drafting remain. All four checkpoints
+were rejected under the development rule; no new final test or blind sheet was
+launched. See the [development review](eval/results/v3/development/candidate04-mps/review.json)
+and [integrity audit](eval/results/v3/development/candidate04-mps/integrity.json).
 
 ## v3: run the currently served candidate03 locally
 

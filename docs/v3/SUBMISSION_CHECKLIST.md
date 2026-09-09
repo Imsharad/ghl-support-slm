@@ -2,6 +2,16 @@
 
 Status: incomplete. Do not submit as a proven improvement.
 
+Candidate04 update (2026-09-09): a free Colab T4 completed 120 updates, resume
+smoke and a real adapter reload; all four checkpoints are recovered and verified.
+After Colab disappeared, a separate 330-response MPS development comparison
+completed and every response was reviewed. No checkpoint qualifies because
+boundary and helpfulness failures remain. No new final evaluation or serving
+promotion occurred. Evidence: `data/v3/candidate04_colab_execution.json` and
+`eval/results/v3/development/candidate04-mps/review.json`. The candidate03
+submission/readiness evidence below remains historical and is not relabelled
+as candidate04 success.
+
 | Requirement | Verified evidence | Remaining work |
 |---|---|---|
 | Commercially self-hostable SLM | Pinned Apache-2.0 Qwen2.5-1.5B-Instruct; `configs/versions.json`, license review | Preserve notices at publication |

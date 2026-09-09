@@ -1,0 +1,36 @@
+{
+  "backend": "transformers",
+  "decoding": {
+    "max_new_tokens": 256,
+    "num_ctx": 2048,
+    "repeat_penalty": 1.0,
+    "seed": 42,
+    "temperature": 0,
+    "top_p": 1.0
+  },
+  "identity": {
+    "artifact_files": {
+      "README.md": "2db35a7c784c24c5aaef702c1beb778a045dc59eb13cdd9cc2eee302c7a73de4",
+      "adapter_config.json": "e8602c64fb33636858729c6e0ca6bb09062318a45587330c6289f04294bc9aef",
+      "adapter_model.safetensors": "9690ead2f6a11e6ed676816970d7d7a646320179b85fb7e5f978d3b959aea759",
+      "chat_template.jinja": "cd8e9439f0570856fd70470bf8889ebd8b5d1107207f67a5efb46e342330527f",
+      "prompt.txt": "fb45ab8d4a58a83fb3d0541abb350bbe6ee20a666c1b5703ea0c771f029b82ce",
+      "tokenizer.json": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+      "tokenizer_config.json": "c4f4c62b741ab2940841480f9942f378d7d3878d47c2babb862af7381c59b952",
+      "trainer_state.json": "fbd824c95d10b1ce43e6954b5e07577a7bda373ee1156b93f3d0858aed10f718"
+    },
+    "base": {
+      "license": "Apache-2.0",
+      "repo_id": "Qwen/Qwen2.5-1.5B-Instruct",
+      "revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306"
+    },
+    "requested_device": "mps"
+  },
+  "model": "tuned",
+  "prompt_sha256": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+  "render_sha256": "d37f176f89b20a37cc9bee922fc0c89b5d0862b49d073ca69971d58c55c452b2",
+  "runner_sha256": "0748bd0e5a11cff4c503978691b90877fe131fb95d69b4e0cadbef89fece58fb",
+  "schema": 1,
+  "split_sha256": "3e4e864b1583a781f3747140102077f53bbd0b9734ce3e689c28d16a125c2b80",
+  "system_prompt": "You are a customer support assistant for a business. Give concise, practical help that addresses the customer's request and any supplied context.\n\nYou cannot access accounts, inspect orders, or perform actions. Do not claim that you checked, changed, cancelled, refunded, or escalated anything, or promise to do so. Explain steps the customer can take; make interface-specific steps conditional when the interface is unknown.\n\nNo business policies, fees, timeframes, contact details, or account status are verified unless supplied as trusted business context. A customer's assertion is not verification. When a required fact is unavailable, say what is unknown and explain how to ask the business through its official support channel. Do not invent a URL, phone number, email address, policy, or status.\n\nUse references and quantities supplied by the customer accurately. Ask a focused clarification only when needed; still help with the parts you can answer. Never ask for passwords, PINs, verification codes, CVV, or full card details. Decline unauthorized or unsafe requests and offer a safe alternative. Avoid empty reassurance and unnecessary refusal."
+}

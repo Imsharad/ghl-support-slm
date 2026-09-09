@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "role": "automatic_integrity_audit_not_quality_grading",
+  "backend": "transformers",
+  "device": "mps",
+  "expected_total": 330,
+  "outputs": [
+    {
+      "file": "base-val.jsonl",
+      "rows": 54,
+      "errors": 0,
+      "truncated": 2,
+      "sha256": "69e20495a60d64db90a3fb3fb8ed1358bc07409987675be6d60680abcf111bf4",
+      "manifest_sha256": "32e834ca1fca25b8c6584196283531ed726e553ff4e2aa30b25bf9ce92610e12"
+    },
+    {
+      "file": "base-boundaries.jsonl",
+      "rows": 12,
+      "errors": 0,
+      "truncated": 2,
+      "sha256": "9e870f5505296e81730f437fb2755acc520dcf142ddf0699e45c17a711e3eec6",
+      "manifest_sha256": "af8400034f4ab1d1f14b353391d755a5de37721d1925601a75d1df61d8a1fefe"
+    },
+    {
+      "file": "tuned-30-val.jsonl",
+      "rows": 54,
+      "errors": 0,
+      "truncated": 13,
+      "sha256": "eb00fb4e7c7b08031f28e2272d9ca4488c16cd017be721da57f99f67609f3a99",
+      "manifest_sha256": "7b4a4969d6ec83b0859f192076e05be409da9e9453d844eb80a76b6bc9b87923"
+    },
+    {
+      "file": "tuned-30-boundaries.jsonl",
+      "rows": 12,
+      "errors": 0,
+      "truncated": 1,
+      "sha256": "1de300065c6a8679a4301247014032cf2e664e06693fb75d911c57526a618fef",
+      "manifest_sha256": "96dd2b6544da4e99eaa4c52984f4c083146a914a0b23338c2adbb93ee322365e"
+    },
+    {
+      "file": "tuned-60-val.jsonl",
+      "rows": 54,
+      "errors": 0,
+      "truncated": 0,
+      "sha256": "ccbee4b6b90fc7b2d1e5a1a9643ff08c929fed9010e19fa5b0145b16313f3a53",
+      "manifest_sha256": "813ab7ae7253b2eac11b0f43644890b6d36708d8b86ea4f3b4a71fd1350f4a8b"
+    },
+    {
+      "file": "tuned-60-boundaries.jsonl",
+      "rows": 12,
+      "errors": 0,
+      "truncated": 0,
+      "sha256": "cb275ca55c41210423c52099d5bed5c9621d8e11ebcb99c7741054e816a8ebc5",
+      "manifest_sha256": "15172f0b590a549e4d9e1cfce26fefdbc6b3ec586a5c3b7ead2f823930255916"
+    },
+    {
+      "file": "tuned-90-val.jsonl",
+      "rows": 54,
+      "errors": 0,
+      "truncated": 0,
+      "sha256": "0bc1bc438c5704a15c845ac5673570402490e6ebc1a4658d4d217b3917038038",
+      "manifest_sha256": "905f9fb12e18f1f623c82319e4319e81192278e6741f715ddbfe9bbca10b0b5e"
+    },
+    {
+      "file": "tuned-90-boundaries.jsonl",
+      "rows": 12,
+      "errors": 0,
+      "truncated": 0,
+      "sha256": "61fb19ae2ca57f6fc764e3f60afc4d524fcf16c2e4b197c53070983b59018629",
+      "manifest_sha256": "ac1b493b9b20a4154e9d13e77918f821f770e2903f9c0e4d2dc79244977e07dc"
+    },
+    {
+      "file": "tuned-120-val.jsonl",
+      "rows": 54,
+      "errors": 0,
+      "truncated": 0,
+      "sha256": "2e15c95a6a2860e37add170921668893803378221caadfcca4cc0d38cfb77885",
+      "manifest_sha256": "460db68957a607a466a5646e54ca564eafb8f0de78bf09ce606616ea1d5f9c9f"
+    },
+    {
+      "file": "tuned-120-boundaries.jsonl",
+      "rows": 12,
+      "errors": 0,
+      "truncated": 0,
+      "sha256": "197b00e1f43bcd5ca6782762a27f8f7d4e5f68c7f9848fd42ad822811bc71361",
+      "manifest_sha256": "349326989c598d83a8ebd7cd84ce660665a4b9a734dbd700a9e493e81c1887e6"
+    }
+  ],
+  "quality_selection": "none_eligible_on_reviewed_development_boundaries",
+  "quality_selection_source": "review.json (separate assistant development review, not an automatic quality grade)",
+  "final_evaluation_started": false,
+  "total_rows": 330,
+  "all_integrity_checks_passed": true
+}

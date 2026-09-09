@@ -1,6 +1,7 @@
 {
   "schema": 1,
-  "status": "in_progress",
+  "status": "interrupted_CUDA_cohort_preserved",
+  "completion_note": "132 complete CUDA responses recovered and reviewed (base plus checkpoint 30). Runtime disappeared during checkpoint-60 inference; remaining comparisons were completed separately on MPS, not pooled with this cohort.",
   "role": "assistant_unblinded_development_review_not_human_grading",
   "scope": "54 existing validation items and 12 post-final development diagnostics per model; not untouched final evidence, no primary pass rates or statistical improvement claim.",
   "selection_rule_source": "eval/results/v3/development/boundaries-01-review.json",
