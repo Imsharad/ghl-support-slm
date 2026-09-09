@@ -10,7 +10,7 @@ This branch is an unfinished v3 experiment. The results and weight links in the
 historical sections below belong to v1/v2, **not** a successful v3 model. Do not
 submit them as evidence that the current intervention improved support quality.
 
-Current verified work includes 243 traceable training examples and 54 validation
+The trained candidate03 includes 243 traceable training examples and 54 validation
 examples, a hash-verified CUDA training bundle, 108 freshly authored evaluation
 queries that passed the documented overlap screen, paired blinded-grading tools,
 and a completed CUDA QLoRA run with verified resume smoke. Step 120 is selected
@@ -38,8 +38,20 @@ authorized. Paid compute is a disclosed deviation from the hiring brief's
 The active plan, reproduction commands, evidence paths and limitations are in
 [the v3 execution log](docs/v3/PLAN.md).
 The [v3 evaluation protocol](eval/v3/protocol.json) states the fixed improvement
-and safety criteria. A final README rewrite and clean reproduction check remain
-required once the trained model and evaluation exist.
+and safety criteria. The current local review package is pinned to commit
+`63ae4f0`; its verified artifacts do not establish a successful safety outcome.
+
+Candidate04 is a **prepared, untrained** follow-up: 261 training examples
+(candidate03's 243 unchanged, plus 18 development-driven boundary examples),
+with the same 54 validation rows, pinned base, prompt and 120-update budget.
+The new 12-case diagnostic is development data, not another final evaluation.
+Both existing models completed it; the qualitative review found continuing
+consent, unsupported-claim and actionable-help errors. See
+[`boundaries-01-review.json`](eval/results/v3/development/boundaries-01-review.json)
+and the preparation/reproduction commands in the execution log. The current
+continuation requires free compute: Colab sign-in is pending, and no new GPU
+has been allocated. Candidate04 has no weights, quality result or serving tag.
+The unblinded final01 set will not be reused as untouched final evidence.
 
 ## v3: run the current candidate locally
 

@@ -1,0 +1,331 @@
+{
+  "input_sha256": "a20ba51c5db19ad9dc3c80e39bbd21bd5c705c7b21d8778d25f98881218f7028",
+  "against_sha256": {
+    "data/processed/v2/val.jsonl": "6f35948d7c03678d02a3a931c307da4ad0d33713ad924077c1dd10ad346c2000",
+    "data/processed/v2/test.jsonl": "70e1de8594f7d4903e677797936040e83ad64530a4917a8c986278194eec8bae"
+  },
+  "audit_code_sha256": "4630a5a6b29376838161fb672bdf47259f047b4bf07c279375ae03ea6b1f948d",
+  "threshold": 0.86,
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "results": [
+    {
+      "id": "v3-context-cancel",
+      "max_cosine": 0.6164723038673401,
+      "nearest_id": "bitext-000028",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-change",
+      "max_cosine": 0.5356042385101318,
+      "nearest_id": "bitext-001230",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-address",
+      "max_cosine": 0.5684759020805359,
+      "nearest_id": "bitext-002471",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-fee",
+      "max_cosine": 0.5765950083732605,
+      "nearest_id": "bitext-003325",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-check-invoice",
+      "max_cosine": 0.7238376140594482,
+      "nearest_id": "bitext-004134",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-payment-methods",
+      "max_cosine": 0.5670497417449951,
+      "nearest_id": "bitext-004940",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-refund-policy",
+      "max_cosine": 0.4819190502166748,
+      "nearest_id": "bitext-013818",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-complaint",
+      "max_cosine": 0.5113683342933655,
+      "nearest_id": "bitext-001815",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-contact",
+      "max_cosine": 0.5766147971153259,
+      "nearest_id": "bitext-015573",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-human",
+      "max_cosine": 0.46024271845817566,
+      "nearest_id": "bitext-009221",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-create",
+      "max_cosine": 0.46925631165504456,
+      "nearest_id": "bitext-010008",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-delete",
+      "max_cosine": 0.4411156475543976,
+      "nearest_id": "bitext-011157",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-delivery-options",
+      "max_cosine": 0.5199376940727234,
+      "nearest_id": "bitext-012778",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-delivery-period",
+      "max_cosine": 0.5566359162330627,
+      "nearest_id": "bitext-013898",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-edit",
+      "max_cosine": 0.42497652769088745,
+      "nearest_id": "bitext-020758",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-get-invoice",
+      "max_cosine": 0.7172264456748962,
+      "nearest_id": "bitext-015103",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-get-refund",
+      "max_cosine": 0.5879619121551514,
+      "nearest_id": "bitext-015925",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-newsletter",
+      "max_cosine": 0.7429812550544739,
+      "nearest_id": "bitext-017607",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-payment-issue",
+      "max_cosine": 0.6435700058937073,
+      "nearest_id": "bitext-018732",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-place",
+      "max_cosine": 0.3866593539714813,
+      "nearest_id": "bitext-019691",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-recover",
+      "max_cosine": 0.489996075630188,
+      "nearest_id": "bitext-020788",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-registration",
+      "max_cosine": 0.6526190042495728,
+      "nearest_id": "bitext-010065",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-review",
+      "max_cosine": 0.5032583475112915,
+      "nearest_id": "bitext-001039",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-setup-address",
+      "max_cosine": 0.6008366346359253,
+      "nearest_id": "bitext-002364",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-switch",
+      "max_cosine": 0.5054157376289368,
+      "nearest_id": "bitext-024275",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-track-order",
+      "max_cosine": 0.4446752071380615,
+      "nearest_id": "bitext-013753",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-track-refund",
+      "max_cosine": 0.6214607954025269,
+      "nearest_id": "bitext-026377",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-001",
+      "max_cosine": 0.4599289000034332,
+      "nearest_id": "bitext-012165",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-002",
+      "max_cosine": 0.4193287193775177,
+      "nearest_id": "bitext-013200",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-003",
+      "max_cosine": 0.41297265887260437,
+      "nearest_id": "bitext-005510",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-004",
+      "max_cosine": 0.4907802641391754,
+      "nearest_id": "bitext-021547",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-005",
+      "max_cosine": 0.4950827658176422,
+      "nearest_id": "bitext-021381",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-006",
+      "max_cosine": 0.5420364737510681,
+      "nearest_id": "bitext-021791",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-007",
+      "max_cosine": 0.562555730342865,
+      "nearest_id": "bitext-001519",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-008",
+      "max_cosine": 0.5608204007148743,
+      "nearest_id": "bitext-013470",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-009",
+      "max_cosine": 0.518332302570343,
+      "nearest_id": "bitext-002948",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-010",
+      "max_cosine": 0.688057005405426,
+      "nearest_id": "bitext-004373",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-011",
+      "max_cosine": 0.6061374545097351,
+      "nearest_id": "bitext-004134",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-012",
+      "max_cosine": 0.37375015020370483,
+      "nearest_id": "bitext-001060",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-013",
+      "max_cosine": 0.5069076418876648,
+      "nearest_id": "bitext-018023",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-014",
+      "max_cosine": 0.37998729944229126,
+      "nearest_id": "bitext-000897",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-015",
+      "max_cosine": 0.5204090476036072,
+      "nearest_id": "bitext-001528",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-016",
+      "max_cosine": 0.6281488537788391,
+      "nearest_id": "bitext-017904",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-017",
+      "max_cosine": 0.5285851359367371,
+      "nearest_id": "bitext-020143",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-018",
+      "max_cosine": 0.463552325963974,
+      "nearest_id": "bitext-014606",
+      "shared_sixgrams": [],
+      "pass": true
+    }
+  ],
+  "pass": true,
+  "scope": "training augmentation instructions versus all supplied holdout instructions",
+  "limitation": "Automated similarity screening, not proof of semantic independence"
+}

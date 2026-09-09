@@ -14,6 +14,28 @@ from data.audit_overlap_v3 import EMBEDDER, REVISION, grams, normalize
 from train.repro import sha256_file
 
 
+def comparison_rows(path: Path) -> list[dict]:
+    """Accept source corpora or development queries, never model-answer fields."""
+    rows = []
+    for line in path.read_text().splitlines():
+        if not line.strip():
+            continue
+        row = json.loads(line)
+        item_id = row.get("id")
+        query = row.get("instruction", row.get("query"))
+        if not isinstance(item_id, str) or not item_id.strip():
+            raise ValueError(f"missing comparison ID: {path}")
+        if not isinstance(query, str) or not query.strip():
+            raise ValueError(f"missing comparison query: {path}")
+        group = row.get("group_id", item_id)
+        if not isinstance(group, str) or not group.strip():
+            raise ValueError(f"invalid comparison group: {path}")
+        rows.append({"id": item_id, "instruction": query, "group_id": group})
+    if not rows or len({r["id"] for r in rows}) != len(rows):
+        raise ValueError(f"empty or duplicate comparison IDs: {path}")
+    return rows
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--input", type=Path, required=True)
@@ -29,19 +51,22 @@ def main():
     rows = json.loads(args.input.read_text())["rows"]
     if not rows or len({r["id"] for r in rows}) != len(rows):
         raise ValueError("augmentation must have nonempty, unique IDs")
+    from sentence_transformers import SentenceTransformer
+    embedder = SentenceTransformer(EMBEDDER, revision=REVISION, local_files_only=True, device="cpu")
     held, embeddings, sources = [], [], {}
     for path in args.against:
         digest = sha256_file(path)
         sources[str(path)] = digest
-        pool = [json.loads(line) for line in path.read_text().splitlines() if line.strip()]
+        pool = comparison_rows(path)
         held.extend(pool)
         key = hashlib.sha256((digest + EMBEDDER + REVISION).encode()).hexdigest()
-        vectors = np.load(args.cache_dir / f"{key}.npy", allow_pickle=False)
+        cache = args.cache_dir / f"{key}.npy"
+        vectors = (np.load(cache, allow_pickle=False) if cache.exists() else
+                   embedder.encode([r["instruction"] for r in pool], normalize_embeddings=True,
+                                   convert_to_numpy=True, show_progress_bar=False))
         if len(vectors) != len(pool) or not np.isfinite(vectors).all():
             raise ValueError(f"invalid embedding cache: {path}")
         embeddings.append(vectors)
-    from sentence_transformers import SentenceTransformer
-    embedder = SentenceTransformer(EMBEDDER, revision=REVISION, local_files_only=True, device="cpu")
     vectors = embedder.encode([r["instruction"] for r in rows], normalize_embeddings=True,
                               convert_to_numpy=True, show_progress_bar=False)
     similarities = vectors @ np.concatenate(embeddings).T
@@ -60,6 +85,7 @@ def main():
                         "nearest_id": held[nearest_index]["id"], "shared_sixgrams": collisions,
                         "pass": not failed})
     report = {"input_sha256": sha256_file(args.input), "against_sha256": sources,
+              "audit_code_sha256": sha256_file(Path(__file__)),
               "threshold": args.threshold, "embedding_model": EMBEDDER,
               "embedding_revision": REVISION, "results": results,
               "pass": all(r["pass"] for r in results),

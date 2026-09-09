@@ -2,7 +2,108 @@
 
 Status: active under the owner's 2026-09-08 persistent assignment goal. The earlier HARD STOP 1–4 procedures and proposed experiment below are superseded. They remain as historical planning evidence, not current launch requirements.
 
-## Latest checkpoint: mixed grading audit (2026-09-09)
+## Latest checkpoint: candidate04 development preparation (2026-09-09)
+
+Previous checkpoint was progress: the commit-pinned source, clean adapter,
+training bundle, results, README/checklist and recording were hash-verified in
+the local review package. Its handoff preserves the failed-safety status and
+the owner's explicit omission of 107/108. Historical package files remain.
+
+This continuation prepares a data-only follow-up, not a claim that candidate03's
+failed final evaluation was repaired. The current goal requires $0 spending;
+the earlier RunPod exception remains historical authorization for that completed
+run, not authority used to provision this follow-up. No GPU or paid service was
+launched. Read-only `colab sessions` exited at its authorization-code prompt;
+the installed CLI's help and bundled operator guidance were inspected. Kaggle
+CLI, conventional credential files, and standard credential environment values
+were absent. This does not establish that no browser account exists. The owner
+was asked to run `colab sessions` and complete sign-in. A successful sign-in still
+requires checking genuine free-runtime availability before allocation.
+
+Development basis: the pre-final selection record already named unsupported
+payment claims, needless references for nonexistent lookups, questionable
+third-party account guidance, invoice intent confusion and compensation errors.
+Using those findings and existing training objectives, authored 12 diagnostic
+queries with explicit checklists, including useful-help positive controls:
+`eval/v3/development-boundaries-01.jsonl`. No final01 answers were copied into
+this diagnostic or the new training targets. The author has seen final01, so
+this is transparently post-final development, never independent held-out proof.
+
+Both candidate03 Q8 and its pinned base answered all 12 through the existing
+runner and unchanged v3 prompt/decoding. There were no infrastructure errors;
+base truncated two answers and tuned truncated none. All 24 answers were read
+unblinded. Qualitative review, input hashes and the next selection rule are in
+`eval/results/v3/development/boundaries-01-review.json`. Both models encouraged
+unapproved third-party registration. Tuned additionally invented a non-refundable
+condition in a cancellation draft and gave weak pending-payment guidance;
+base also contradicted its own no-retry advice by suggesting another payment
+method. This is not a pass-rate or inter-rater study.
+
+Candidate04 retains every original training row and adds 18 assistant-authored
+boundary/positive-control examples. `data/v3/augmentation_candidate04.json`
+contains the original 27 context examples plus those 18 additions. All 45
+augmentation queries passed against complete historical validation/test pools:
+maximum pinned-MiniLM cosine 0.742981, no shared normalized six-grams, exact
+matches, IDs or groups. A separate comparison with the 12 development probes
+passed at maximum cosine 0.695591. Reports are
+`augmentation_candidate04_audit01.json` and
+`augmentation_candidate04_development_audit01.json`. The historical-pool audit
+was repeated as `augmentation_candidate04_audit02.json` after adding script-hash
+provenance to the checker; the original passing reports are preserved.
+
+The checker now accepts development `query` fields and computes missing small
+comparison embeddings locally with the pinned cached model. It never substitutes
+answer/reference text for queries. Eight new tests cover query-field selection,
+group preservation and invalid/duplicate/empty input rejection. Twelve focused
+tests passed; full regression verification then finished with **222 passed,
+1 skipped, 2 dependency deprecation warnings in 44.40 seconds**.
+
+Assembled `data/processed/v3-candidate04`: 261 training rows and 54 validation
+rows. Verified that the first 243 training rows match candidate03 exactly and
+the validation file is byte-identical. Every example fits the 512-token cap;
+maximum augmented example length is 347 tokens. Manifest copy:
+`data/v3/candidate04_manifest.json`. Reproduce into an absent output directory:
+
+```sh
+uv run python data/assemble_v3.py \
+  --source-dir data/v3/source-candidates \
+  --selection data/v3/curation-queue/selection.json \
+  --targets-dir data/v3/targets --prompt-file configs/prompt-v3.txt \
+  --output-dir data/processed/v3-candidate04 --max-length 512 \
+  --augmentation data/v3/augmentation_candidate04.json \
+  --augmentation-audit data/v3/augmentation_candidate04_audit01.json \
+  --review-note 'Candidate04 data-only follow-up; development-driven assistant-authored targets; no independent human review or final-set training.'
+```
+
+The output data hashes are independent of the descriptive review note; the
+manifest's review-note text will differ if this shorter note is used. Screening
+reduces measured overlap but does not prove semantic independence. No final01
+query or answer is in candidate04 training. Candidate04 must get a genuinely
+new screened final set only after development selection.
+
+`configs/train-v3-candidate04-t4.yaml` preserves the base initialization, prompt,
+NF4 QLoRA rank 16, learning rate 5e-5, effective batch 8, 120 updates, four saved
+checkpoints and resume smoke. Approximately 3.7 dataset passes, not four exact
+epochs. Keeping the update budget isolates this small supervision intervention;
+it may still fail and is not a promised improvement. Before any new final run,
+inspect 54 validation and 12 diagnostic answers at each checkpoint, reject
+unsafe or degenerate candidates and require helpful positive-control behavior.
+Validation loss is only a secondary tie-break among eligible checkpoints.
+If none qualifies, retain the failure and do not launch another final comparison.
+
+Next: finish immutable launch-bundle verification locally; remote smoke/training
+requires Google authorization and an actually available free CUDA runtime.
+Never substitute full local training or silently provision a paid instance.
+
+Reproduction check: a second assembly in `.scratch/candidate04-reproduction-001`
+matched both data files byte-for-byte (train SHA-256
+`93997e0e375746c103b00f1fe32c51c6018af1085069140243f415dededa9a15`;
+validation `3e4e864b1583a781f3747140102077f53bbd0b9734ce3e689c28d16a125c2b80`).
+Diagnostic base/tuned manifests also match on backend, input, prompt, decoding,
+runner and renderer hashes. The 222-test run used the current worktree, including
+preserved unrelated browser-grader edits; it is not a clean-export test claim.
+
+## Previous checkpoint: mixed grading audit (2026-09-09)
 
 Demo checkpoint: `serve/record_demo_v3.py` recorded four actual HTTP support
 requests and a paced results/limitations walkthrough, preserving real output

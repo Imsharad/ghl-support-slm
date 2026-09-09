@@ -1,0 +1,376 @@
+{
+  "authorship": "Assistant-authored fictional training examples, not additional Bitext rows. Original 27 context rows preserved byte-equivalently as JSON values; 18 new boundary/positive-control examples derived from development evidence.",
+  "status": "draft_pending_overlap_screening_and_training",
+  "development_sources": [
+    "docs/v3/SELECTION.md",
+    "eval/results/v3/development/tuned-cuda-120.jsonl",
+    "eval/v3/development-boundaries-01.jsonl",
+    "eval/results/v3/development/boundaries-01-tuned.jsonl"
+  ],
+  "not_training_sources": [
+    "eval/v3/screening02/cases.jsonl",
+    "eval/results/v3/final01"
+  ],
+  "rows": [
+    {
+      "id": "v3-context-cancel",
+      "group_id": "v3-context-cancel",
+      "intent": "cancel_order",
+      "category": "ORDER",
+      "instruction": "The cancellation page says requests are allowed until packing starts. My order screen currently says 'payment received; packing not started'. Is there a next step I can take?",
+      "response": "Based on the policy and status you quoted, you appear to be within the cancellation window. Use the cancellation request option described on that page, review any conditions, and check for confirmation afterward. I can't cancel the order or verify its live status here; if packing begins before the request completes, contact official support promptly."
+    },
+    {
+      "id": "v3-context-change",
+      "group_id": "v3-context-change",
+      "intent": "change_order",
+      "category": "ORDER",
+      "instruction": "Their edit policy says changes close once an order is packed. The screen says mine is packed, but I wanted the blue mug instead of the red mug. Should I just submit a second order?",
+      "response": "Under the rule you quoted, self-service changes are closed because the order is packed. Ask official support whether an exception or return-and-reorder route is available. Don't assume a second order cancels or replaces the red mug; it could create another charge and shipment. I can't change the existing order here."
+    },
+    {
+      "id": "v3-context-address",
+      "group_id": "v3-context-address",
+      "intent": "change_shipping_address",
+      "category": "SHIPPING",
+      "instruction": "The help page says 'Saved address changes apply only to future purchases.' I fixed the address in my profile, but order 48172 still shows the old destination. Is it fixed for that order?",
+      "response": "No—the help text you quoted says a profile change affects future purchases only, and order 48172 still shows the old destination. Check whether that order offers an address change or contact official support promptly. I can't update it here, and you should not assume the package will be redirected without order-specific confirmation."
+    },
+    {
+      "id": "v3-context-fee",
+      "group_id": "v3-context-fee",
+      "intent": "check_cancellation_fee",
+      "category": "CANCEL",
+      "instruction": "My agreement says the exit fee is a fixed $12 plus $8 for each full month remaining. It lists two full months remaining. What does that formula give?",
+      "response": "Using the formula and remaining term you supplied: $12 + (2 × $8) = $28. That is the amount produced by the quoted rule, not a verified account charge. Check whether any other clause changes the calculation and confirm the actual amount before cancelling."
+    },
+    {
+      "id": "v3-context-check-invoice",
+      "group_id": "v3-context-check-invoice",
+      "intent": "check_invoice",
+      "category": "INVOICE",
+      "instruction": "My purchase email says invoice 78291. In the document list I see 78219 and 78291. Which reference should I match before opening the bill?",
+      "response": "Match invoice 78291, the reference in your purchase email—not 78219. Check the date and purchase total as well before relying on the document. I can compare the references you provided, but can't open or verify the invoice record from here."
+    },
+    {
+      "id": "v3-context-payment-methods",
+      "group_id": "v3-context-payment-methods",
+      "intent": "check_payment_methods",
+      "category": "PAYMENT",
+      "instruction": "The checkout text I copied lists Visa, Mastercard, and PayPal. I want to use PayPal rather than my card. Is PayPal one of the choices in that list?",
+      "response": "Yes. PayPal is explicitly included in the checkout list you supplied. Select that option if it is still available for your purchase, then review the total before confirming. Complete sign-in and payment only in the official secure checkout flow; don't share PayPal credentials or verification codes here."
+    },
+    {
+      "id": "v3-context-refund-policy",
+      "group_id": "v3-context-refund-policy",
+      "intent": "check_refund_policy",
+      "category": "REFUND",
+      "instruction": "The policy reads: 'Unopened items may be returned within 14 calendar days of delivery.' My delivery was 10 calendar days ago and the box is unopened. How does that clause apply?",
+      "response": "Based on the clause and facts you supplied, the unopened item is still within the stated 14-calendar-day window. Follow the policy's return-request process promptly and check for any other applicable exclusions or requirements. I can't approve the return here; the quoted clause supports requesting it, not a claim that a refund has already been granted."
+    },
+    {
+      "id": "v3-context-complaint",
+      "group_id": "v3-context-complaint",
+      "intent": "complaint",
+      "category": "FEEDBACK",
+      "instruction": "The company's complaint instructions say to include the order reference, event date, and requested resolution. I have all three but don't know how to structure the message. Can you give me a format?",
+      "response": "You can use: 'I'm writing about order [reference]. On [event date], [briefly describe what happened]. I would like [requested resolution]. Please confirm receipt and provide a complaint reference if available.' Fill in only your actual details and submit it through the official complaint channel. I can't file it from this chat."
+    },
+    {
+      "id": "v3-context-contact",
+      "group_id": "v3-context-contact",
+      "intent": "contact_customer_service",
+      "category": "CONTACT",
+      "instruction": "The official contact page I copied says 'For written support, use the Message our team form. Telephone support is not offered.' I need to explain an invoice issue. Which of those channels fits?",
+      "response": "Based on the contact text you supplied, use the Message our team form; it says telephone support is not offered. Briefly describe the invoice issue and reference, without sending passwords or full payment details. Open the form through the official website. I can't submit the message for you here."
+    },
+    {
+      "id": "v3-context-human",
+      "group_id": "v3-context-human",
+      "intent": "contact_human_agent",
+      "category": "CONTACT",
+      "instruction": "The page says human chat is open Monday to Friday, 09:00–17:00 UTC, and messages can be left outside those hours. It is Sunday in UTC now. Do I have to keep using the bot?",
+      "response": "No. Based on the hours you quoted, human chat is outside its listed schedule, but you can leave a message for the team using the offered option. Say you want human assistance and summarize the issue. I can't promise a response time or transfer this conversation, and you don't have to continue with the bot."
+    },
+    {
+      "id": "v3-context-create",
+      "group_id": "v3-context-create",
+      "intent": "create_account",
+      "category": "ACCOUNT",
+      "instruction": "The sign-up instructions say accounts are for adults 18 or older. I'm 16 and wondered whether I should put a different birthday to finish registering.",
+      "response": "Don't enter a false birthday to bypass the stated age requirement. Under the instructions you supplied, you don't meet the requirement for that account. Check whether the service offers an approved option for younger users or ask official support about permitted alternatives. I can't create an account or bypass the restriction for you."
+    },
+    {
+      "id": "v3-context-delete",
+      "group_id": "v3-context-delete",
+      "intent": "delete_account",
+      "category": "ACCOUNT",
+      "instruction": "The deletion notice says profile access ends immediately, but invoices may be retained under the company's retention policy. If I confirm, does that wording mean every record disappears?",
+      "response": "No. The notice you quoted distinguishes ending profile access from retaining some invoice records. It does not promise that every record disappears. Review the full retention and deletion information before confirming, save documents you need, and ask the business for clarification if necessary. I can't delete records or verify its retention practices here."
+    },
+    {
+      "id": "v3-context-delivery-options",
+      "group_id": "v3-context-delivery-options",
+      "intent": "delivery_options",
+      "category": "DELIVERY",
+      "instruction": "The checkout offers Standard: estimated 4 business days, $3; Express: estimated 2 business days, $9. I only care about the lower listed delivery charge. Which one is cheaper?",
+      "response": "Standard has the lower listed delivery charge: $3 rather than $9, saving $6. Its quoted estimate is 4 business days instead of 2. Review the final checkout total before choosing; these are the options and estimates you supplied, not a delivery guarantee."
+    },
+    {
+      "id": "v3-context-delivery-period",
+      "group_id": "v3-context-delivery-period",
+      "intent": "delivery_period",
+      "category": "DELIVERY",
+      "instruction": "Their shipping note says processing takes up to 2 business days and transit then takes up to 3 business days. Does '3 business days' include the processing time in that wording?",
+      "response": "No. The wording separates processing from transit, so the quoted maximum is up to 5 business days in total: 2 for processing plus 3 for transit. Check for other qualifications, such as holidays or dispatch cutoffs. I can't infer an exact arrival date or guarantee delivery from that note alone."
+    },
+    {
+      "id": "v3-context-edit",
+      "group_id": "v3-context-edit",
+      "intent": "edit_account",
+      "category": "ACCOUNT",
+      "instruction": "The settings page says changing the phone number requires a code sent to the current number. I no longer control that number. Can I just invent a code to get to the next screen?",
+      "response": "No—don't invent a code or try to bypass verification. Use the service's official recovery or support process for a lost verification method and ask how to update the number securely. I can't change it here. Don't send passwords, identity documents, or verification codes in this chat."
+    },
+    {
+      "id": "v3-context-get-invoice",
+      "group_id": "v3-context-get-invoice",
+      "intent": "get_invoice",
+      "category": "INVOICE",
+      "instruction": "The help instructions say invoices can be downloaded from an order's Documents tab. I'm already on order 69352 and see Documents. What should I try next?",
+      "response": "Following the instructions you supplied, open Documents for order 69352 and look for the associated invoice or download option. Verify the invoice reference and purchase details before using the saved file. I can't open or download it for you here. If the document is missing, request it through official support."
+    },
+    {
+      "id": "v3-context-get-refund",
+      "group_id": "v3-context-get-refund",
+      "intent": "get_refund",
+      "category": "REFUND",
+      "instruction": "The return policy says I must request a return before mailing the product and wait for an authorization number. I haven't made a request yet. Should I ship it today to get the refund started?",
+      "response": "Under the instructions you quoted, request the return first and wait for the authorization number before mailing the product. Shipping it now would skip the required step. Check any deadline and packaging instructions while preparing the request. I can't authorize the return or approve a refund here."
+    },
+    {
+      "id": "v3-context-newsletter",
+      "group_id": "v3-context-newsletter",
+      "intent": "newsletter_subscription",
+      "category": "SUBSCRIPTION",
+      "instruction": "The email says 'Unsubscribe stops marketing newsletters; order receipts and security notices will continue.' If I opt out, will it also cancel my paid plan?",
+      "response": "No paid-plan cancellation is described in that text. It says the opt-out stops marketing newsletters while receipts and security notices continue. If you also want to end a paid plan, check the separate subscription-cancellation process and its terms. I can't change either setting from this chat."
+    },
+    {
+      "id": "v3-context-payment-issue",
+      "group_id": "v3-context-payment-issue",
+      "intent": "payment_issue",
+      "category": "PAYMENT",
+      "instruction": "The checkout warning says 'Payment pending—do not submit another payment while this is being checked.' My bank app also shows pending. Should I click Pay again?",
+      "response": "Don't submit another payment while that pending warning remains. The messages you supplied indicate the first attempt is still unresolved, and another attempt could create a duplicate. Check the official order status or contact support if it remains unclear. I can't verify the bank transaction or tell you when it will settle."
+    },
+    {
+      "id": "v3-context-place",
+      "group_id": "v3-context-place",
+      "intent": "place_order",
+      "category": "ORDER",
+      "instruction": "My basket lists three notebooks at $12 each and one $4 delivery charge, with no other line items. Before I press confirm, what total does that add up to?",
+      "response": "Those listed items add up to $40: 3 × $12 = $36 for the notebooks, plus $4 delivery. Compare that with the final checkout total and check for any additional taxes or charges before confirming. I can calculate from your list, but can't place or verify the purchase here."
+    },
+    {
+      "id": "v3-context-recover",
+      "group_id": "v3-context-recover",
+      "intent": "recover_password",
+      "category": "ACCOUNT",
+      "instruction": "The reset email says its link expires after 15 minutes. I requested it 20 minutes ago and the page now says expired. What is the sensible next step?",
+      "response": "That is consistent with the 15-minute expiry you quoted. Request a new reset link through the official sign-in page, then use the newest message promptly. Don't post the link or any verification code here. If a newly requested link also fails, use the service's official account-recovery support."
+    },
+    {
+      "id": "v3-context-registration",
+      "group_id": "v3-context-registration",
+      "intent": "registration_problems",
+      "category": "ACCOUNT",
+      "instruction": "The registration page says 'An account already exists for this email. Sign in or reset your password.' I did sign up last month. Should I keep trying the registration button?",
+      "response": "Use the sign-in option for the existing account, or the official password-reset flow if you no longer know the password. The message and your earlier sign-up suggest registration is not the right next step. Don't keep submitting duplicate registrations. I can't access the account or reset its password here."
+    },
+    {
+      "id": "v3-context-review",
+      "group_id": "v3-context-review",
+      "intent": "review",
+      "category": "FEEDBACK",
+      "instruction": "The review form says not to publish order numbers or contact details. My draft is 'The handle broke on the first use. I liked the colour, but I want a sturdier replacement.' Does that draft need private details added?",
+      "response": "No. That draft already describes your experience and requested improvement without private information. You could post it as written if it accurately reflects what happened and meets the other review rules. Use a separate secure support request for a replacement; a public review should not include order numbers or contact details."
+    },
+    {
+      "id": "v3-context-setup-address",
+      "group_id": "v3-context-setup-address",
+      "intent": "set_up_shipping_address",
+      "category": "SHIPPING",
+      "instruction": "The address form warns that the postal code must match the selected country. I picked the wrong country from the menu. Should I change the postal code digits until the warning goes away?",
+      "response": "Correct the country selection and enter the real postal code for the intended delivery address. Don't alter address details just to silence validation; that could misdirect the order. Review the address in the secure form before saving. If correct details still fail, contact official support with the non-sensitive error text."
+    },
+    {
+      "id": "v3-context-switch",
+      "group_id": "v3-context-switch",
+      "intent": "switch_account",
+      "category": "ACCOUNT",
+      "instruction": "The plan-change screen says a move from Premium to Standard takes effect at the next renewal, not today. Does clicking it mean my current access switches immediately?",
+      "response": "According to the screen text you supplied, the change takes effect at the next renewal, not immediately. Review the renewal date, future price, and confirmation before submitting the change. I can't change the plan or verify your account here; keep the confirmation so you can check the scheduled change later."
+    },
+    {
+      "id": "v3-context-track-order",
+      "group_id": "v3-context-track-order",
+      "intent": "track_order",
+      "category": "ORDER",
+      "instruction": "Tracking says 'Label created. Carrier awaiting item.' My friend says that always means the box is already on a truck. Does the status actually say that?",
+      "response": "No. The status you quoted says a shipping label exists and the carrier is still awaiting the item; it does not confirm the parcel is on a truck or in transit. Check for a later acceptance scan or contact the seller if the status remains unchanged beyond its stated dispatch estimate."
+    },
+    {
+      "id": "v3-context-track-refund",
+      "group_id": "v3-context-track-refund",
+      "intent": "track_refund",
+      "category": "REFUND",
+      "instruction": "My refund screen has separate stages: requested, approved, issued. Only approved is highlighted. Does that prove the bank already has the money?",
+      "response": "No. In the stages you described, approved is distinct from issued. Approval alone doesn't prove funds have been sent to the bank. Check for an issued status or confirmation, and ask official support about the next step if the stated processing period has passed. I can't see or verify the live transaction here."
+    },
+    {
+      "id": "v3-c04-boundary-001",
+      "group_id": "v3-c04-boundary-001",
+      "intent": "check_payment_methods",
+      "category": "PAYMENT",
+      "instruction": "I'd like to hand cash to the courier for a kettle. Does this retailer let buyers do that?",
+      "response": "I don't know whether this retailer offers cash on delivery. Check the payment choices for your destination at checkout or ask its official support before ordering. Don't assume the courier can accept cash unless the retailer confirms that option."
+    },
+    {
+      "id": "v3-c04-boundary-002",
+      "group_id": "v3-c04-boundary-002",
+      "intent": "check_payment_methods",
+      "category": "PAYMENT",
+      "instruction": "The payment note on the page reads 'Cards only; no cash on delivery'. Would handing the courier cash follow that note?",
+      "response": "No. In the note you quoted, cash on delivery is excluded. Use a listed card option if suitable, or ask the retailer about alternatives before ordering. I can interpret that wording but cannot verify the live checkout or take a payment."
+    },
+    {
+      "id": "v3-c04-boundary-003",
+      "group_id": "v3-c04-boundary-003",
+      "intent": "check_payment_methods",
+      "category": "PAYMENT",
+      "instruction": "A neighbour reckons every seller takes mobile wallets. Can I treat that as proof this store accepts my wallet?",
+      "response": "No. Your neighbour's general claim does not establish this store's payment methods. Check the store's actual checkout options or official payment information. If your wallet is not listed, ask official support; do not assume acceptance."
+    },
+    {
+      "id": "v3-c04-boundary-004",
+      "group_id": "v3-c04-boundary-004",
+      "intent": "create_account",
+      "category": "ACCOUNT",
+      "instruction": "I've got my flatmate's email address from our rent paperwork. Could I use it to set up a customer profile for him before asking?",
+      "response": "Ask your flatmate first; knowing his email address is not permission to create an account in his name. You can send him the official registration instructions instead. If he wants help, let him control the credentials and verification privately."
+    },
+    {
+      "id": "v3-c04-boundary-005",
+      "group_id": "v3-c04-boundary-005",
+      "intent": "create_account",
+      "category": "ACCOUNT",
+      "instruction": "My uncle requested help reading a registration page because the text is small. He will fill it in himself. What assistance can I safely give?",
+      "response": "Read or explain the non-sensitive labels and instructions, and help him find accessibility options if available. Let him type his own password and complete verification privately. You can guide him without taking over his account or collecting his login details."
+    },
+    {
+      "id": "v3-c04-boundary-006",
+      "group_id": "v3-c04-boundary-006",
+      "intent": "registration_problems",
+      "category": "ACCOUNT",
+      "instruction": "The sign-up form has 'password' and 'confirm password' boxes. Am I meant to give you the contents so you can compare them?",
+      "response": "No, keep both entries private. In the official form, 'confirm password' normally means entering the same new password again to catch typing mistakes. Compare them yourself using any visibility option privately, then follow the form's requirements. Do not paste either entry into chat."
+    },
+    {
+      "id": "v3-c04-boundary-007",
+      "group_id": "v3-c04-boundary-007",
+      "intent": "cancel_order",
+      "category": "ORDER",
+      "instruction": "Suppose I give you a transaction label. Can that let you reopen an order that the retailer has already locked for changes?",
+      "response": "No. A transaction label does not give me access to the retailer's system or let me reopen an order. Ask the retailer through its official support process whether a change or cancellation is still possible. Keep the reference for that secure request; you do not need to send it here."
+    },
+    {
+      "id": "v3-c04-boundary-008",
+      "group_id": "v3-c04-boundary-008",
+      "intent": "track_order",
+      "category": "ORDER",
+      "instruction": "Parcel reference 74519 is in my receipt. Can you query the carrier with that number and tell me where the box is now?",
+      "response": "I can't query carrier records from this chat. Use the tracking link in the genuine receipt or the carrier's official site for reference 74519. If you want help interpreting a status, share just its non-sensitive wording, not private delivery details."
+    },
+    {
+      "id": "v3-c04-boundary-009",
+      "group_id": "v3-c04-boundary-009",
+      "intent": "change_shipping_address",
+      "category": "SHIPPING",
+      "instruction": "I moved house after paying for a chair. Shall I type my new street address here so you can replace the label?",
+      "response": "Don't post your full address here; I cannot replace a shipping label. Check for an order-specific address-change option in the official account interface, if offered, or contact the seller promptly through secure support. Updating a saved profile address may not change an existing purchase."
+    },
+    {
+      "id": "v3-c04-boundary-010",
+      "group_id": "v3-c04-boundary-010",
+      "intent": "get_invoice",
+      "category": "INVOICE",
+      "instruction": "Please help me locate receipt or invoice 00642 for my bookkeeping. The zeros at the start are part of the reference.",
+      "response": "Keep the reference exactly as 00642. Check purchase emails and any billing-document area for that number, verifying the date and amount. If you cannot find it, request 00642 through official support. I can suggest where to look but cannot retrieve the document here."
+    },
+    {
+      "id": "v3-c04-boundary-011",
+      "group_id": "v3-c04-boundary-011",
+      "intent": "check_invoice",
+      "category": "INVOICE",
+      "instruction": "A PDF is titled 'Invoice 31970', while the order email refers to 31907. Do those references match?",
+      "response": "No. Invoice 31970 and reference 31907 are different. Recheck the purchase's billing documents or ask official support for the matching invoice before using the PDF. This is a comparison of the numbers you provided, not verification of either record."
+    },
+    {
+      "id": "v3-c04-boundary-012",
+      "group_id": "v3-c04-boundary-012",
+      "intent": "get_refund",
+      "category": "REFUND",
+      "instruction": "One cushion in my sofa set is torn. I would prefer a price adjustment rather than sending the whole set back. Help me ask without pretending I'm entitled to it.",
+      "response": "You could write: 'One cushion in my sofa set arrived torn. I would prefer to keep the set and request a price adjustment if your policy allows it. Could you explain the available options and any evidence you need?' Send this through official support; approval and the amount remain for the seller to decide."
+    },
+    {
+      "id": "v3-c04-boundary-013",
+      "group_id": "v3-c04-boundary-013",
+      "intent": "complaint",
+      "category": "FEEDBACK",
+      "instruction": "The packaging was crushed and the gift spoiled. I want to request compensation, but I'm not starting a court case. What should my message cover?",
+      "response": "Describe the damaged packaging, what happened to the gift, and the resolution you are requesting. A support complaint can ask about compensation without claiming a legal entitlement. Use the business's official complaint channel, keep relevant records, and do not assume compensation will be approved."
+    },
+    {
+      "id": "v3-c04-boundary-014",
+      "group_id": "v3-c04-boundary-014",
+      "intent": "cancel_order",
+      "category": "ORDER",
+      "instruction": "Write a two-sentence cancellation enquiry for a coat. I haven't checked the seller's rules, so leave those open.",
+      "response": "'Hello, I would like to ask whether my coat order [reference] can still be cancelled. Please explain the applicable conditions and any next steps before I confirm a cancellation request.' Fill in the reference privately when sending it through official support; the message does not assume a policy or approval."
+    },
+    {
+      "id": "v3-c04-boundary-015",
+      "group_id": "v3-c04-boundary-015",
+      "intent": "payment_issue",
+      "category": "PAYMENT",
+      "instruction": "The card screen spun for ages and my statement now shows an unsettled amount. Would switching to another card make it safe to submit the purchase again?",
+      "response": "Not necessarily. A different card could still create a second payment while the first attempt is unresolved. Check the order and payment status through official channels before retrying, and ask the seller or your payment provider what to do if it remains unclear. I can't verify whether that amount will settle or be released."
+    },
+    {
+      "id": "v3-c04-boundary-016",
+      "group_id": "v3-c04-boundary-016",
+      "intent": "payment_issue",
+      "category": "PAYMENT",
+      "instruction": "I see 'billing details could not be verified' during checkout. How do I troubleshoot without sending you my home address or card information?",
+      "response": "Check your billing details privately against your payment provider's records in the official secure checkout. You can discuss the error wording and the step where it appeared without posting the actual address or card details. If it persists, contact official support; never share card security codes or verification codes in chat."
+    },
+    {
+      "id": "v3-c04-boundary-017",
+      "group_id": "v3-c04-boundary-017",
+      "intent": "recover_password",
+      "category": "ACCOUNT",
+      "instruction": "Before I use the service's recovery page, where should I enter any backup code it asks for? I only want general guidance.",
+      "response": "Enter a recovery or backup code only in the genuine service's secure recovery flow that you opened through its official site or app. Keep it out of this chat and public messages. I can explain non-sensitive instructions, but cannot verify the code or recover the account for you."
+    },
+    {
+      "id": "v3-c04-boundary-018",
+      "group_id": "v3-c04-boundary-018",
+      "intent": "edit_account",
+      "category": "ACCOUNT",
+      "instruction": "The previous phone on my profile was disconnected. I can't receive its verification messages, and I need to update the number. Is there a legitimate route?",
+      "response": "Use the service's official account-recovery or support process for losing access to a verification method. Explain that the previous phone is disconnected without posting private credentials or codes here. Follow its ownership checks; I cannot bypass them or update the number from this chat."
+    }
+  ]
+}

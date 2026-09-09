@@ -1,0 +1,329 @@
+{
+  "input_sha256": "a20ba51c5db19ad9dc3c80e39bbd21bd5c705c7b21d8778d25f98881218f7028",
+  "against_sha256": {
+    "eval/v3/development-boundaries-01.jsonl": "b6e574a641bf409a744f6c67c776884477a4e352c38badfa349b311443b0c13a"
+  },
+  "threshold": 0.86,
+  "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+  "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "results": [
+    {
+      "id": "v3-context-cancel",
+      "max_cosine": 0.506422758102417,
+      "nearest_id": "v3-dev-boundary-003",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-change",
+      "max_cosine": 0.2876807153224945,
+      "nearest_id": "v3-dev-boundary-004",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-address",
+      "max_cosine": 0.3225496709346771,
+      "nearest_id": "v3-dev-boundary-010",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-fee",
+      "max_cosine": 0.24538174271583557,
+      "nearest_id": "v3-dev-boundary-004",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-check-invoice",
+      "max_cosine": 0.6062631607055664,
+      "nearest_id": "v3-dev-boundary-007",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-payment-methods",
+      "max_cosine": 0.5826445817947388,
+      "nearest_id": "v3-dev-boundary-002",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-refund-policy",
+      "max_cosine": 0.3123590648174286,
+      "nearest_id": "v3-dev-boundary-008",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-complaint",
+      "max_cosine": 0.40597665309906006,
+      "nearest_id": "v3-dev-boundary-004",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-contact",
+      "max_cosine": 0.38435959815979004,
+      "nearest_id": "v3-dev-boundary-007",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-human",
+      "max_cosine": 0.23324640095233917,
+      "nearest_id": "v3-dev-boundary-011",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-create",
+      "max_cosine": 0.5059652328491211,
+      "nearest_id": "v3-dev-boundary-005",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-delete",
+      "max_cosine": 0.30543896555900574,
+      "nearest_id": "v3-dev-boundary-007",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-delivery-options",
+      "max_cosine": 0.36772119998931885,
+      "nearest_id": "v3-dev-boundary-002",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-delivery-period",
+      "max_cosine": 0.18514247238636017,
+      "nearest_id": "v3-dev-boundary-009",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-edit",
+      "max_cosine": 0.30750778317451477,
+      "nearest_id": "v3-dev-boundary-003",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-get-invoice",
+      "max_cosine": 0.5899909138679504,
+      "nearest_id": "v3-dev-boundary-007",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-get-refund",
+      "max_cosine": 0.38623538613319397,
+      "nearest_id": "v3-dev-boundary-008",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-newsletter",
+      "max_cosine": 0.4497546851634979,
+      "nearest_id": "v3-dev-boundary-003",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-payment-issue",
+      "max_cosine": 0.6903812289237976,
+      "nearest_id": "v3-dev-boundary-009",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-place",
+      "max_cosine": 0.29857689142227173,
+      "nearest_id": "v3-dev-boundary-009",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-recover",
+      "max_cosine": 0.3313565254211426,
+      "nearest_id": "v3-dev-boundary-004",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-registration",
+      "max_cosine": 0.46476879715919495,
+      "nearest_id": "v3-dev-boundary-011",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-review",
+      "max_cosine": 0.3950496017932892,
+      "nearest_id": "v3-dev-boundary-010",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-setup-address",
+      "max_cosine": 0.4580934941768646,
+      "nearest_id": "v3-dev-boundary-010",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-switch",
+      "max_cosine": 0.2919832468032837,
+      "nearest_id": "v3-dev-boundary-011",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-track-order",
+      "max_cosine": 0.2408684641122818,
+      "nearest_id": "v3-dev-boundary-003",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-context-track-refund",
+      "max_cosine": 0.35709917545318604,
+      "nearest_id": "v3-dev-boundary-009",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-001",
+      "max_cosine": 0.4238851070404053,
+      "nearest_id": "v3-dev-boundary-001",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-002",
+      "max_cosine": 0.3938925564289093,
+      "nearest_id": "v3-dev-boundary-002",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-003",
+      "max_cosine": 0.3272435665130615,
+      "nearest_id": "v3-dev-boundary-005",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-004",
+      "max_cosine": 0.474030464887619,
+      "nearest_id": "v3-dev-boundary-005",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-005",
+      "max_cosine": 0.4203794300556183,
+      "nearest_id": "v3-dev-boundary-006",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-006",
+      "max_cosine": 0.4616811275482178,
+      "nearest_id": "v3-dev-boundary-011",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-007",
+      "max_cosine": 0.45166242122650146,
+      "nearest_id": "v3-dev-boundary-003",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-008",
+      "max_cosine": 0.44827911257743835,
+      "nearest_id": "v3-dev-boundary-007",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-009",
+      "max_cosine": 0.2640053629875183,
+      "nearest_id": "v3-dev-boundary-008",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-010",
+      "max_cosine": 0.5392374992370605,
+      "nearest_id": "v3-dev-boundary-007",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-011",
+      "max_cosine": 0.541778564453125,
+      "nearest_id": "v3-dev-boundary-007",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-012",
+      "max_cosine": 0.3976852297782898,
+      "nearest_id": "v3-dev-boundary-008",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-013",
+      "max_cosine": 0.4430376887321472,
+      "nearest_id": "v3-dev-boundary-008",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-014",
+      "max_cosine": 0.3933301568031311,
+      "nearest_id": "v3-dev-boundary-004",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-015",
+      "max_cosine": 0.41032302379608154,
+      "nearest_id": "v3-dev-boundary-009",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-016",
+      "max_cosine": 0.6955905556678772,
+      "nearest_id": "v3-dev-boundary-010",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-017",
+      "max_cosine": 0.594594419002533,
+      "nearest_id": "v3-dev-boundary-012",
+      "shared_sixgrams": [],
+      "pass": true
+    },
+    {
+      "id": "v3-c04-boundary-018",
+      "max_cosine": 0.4215864837169647,
+      "nearest_id": "v3-dev-boundary-011",
+      "shared_sixgrams": [],
+      "pass": true
+    }
+  ],
+  "pass": true,
+  "scope": "training augmentation instructions versus all supplied holdout instructions",
+  "limitation": "Automated similarity screening, not proof of semantic independence"
+}
