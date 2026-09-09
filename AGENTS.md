@@ -11,11 +11,12 @@
 
 ## Read first
 
-1. `README.md`: 60-second history, verdict, startup, exact prompt, evaluation, and performance.
-2. `docs/v3/SUBMISSION_CHECKLIST.md`: evidence map and reviewer checklist.
-3. `docs/v3/SELECTION.md`: candidate and checkpoint decisions.
-4. `docs/v3/PLAN.md`: chronological execution record and exact reconstruction commands.
-5. `eval/RUBRIC.md`: pass and critical-failure definitions.
+1. `README.md`: 60-second history, verdict, and map of the repository.
+2. `docs/v3/REVIEWER_RUNBOOK.md`: commands, startup, troubleshooting, and evidence map.
+3. `docs/v3/SUBMISSION_CHECKLIST.md`: submission evidence and reviewer checklist.
+4. `docs/v3/SELECTION.md`: candidate and checkpoint decisions.
+5. `docs/v3/PLAN.md`: chronological execution record and reconstruction details.
+6. `eval/RUBRIC.md`: pass and critical-failure definitions.
 
 ## Verify source and evidence
 
@@ -30,7 +31,8 @@ uv run python -m eval.replay_published_v3
 ```
 
 The data commands reconstruct gitignored historical fixtures from pinned public
-inputs. They do not retrain a model or modify sealed v3 evidence.
+inputs. They do not retrain a model, rewrite the matching committed source
+manifest, or modify sealed v3 evidence.
 
 For a real local base/tuned inference check:
 

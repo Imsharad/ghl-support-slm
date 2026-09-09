@@ -119,6 +119,22 @@ def save_sources(payload: dict) -> None:
     SOURCES_PATH.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
 
+def source_manifest_matches(payload: dict | None, digest: str, row_count: int) -> bool:
+    """Return whether an existing manifest describes the downloaded source.
+
+    The committed manifest also contains profiling metadata. A reviewer who only
+    fetches the pinned CSV should not lose that metadata or dirty the checkout.
+    """
+    return bool(
+        payload
+        and payload.get("repo_id") == REPO_ID
+        and payload.get("revision") == REVISION
+        and payload.get("source_filename") == SOURCE_FILENAME
+        and payload.get("sha256") == digest
+        and payload.get("row_count") == row_count
+    )
+
+
 def already_present() -> tuple[bool, str | None]:
     if not CSV_PATH.exists():
         return False, None
@@ -150,6 +166,8 @@ def fetch() -> dict:
         sources = load_sources()
         assert sources is not None
         return sources
+
+    existing_sources = load_sources()
 
     from huggingface_hub import snapshot_download
 
@@ -194,7 +212,12 @@ def fetch() -> dict:
             f"row_count {row_count} != expected {EXPECTED_ROWS}; "
             "do not treat this pin as the assignment's 26,872-row set without review"
         )
-    save_sources(sources)
+    if source_manifest_matches(existing_sources, digest, row_count):
+        # Preserve committed profiling fields and timestamps during verification.
+        sources = existing_sources
+        print(f"preserved matching {SOURCES_PATH}")
+    else:
+        save_sources(sources)
     print(f"wrote {CSV_PATH}")
     print(f"sha256={digest}")
     print(f"row_count={row_count}")
