@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "version": "v3-candidate03-step120",
+  "hub_revision": "cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684",
+  "source_run": "train/runs/v3-candidate03-runpod checkpoint-120",
+  "entry_timestamp_meaning": "publication manifest creation time",
+  "artifacts": [
+    {
+      "path": "train/runs/v3-candidate03-runpod/checkpoint-120/README.md",
+      "bytes": 5206,
+      "sha256": "2db35a7c784c24c5aaef702c1beb778a045dc59eb13cdd9cc2eee302c7a73de4",
+      "hub_url": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/resolve/cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684/v3/adapter/README.md",
+      "base_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+      "converter_commit": "6a1a922d269908a29cbd4b49c27e6a8e7fd10fae",
+      "tokenizer_sha": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+      "prompt_sha": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+      "ollama_version": "0.24.0",
+      "created_at": "2026-09-09 13:53:27 IST"
+    },
+    {
+      "path": "train/runs/v3-candidate03-runpod/checkpoint-120/adapter_config.json",
+      "bytes": 1159,
+      "sha256": "d758af45e56c8f231c202439b375af31fa2d9281b4185d57ea6c9354b33fddb5",
+      "hub_url": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/resolve/cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684/v3/adapter/adapter_config.json",
+      "base_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+      "converter_commit": "6a1a922d269908a29cbd4b49c27e6a8e7fd10fae",
+      "tokenizer_sha": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+      "prompt_sha": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+      "ollama_version": "0.24.0",
+      "created_at": "2026-09-09 13:53:27 IST"
+    },
+    {
+      "path": "train/runs/v3-candidate03-runpod/checkpoint-120/adapter_model.safetensors",
+      "bytes": 73911112,
+      "sha256": "06049829fcf3b29c0ffed083368843e30c86a06fda7fcc3de0332d2c979180d8",
+      "hub_url": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/resolve/cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684/v3/adapter/adapter_model.safetensors",
+      "base_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+      "converter_commit": "6a1a922d269908a29cbd4b49c27e6a8e7fd10fae",
+      "tokenizer_sha": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+      "prompt_sha": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+      "ollama_version": "0.24.0",
+      "created_at": "2026-09-09 13:53:27 IST"
+    },
+    {
+      "path": "train/runs/v3-candidate03-runpod/checkpoint-120/chat_template.jinja",
+      "bytes": 2507,
+      "sha256": "cd8e9439f0570856fd70470bf8889ebd8b5d1107207f67a5efb46e342330527f",
+      "hub_url": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/resolve/cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684/v3/adapter/chat_template.jinja",
+      "base_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+      "converter_commit": "6a1a922d269908a29cbd4b49c27e6a8e7fd10fae",
+      "tokenizer_sha": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+      "prompt_sha": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+      "ollama_version": "0.24.0",
+      "created_at": "2026-09-09 13:53:27 IST"
+    },
+    {
+      "path": "train/runs/v3-candidate03-runpod/checkpoint-120/prompt.txt",
+      "bytes": 1157,
+      "sha256": "fb45ab8d4a58a83fb3d0541abb350bbe6ee20a666c1b5703ea0c771f029b82ce",
+      "hub_url": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/resolve/cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684/v3/adapter/prompt.txt",
+      "base_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+      "converter_commit": "6a1a922d269908a29cbd4b49c27e6a8e7fd10fae",
+      "tokenizer_sha": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+      "prompt_sha": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+      "ollama_version": "0.24.0",
+      "created_at": "2026-09-09 13:53:27 IST"
+    },
+    {
+      "path": "train/runs/v3-candidate03-runpod/checkpoint-120/tokenizer.json",
+      "bytes": 11421892,
+      "sha256": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+      "hub_url": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/resolve/cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684/v3/adapter/tokenizer.json",
+      "base_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+      "converter_commit": "6a1a922d269908a29cbd4b49c27e6a8e7fd10fae",
+      "tokenizer_sha": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+      "prompt_sha": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+      "ollama_version": "0.24.0",
+      "created_at": "2026-09-09 13:53:27 IST"
+    },
+    {
+      "path": "train/runs/v3-candidate03-runpod/checkpoint-120/tokenizer_config.json",
+      "bytes": 693,
+      "sha256": "c4f4c62b741ab2940841480f9942f378d7d3878d47c2babb862af7381c59b952",
+      "hub_url": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/resolve/cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684/v3/adapter/tokenizer_config.json",
+      "base_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+      "converter_commit": "6a1a922d269908a29cbd4b49c27e6a8e7fd10fae",
+      "tokenizer_sha": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+      "prompt_sha": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+      "ollama_version": "0.24.0",
+      "created_at": "2026-09-09 13:53:27 IST"
+    },
+    {
+      "path": "train/runs/v3-candidate03-runpod/checkpoint-120/trainer_state.json",
+      "bytes": 96,
+      "sha256": "a167d2c4f403da62b723461d76d747007ea665a18b5dca1bc471859583361f0f",
+      "hub_url": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/resolve/cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684/v3/adapter/trainer_state.json",
+      "base_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+      "converter_commit": "6a1a922d269908a29cbd4b49c27e6a8e7fd10fae",
+      "tokenizer_sha": "3fd169731d2cbde95e10bf356d66d5997fd885dd8dbb6fb4684da3f23b2585d8",
+      "prompt_sha": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+      "ollama_version": "0.24.0",
+      "created_at": "2026-09-09 13:53:27 IST"
+    },
+    {
+      "path": "artifacts/base-q8.gguf",
+      "bytes": 1646572704,
+      "sha256": "eb2837d6dd3d8724fe51f80796e2dd16ba3bb38dd4301b43a4704d0c1219e7a5",
+      "hub_url": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/resolve/cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684/v3/base-q8.gguf",
+      "base_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+      "converter_commit": "6a1a922d269908a29cbd4b49c27e6a8e7fd10fae",
+      "tokenizer_sha": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "prompt_sha": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+      "ollama_version": "0.24.0",
+      "created_at": "2026-09-09 13:53:27 IST"
+    },
+    {
+      "path": "artifacts/v3/candidate03-step120-q8_0.gguf",
+      "bytes": 1646572608,
+      "sha256": "06d865f722bda7e6abd250cfab01e61c5806369cf42207b557e2c6f2e27f1240",
+      "hub_url": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/resolve/cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684/v3/candidate03-step120-q8_0.gguf",
+      "base_revision": "989aa7980e4cf806f80c7fef2b1adb7bc71aa306",
+      "converter_commit": "6a1a922d269908a29cbd4b49c27e6a8e7fd10fae",
+      "tokenizer_sha": "c0382117ea329cdf097041132f6d735924b697924d6f6fc3945713e96ce87539",
+      "prompt_sha": "6df9d82ec3d693df9934ab8a2c40d07c618574cf9188bd842d89986487cc9a79",
+      "ollama_version": "0.24.0",
+      "created_at": "2026-09-09 13:53:27 IST"
+    }
+  ]
+}

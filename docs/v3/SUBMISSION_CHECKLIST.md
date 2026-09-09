@@ -1,7 +1,7 @@
 # v3 submission readiness
 
 Status: experiment closed for submission preparation. Candidate03 step120 is the
-final evaluated artifact; safety qualification failed. Release links remain pending.
+final evaluated artifact; safety qualification failed. Published release: [v3-submission](https://github.com/Imsharad/ghl-support-slm/releases/tag/v3-submission).
 Do not describe this as a proven overall improvement.
 
 Candidate04 update (2026-09-09): a free Colab T4 completed 120 updates, resume
@@ -24,10 +24,10 @@ as candidate04 success.
 | Measurable improvement | Recorded task success 55.7% base vs 76.4% tuned | Safety failed: two supported tuned credential violations; do not claim the full improvement objective achieved |
 | Self-hosted HTTP endpoint | Local `/support` base/tuned routes with prompt/model identity guards | Production auth, TLS and concurrency are explicitly cut |
 | Performance numbers | Complete 54+54 HTTP benchmark, raw requests, hardware and limitations; `eval/results/v3/paired-api-warm02` | Not a concurrent/cold-start capacity claim |
-| Adapter and model loading | Verified local adapter, merge and Q8; live PEFT/MPS smoke and 5-query prompt parity | Public v3 weight link requires approval |
-| Full implementation repository | Local v3 commits; historical work preserved | Public branch/push requires approval |
+| Adapter and model loading | Verified local adapter, merge and Q8; live PEFT/MPS smoke and 5-query prompt parity | Published at the immutable revision in `artifacts/v3/manifest.json` |
+| Full implementation repository | Local v3 commits; historical work preserved | Published branch and `v3-submission` release tag |
 | README and exact prompt | v3 quickstart, native ChatML, pinned config, reproduced data, measured performance and honest partial mixed-judge result | Final reproduction/package review; do not relabel partial results as primary |
-| 2–5 minute Loom/equivalent | Verified 2:47 captioned terminal recording: `eval/results/v3/demo-recording-001/demo.mp4`; actual HTTP pairs, results and failures | Owner review; no voice-over, public Loom upload or employer submission |
+| 2–5 minute Loom/equivalent | Verified 2:47 captioned terminal recording: `eval/results/v3/demo-recording-001/demo.mp4`; actual HTTP pairs, results and failures | Captioned MP4 published on GitHub; no voice-over or employer submission |
 | Compute restriction | Approximately $0.45 owner-authorized RunPod use, all rentals deleted | Disclose employer-brief deviation; no employer approval assumed |
 
 ## Loom / interview outline (about three minutes)
@@ -81,8 +81,7 @@ a positive task-success difference even under worst-case missing-pair assumption
 but fails the zero-credential-violation gate. Any further candidate development
 must use development evidence and a genuinely new, independently screened final
 evaluation; do not patch this candidate against the now-unblinded final answers
-or revise the safety gate to manufacture success. Publication/submission still
-requires separate approval.
+or revise the safety gate to manufacture success. Publication was approved and completed. Employer submission has not been sent.
 
 ## Final package review
 
@@ -121,7 +120,7 @@ confidence intervals and omission bounds without that key.
 The source archive is a working-file snapshot identified by its per-file hashes,
 not a claim that every byte came from the recorded parent commit.
 
-Release steps, after reviewing this concrete package:
+Release procedure (publication steps completed for `v3-submission`; retained for reproduction):
 
 1. Publish `codex/v3-submission-closeout` to the GitHub repository and record its
    immutable commit or release tag.
@@ -173,5 +172,9 @@ Final follow-up verification:
 - The demo now uses two tracked development questions, so it runs before data
   reconstruction. Both questions are unchanged from candidate03 validation.
 
-Next: review the verified package, then authorize publication of its exact branch,
-weights and existing demo. No additional experiment is part of this closeout.
+Publication was explicitly approved by the owner. The source, immutable weights,
+and existing video are linked in `submission.json`. Download verification is
+recorded separately from the earlier local checks.
+
+Next: send the [release source](https://github.com/Imsharad/ghl-support-slm/tree/v3-submission), adapter and video links to the
+employer. No employer message has been sent by this agent.

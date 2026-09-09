@@ -34,8 +34,9 @@ part of the hiring brief, so reference similarity alone does not fulfill it.
 **Reviewer entry point:** [submission evidence and release steps](docs/v3/SUBMISSION_CHECKLIST.md).
 The source, adapter and served-weight packages are assembled with
 `tools/package_v3_submission.py`; each carries a SHA-256 inventory. Public v3
-repository revision, weight URLs and video URL are still pending publication.
-Historical v1/v2 URLs are not v3 download links.
+release: [GitHub source and demo](https://github.com/Imsharad/ghl-support-slm/releases/tag/v3-submission),
+[exact v3 adapter](https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/tree/cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684/v3/adapter),
+[2:47 demo video](https://github.com/Imsharad/ghl-support-slm/releases/download/v3-submission/demo.mp4). Historical v1/v2 URLs below refer to different models.
 
 Candidate03 used approximately $0.45 of owner-authorized RunPod credit, a disclosed
 deviation from the brief's free-compute requirement. Candidate04 used a free
@@ -45,15 +46,27 @@ and MPS results were not pooled. See the [selection record](docs/v3/SELECTION.md
 
 ## v3: run the currently served candidate03 locally
 
-Extract `v3-adapter.zip` and `v3-ollama.zip` from the prepared release into
-the source repository root. Their internal paths match the commands below.
-The adapter ZIP supports direct Transformers loading; the Ollama ZIP contains both
-exact evaluated Q8 weights. Each ZIP includes an inventory of SHA-256 hashes.
+Clone the exact release and download the verified weights:
 
-Use Python 3.11.11 and the tracked `uv.lock`. From this repository root:
+```sh
+git clone --branch v3-submission https://github.com/Imsharad/ghl-support-slm.git
+cd ghl-support-slm
+uv sync --frozen --extra serve
+uv run python tools/fetch_artifacts.py --manifest artifacts/v3/manifest.json
+```
+
+This downloads the adapter and both exact evaluated Q8 files into the paths used
+below and checks each file's size and SHA-256. Use `--target serve` to fetch only
+the two GGUFs. The [release](https://github.com/Imsharad/ghl-support-slm/releases/tag/v3-submission) also includes an adapter ZIP;
+extract it at the repository root for the direct PEFT route.
+
+Use Python 3.11.11 and the tracked `uv.lock`. Start Ollama first
+(`ollama serve` in another terminal if its desktop service is not running).
+From this repository root:
 
 ```sh
 uv sync --frozen --extra serve
+ollama create ghl-base -f serve/Modelfile.base
 ollama create ghl-support-v3-c03-s120 -f serve/Modelfile.v3-candidate03-step120
 SUPPORT_TUNED_TAG=ghl-support-v3-c03-s120 \
   SUPPORT_PROMPT_FILE=configs/prompt-v3.txt \
@@ -61,15 +74,12 @@ SUPPORT_TUNED_TAG=ghl-support-v3-c03-s120 \
   --host 127.0.0.1 --port 8013 --no-access-log
 ```
 
-Start Ollama first (`ollama serve` if the desktop service is not already running).
-Before creating the tuned tag, create the base tag with
-`ollama create ghl-base -f serve/Modelfile.base`.
 The Modelfile requires the local verified
 `artifacts/v3/candidate03-step120-q8_0.gguf`. The wrapper also requires the exact
 base tag `ghl-base`, created from `serve/Modelfile.base` and the historically
 verified `artifacts/base-q8.gguf`. Existing local tags were verified against the
-artifact manifests. The current v3 weights are local only: the historical Hub
-links below do **not** download v3. Publication still requires owner approval.
+artifact manifests. The v3 download manifest pins every file to immutable Hub revision
+`cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684`. The historical Hub links below refer to different models.
 
 In another terminal, choose `base` or `tuned` on the same endpoint:
 
@@ -162,7 +172,7 @@ were authored by this assistant, so the test is not independently authored.
 Fresh-checkout data reconstruction reproduced the actual training/validation
 files byte-for-byte; it reused the installed environment and global HF cache.
 The direct adapter-loading command was also verified on local MPS.
-The complete primary evaluation and public v3 weights/repo remain outstanding.
+The complete all-human primary evaluation remains outstanding; v3 source and weights are published.
 Partial mixed-judge statistics below do not replace that evaluation.
 
 For the live recording walkthrough, run `uv run --extra serve python serve/demo_v3.py`.
@@ -176,7 +186,7 @@ fresh HTTP support requests, side-by-side answers, the partial mixed-judge
 evaluation and the failed safety criterion. Its original timestamped `demo.cast`,
 raw `live-http.json`, scene PNGs and verification metadata are retained alongside
 it. This is a rendered recording of actual terminal output, not a desktop GUI
-capture, staged answer playback or benchmark rerun. No public Loom link exists.
+capture, staged answer playback or benchmark rerun. The equivalent captioned MP4 is [published with the release](https://github.com/Imsharad/ghl-support-slm/releases/download/v3-submission/demo.mp4).
 The [narration and interview outline](docs/v3/SUBMISSION_CHECKLIST.md) can be used
 for an owner-recorded Loom with voice-over.
 
