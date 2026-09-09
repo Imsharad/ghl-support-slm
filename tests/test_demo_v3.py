@@ -12,9 +12,9 @@ def test_demo_rejects_absent_tuned_model():
 
 def test_demo_uses_actual_http_pairs_and_marks_missing_scores(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(demo_v3, "ROOT", tmp_path)
-    source = tmp_path / "data/processed/v3-candidate03/val.jsonl"
+    source = tmp_path / "serve/demo_queries_v3.json"
     source.parent.mkdir(parents=True)
-    source.write_text("\n".join(json.dumps({"id": i, "instruction": "fixture " + i}) for i in demo_v3.DEV_IDS))
+    source.write_text(json.dumps({"queries": [{"id": i, "instruction": "fixture " + i} for i in demo_v3.DEV_IDS]}))
     health = {"tuned_configured": True, "prompt_sha256": "fixture", "models": {
         "base": {"digest": "base"}, "tuned": {"digest": "tuned"}}}
     requests = []

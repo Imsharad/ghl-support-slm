@@ -116,6 +116,8 @@ Critical reviewer paths:
 The original blinded scorer requires a private key intentionally excluded from
 publication. Published analysis includes per-item model-labelled judgments for
 inspection; full original-blinding replay is not available from a public clone.
+`uv run python -m eval.replay_published_v3` verifies the published counts,
+confidence intervals and omission bounds without that key.
 The source archive is a working-file snapshot identified by its per-file hashes,
 not a claim that every byte came from the recorded parent commit.
 
@@ -130,6 +132,8 @@ Release steps, after reviewing this concrete package:
    public URL in `submission.json`.
 4. Fill the currently null v3 tag/weight URLs; verify downloads in a fresh folder,
    extract at the repository root, and run the README health/support commands.
+   Run `uv run python tools/check_submission.py` afterward: v3 validation checks
+   the candidate03 artifacts and does not require an unused merged-fp16 upload.
 5. Send the GitHub revision, adapter link and video link with this statement:
    “Fine-tuning improved recorded task success from 55.7% to 76.4% in a partial
    mixed-judge comparison; the fixed credential-safety gate failed. The repository
@@ -146,9 +150,28 @@ submission. Publication and employer delivery are the remaining external actions
 - Full suite initially returned 234 passed, two skipped and one missing-fixture
   failure in the isolated checkout. Regenerating legacy data returned 235 passed,
   one skipped and one v1 sealed-split hash failure. This historical reconstruction
-  issue remains open. Original tracked v1 manifests were restored unchanged;
-  regenerated data is not included in the package. No all-green fresh-clone claim.
+  issue was subsequently resolved with `data/restore_v1.py` and sealed ID/group metadata. Original tracked v1 manifests were restored unchanged;
+  regenerated dataset rows are not included in the source package. The final clean-environment check is below.
 - Tests reused the existing locked local environment and model cache; this was
   not a new dependency installation or a repeat of GPU training.
 
-Next: review the result, video and this reproduction limitation before publishing.
+Final follow-up verification:
+
+- A new `.venv` was installed with `uv sync --frozen --extra serve` (Python
+  3.11.11). The full suite passed: **239 passed, 1 skipped**. Download caches were
+  reused; no fresh-OS claim is made.
+- `data/restore_v1.py` reproduced all original v1 train/validation/test hashes
+  from the raw CSV and text-free assignment metadata. Historical manifests remain
+  byte-identical; altered reconstruction is rejected before writing.
+- The submission checkout served four real base/tuned requests from its own API
+  on port 8014; model/prompt identity checks passed. This smoke is not a benchmark.
+- Candidate03 data reconstruction reproduced the exact train/validation hashes
+  from a fresh v2 rebuild, new overlap screening, purge, selection and assembly.
+- The packaged PEFT adapter loaded and generated on MPS with the README command.
+- The existing captioned video decoded all 334 frames at 1920×1080, 167 seconds;
+  its failure-case scene was visually inspected. It has no narration track.
+- The demo now uses two tracked development questions, so it runs before data
+  reconstruction. Both questions are unchanged from candidate03 validation.
+
+Next: review the verified package, then authorize publication of its exact branch,
+weights and existing demo. No additional experiment is part of this closeout.

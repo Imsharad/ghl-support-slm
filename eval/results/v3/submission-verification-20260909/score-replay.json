@@ -1,0 +1,26 @@
+{
+  "arithmetic_verified": true,
+  "observed": {
+    "n": 106,
+    "intent_coverage": 27,
+    "pass_counts": {
+      "base": 59,
+      "tuned": 81
+    },
+    "micro_pass_rates": {
+      "base": 0.5566037735849056,
+      "tuned": 0.7641509433962265
+    },
+    "micro_difference_points": 20.754716981132077,
+    "critical_failures": {
+      "base": 11,
+      "tuned": 9
+    },
+    "credential_violations": {
+      "base": 1,
+      "tuned": 2
+    }
+  },
+  "numeric_gate": "not_demonstrated",
+  "limitation": "Checks published arithmetic and raw-file hashes, not judge correctness or private blind mapping."
+}

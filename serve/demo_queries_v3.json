@@ -1,0 +1,13 @@
+{
+  "source": "Two unchanged development questions from candidate03 validation; not final-test cases.",
+  "queries": [
+    {
+      "id": "bitext-004940",
+      "instruction": "can I pay with PayPal?"
+    },
+    {
+      "id": "bitext-008038",
+      "instruction": "I ned to speak to customer service"
+    }
+  ]
+}

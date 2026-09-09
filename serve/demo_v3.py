@@ -29,7 +29,7 @@ def run_demo(api_url: str, *, call=request_json):
     print(f"Endpoint: {api_url}/support")
     print(json.dumps(health, indent=2), flush=True)
     evidence["health"] = health
-    rows = [json.loads(line) for line in (ROOT / "data/processed/v3-candidate03/val.jsonl").read_text().splitlines()]
+    rows = json.loads((ROOT / "serve/demo_queries_v3.json").read_text())["queries"]
     by_id = {row["id"]: row for row in rows}
     for item_id in DEV_IDS:
         query = by_id[item_id]["instruction"]

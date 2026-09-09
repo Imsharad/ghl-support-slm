@@ -54,7 +54,7 @@ def main() -> None:
             raise ValueError(f'source must be a regular file: {name}')
         source.append((path, name, digest(path)))
     notices = [(ROOT / name, name, digest(ROOT / name)) for name in
-               ['artifacts/v3/LICENSE-QWEN', 'artifacts/v3/MODEL-NOTICE.txt']]
+               ['artifacts/v3/LICENSE-QWEN', 'artifacts/v3/MODEL-NOTICE.txt', 'artifacts/v3/MODEL_CARD.md']]
     adapter_files += notices
     weights += notices
     output.mkdir(parents=True)

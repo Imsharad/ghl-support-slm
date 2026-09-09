@@ -1,0 +1,16 @@
+Bitext customer-support data attribution
+
+Source: bitext/Bitext-customer-support-llm-chatbot-training-dataset
+Revision: 430d1a89bd93bd1fa23c16f29dd53e73f0087443
+https://huggingface.co/datasets/bitext/Bitext-customer-support-llm-chatbot-training-dataset
+
+Bitext is the original data provider. Dataset material and enhanced dataset
+material in this repository are provided under CDLA-Sharing-1.0.
+See LICENSE-CDLA-Sharing-1.0 and https://cdla.dev/sharing-1-0/.
+License text source: https://raw.githubusercontent.com/spdx/license-list-data/main/text/CDLA-Sharing-1.0.txt
+
+Changes include cleaning, grouping and split assignment, placeholder
+substitution, assistant-authored corrected targets under data/v3/targets,
+and synthetic examples identified by flags and provenance manifests.
+Original sealed artifacts are retained unchanged for audit. These notices
+also accompany dataset excerpts in evaluation and training evidence.

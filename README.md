@@ -45,6 +45,11 @@ and MPS results were not pooled. See the [selection record](docs/v3/SELECTION.md
 
 ## v3: run the currently served candidate03 locally
 
+Extract `v3-adapter.zip` and `v3-ollama.zip` from the prepared release into
+the source repository root. Their internal paths match the commands below.
+The adapter ZIP supports direct Transformers loading; the Ollama ZIP contains both
+exact evaluated Q8 weights. Each ZIP includes an inventory of SHA-256 hashes.
+
 Use Python 3.11.11 and the tracked `uv.lock`. From this repository root:
 
 ```sh
@@ -163,7 +168,7 @@ Partial mixed-judge statistics below do not replace that evaluation.
 For the live recording walkthrough, run `uv run --extra serve python serve/demo_v3.py`.
 It calls the actual `/support` route twice per development query, prints the
 answers side by side, and includes an unsupported-payment-claim failure check.
-Until human scoring exists, it explicitly prints that improvement is unproven.
+It prints the recorded partial mixed-judge results and the failed safety gate.
 The script is a live recording aid. The separate completed local video is
 [`eval/results/v3/demo-recording-001/demo.mp4`](eval/results/v3/demo-recording-001/demo.mp4):
 2:47, H.264, 1920×1080, captioned terminal output with no audio. It contains four
@@ -295,7 +300,18 @@ candidate selection cannot reuse these inspected cases as untouched final data.
 The training prompt, model, frozen rubric and primary analysis code were not
 changed to manufacture a passing result.
 
-Reproduce this explicitly partial analysis into a new output directory (the
+Reviewers can verify all published counts, macro intervals and missing-case
+bounds without the private key:
+
+```sh
+uv run python -m eval.replay_published_v3
+```
+
+This checks arithmetic from the published model-labelled grades and hashes of the
+sealed raw answers. It does not validate judge correctness or independently
+reconstruct the private blind mapping.
+
+Reproduce the original explicitly partial analysis into a new output directory (the
 private local key is required; never publish it):
 
 ```sh
@@ -1201,20 +1217,20 @@ Everything runs through `uv run` against the locked environment.
 
 ```sh
 make sync     # uv sync --frozen --extra serve
-make test     # uv run pytest -q; see legacy fixture caveat below
+make fixtures # fetch pinned CSV; restore original sealed v1 fixture hashes
+make test     # uv run pytest -q
 make audit    # uv run python data/prepare.py --audit-only --strict
 make eval-base
 make bench
 ```
 
-The full suite includes a historical v1 test requiring ignored
-`data/processed/train.jsonl`. During submission preparation, regenerating it with
-`data/prepare.py` on this Mac produced split hashes different from the v1 seal:
-235 tests passed, one failed and one skipped. The original tracked split/audit
-files were restored unchanged. This is an unresolved historical reconstruction
-limitation, not a change to the sealed v3 evaluation or its reported scores.
-Do not overwrite historical split manifests to make this test pass. The v3
-reconstruction evidence is separately documented in `docs/v3/PLAN.md`.
+The full suite needs the historical v1 fixtures. Run `make fixtures` first.
+`data/restore_v1.py` rebuilds them from the pinned CSV and recorded ID/group
+assignments, verifies all three original sealed hashes before writing, and leaves
+tracked audit/split evidence unchanged. It does not rerun embedding clustering or
+require Git history. Existing different files are rejected; use a fresh checkout
+or `--output` for a separate reconstruction. The earlier fresh-checkout failure is
+resolved by this path; `data/prepare.py` remains the historical experiment builder.
 
 `bitsandbytes` lives in the `train` extra only. The pinned environment loads and steps an NF4 QLoRA
 model on this Apple M1 Pro through MPS; the measured scope and caveats are in
