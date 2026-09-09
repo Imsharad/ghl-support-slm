@@ -31,3 +31,6 @@ docs/v2-html/
 docs/index_v1.html
 docs/index_v2.html
 eval/results/v2/*/blind-key.json
+
+# Project-local reviewer bootstrap tools, model store, caches and logs.
+.runtime/

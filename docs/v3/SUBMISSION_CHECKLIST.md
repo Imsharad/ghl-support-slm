@@ -1,5 +1,7 @@
 # v3 submission readiness
 
+Reviewer startup patch: [v3-submission.1](https://github.com/Imsharad/ghl-support-slm/releases/tag/v3-submission.1) adds `./start.sh` and complete setup instructions. Model weights and evaluation results are unchanged.
+
 Status: experiment closed for submission preparation. Candidate03 step120 is the
 final evaluated artifact; safety qualification failed. Published release: [v3-submission](https://github.com/Imsharad/ghl-support-slm/releases/tag/v3-submission).
 Do not describe this as a proven overall improvement.

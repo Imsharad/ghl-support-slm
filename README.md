@@ -34,9 +34,9 @@ part of the hiring brief, so reference similarity alone does not fulfill it.
 **Reviewer entry point:** [submission evidence and release steps](docs/v3/SUBMISSION_CHECKLIST.md).
 The source, adapter and served-weight packages are assembled with
 `tools/package_v3_submission.py`; each carries a SHA-256 inventory. Public v3
-release: [GitHub source and demo](https://github.com/Imsharad/ghl-support-slm/releases/tag/v3-submission),
+release: [GitHub source and demo](https://github.com/Imsharad/ghl-support-slm/releases/tag/v3-submission.1),
 [exact v3 adapter](https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/tree/cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684/v3/adapter),
-[2:47 demo video](https://github.com/Imsharad/ghl-support-slm/releases/download/v3-submission/demo.mp4). Historical v1/v2 URLs below refer to different models.
+[2:47 demo video](https://github.com/Imsharad/ghl-support-slm/releases/download/v3-submission.1/demo.mp4). Historical v1/v2 URLs below refer to different models.
 
 Candidate03 used approximately $0.45 of owner-authorized RunPod credit, a disclosed
 deviation from the brief's free-compute requirement. Candidate04 used a free
@@ -46,26 +46,63 @@ and MPS results were not pooled. See the [selection record](docs/v3/SELECTION.md
 
 ## v3: run the currently served candidate03 locally
 
-Clone the exact release and download the verified weights:
+The reviewer needs macOS on Apple Silicon or Linux x86_64 with glibc (including
+WSL2), Bash, curl, tar, and a SHA-256 tool (`shasum` or `sha256sum`). Git is
+needed for cloning; the release source ZIP also works. Allow at least 20 GB free
+disk space and preferably 16 GB RAM. A GPU is optional. First setup requires
+internet access to GitHub, Hugging Face and Python package/download servers.
 
 ```sh
-git clone --branch v3-submission https://github.com/Imsharad/ghl-support-slm.git
+git clone --branch v3-submission.1 https://github.com/Imsharad/ghl-support-slm.git
 cd ghl-support-slm
-uv sync --frozen --extra serve
-uv run python tools/fetch_artifacts.py --manifest artifacts/v3/manifest.json
+./start.sh
 ```
 
-This downloads the adapter and both exact evaluated Q8 files into the paths used
-below and checks each file's size and SHA-256. Use `--target serve` to fetch only
-the two GGUFs. The [release](https://github.com/Imsharad/ghl-support-slm/releases/tag/v3-submission) also includes an adapter ZIP;
-extract it at the repository root for the direct PEFT route.
+Wait for `READY` before sending requests. The script installs pinned uv 0.8.8,
+Python 3.11.11, locked serving dependencies and Ollama 0.24.0 inside the checkout.
+It verifies and imports both evaluated Q8 models, caches the pinned tokenizer,
+starts the API and makes a real request to **each** model. No account, API key,
+sudo, preinstalled Python/Ollama, or existing model cache is needed. The initial
+model download is approximately 3.3 GB; Linux's Ollama archive adds 1.2 GB.
+Setup and the first model load can take several minutes.
 
-Use Python 3.11.11 and the tracked `uv.lock`. Start Ollama first
-(`ollama serve` in another terminal if its desktop service is not running).
-From this repository root:
+Keep this terminal open. **Ctrl+C stops both services owned by the launcher.**
+Run the same command again to reuse downloaded tools, weights and caches.
+The API listens on `127.0.0.1:8013`; its private Ollama listens on
+`127.0.0.1:11435`. An occupied port causes a clear error; choose alternatives:
+
+```sh
+./start.sh --port 8023 --ollama-port 11436
+# Or perform a real startup/inference check and then stop automatically:
+./start.sh --check --port 8023 --ollama-port 11436
+```
+
+Open <http://127.0.0.1:8013/docs> for interactive endpoint documentation.
+For optional `uv` commands later in this README, add the locally installed tool
+to the current terminal's PATH (no system installation needed):
+
+```sh
+export PATH="$PWD/.runtime/tools/uv-0.8.8:$PATH"
+```
+
+Logs are `.runtime/logs/api.log` and `.runtime/logs/ollama.log`; the last successful
+smoke check is `.runtime/last-check.json`. A second launcher in the same checkout
+is rejected. On download failure, check connectivity and rerun; only verified
+complete weights are reused. If inference fails, inspect those logs and available
+RAM. Native Windows and Intel Macs are not supported by this launcher.
+The launcher is tested on Apple Silicon ([verification evidence](eval/results/v3/startup-verification-20260909/report.json)); Linux support has not yet
+been verified on a live Linux host.
+
+<details>
+<summary>Manual setup using an existing Python/uv and Ollama installation</summary>
+
+Use Python 3.11.11 and Ollama 0.24.0. Start `ollama serve` in another terminal
+if it is not already running on port 11434. From the repository root:
 
 ```sh
 uv sync --frozen --extra serve
+uv run python tools/fetch_artifacts.py --manifest artifacts/v3/manifest.json --target serve
+uv run python -c 'from train.render import get_tokenizer; get_tokenizer(local_files_only=False)'
 ollama create ghl-base -f serve/Modelfile.base
 ollama create ghl-support-v3-c03-s120 -f serve/Modelfile.v3-candidate03-step120
 SUPPORT_TUNED_TAG=ghl-support-v3-c03-s120 \
@@ -74,12 +111,12 @@ SUPPORT_TUNED_TAG=ghl-support-v3-c03-s120 \
   --host 127.0.0.1 --port 8013 --no-access-log
 ```
 
-The Modelfile requires the local verified
-`artifacts/v3/candidate03-step120-q8_0.gguf`. The wrapper also requires the exact
-base tag `ghl-base`, created from `serve/Modelfile.base` and the historically
-verified `artifacts/base-q8.gguf`. Existing local tags were verified against the
-artifact manifests. The v3 download manifest pins every file to immutable Hub revision
-`cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684`. The historical Hub links below refer to different models.
+The explicit tokenizer download is required on a fresh machine because API
+startup loads it offline. The download manifest pins weights to immutable Hub
+revision `cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684` and verifies SHA-256 and size.
+Omit `--target serve` to also fetch the PEFT adapter for the direct route below.
+
+</details>
 
 In another terminal, choose `base` or `tuned` on the same endpoint:
 
@@ -90,7 +127,9 @@ curl --fail --silent -H 'Content-Type: application/json' \
   http://127.0.0.1:8013/support
 ```
 
-`/health` identifies both immutable model digests and the prompt hash. `/support`
+`/health` identifies both local model tag digests and the prompt hash.
+Ollama includes local paths in tag digests, so they vary across checkouts; the
+launcher verifies the portable model-layer hashes against the evaluated artifacts. `/support`
 returns the answer, identity, token counts, truncation flag and timing. It uses
 the same generation implementation and settings as evaluation. Requests are
 serialized (concurrent requests receive 429), prompt overrides/reserved chat
@@ -125,6 +164,7 @@ The standard PEFT adapter is in
 Ollama or bitsandbytes, install the CPU/MPS-compatible PEFT overlay and run:
 
 ```sh
+uv run python tools/fetch_artifacts.py --manifest artifacts/v3/manifest.json
 uv run --extra serve --with peft==0.20.0 python serve/adapter_v3.py \
   --adapter train/runs/v3-candidate03-runpod/checkpoint-120 \
   --device auto --allow-download --query 'I forgot my password. What should I do?'
@@ -186,7 +226,7 @@ fresh HTTP support requests, side-by-side answers, the partial mixed-judge
 evaluation and the failed safety criterion. Its original timestamped `demo.cast`,
 raw `live-http.json`, scene PNGs and verification metadata are retained alongside
 it. This is a rendered recording of actual terminal output, not a desktop GUI
-capture, staged answer playback or benchmark rerun. The equivalent captioned MP4 is [published with the release](https://github.com/Imsharad/ghl-support-slm/releases/download/v3-submission/demo.mp4).
+capture, staged answer playback or benchmark rerun. The equivalent captioned MP4 is [published with the release](https://github.com/Imsharad/ghl-support-slm/releases/download/v3-submission.1/demo.mp4).
 The [narration and interview outline](docs/v3/SUBMISSION_CHECKLIST.md) can be used
 for an owner-recorded Loom with voice-over.
 

@@ -1,6 +1,6 @@
 {
-  "repo_url": "https://github.com/Imsharad/ghl-support-slm/tree/v3-submission",
-  "tag": "v3-submission",
+  "repo_url": "https://github.com/Imsharad/ghl-support-slm/tree/v3-submission.1",
+  "tag": "v3-submission.1",
   "hub": {
     "repo": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/tree/cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684/v3",
     "adapter": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/tree/cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684/v3/adapter",
@@ -8,7 +8,7 @@
     "base_gguf": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/resolve/cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684/v3/base-q8.gguf",
     "tuned_gguf": "https://huggingface.co/seekingtroooth/ghl-support-qlora-t4/resolve/cc4a1e2affcf5c8db315e35d9b41cb7d4f6e1684/v3/candidate03-step120-q8_0.gguf"
   },
-  "loom_url": "https://github.com/Imsharad/ghl-support-slm/releases/download/v3-submission/demo.mp4",
+  "loom_url": "https://github.com/Imsharad/ghl-support-slm/releases/download/v3-submission.1/demo.mp4",
   "readme": "README.md",
   "contact": "im.sharad.jain@gmail.com",
   "submitted_at": null,
@@ -25,6 +25,6 @@
   "status": "published_ready_for_employer_submission",
   "candidate": "v3-candidate03-step120",
   "safety_gate": "failed",
-  "release_url": "https://github.com/Imsharad/ghl-support-slm/releases/tag/v3-submission",
+  "release_url": "https://github.com/Imsharad/ghl-support-slm/releases/tag/v3-submission.1",
   "artifact_manifest": "artifacts/v3/manifest.json"
 }

@@ -1,0 +1,32 @@
+{
+  "platform": "macOS arm64",
+  "tests": {
+    "passed": 244,
+    "skipped": 1
+  },
+  "initial_clean_setup": {
+    "source_only_directory": true,
+    "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+    "tools_python_dependencies_downloaded_locally": true,
+    "both_ggufs_downloaded_and_sha256_verified": true,
+    "unauthenticated_tokenizer_download": true,
+    "first_attempt_result": "Found path-dependent Ollama manifest digest mismatch; corrected before release"
+  },
+  "final_isolated_check": {
+    "exit_code": 0,
+    "fresh_tokenizer_cache": true,
+    "fresh_ollama_model_store": true,
+    "reused_verified_tool_and_weight_downloads": true,
+    "both_models_real_inference": true,
+    "ports_released": true
+  },
+  "lifecycle": {
+    "foreground_ready": true,
+    "duplicate_rejected": true,
+    "ctrl_c_exit": 130,
+    "owned_ports_released": true,
+    "occupied_port_rejected": true
+  },
+  "linux_live_validation": false,
+  "model_or_evaluation_changes": false
+}
